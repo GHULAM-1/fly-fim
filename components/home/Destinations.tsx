@@ -46,13 +46,13 @@ const Destinations = () => {
   ];
 
   return (
-    <div className="py-10 px-28">
+    <div className="py-10 px-8 md:px-16 lg:px-24 xl:px-28">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-700">
           Explore world's top destinations
         </h2>
         <div className="flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4">
+          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
             See all
           </button>
         </div>
@@ -60,7 +60,10 @@ const Destinations = () => {
       <Carousel className="mt-10">
         <CarouselContent>
           {destinations.map((destination) => (
-            <CarouselItem key={destination.id} className="basis-1/6">
+            <CarouselItem
+              key={destination.id}
+              className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
+            >
               <img
                 src={destination.image}
                 alt={destination.description}

@@ -3,10 +3,10 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
-    <div className="px-28 border-t">
+    <div className="px-8 md:px-16 lg:px-24 xl:px-28 border-t">
       <div className="py-10 border-b">
         <img src="/images/logo.png" alt="logo" className="w-42" />
-        <div className="grid grid-cols-4 text-sm text-gray-500 gap-10 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-10 mt-10">
           <div>
             <ul className="space-y-3">
               <li className="font-medium">GET HELP 24/7</li>
@@ -53,16 +53,16 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="py-5 flex justify-between">
-        <ul className="text-xs text-gray-500 flex items-center gap-4">
+      <div className="py-5 flex flex-col sm:flex-row justify-between gap-4">
+        <ul className="text-xs text-gray-500 flex flex-col sm:flex-row items-center gap-4">
           <li>© 2014-2025 Headout, 82 Nassau St #60351 New York, NY 10038</li>
           <li>Terms of usage</li>
-          <li>•</li>
+          <li className="hidden sm:block">•</li>
           <li>Privacy policy</li>
-          <li>•</li>
+          <li className="hidden sm:block">•</li>
           <li>Company details</li>
         </ul>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 justify-center sm:justify-start">
           <a href="https://www.youtube.com/headout.com">
             <Youtube size={16} strokeWidth={1} />
           </a>

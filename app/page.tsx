@@ -7,6 +7,7 @@ import Info from "@/components/home/Info";
 import Destinations from "@/components/home/Destinations";
 import Recommendations from "@/components/home/Recommendations";
 import Activities from "@/components/home/Activities";
+import Testimonials from "@/components/home/Testimonials";
 import React from "react";
 
 const Home = () => {
@@ -17,9 +18,12 @@ const Home = () => {
       <Destinations />
       <Recommendations />
       <Activities />
+      <Testimonials />
       <MarqueeComp />
       <BrowseThemes />
-      <Banner />
+      <div className="hidden lg:block">
+        <Banner />
+      </div>
       <Stats />
     </div>
   );

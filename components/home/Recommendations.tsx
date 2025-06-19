@@ -49,13 +49,13 @@ const Recommendations = () => {
   ];
 
   return (
-    <div className="py-10 px-28">
+    <div className="py-10 px-8 md:px-16 lg:px-24 xl:px-28">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-700">
           Headout’s top recommendations
         </h2>
         <div className="flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4">
+          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
             See all
           </button>
         </div>
@@ -63,7 +63,10 @@ const Recommendations = () => {
       <Carousel className="mt-10">
         <CarouselContent>
           {recommendations.map((recommendation) => (
-            <CarouselItem key={recommendation.id} className="basis-1/4">
+            <CarouselItem
+              key={recommendation.id}
+              className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+            >
               <img
                 src={recommendation.image}
                 alt={recommendation.description}

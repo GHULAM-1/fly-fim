@@ -26,7 +26,7 @@ const MarqueeComp = () => {
 
   return (
     <div className="py-10">
-      <h2 className="text-2xl font-bold text-gray-700 px-28 mb-10">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-700 px-8 md:px-16 lg:px-24 xl:px-28 mb-10">
         We have the best partners
       </h2>
       <Marquee pauseOnHover>

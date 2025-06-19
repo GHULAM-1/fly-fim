@@ -176,11 +176,11 @@ const BrowseThemes = () => {
   ];
 
   return (
-    <div className="px-28 py-10">
-      <h2 className="text-2xl font-bold text-gray-700 mb-10">
+    <div className="px-8 md:px-16 lg:px-24 xl:px-28 py-10">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-10">
         Browse by themes
       </h2>
-      <div className="flex items-center gap-6 mb-8 justify-between border-b border-gray-200">
+      <div className="flex items-center gap-6 mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
         {categories.map((category) => {
           const IconComponent = category.icon;
           const isActive = activeTab === category.key;
@@ -198,7 +198,9 @@ const BrowseThemes = () => {
                 size={16}
                 className={isActive ? "text-purple-600" : "text-gray-600"}
               />
-              <span className="text-sm">{category.label}</span>
+              <span className="text-sm whitespace-nowrap">
+                {category.label}
+              </span>
             </button>
           );
         })}
@@ -206,7 +208,7 @@ const BrowseThemes = () => {
           <ChevronRight size={16} className="text-gray-400" />
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-y-4 gap-x-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-4 gap-x-8">
         {tabData[activeTab].items.map((item, index) => {
           const IconComponent = item.icon;
           return (

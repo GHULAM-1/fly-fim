@@ -2,7 +2,7 @@ import React from "react";
 
 const Info = () => {
   return (
-    <div className="py-10 px-28 grid grid-cols-4 gap-10">
+    <div className="py-10 px-8 md:px-16 lg:px-24 xl:px-28 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
       <div className="relative">
         <img
           src="/images/info1.png"
