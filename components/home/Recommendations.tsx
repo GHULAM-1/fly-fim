@@ -7,6 +7,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { StarIcon } from "lucide-react";
+import PriceDisplay from "../PriceDisplay";
 
 const Recommendations = () => {
   const { t } = useTranslation();
@@ -101,7 +102,7 @@ const Recommendations = () => {
                 <span className="text-gray-500 text-xs">
                   {t("recommendations.from")}
                 </span>{" "}
-                <br />€ {recommendation.price}
+                <br /> <PriceDisplay amount={recommendation.price} />
               </p>
             </CarouselItem>
           ))}
