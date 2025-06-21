@@ -1,7 +1,11 @@
+"use client";
 import React from "react";
 import Marquee from "react-fast-marquee";
+import { useTranslation } from "react-i18next";
 
 const MarqueeComp = () => {
+  const { t } = useTranslation();
+
   const partners = [
     "/images/1.avif",
     "/images/2.avif",
@@ -27,18 +31,20 @@ const MarqueeComp = () => {
   return (
     <div className="py-10">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-700 px-8 md:px-16 lg:px-24 xl:px-28 mb-10">
-        We have the best partners
+        {t("marquee.title")}
       </h2>
-      <Marquee pauseOnHover>
-        {partners.map((partner) => (
-          <img key={partner} src={partner} alt="" className="w-36 mx-6" />
-        ))}
-      </Marquee>
-      <Marquee direction="right" pauseOnHover className="mt-10">
-        {partners.map((partner) => (
-          <img key={partner} src={partner} alt="" className="w-36 mx-6" />
-        ))}
-      </Marquee>
+      <div dir="ltr">
+        <Marquee pauseOnHover>
+          {partners.map((partner) => (
+            <img key={partner} src={partner} alt="" className="w-36 mx-6" />
+          ))}
+        </Marquee>
+        <Marquee direction="right" pauseOnHover className="mt-10">
+          {partners.map((partner) => (
+            <img key={partner} src={partner} alt="" className="w-36 mx-6" />
+          ))}
+        </Marquee>
+      </div>
     </div>
   );
 };

@@ -1,8 +1,10 @@
 "use client";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const Testimonials = () => {
+  const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -89,7 +91,7 @@ const Testimonials = () => {
     <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col sm:flex-row gap-6">
       <div className="w-full sm:w-2/5 px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col gap-4 justify-center">
         <h2 className="text-3xl sm:text-5xl font-bold mb-2 xl:max-w-[271px] leading-tight">
-          Millions love heading out with us
+          {t("testimonials.title")}
         </h2>
         <div className="flex items-center gap-2">
           <button

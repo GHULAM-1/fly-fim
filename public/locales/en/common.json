@@ -1,0 +1,104 @@
+{
+  "hero": {
+    "title": "The world's best experiences curated just for you",
+    "subtitle": "Search for experiences and cities"
+  },
+  "info": {
+    "card1": {
+      "title": "Only the finest",
+      "description": "At Headout, you only find the best. We do the hard work so you don't have to."
+    },
+    "card2": {
+      "title": "Best price guarantee",
+      "description": "Found the same experience for less? We'll match the price and give you more."
+    },
+    "card3": {
+      "title": "Award winning support",
+      "description": "New to the city? Call us, we'll tell you how to explore it like a local."
+    },
+    "card4": {
+      "title": "Over 100k happy customers",
+      "description": "We've served more than 100,000 customers across the world."
+    }
+  },
+  "destinations": {
+    "title": "Explore world's top destinations",
+    "seeAll": "See all",
+    "cities": {
+      "newYork": "Things to do in New York",
+      "london": "Things to do in London",
+      "dubai": "Things to do in Dubai",
+      "rome": "Things to do in Rome",
+      "paris": "Things to do in Paris",
+      "singapore": "Things to do in Singapore"
+    },
+    "countries": {
+      "unitedStates": "United States",
+      "unitedKingdom": "United Kingdom",
+      "uae": "United Arab Emirates",
+      "italy": "Italy",
+      "france": "France",
+      "singapore": "Singapore"
+    }
+  },
+  "recommendations": {
+    "title": "Headout's top recommendations",
+    "seeAll": "See all",
+    "from": "from"
+  },
+  "activities": {
+    "title": "Top things to do worldwide",
+    "seeAll": "See all"
+  },
+  "testimonials": {
+    "title": "Millions love heading out with us"
+  },
+  "marquee": {
+    "title": "We have the best partners"
+  },
+  "browseThemes": {
+    "title": "Browse by themes",
+    "categories": {
+      "tickets": "Tickets",
+      "tours": "Tours",
+      "transportation": "Transportation",
+      "travelServices": "Travel Services",
+      "cruises": "Cruises",
+      "foodDrink": "Food & Drink",
+      "entertainment": "Entertainment",
+      "adventure": "Adventure",
+      "aerialSightseeing": "Aerial Sightseeing"
+    },
+    "viewAll": {
+      "tickets": "View all Tickets",
+      "tours": "View all Tours",
+      "transportation": "View all Transportation",
+      "travelServices": "View all Travel Services",
+      "cruises": "View all Cruises",
+      "foodDrink": "View all Food & Drink",
+      "entertainment": "View all Entertainment",
+      "adventure": "View all Adventure",
+      "aerialSightseeing": "View all Aerial Sightseeing"
+    }
+  },
+  "banner": {
+    "title": "Get the Headout app, save up to 80%",
+    "subtitle": "Enjoy exclusive deals, offline access to your tickets & live booking updates"
+  },
+  "stats": {
+    "title": "We've served 39 million+ guests and we are here for you",
+    "reviews": "Real reviews of real experiences. Trusted by explorers everywhere.",
+    "customers": {
+      "count": "39 million+",
+      "description": "Happy customers across 10,000+ experiences"
+    },
+    "media": {
+      "title": "In the media",
+      "description": "Featured and recommended by the best brands"
+    },
+    "support": {
+      "title": "24 x 7 help center",
+      "description": "Have a question? Live chat with local experts anywhere, anytime"
+    }
+  }
+}

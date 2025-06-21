@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -7,6 +9,8 @@ import {
 import { StarIcon } from "lucide-react";
 
 const Recommendations = () => {
+  const { t } = useTranslation();
+
   const recommendations = [
     {
       id: 1,
@@ -56,7 +60,7 @@ const Recommendations = () => {
         </h2>
         <div className="flex items-center gap-2">
           <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
-            See all
+            {t("recommendations.seeAll")}
           </button>
         </div>
       </div>
@@ -94,8 +98,10 @@ const Recommendations = () => {
                 {recommendation.description}
               </p>
               <p className="font-semibold text-gray-700 mt-2 max-w-32">
-                <span className="text-gray-500 text-xs">from</span> <br />€{" "}
-                {recommendation.price}
+                <span className="text-gray-500 text-xs">
+                  {t("recommendations.from")}
+                </span>{" "}
+                <br />€ {recommendation.price}
               </p>
             </CarouselItem>
           ))}

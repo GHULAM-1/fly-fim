@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { CircleHelp, Search } from "lucide-react";
 import { Input } from "./ui/input";
 import LanguageCurrencyDropdown from "./LanguageCurrencyDropdown";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {

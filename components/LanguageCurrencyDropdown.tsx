@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useCurrency, CURRENCIES } from "@/lib/currency-context";
 
 interface LanguageCurrencyDropdownProps {
   scrolled: boolean;
@@ -13,53 +15,46 @@ interface LanguageCurrencyDropdownProps {
 const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
   scrolled,
 }) => {
+  const { i18n } = useTranslation();
+  const { currency, setCurrency, formatCurrencyDisplay } = useCurrency();
+  const [activeLanguage, setActiveLanguage] = useState(i18n.language);
+
+  // Sync with localStorage and i18n changes
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("preferred-language");
+    if (savedLanguage) {
+      setActiveLanguage(savedLanguage);
+    }
+
+    const handleLanguageChange = () => {
+      setActiveLanguage(i18n.language);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, [i18n]);
+
   const languages = [
-    { code: "en", name: "English", active: true },
-    { code: "es", name: "Español", active: false },
-    { code: "fr", name: "Français", active: false },
-    { code: "it", name: "Italiano", active: false },
-    { code: "de", name: "Deutsch", active: false },
-    { code: "pt", name: "Português", active: false },
-    { code: "nl", name: "Nederlands", active: false },
+    { code: "en", name: "English" },
+    { code: "ar", name: "العربية" },
+    { code: "es", name: "Español" },
+    { code: "fr", name: "Français" },
+    { code: "it", name: "Italiano" },
+    { code: "de", name: "Deutsch" },
+    { code: "pt", name: "Português" },
+    { code: "nl", name: "Nederlands" },
   ];
 
-  const popularCurrencies = [
-    { code: "EUR", symbol: "€", name: "Euro", active: false },
-    { code: "USD", symbol: "$", name: "United States Dollar", active: true },
-    {
-      code: "AED",
-      symbol: "",
-      name: "United Arab Emirates Dirham",
-      active: false,
-    },
-    { code: "SGD", symbol: "S$", name: "Singapore Dollar", active: false },
-    { code: "INR", symbol: "₹", name: "Indian Rupee", active: false },
-    { code: "GBP", symbol: "£", name: "British Pound", active: false },
-  ];
+  const getCurrentLanguageName = () => {
+    const currentLang = languages.find((lang) => lang.code === activeLanguage);
+    return currentLang ? currentLang.name : "English";
+  };
 
-  const moreCurrencies = [
-    { code: "ALL", symbol: "", name: "Albanian Lek" },
-    { code: "ARS", symbol: "", name: "Argentine Peso" },
-    { code: "AUD", symbol: "AU$", name: "Australian Dollar" },
-    { code: "AZN", symbol: "₼", name: "Azerbaijan New Manat" },
-    { code: "BHD", symbol: "", name: "Bahrain Dinar" },
-    { code: "BRL", symbol: "R$", name: "Brazilian Real" },
-    { code: "CAD", symbol: "CA$", name: "Canadian Dollar" },
-    { code: "CHF", symbol: "", name: "Swiss Franc" },
-    { code: "CNY", symbol: "¥", name: "Chinese Yuan Renminbi" },
-    { code: "COP", symbol: "", name: "Colombian Peso" },
-    { code: "CRC", symbol: "₡", name: "Costa Rican Colón" },
-    { code: "DKK", symbol: "", name: "Danish Krone" },
-    { code: "DOP", symbol: "", name: "Dominican Peso" },
-    { code: "EGP", symbol: "E£", name: "Egyptian Pound" },
-    { code: "HKD", symbol: "HK$", name: "Hong Kong Dollar" },
-    { code: "HUF", symbol: "Ft", name: "Hungary Forint" },
-    { code: "IDR", symbol: "Rp", name: "Indonesia Rupiah" },
-    { code: "ILS", symbol: "₪", name: "Israeli New Shekel" },
-    { code: "ISK", symbol: "kr", name: "Icelandic Krona" },
-    { code: "JPY", symbol: "¥", name: "Japanese Yen" },
-    { code: "KRW", symbol: "₩", name: "South Korean Won" },
-  ];
+  // Split currencies into popular and more categories for display
+  const popularCurrencies = CURRENCIES.slice(0, 6); // First 6 currencies
+  const moreCurrencies = CURRENCIES.slice(6); // Rest of the currencies
 
   return (
     <DropdownMenu>
@@ -69,15 +64,11 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
             scrolled ? "text-black" : "text-white"
           }`}
         >
-          English / USD
+          {getCurrentLanguageName()} / {formatCurrencyDisplay(currency)}
           <ChevronDown size={14} />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-[800px] p-6 mt-2"
-        align="end"
-        side="bottom"
-      >
+      <DropdownMenuContent className="p-6 mt-2" align="end" side="bottom">
         <div className="flex gap-8">
           {/* Language Section */}
           <div className="w-1/3">
@@ -87,9 +78,13 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
             <div className="space-y-3">
               {languages.map((language) => (
                 <button
+                  onClick={() => {
+                    i18n.changeLanguage(language.code);
+                    setActiveLanguage(language.code);
+                  }}
                   key={language.code}
-                  className={`block w-full text-left text-sm hover:opacity-80 transition-opacity ${
-                    language.active
+                  className={`block w-full text-left text-sm hover:opacity-80 cursor-pointer transition-opacity ${
+                    language.code === activeLanguage
                       ? "text-purple-600 font-medium"
                       : "text-gray-600"
                   }`}
@@ -106,19 +101,22 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               Popular currencies
             </h3>
             <div className="grid grid-cols-3 gap-x-8 gap-y-3 mb-6">
-              {popularCurrencies.map((currency) => (
+              {popularCurrencies.map((curr) => (
                 <button
-                  key={currency.code}
+                  key={curr.code}
+                  onClick={() => {
+                    setCurrency(curr);
+                  }}
                   className={`text-left text-sm hover:opacity-80 transition-opacity ${
-                    currency.active
+                    curr.code === currency.code
                       ? "text-purple-600 font-medium"
                       : "text-gray-600"
                   }`}
                 >
                   <span className="font-semibold">
-                    {currency.code} {currency.symbol}
+                    {curr.code} {curr.symbol}
                   </span>
-                  <span className="ml-1">• {currency.name}</span>
+                  <span className="ml-1">• {curr.name}</span>
                 </button>
               ))}
             </div>
@@ -127,15 +125,22 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               More currencies
             </h3>
             <div className="grid grid-cols-3 gap-x-8 gap-y-3">
-              {moreCurrencies.map((currency) => (
+              {moreCurrencies.map((curr) => (
                 <button
-                  key={currency.code}
-                  className="text-left text-sm text-gray-600 hover:opacity-80 transition-opacity"
+                  key={curr.code}
+                  onClick={() => {
+                    setCurrency(curr);
+                  }}
+                  className={`text-left text-sm hover:opacity-80 transition-opacity ${
+                    curr.code === currency.code
+                      ? "text-purple-600 font-medium"
+                      : "text-gray-600"
+                  }`}
                 >
                   <span className="font-semibold">
-                    {currency.code} {currency.symbol}
+                    {curr.code} {curr.symbol}
                   </span>
-                  <span className="ml-1">• {currency.name}</span>
+                  <span className="ml-1">• {curr.name}</span>
                 </button>
               ))}
             </div>

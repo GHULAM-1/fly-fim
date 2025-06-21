@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import {
   Ticket,
   MapPin,
@@ -41,6 +42,7 @@ type TabKey =
   | "Aerial Sightseeing";
 
 const BrowseThemes = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>("Tickets");
 
   const tabData: Record<
@@ -178,7 +180,7 @@ const BrowseThemes = () => {
   return (
     <div className="px-8 md:px-16 lg:px-24 xl:px-28 py-10">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-10">
-        Browse by themes
+        {t("browseThemes.title")}
       </h2>
       <div className="flex items-center gap-6 mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
         {categories.map((category) => {

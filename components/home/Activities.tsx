@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -6,6 +8,8 @@ import {
 } from "@/components/ui/carousel";
 
 const Activities = () => {
+  const { t } = useTranslation();
+
   const activities = [
     {
       id: 1,
@@ -49,11 +53,11 @@ const Activities = () => {
     <div className="py-10 px-8 md:px-16 lg:px-24 xl:px-28 bg-zinc-100">
       <div className="flex justify-between items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-700">
-          Top things to do worldwide
+          {t("activities.title")}
         </h2>
         <div className="flex items-center gap-2">
           <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
-            See all
+            {t("activities.seeAll")}
           </button>
         </div>
       </div>
