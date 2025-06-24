@@ -30,18 +30,28 @@ const MarqueeComp = () => {
 
   return (
     <div className="py-10">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-700 px-8 md:px-16 lg:px-24 xl:px-28 mb-10">
+      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 mb-10">
         {t("marquee.title")}
       </h2>
       <div dir="ltr">
         <Marquee pauseOnHover>
           {partners.map((partner) => (
-            <img key={partner} src={partner} alt="" className="w-36 mx-6" />
+            <img
+              key={partner}
+              src={partner}
+              alt=""
+              className="w-24 sm:w-36 mx-6"
+            />
           ))}
         </Marquee>
         <Marquee direction="right" pauseOnHover className="mt-10">
           {partners.map((partner) => (
-            <img key={partner} src={partner} alt="" className="w-36 mx-6" />
+            <img
+              key={partner}
+              src={partner}
+              alt=""
+              className="w-24 sm:w-36 mx-6"
+            />
           ))}
         </Marquee>
       </div>

@@ -178,11 +178,11 @@ const BrowseThemes = () => {
   ];
 
   return (
-    <div className="px-8 md:px-16 lg:px-24 xl:px-28 py-10">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-10">
+    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10">
+      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 mb-4 md:mb-10">
         {t("browseThemes.title")}
       </h2>
-      <div className="flex items-center gap-6 mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
+      <div className="flex items-center gap-6 mb-4 md:mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
         {categories.map((category) => {
           const IconComponent = category.icon;
           const isActive = activeTab === category.key;
@@ -210,7 +210,7 @@ const BrowseThemes = () => {
           <ChevronRight size={16} className="text-gray-400" />
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-4 gap-x-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
         {tabData[activeTab].items.map((item, index) => {
           const IconComponent = item.icon;
           return (
@@ -225,7 +225,7 @@ const BrowseThemes = () => {
           );
         })}
       </div>
-      <div className="mt-8">
+      <div className="mt-4 sm:mt-8">
         <Link
           href="#"
           className="text-sm text-gray-600 hover:text-gray-900 underline"

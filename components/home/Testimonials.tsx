@@ -90,10 +90,10 @@ const Testimonials = () => {
   return (
     <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col sm:flex-row gap-6">
       <div className="w-full sm:w-2/5 px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col gap-4 justify-center">
-        <h2 className="text-3xl sm:text-5xl font-bold mb-2 xl:max-w-[271px] leading-tight">
+        <h2 className="text-2xl sm:text-5xl font-semibold md:font-bold mb-2 max-w-[70%] xl:max-w-[271px] leading-tight">
           {t("testimonials.title")}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <button
             onClick={scrollLeft}
             className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
@@ -126,15 +126,15 @@ const Testimonials = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`${testimonial.avatarColor} rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold`}
+                    className={`${testimonial.avatarColor} rounded-full w-12 shrink-0 h-12 flex items-center justify-center text-lg font-bold`}
                   >
                     {testimonial.avatar}
                   </div>
                   <div>
-                    <h2 className="text-white text-lg font-bold">
+                    <h2 className="text-white text-base sm:text-lg font-semibold md:font-bold">
                       {testimonial.name}
                     </h2>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-400 text-xs sm:text-sm">
                       {testimonial.country}
                     </p>
                   </div>
@@ -146,7 +146,7 @@ const Testimonials = () => {
                   <p>{testimonial.rating}/5</p>
                 </div>
               </div>
-              <p className="mt-4 mb-10 h-24 text-gray-300">
+              <p className="mt-4 mb-10 h-24 text-sm sm:text-base text-gray-300">
                 {testimonial.review}
               </p>
               <hr className="my-2 border-gray-600" />

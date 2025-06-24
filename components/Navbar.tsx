@@ -29,7 +29,7 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 flex justify-between items-center w-full z-50 px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
+        className={`fixed top-0 left-0 flex justify-between items-center w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
           scrolled
             ? "bg-white border-b border-gray-200 text-black"
             : "text-white"
@@ -76,6 +76,10 @@ const Navbar = () => {
               Sign in
             </button>
           )}
+        </div>
+        <div className="md:hidden flex items-center gap-4">
+          <Search size={16} />
+          <LanguageCurrencyDropdown scrolled={scrolled} />
         </div>
       </div>
 

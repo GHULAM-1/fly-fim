@@ -21,9 +21,7 @@ const Home = () => {
       <Testimonials />
       <MarqueeComp />
       <BrowseThemes />
-      <div className="hidden lg:block">
-        <Banner />
-      </div>
+      <Banner />
       <Stats />
     </div>
   );

@@ -11,7 +11,7 @@ const Hero = () => {
   const scale = useTransform(scrollY, [0, 1000], [1, 1.5]);
   const { t } = useTranslation();
   return (
-    <div className="h-[78vh] relative overflow-hidden">
+    <div className="h-[60vh] md:h-[78vh] relative overflow-hidden">
       <motion.video
         src="/videos/hero.mp4"
         autoPlay
@@ -22,8 +22,8 @@ const Hero = () => {
         style={{ scale }}
       />
       <div className="absolute top-0 left-0 w-full h-full bg-black/30 -z-10" />
-      <div className="w-full h-full px-8 md:px-16 lg:px-24 xl:px-28 py-20 flex flex-col justify-end gap-10">
-        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold max-w-2xl leading-tight">
+      <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10 sm:py-20 flex flex-col justify-end gap-10">
+        <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-2xl leading-tight">
           {t("hero.title")}
         </h1>
         <div className="flex items-center bg-white  max-w-sm gap-2 rounded-md py-3 px-4 shadow">
