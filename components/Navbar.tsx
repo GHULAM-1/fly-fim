@@ -292,9 +292,9 @@ const Navbar = () => {
         }`}
       >
         <img
-          src={scrolled ? "/images/logo.png" : "/images/logo-white.png"}
+          src="/images/logo.png"
           alt="logo"
-          className="w-36 sm:w-42"
+          className={`w-24 sm:w-32 ${scrolled ? "" : "invert"}`}
         />
         {scrolled && (
           <div

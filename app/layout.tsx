@@ -7,6 +7,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { useEffect } from "react";
 import { CurrencyProvider } from "@/lib/currency-context";
+import Tabs from "@/components/Tabs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <Navbar />
       {children}
       <Footer />
+      <Tabs />
     </>
   );
 }
