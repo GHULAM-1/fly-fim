@@ -58,8 +58,8 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="h-[60vh] md:h-[78vh] relative">
-      <div className="h-[60vh] md:h-[78vh] w-full absolute top-0 left-0 -z-20 overflow-hidden">
+    <div className="h-[60vh] md:h-[78vh] 2xl:h-[50vh] relative">
+      <div className="h-[60vh] md:h-[78vh] 2xl:h-[50vh] w-full absolute top-0 left-0 -z-20 overflow-hidden">
         <motion.video
           src="/videos/hero.mp4"
           autoPlay
@@ -71,8 +71,8 @@ const Hero = () => {
         />
       </div>
       <div className="absolute top-0 left-0 w-full h-full bg-black/30 -z-10" />
-      <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10 sm:py-20 flex flex-col justify-end gap-10">
-        <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-2xl leading-tight">
+      <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 max-w-screen-2xl mx-auto">
+        <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[2.7rem] font-bold max-w-2xl leading-tight">
           {t("hero.title")}
         </h1>
 

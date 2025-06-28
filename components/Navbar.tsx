@@ -285,43 +285,46 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 flex justify-between items-center w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
           scrolled
             ? "bg-white border-b border-gray-200 text-black"
             : "text-white"
         }`}
       >
-        <img
-          src="/images/logo.png"
-          alt="logo"
-          className={`w-24 sm:w-32 ${scrolled ? "" : "invert"}`}
-        />
-        {scrolled && (
-          <div
-            ref={searchRef}
-            className="relative hidden lg:flex items-center bg-zinc-100 border min-w-xs xl:min-w-sm border-gray-200 gap-2 rounded-md py-2 px-4"
-          >
-            <Input
-              className="bg-transparent border-none focus-visible:ring-0 shadow-none"
-              placeholder={searchQuery || "Search for experiences and cities"}
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsSearchOpen(true);
-              }}
-              onFocus={() => setIsSearchOpen(true)}
-            />
-            <Search strokeWidth={1} />
-            {isSearchOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
-                {/* Top destinations */}
-                <div className="p-4">
-                  <h3 className="text-sm font-medium text-gray-600 mb-3">
-                    Top destinations near you
-                  </h3>
-                  <div className="space-y-0">
-                    {(searchQuery ? filteredDestinations : topDestinations).map(
-                      (dest) => (
+        <div className="flex justify-between items-center max-w-screen-2xl mx-auto">
+          <img
+            src="/images/logo.png"
+            alt="logo"
+            className={`w-24 sm:w-32 ${scrolled ? "" : "invert"}`}
+          />
+          {scrolled && (
+            <div
+              ref={searchRef}
+              className="relative hidden lg:flex items-center bg-zinc-100 border min-w-xs xl:min-w-sm border-gray-200 gap-2 rounded-md py-2 px-4"
+            >
+              <Input
+                className="bg-transparent border-none focus-visible:ring-0 shadow-none"
+                placeholder={searchQuery || "Search for experiences and cities"}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchOpen(true);
+                }}
+                onFocus={() => setIsSearchOpen(true)}
+              />
+              <Search strokeWidth={1} />
+              {isSearchOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
+                  {/* Top destinations */}
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-gray-600 mb-3">
+                      Top destinations near you
+                    </h3>
+                    <div className="space-y-0">
+                      {(searchQuery
+                        ? filteredDestinations
+                        : topDestinations
+                      ).map((dest) => (
                         <div
                           key={dest.id}
                           className="flex items-center gap-3 py-3 hover:bg-gray-50 cursor-pointer rounded-lg px-2"
@@ -346,63 +349,63 @@ const Navbar = () => {
                             </div>
                           </div>
                         </div>
-                      )
-                    )}
+                      ))}
 
-                    {searchQuery && filteredDestinations.length === 0 && (
-                      <div className="py-3 px-2 text-gray-500 text-sm text-center">
-                        No destinations found for "{searchQuery}"
-                      </div>
-                    )}
+                      {searchQuery && filteredDestinations.length === 0 && (
+                        <div className="py-3 px-2 text-gray-500 text-sm text-center">
+                          No destinations found for "{searchQuery}"
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+            </div>
+          )}
+          <div className="hidden md:flex items-center gap-6">
+            <LanguageCurrencyDropdown scrolled={scrolled} />
+            <Link
+              href="/help"
+              className="text-sm font-medium flex items-center gap-1"
+            >
+              <CircleHelp strokeWidth={1} size={16} />
+              Help
+            </Link>
+
+            {loading ? (
+              // Loading state
+              <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+            ) : user ? (
+              // Authenticated state - show user dropdown
+              <UserDropdown user={user} scrolled={scrolled} />
+            ) : (
+              // Unauthenticated state - show sign in button
+              <button
+                onClick={() => setAuthDialogOpen(true)}
+                className={`border ${
+                  scrolled ? "" : "border-white"
+                } rounded-md py-1.5 px-3 text-sm font-medium`}
+              >
+                Sign in
+              </button>
             )}
           </div>
-        )}
-        <div className="hidden md:flex items-center gap-6">
-          <LanguageCurrencyDropdown scrolled={scrolled} />
-          <Link
-            href="/help"
-            className="text-sm font-medium flex items-center gap-1"
-          >
-            <CircleHelp strokeWidth={1} size={16} />
-            Help
-          </Link>
-
-          {loading ? (
-            // Loading state
-            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
-          ) : user ? (
-            // Authenticated state - show user dropdown
-            <UserDropdown user={user} scrolled={scrolled} />
-          ) : (
-            // Unauthenticated state - show sign in button
-            <button
-              onClick={() => setAuthDialogOpen(true)}
-              className={`border ${
-                scrolled ? "" : "border-white"
-              } rounded-md py-1.5 px-3 text-sm font-medium`}
+          <div className="md:hidden flex items-center gap-4">
+            {/* Mobile Search Drawer */}
+            <Drawer
+              open={isSearchDrawerOpen}
+              onOpenChange={setIsSearchDrawerOpen}
             >
-              Sign in
-            </button>
-          )}
-        </div>
-        <div className="md:hidden flex items-center gap-4">
-          {/* Mobile Search Drawer */}
-          <Drawer
-            open={isSearchDrawerOpen}
-            onOpenChange={setIsSearchDrawerOpen}
-          >
-            <DrawerTrigger asChild>
-              <button>
-                <Search size={16} />
-              </button>
-            </DrawerTrigger>
-            <SearchDrawerContent />
-          </Drawer>
+              <DrawerTrigger asChild>
+                <button>
+                  <Search size={16} />
+                </button>
+              </DrawerTrigger>
+              <SearchDrawerContent />
+            </Drawer>
 
-          <LanguageCurrencyDropdown scrolled={scrolled} />
+            <LanguageCurrencyDropdown scrolled={scrolled} />
+          </div>
         </div>
       </div>
 

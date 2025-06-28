@@ -51,36 +51,38 @@ const Activities = () => {
 
   return (
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 bg-zinc-100">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
-          {t("activities.title")}
-        </h2>
-        <div className="flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
-            {t("activities.seeAll")}
-          </button>
+      <div className="max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+            {t("activities.title")}
+          </h2>
+          <div className="flex items-center gap-2">
+            <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
+              {t("activities.seeAll")}
+            </button>
+          </div>
         </div>
+        <Carousel className="mt-4 sm:mt-10">
+          <CarouselContent>
+            {activities.map((activity) => (
+              <CarouselItem
+                key={activity.id}
+                className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
+              >
+                <img
+                  src={activity.image}
+                  alt={activity.description}
+                  className="rounded"
+                />
+                <p className="font-semibold text-gray-700 leading-tight mt-2">
+                  {activity.description}
+                </p>
+                <p className="text-gray-500 text-sm mt-1">{activity.place}</p>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       </div>
-      <Carousel className="mt-4 sm:mt-10">
-        <CarouselContent>
-          {activities.map((activity) => (
-            <CarouselItem
-              key={activity.id}
-              className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
-            >
-              <img
-                src={activity.image}
-                alt={activity.description}
-                className="rounded"
-              />
-              <p className="font-semibold text-gray-700 leading-tight mt-2">
-                {activity.description}
-              </p>
-              <p className="text-gray-500 text-sm mt-1">{activity.place}</p>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
-    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 border-t">
+    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 border-t max-w-screen-2xl mx-auto">
       <div className="py-6 sm:py-10 border-b">
         <img src="/images/logo.png" alt="logo" className="w-42" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-sm text-gray-500 gap-10 md:gap-20 mt-10">

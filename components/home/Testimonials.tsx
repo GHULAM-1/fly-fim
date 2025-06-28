@@ -89,7 +89,7 @@ const Testimonials = () => {
 
   return (
     <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col sm:flex-row gap-6">
-      <div className="w-full sm:w-2/5 px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col gap-4 justify-center">
+      <div className="w-full sm:w-2/5 px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-60 flex flex-col gap-4 justify-center 2xl:items-end">
         <h2 className="text-2xl sm:text-5xl font-semibold md:font-bold mb-2 max-w-[70%] xl:max-w-[271px] leading-tight">
           {t("testimonials.title")}
         </h2>
