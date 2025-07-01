@@ -14,9 +14,11 @@ import LanguageCurrencyDropdown from "./LanguageCurrencyDropdown";
 import { AuthDialog } from "./auth/AuthDialog";
 import { UserDropdown } from "./UserDropdown";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -286,18 +288,24 @@ const Navbar = () => {
     <>
       <div
         className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
-          scrolled
-            ? "bg-white border-b border-gray-200 text-black"
+          scrolled || pathname !== "/"
+            ? `bg-white ${
+                pathname === "/" || scrolled ? "border-b border-gray-200" : ""
+              } text-black`
             : "text-white"
         }`}
       >
         <div className="flex justify-between items-center max-w-screen-2xl mx-auto">
-          <img
-            src="/images/logo.png"
-            alt="logo"
-            className={`w-24 sm:w-32 ${scrolled ? "" : "invert"}`}
-          />
-          {scrolled && (
+          <Link href="/">
+            <img
+              src="/images/logo.png"
+              alt="logo"
+              className={`w-24 sm:w-32 ${
+                scrolled || pathname !== "/" ? "" : "invert"
+              }`}
+            />
+          </Link>
+          {(scrolled || pathname !== "/") && (
             <div
               ref={searchRef}
               className="relative hidden lg:flex items-center bg-zinc-100 border min-w-xs xl:min-w-sm border-gray-200 gap-2 rounded-md py-2 px-4"
@@ -363,7 +371,7 @@ const Navbar = () => {
             </div>
           )}
           <div className="hidden md:flex items-center gap-6">
-            <LanguageCurrencyDropdown scrolled={scrolled} />
+            <LanguageCurrencyDropdown scrolled={scrolled || pathname !== "/"} />
             <Link
               href="/help"
               className="text-sm font-medium flex items-center gap-1"
@@ -377,13 +385,16 @@ const Navbar = () => {
               <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
             ) : user ? (
               // Authenticated state - show user dropdown
-              <UserDropdown user={user} scrolled={scrolled} />
+              <UserDropdown
+                user={user}
+                scrolled={scrolled || pathname !== "/"}
+              />
             ) : (
               // Unauthenticated state - show sign in button
               <button
                 onClick={() => setAuthDialogOpen(true)}
                 className={`border ${
-                  scrolled ? "" : "border-white"
+                  scrolled || pathname !== "/" ? "" : "border-white"
                 } rounded-md py-1.5 px-3 text-sm font-medium`}
               >
                 Sign in
@@ -404,7 +415,7 @@ const Navbar = () => {
               <SearchDrawerContent />
             </Drawer>
 
-            <LanguageCurrencyDropdown scrolled={scrolled} />
+            <LanguageCurrencyDropdown scrolled={scrolled || pathname !== "/"} />
           </div>
         </div>
       </div>
