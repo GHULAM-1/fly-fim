@@ -6,6 +6,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Link from "next/link";
 
 const Destinations = () => {
   const { t } = useTranslation();
@@ -56,9 +57,12 @@ const Destinations = () => {
           {t("destinations.title")}
         </h2>
         <div className="flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
+          <Link
+            href="/cities"
+            className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+          >
             {t("destinations.seeAll")}
-          </button>
+          </Link>
         </div>
       </div>
       <Carousel className="mt-4 sm:mt-10">

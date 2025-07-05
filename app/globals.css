@@ -130,3 +130,9 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.swiper-pagination-bullet {
+  background-color: #fff !important;
+}
+.swiper-pagination-bullet .swiper-pagination-bullet-active {
+  background-color: #fff !important;
+}
