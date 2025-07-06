@@ -1,11 +1,6 @@
 "use client";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 
 const Activities = () => {
   const { t } = useTranslation();
@@ -62,26 +57,24 @@ const Activities = () => {
             </button>
           </div>
         </div>
-        <Carousel className="mt-4 sm:mt-10">
-          <CarouselContent>
-            {activities.map((activity) => (
-              <CarouselItem
-                key={activity.id}
-                className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
-              >
-                <img
-                  src={activity.image}
-                  alt={activity.description}
-                  className="rounded"
-                />
-                <p className="font-semibold text-gray-700 leading-tight mt-2">
-                  {activity.description}
-                </p>
-                <p className="text-gray-500 text-sm mt-1">{activity.place}</p>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div className="mt-4 sm:mt-10 flex overflow-x-scroll -ml-4">
+          {activities.map((activity) => (
+            <div
+              key={activity.id}
+              className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6 shrink-0 pl-4"
+            >
+              <img
+                src={activity.image}
+                alt={activity.description}
+                className="rounded"
+              />
+              <p className="font-semibold text-gray-700 leading-tight mt-2">
+                {activity.description}
+              </p>
+              <p className="text-gray-500 text-sm mt-1">{activity.place}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

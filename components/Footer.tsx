@@ -1,11 +1,18 @@
 import React from "react";
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import {
+  TbBrandLinkedinFilled,
+  TbBrandInstagramFilled,
+  TbBrandYoutubeFilled,
+  TbBrandFacebookFilled,
+  TbBrandTwitterFilled,
+  TbBrandX,
+} from "react-icons/tb";
 
 const Footer = () => {
   return (
     <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 border-t max-w-screen-2xl mx-auto">
       <div className="py-6 sm:py-10 border-b">
-        <img src="/images/logo.png" alt="logo" className="w-42" />
+        <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-sm text-gray-500 gap-10 md:gap-20 mt-10">
           <div>
             <ul className="space-y-3">
@@ -15,12 +22,12 @@ const Footer = () => {
               <li>Help Center</li>
               <li>Chat with us</li>
               <li>Call us</li>
-              <li>support@headout.com</li>
+              <li>support@flyfim.com</li>
             </ul>
-            <div className="hidden  mt-5 p-2 border border-gray-200 rounded-lg bg-zinc-50 md:flex items-center justify-center gap-2 max-w-60">
+            {/* <div className="hidden  mt-5 p-2 border border-gray-200 rounded-lg bg-zinc-50 md:flex items-center justify-center gap-2 max-w-60">
               <img src="/images/qr.svg" alt="" className="w-20" />
-              <p className="text-base font-medium">Download the Headout app</p>
-            </div>
+              <p className="text-base font-medium">Download the Flyfim app</p>
+            </div> */}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <ul className="space-y-3">
@@ -55,17 +62,20 @@ const Footer = () => {
               <img src="/images/cards.png" alt="" className="w-56 mt-2" />
             </div>
             <div className="md:hidden flex items-center gap-4 mt-5">
-              <a href="https://www.youtube.com/headout.com">
-                <Youtube size={16} strokeWidth={1} />
+              <a href="https://www.linkedin.com/company/flyfim">
+                <TbBrandLinkedinFilled size={16} />
               </a>
-              <a href="https://www.facebook.com/headout.com">
-                <Facebook size={16} strokeWidth={1} />
+              <a href="https://www.instagram.com/flyfim.com">
+                <TbBrandInstagramFilled size={16} />
               </a>
-              <a href="https://www.instagram.com/headout.com">
-                <Instagram size={16} strokeWidth={1} />
+              <a href="https://www.youtube.com/flyfim.com">
+                <TbBrandYoutubeFilled size={16} />
               </a>
-              <a href="https://www.twitter.com/headout.com">
-                <Twitter size={16} strokeWidth={1} />
+              <a href="https://www.facebook.com/flyfim.com">
+                <TbBrandFacebookFilled size={16} />
+              </a>
+              <a href="https://www.x.com/flyfim.com">
+                <TbBrandTwitterFilled size={16} />
               </a>
             </div>
           </div>
@@ -74,7 +84,7 @@ const Footer = () => {
       <div className="py-5 flex flex-col sm:flex-row justify-between gap-4">
         <ul className="text-xs text-gray-500 flex items-center gap-4">
           <li className="hidden md:block">
-            © 2014-2025 Headout, 82 Nassau St #60351 New York, NY 10038
+            © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
           </li>
           <li>Terms of usage</li>
           <li>•</li>
@@ -83,20 +93,23 @@ const Footer = () => {
           <li>Company details</li>
         </ul>
         <p className="text-xs text-gray-500 md:hidden">
-          © 2014-2025 Headout, 82 Nassau St #60351 New York, NY 10038
+          © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
         </p>
-        <div className="hidden md:flex items-center gap-4 justify-center sm:justify-start">
-          <a href="https://www.youtube.com/headout.com">
-            <Youtube size={16} strokeWidth={1} />
+        <div className="hidden md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
+          <a href="https://www.linkedin.com/company/flyfim">
+            <TbBrandLinkedinFilled size={16} />
           </a>
-          <a href="https://www.facebook.com/headout.com">
-            <Facebook size={16} strokeWidth={1} />
+          <a href="https://www.instagram.com/flyfim.com">
+            <TbBrandInstagramFilled size={16} />
           </a>
-          <a href="https://www.instagram.com/headout.com">
-            <Instagram size={16} strokeWidth={1} />
+          <a href="https://www.youtube.com/flyfim.com">
+            <TbBrandYoutubeFilled size={16} />
           </a>
-          <a href="https://www.twitter.com/headout.com">
-            <Twitter size={16} strokeWidth={1} />
+          <a href="https://www.facebook.com/flyfim.com">
+            <TbBrandFacebookFilled size={16} />
+          </a>
+          <a href="https://www.x.com/flyfim.com">
+            <TbBrandTwitterFilled size={16} />
           </a>
         </div>
       </div>
