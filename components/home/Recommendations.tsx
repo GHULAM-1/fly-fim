@@ -9,8 +9,9 @@ import {
 import { StarIcon } from "lucide-react";
 import PriceDisplay from "../PriceDisplay";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 const Recommendations = () => {
@@ -74,17 +75,20 @@ const Recommendations = () => {
           {recommendations.map((recommendation) => (
             <CarouselItem
               key={recommendation.id}
-              className="basis-3/4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 hover:-translate-y-2 transition-all duration-300 group"
+              className="basis-3/4 sm:basis-1/2 pt-2 md:basis-1/3 lg:basis-1/4 hover:-translate-y-2 transition-all duration-300 group"
             >
               <Swiper
                 autoplay={{
                   delay: 5000,
                   disableOnInteraction: false,
                 }}
-                modules={[Autoplay, Navigation]}
+                modules={[Autoplay, Navigation, Pagination]}
                 navigation={{
                   nextEl: ".swiper-button-next",
                   prevEl: ".swiper-button-prev",
+                }}
+                pagination={{
+                  clickable: true,
                 }}
                 className="mySwiper w-full rounded overflow-hidden mb-4"
               >
@@ -107,18 +111,8 @@ const Recommendations = () => {
                   />
                 </SwiperSlide>
                 <div className="hidden group-hover:block">
-                  <div
-                    className="swiper-button-next bg-white p-10 rounded-full translate-x-6 -translate-y-2 transition duration-300"
-                    style={{
-                      transform: "scale(0.3)",
-                    }}
-                  />
-                  <div
-                    className="swiper-button-prev bg-white p-10 rounded-full -translate-x-6 -translate-y-2 transition duration-300"
-                    style={{
-                      transform: "scale(0.3)",
-                    }}
-                  />
+                  <div className="swiper-button-next after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
+                  <div className="swiper-button-prev after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
                 </div>
               </Swiper>
               <div className="flex justify-between items-center mt-2">
