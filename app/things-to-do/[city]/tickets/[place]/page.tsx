@@ -10,7 +10,6 @@ import {
   Landmark,
   Eye,
   Fish,
-  TreePine,
 } from "lucide-react";
 import Banner from "@/components/home/Banner";
 import Testimonials from "@/components/things-to-do/Testimonials";
@@ -25,7 +24,175 @@ import CarouselGrid from "@/components/grids/CarouselGrid";
 
 const Tickets = () => {
   const [showBanner, setShowBanner] = useState(false);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [hoveredNavItem, setHoveredNavItem] = useState(
+    "Top things to do in London"
+  );
   const [activeTab, setActiveTab] = useState("Museums");
+
+  // Categories dropdown navigation items
+  const navItems = [
+    "Top things to do in London",
+    "Tickets",
+    "Tours",
+    "Transportation",
+    "Travel Services",
+    "Cruises",
+    "Food & Drink",
+    "Entertainment",
+    "Adventure",
+    "Specials",
+  ];
+
+  // Content for each navigation item
+  const navContent: Record<string, any> = {
+    "Top things to do in London": [
+      {
+        title: "London Theatre Tickets",
+        subtitle: "from £5.25",
+        image: "/images/1.avif",
+      },
+      {
+        title: "Madame Tussauds London",
+        subtitle: "from £29",
+        image: "/images/2.avif",
+      },
+      {
+        title: "Moco Museum London",
+        subtitle: "from £13.52",
+        image: "/images/3.png.avif",
+      },
+      {
+        title: "London Eye",
+        subtitle: "from £29",
+        image: "/images/4.png.avif",
+      },
+      {
+        title: "Westminster Abbey",
+        subtitle: "from £30",
+        image: "/images/5.png.avif",
+      },
+      {
+        title: "London Dungeon",
+        subtitle: "from £27",
+        image: "/images/6.png.avif",
+      },
+      {
+        title: "Tower of London",
+        subtitle: "from £35.80",
+        image: "/images/7.png.avif",
+      },
+      {
+        title: "The Shard",
+        subtitle: "from £28.50",
+        image: "/images/8.png.avif",
+      },
+      {
+        title: "Frameless London",
+        subtitle: "from £25",
+        image: "/images/9.png.avif",
+      },
+      {
+        title: "London To Stonehenge Tours",
+        subtitle: "from £99",
+        image: "/images/10.png.avif",
+      },
+      {
+        title: "SEA LIFE London Aquarium",
+        subtitle: "from £28",
+        image: "/images/11.png.avif",
+      },
+      {
+        title: "Tower Bridge",
+        subtitle: "from £12",
+        image: "/images/12.png.avif",
+      },
+      {
+        title: "Harry Potter Warner Bros. Studio Tour",
+        subtitle: "from £93",
+        image: "/images/13.png.avif",
+      },
+      {
+        title: "London To Windsor Castle Tours",
+        subtitle: "from £31",
+        image: "/images/14.png.avif",
+      },
+      {
+        title: "Up At The O2 Climb",
+        subtitle: "from £37",
+        image: "/images/15.png.avif",
+      },
+    ],
+    Tickets: [
+      "Museums",
+      "Theme Parks",
+      "Zoos",
+      "City Cards",
+      "Religious Sites",
+      "Landmarks",
+      "Observation Decks",
+      "Aquariums",
+      "Immersive Experiences",
+    ],
+    Tours: [
+      "Walking Tours",
+      "Bus Tours",
+      "Private Tours",
+      "Day Trips",
+      "Multi-day Tours",
+      "Food Tours",
+      "Historical Tours",
+      "Photography Tours",
+    ],
+    Transportation: [
+      "Airport Transfers",
+      "City Transport",
+      "Train Tickets",
+      "Bus Passes",
+      "Car Rentals",
+      "Bike Rentals",
+    ],
+    "Travel Services": [
+      "Travel Insurance",
+      "Currency Exchange",
+      "SIM Cards",
+      "Luggage Storage",
+      "Travel Guides",
+    ],
+    Cruises: [
+      "River Cruises",
+      "Dinner Cruises",
+      "Sightseeing Cruises",
+      "Day Cruises",
+    ],
+    "Food & Drink": [
+      "Restaurant Bookings",
+      "Food Tours",
+      "Cooking Classes",
+      "Wine Tastings",
+      "Pub Crawls",
+    ],
+    Entertainment: [
+      "Theatre Shows",
+      "Concerts",
+      "Comedy Shows",
+      "Nightlife",
+      "Festivals",
+    ],
+    Adventure: [
+      "Outdoor Activities",
+      "Extreme Sports",
+      "Water Sports",
+      "Adventure Tours",
+      "Climbing",
+    ],
+    Specials: [
+      "Last Minute Deals",
+      "Group Discounts",
+      "Student Offers",
+      "Early Bird Specials",
+    ],
+  };
 
   const categories = [
     { key: "Museums", icon: Building, label: "Museums" },
@@ -84,7 +251,11 @@ const Tickets = () => {
       <div className="hidden md:block fixed top-22 bg-white w-full py-3 z-50 border-b">
         <div className="flex justify-between items-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto">
           <ul className="flex gap-3 lg:gap-8 text-xs lg:text-sm text-gray-600">
-            <li className="flex items-center gap-1">
+            <li
+              className="flex items-center gap-1 cursor-pointer relative"
+              onMouseEnter={() => setShowCategoriesDropdown(true)}
+              onMouseLeave={() => setShowCategoriesDropdown(false)}
+            >
               <Menu size={16} className="text-gray-600" />
               All Categories
             </li>
@@ -102,6 +273,92 @@ const Tickets = () => {
             Download App
           </button>
         </div>
+
+        {/* Categories Dropdown */}
+        <div
+          className={`absolute left-0 w-full bg-white border-b transition-all duration-300 origin-top overflow-hidden ${
+            showCategoriesDropdown
+              ? "scale-y-100 h-auto opacity-100"
+              : "scale-y-0 h-0 opacity-0"
+          }`}
+          onMouseEnter={() => setShowCategoriesDropdown(true)}
+          onMouseLeave={() => setShowCategoriesDropdown(false)}
+        >
+          <div className="flex max-w-screen-2xl mx-auto px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28">
+            {/* Left Navigation */}
+            <div className="w-64 py-6 border-r border-gray-100">
+              <ul className="space-y-1">
+                {navItems.map((item) => (
+                  <li key={item}>
+                    <button
+                      className={`w-full text-left font-medium px-4 py-2 text-sm transition-colors rounded-md flex items-center justify-between ${
+                        hoveredNavItem === item
+                          ? "text-purple-600"
+                          : "text-gray-600 hover:bg-gray-50"
+                      }`}
+                      onMouseEnter={() => setHoveredNavItem(item)}
+                    >
+                      {item}{" "}
+                      <ChevronRight
+                        strokeWidth={1.5}
+                        className={`${
+                          hoveredNavItem === item
+                            ? "text-purple-600"
+                            : "text-gray-600"
+                        }`}
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Right Content */}
+            <div className="flex-1 py-6 px-6">
+              {hoveredNavItem === "Top things to do in London" ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {navContent[hoveredNavItem].map(
+                    (item: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-12 h-12 rounded-lg object-cover"
+                        />
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-900">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-gray-500">
+                            {item.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  {navContent[hoveredNavItem]?.map(
+                    (item: any, index: number) => (
+                      <div
+                        key={index}
+                        className="text-sm text-gray-600 hover:text-purple-600 cursor-pointer py-1"
+                      >
+                        {item}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Download App Banner */}
         <div
           className={`transition-all duration-300 origin-top overflow-hidden ${
             showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
