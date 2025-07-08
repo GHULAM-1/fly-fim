@@ -30,7 +30,7 @@ const MarqueeComp = () => {
 
   return (
     <div className="py-10">
-      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 mb-10 max-w-screen-2xl mx-auto 2xl:px-0">
+      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 mb-10 2xl:max-w-screen-xl mx-auto 2xl:px-0">
         {t("marquee.title")}
       </h2>
       <div dir="ltr">

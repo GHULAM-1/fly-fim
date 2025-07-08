@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import Link from "next/link";
 
+
 const Destinations = () => {
   const { t } = useTranslation();
 
@@ -51,7 +52,7 @@ const Destinations = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 max-w-2/3">
           {t("destinations.title")}
@@ -65,26 +66,24 @@ const Destinations = () => {
           </Link>
         </div>
       </div>
-      <Carousel className="mt-4 sm:mt-10">
-        <CarouselContent>
-          {destinations.map((destination) => (
-            <CarouselItem
-              key={destination.id}
-              className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
-            >
-              <img
-                src={destination.image}
-                alt={destination.description}
-                className="rounded"
-              />
-              <p className="font-semibold text-gray-700 mt-2 leading-tight md:max-w-32">
-                {destination.description}
-              </p>
-              <p className="text-gray-500 text-sm mt-1">{destination.place}</p>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div className="mt-4 sm:mt-10 flex overflow-x-scroll -ml-4">
+        {destinations.map((destination) => (
+          <div
+            key={destination.id}
+            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4"
+          >
+            <img
+              src={destination.image}
+              alt={destination.description}
+              className="rounded"
+            />
+            <p className="font-semibold text-gray-700 mt-2 leading-tight md:max-w-32">
+              {destination.description}
+            </p>
+            <p className="text-gray-500 text-sm mt-1">{destination.place}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

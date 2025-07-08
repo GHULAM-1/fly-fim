@@ -6,7 +6,7 @@
   "info": {
     "card1": {
       "title": "Only the finest",
-      "description": "At Headout, you only find the best. We do the hard work so you don't have to."
+      "description": "At Flyfim, you only find the best. We do the hard work so you don't have to."
     },
     "card2": {
       "title": "Best price guarantee",
@@ -42,7 +42,7 @@
     }
   },
   "recommendations": {
-    "title": "Headout's top recommendations",
+    "title": "Flyfim's top recommendations",
     "seeAll": "See all",
     "from": "from"
   },
@@ -82,7 +82,7 @@
     }
   },
   "banner": {
-    "title": "Get the Headout app, save up to 80%",
+    "title": "Save up to 80%",
     "subtitle": "Enjoy exclusive deals, offline access to your tickets & live booking updates"
   },
   "stats": {
