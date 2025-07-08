@@ -195,7 +195,7 @@ const Navbar = () => {
             : "text-white"
         }`}
       >
-        <div className="flex justify-between items-center max-w-screen-2xl mx-auto">
+        <div className="flex justify-between items-center 2xl:max-w-screen-xl mx-auto">
           <img
             src="/images/logo.png"
             alt="logo"
