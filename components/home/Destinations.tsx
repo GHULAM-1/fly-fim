@@ -45,7 +45,7 @@ const Destinations = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 max-w-2/3">
           {t("destinations.title")}

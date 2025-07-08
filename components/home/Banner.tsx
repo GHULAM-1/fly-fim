@@ -6,17 +6,17 @@ const Banner = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-4 sm:py-10 2xl:max-w-screen-xl mx-auto 2xl:px-0">
       <div className="relative">
         <img
-          src="/images/banner.png"
+          src="/images/banner.jpg"
           alt=""
-          className="w-full hidden md:block"
+          className="w-full h-60 hidden object-cover md:block rounded-lg"
         />
         <img
-          src="/images/banner-mobile.png"
+          src="/images/banner-mobile.jpg"
           alt=""
-          className="w-full block md:hidden"
+          className="w-full h-60 object-cover block md:hidden rounded-lg"
         />
         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 xl:left-16">
           <h2 className="text-xl xl:text-3xl font-bold">{t("banner.title")}</h2>
