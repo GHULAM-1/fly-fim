@@ -159,7 +159,7 @@ const Hero = () => {
       {isInputFocused && (
         <div className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" />
       )}
-      <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 max-w-screen-2xl mx-auto">
+      <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 2xl:max-w-screen-xl mx-auto">
         <h1
           id="scroll-target"
           className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[2.7rem] font-bold max-w-2xl leading-tight"
