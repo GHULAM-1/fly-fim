@@ -98,149 +98,6 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
     setIsLanguageDrawerOpen(false);
   };
 
-  // Mobile language drawer content
-  const LanguageDrawerContent = () => (
-    <DrawerContent className="max-h-[90vh] h-full">
-      <DrawerHeader className="flex items-center justify-between p-4">
-        <DrawerTitle className="text-lg font-semibold text-left">
-          Select language
-        </DrawerTitle>
-        <DrawerClose asChild>
-          <button className="p-1">
-            <X size={20} className="text-gray-500" />
-          </button>
-        </DrawerClose>
-      </DrawerHeader>
-
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-0">
-          {languages.map((language, index) => (
-            <div key={language.code}>
-              <button
-                onClick={() => handleLanguageSelect(language)}
-                className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
-              >
-                <div className="flex items-center justify-between w-full gap-3">
-                  <span className="text-sm text-gray-900">{language.name}</span>
-                  <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
-                    {language.code === activeLanguage && (
-                      <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                    )}
-                  </div>
-                </div>
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </DrawerContent>
-  );
-
-  // Mobile currency drawer content
-  const CurrencyDrawerContent = () => (
-    <DrawerContent className="max-h-[90vh]">
-      <DrawerHeader className="flex items-center justify-between p-4">
-        <DrawerTitle className="text-lg font-semibold text-left">
-          Select currency
-        </DrawerTitle>
-        <DrawerClose asChild>
-          <button className="p-1">
-            <X size={20} className="text-gray-500" />
-          </button>
-        </DrawerClose>
-      </DrawerHeader>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {/* Search Input */}
-        <div className="relative">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2"
-          />
-          <Input
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-12 shadow-none"
-          />
-        </div>
-
-        {/* Popular Currencies */}
-        {filteredPopularCurrencies.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold text-gray-800 mb-4">
-              Popular currencies
-            </h3>
-            <div className="space-y-3">
-              {filteredPopularCurrencies.map((curr) => (
-                <button
-                  key={curr.code}
-                  onClick={() => handleCurrencySelect(curr)}
-                  className="w-full flex items-center border-b justify-between py-3 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center justify-between w-full gap-3">
-                    <div className="text-sm">
-                      <span className="font-semibold text-gray-900">
-                        {curr.code} {curr.symbol}
-                      </span>
-                      <span className="text-gray-600">• {curr.name}</span>
-                    </div>
-                    <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
-                      {curr.code === currency.code && (
-                        <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* More Currencies */}
-        {filteredMoreCurrencies.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold text-gray-800 mb-4">
-              More currencies
-            </h3>
-            <div className="space-y-3">
-              {filteredMoreCurrencies.map((curr) => (
-                <button
-                  key={curr.code}
-                  onClick={() => handleCurrencySelect(curr)}
-                  className="w-full flex items-center border-b justify-between py-3 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center justify-between w-full gap-3">
-                    <div className="text-sm">
-                      <span className="font-semibold text-gray-900">
-                        {curr.code} {curr.symbol}
-                      </span>
-                      <span className="text-gray-600">• {curr.name}</span>
-                    </div>
-                    <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
-                      {curr.code === currency.code && (
-                        <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* No results */}
-        {searchQuery &&
-          filteredPopularCurrencies.length === 0 &&
-          filteredMoreCurrencies.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              No currencies found for "{searchQuery}"
-            </div>
-          )}
-      </div>
-    </DrawerContent>
-  );
-
   return (
     <>
       {/* Desktop Dropdown */}
@@ -356,7 +213,42 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {getCurrentLanguageCode()}
             </button>
           </DrawerTrigger>
-          <LanguageDrawerContent />
+          <DrawerContent className="max-h-[90vh] h-full">
+            <DrawerHeader className="flex items-center justify-between p-4">
+              <DrawerTitle className="text-lg font-semibold text-left">
+                Select language
+              </DrawerTitle>
+              <DrawerClose asChild>
+                <button className="p-1">
+                  <X size={20} className="text-gray-500" />
+                </button>
+              </DrawerClose>
+            </DrawerHeader>
+
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-0">
+                {languages.map((language, index) => (
+                  <div key={language.code}>
+                    <button
+                      onClick={() => handleLanguageSelect(language)}
+                      className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
+                    >
+                      <div className="flex items-center justify-between w-full gap-3">
+                        <span className="text-sm text-gray-900">
+                          {language.name}
+                        </span>
+                        <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
+                          {language.code === activeLanguage && (
+                            <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DrawerContent>
         </Drawer>
 
         {/* Currency Button */}
@@ -369,7 +261,107 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {formatCurrencyDisplay(currency)}
             </button>
           </DrawerTrigger>
-          <CurrencyDrawerContent />
+          <DrawerContent className="max-h-[90vh] h-full">
+            <DrawerHeader className="flex items-center justify-between p-4">
+              <DrawerTitle className="text-lg font-semibold text-left">
+                Select currency
+              </DrawerTitle>
+              <DrawerClose asChild>
+                <button className="p-1">
+                  <X size={20} className="text-gray-500" />
+                </button>
+              </DrawerClose>
+            </DrawerHeader>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* Search Input */}
+              <div className="relative">
+                <Search
+                  size={16}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                />
+                <Input
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-12 shadow-none"
+                />
+              </div>
+
+              {/* Popular Currencies */}
+              {filteredPopularCurrencies.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">
+                    Popular currencies
+                  </h3>
+                  <div className="space-y-3">
+                    {filteredPopularCurrencies.map((curr) => (
+                      <button
+                        key={curr.code}
+                        onClick={() => handleCurrencySelect(curr)}
+                        className="w-full flex items-center border-b justify-between py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between w-full gap-3">
+                          <div className="text-sm">
+                            <span className="font-semibold text-gray-900">
+                              {curr.code} {curr.symbol}
+                            </span>
+                            <span className="text-gray-600">• {curr.name}</span>
+                          </div>
+                          <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
+                            {curr.code === currency.code && (
+                              <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* More Currencies */}
+              {filteredMoreCurrencies.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">
+                    More currencies
+                  </h3>
+                  <div className="space-y-3">
+                    {filteredMoreCurrencies.map((curr) => (
+                      <button
+                        key={curr.code}
+                        onClick={() => handleCurrencySelect(curr)}
+                        className="w-full flex items-center border-b justify-between py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between w-full gap-3">
+                          <div className="text-sm">
+                            <span className="font-semibold text-gray-900">
+                              {curr.code} {curr.symbol}
+                            </span>
+                            <span className="text-gray-600">• {curr.name}</span>
+                          </div>
+                          <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
+                            {curr.code === currency.code && (
+                              <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No results */}
+              {searchQuery &&
+                filteredPopularCurrencies.length === 0 &&
+                filteredMoreCurrencies.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No currencies found for "{searchQuery}"
+                  </div>
+                )}
+            </div>
+          </DrawerContent>
         </Drawer>
       </div>
     </>

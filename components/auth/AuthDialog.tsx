@@ -84,7 +84,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
           <>
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">
-                Welcome to Headout
+                Welcome to Fly in minute
               </DialogTitle>
               <DialogDescription className="text-gray-600">
                 Sign in or register to get exclusive members-only deals,
