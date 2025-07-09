@@ -191,7 +191,7 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 ${
           scrolled || pathname !== "/"
             ? `bg-white ${
                 pathname === "/" || scrolled ? "border-b border-gray-200" : ""
@@ -199,7 +199,7 @@ const Navbar = () => {
             : "text-white"
         }`}
       >
-        <div className="flex justify-between items-center max-w-screen-2xl mx-auto">
+        <div className="flex justify-between items-center 2xl:max-w-screen-xl mx-auto">
           <Link href="/">
             <img
               src="/images/logo.png"
