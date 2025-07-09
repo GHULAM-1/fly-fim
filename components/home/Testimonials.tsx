@@ -88,29 +88,36 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col sm:flex-row gap-6">
-      <div className="w-full sm:w-2/5 px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col gap-4 justify-center 2xl:items-end">
-        <h2 className="text-2xl sm:text-5xl font-semibold md:font-bold mb-2 max-w-[70%] xl:max-w-[271px] leading-tight">
-          {t("testimonials.title")}
-        </h2>
-        <div className="hidden md:flex items-center gap-2">
-          <button
-            onClick={scrollLeft}
-            className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
-          >
-            <ChevronLeft size={32} />
-          </button>
-          <button
-            onClick={scrollRight}
-            className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
-          >
-            <ChevronRight size={32} />
-          </button>
+    <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col md:flex-row gap-6">
+      <div className="w-full md:w-2/5 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col justify-center 2xl:items-end">
+        <div>
+          <h2 className="text-2xl sm:text-5xl font-semibold md:font-bold mb-2 max-w-[70%] xl:max-w-[271px] leading-tight flex md:block items-center justify-between">
+            <span className="w-full shrink-0">{t("testimonials.title")}</span>
+            <img
+              src="/images/info3.gif"
+              alt=""
+              className="ml-5 w-12 h-12 inline"
+            />
+          </h2>
+          <div className="hidden md:flex items-center gap-2 mt-4">
+            <button
+              onClick={scrollLeft}
+              className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+            >
+              <ChevronLeft size={32} />
+            </button>
+            <button
+              onClick={scrollRight}
+              className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+            >
+              <ChevronRight size={32} />
+            </button>
+          </div>
         </div>
       </div>
       <div
         ref={scrollContainerRef}
-        className="w-full sm:w-3/5 flex gap-6 overflow-scroll scrollbar-none px-8 sm:px-0 sm:pr-28"
+        className="w-full md:w-3/5 flex gap-6 overflow-scroll scrollbar-hide px-4 sm:px-8 md:px-0 sm:pr-28"
       >
         {testimonials.map((testimonial) => (
           <div

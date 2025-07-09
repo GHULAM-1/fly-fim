@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import React, { useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +15,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import PriceDisplay from "../PriceDisplay";
+import Link from "next/link";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 interface CarouselGridProps {
   title: string;
@@ -30,6 +31,25 @@ const CarouselGrid = ({
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState("Picked for you");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const sortOptions = [
     "Picked for you",
@@ -156,27 +176,45 @@ const CarouselGrid = ({
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
           {title}
         </h2>
-        <div className="hidden md:flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
+        <div className="flex items-center gap-4">
+          <Link
+            href="/cities"
+            className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+          >
             {t("recommendations.seeAll")}
-          </button>
+          </Link>
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-      <Carousel className="mt-4 sm:mt-10">
-        <CarouselContent>
-          {recommendations.map((recommendation) => (
-            <CarouselCard
-              key={recommendation.id}
-              image={recommendation.image}
-              place={recommendation.place}
-              rating={recommendation.rating}
-              reviews={recommendation.reviews}
-              description={recommendation.description}
-              price={recommendation.price}
-            />
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div
+        className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        ref={scrollContainerRef}
+      >
+        {recommendations.map((recommendation) => (
+          <CarouselCard
+            key={recommendation.id}
+            image={recommendation.image}
+            place={recommendation.place}
+            rating={recommendation.rating}
+            reviews={recommendation.reviews}
+            description={recommendation.description}
+            price={recommendation.price}
+          />
+        ))}
+      </div>
     </div>
   );
 };

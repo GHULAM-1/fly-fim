@@ -1,17 +1,37 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import CarouselCard from "../cards/CarouselCard";
-
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 
 const Recommendations = () => {
   const { t } = useTranslation();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const recommendations = [
     {
       id: 1,
       description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      badge: "Selling out fast",
       place: "Dubai",
       image: "/images/r4.jpg.avif",
       price: 100,
@@ -29,6 +49,7 @@ const Recommendations = () => {
     },
     {
       id: 3,
+      badge: "Free cancellation",
       description:
         "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
       place: "Italy",
@@ -47,6 +68,46 @@ const Recommendations = () => {
       rating: 4.5,
       reviews: 100,
     },
+    {
+      id: 5,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+    },
+    {
+      id: 6,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+    },
+    {
+      id: 7,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+    },
+    {
+      id: 8,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+    },
   ];
 
   return (
@@ -55,27 +116,46 @@ const Recommendations = () => {
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
           Flyfim’s top recommendations
         </h2>
-        <div className="hidden md:flex items-center gap-2">
-          <button className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap">
+        <div className="hidden md:flex items-center gap-4">
+          <Link
+            href="/cities"
+            className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+          >
             {t("recommendations.seeAll")}
-          </button>
+          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-      <Carousel className="mt-4 sm:mt-10">
-        <CarouselContent>
-          {recommendations.map((recommendation) => (
-            <CarouselCard
-              key={recommendation.id}
-              image={recommendation.image}
-              place={recommendation.place}
-              rating={recommendation.rating}
-              reviews={recommendation.reviews}
-              description={recommendation.description}
-              price={recommendation.price}
-            />
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div
+        className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        ref={scrollContainerRef}
+      >
+        {recommendations.map((recommendation) => (
+          <CarouselCard
+            key={recommendation.id}
+            image={recommendation.image}
+            place={recommendation.place}
+            rating={recommendation.rating}
+            reviews={recommendation.reviews}
+            description={recommendation.description}
+            price={recommendation.price}
+            badge={recommendation.badge}
+          />
+        ))}
+      </div>
     </div>
   );
 };

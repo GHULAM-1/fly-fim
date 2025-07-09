@@ -1,16 +1,30 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import Link from "next/link";
-
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const Destinations = () => {
   const { t } = useTranslation();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const destinations = [
     {
@@ -49,6 +63,42 @@ const Destinations = () => {
       place: "Singapore",
       image: "/images/d1.jpg.avif",
     },
+    {
+      id: 7,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: 8,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: 9,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: 10,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: 11,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: 12,
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+    },
   ];
 
   return (
@@ -57,30 +107,50 @@ const Destinations = () => {
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 max-w-2/3">
           {t("destinations.title")}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Link
             href="/cities"
-            className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+            className="text-sm text-gray-500 md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
           >
-            {t("destinations.seeAll")}
+            {t("destinations.seeAll")}{" "}
+            <ChevronRightIcon className="md:hidden w-4 h-4" />
           </Link>
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-      <div className="mt-4 sm:mt-10 flex overflow-x-scroll -ml-4">
+      <div
+        className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        ref={scrollContainerRef}
+      >
         {destinations.map((destination) => (
           <div
             key={destination.id}
-            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4"
+            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
           >
             <img
               src={destination.image}
               alt={destination.description}
               className="rounded"
             />
-            <p className="font-semibold text-gray-700 mt-2 leading-tight md:max-w-32">
+            <p className="text-sm md:text-base font-semibold text-gray-700 mt-2 leading-tight md:max-w-32">
               {destination.description}
             </p>
-            <p className="text-gray-500 text-sm mt-1">{destination.place}</p>
+            <p className="text-gray-500 text-xs md:text-sm mt-1">
+              {destination.place}
+            </p>
           </div>
         ))}
       </div>

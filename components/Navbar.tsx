@@ -115,6 +115,20 @@ const Navbar = () => {
     currentIndexRef.current = currentPlaceholderIndex;
   }, [currentPlaceholderIndex]);
 
+  // Prevent scrolling when input is focused
+  useEffect(() => {
+    if (isInputFocused) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isInputFocused]);
+
   // Top destinations data
   const topDestinations = [
     {
@@ -187,11 +201,11 @@ const Navbar = () => {
     <>
       {/* Focus overlay - covers entire viewport */}
       {isInputFocused && (
-        <div className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" />
+        <div className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 pointer-events-none" />
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 ${
           scrolled || pathname !== "/"
             ? `bg-white ${
                 pathname === "/" || scrolled ? "border-b border-gray-200" : ""
@@ -199,7 +213,7 @@ const Navbar = () => {
             : "text-white"
         }`}
       >
-        <div className="flex justify-between items-center max-w-screen-2xl mx-auto">
+        <div className="flex justify-between items-center 2xl:max-w-screen-xl mx-auto">
           <Link href="/">
             <img
               src="/images/logo.png"
