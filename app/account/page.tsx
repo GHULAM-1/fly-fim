@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInWithGoogle, signInWithMagicLink } from "@/lib/actions/auth";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Drawer,
   DrawerClose,
@@ -20,7 +21,7 @@ const AccountPage = () => {
   const [email, setEmail] = useState("");
   const [mode, setMode] = useState<"welcome" | "email-sent">("welcome");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Close drawer when user becomes authenticated
   useEffect(() => {
@@ -72,6 +73,115 @@ const AccountPage = () => {
     }
   };
 
+  // If user is signed in, show account management interface
+  if (user) {
+    const profileImage =
+      user?.user_metadata?.avatar_url ||
+      user?.user_metadata?.picture ||
+      user?.identities?.[0]?.identity_data?.avatar_url ||
+      user?.identities?.[0]?.identity_data?.picture;
+
+    return (
+      <div className="mt-20 mb-10 min-h-screen bg-gray-50">
+        <div className="flex items-center justify-between gap-4 px-6 py-8">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">
+              {user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                "User"}
+            </h1>
+            <p className="text-gray-600 text-sm">{user.email}</p>
+          </div>
+          <Avatar className="h-16 w-16">
+            <AvatarImage
+              src={profileImage}
+              alt="Profile picture"
+              className="object-cover"
+            />
+            <AvatarFallback className="bg-gradient-to-br from-pink-400 to-rose-400 flex items-center justify-center text-2xl text-white">
+              😊
+            </AvatarFallback>
+          </Avatar>
+        </div>
+        <hr />
+        <div className="px-6 py-8">
+          <h2 className="font-semibold text-gray-800 mb-4">My Account</h2>
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Bookings</span>
+            <ChevronRight size={16} className="text-gray-400" />
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">City</span>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500">Select city</span>
+              <ChevronRight size={20} className="text-gray-400" />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Language</span>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500">English</span>
+              <ChevronRight size={20} className="text-gray-400" />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Credits</span>
+            <span className="text-gray-500">$0</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Saved cards</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Settings</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+        </div>
+        <hr />
+        {/* Help Section */}
+        <div className="px-6 py-8">
+          <h2 className="font-semibold text-gray-800 mb-4">Help</h2>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Chat</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">FAQs</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+        </div>
+        <hr />
+        <div className="px-6 py-8">
+          <h2 className="font-semibold text-gray-800 mb-4">Legal</h2>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Privacy Policy</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-gray-800">Terms of Usage</span>
+            <ChevronRight size={20} className="text-gray-400" />
+          </div>
+        </div>
+        <hr />
+        <div className="px-6 py-8">
+          <button className="text-sm text-gray-800" onClick={signOut}>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is not signed in, show authentication interface
   return (
     <div className="mt-20">
       <div className="bg-gradient-to-br from-white to-purple-100 px-6 py-8">

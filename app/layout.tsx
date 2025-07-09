@@ -8,6 +8,7 @@ import i18n from "@/i18n";
 import { useEffect } from "react";
 import { CurrencyProvider } from "@/lib/currency-context";
 import Tabs from "@/components/Tabs";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,11 +46,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  const pathname = usePathname();
+
   return (
     <>
       <Navbar />
       {children}
-      <Footer />
+      {pathname !== "/account" && <Footer />}
       <Tabs />
     </>
   );
