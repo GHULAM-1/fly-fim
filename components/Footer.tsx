@@ -7,6 +7,7 @@ import {
   TbBrandTwitterFilled,
   TbBrandX,
 } from "react-icons/tb";
+import { HelpCircle, MessageCircle, Phone, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -21,10 +22,22 @@ const Footer = () => {
                   <li className="text-xs sm:text-sm font-semibold">
                     GET HELP 24/7
                   </li>
-                  <li>Help Center</li>
-                  <li>Chat with us</li>
-                  <li>Call us</li>
-                  <li>support@flyfim.com</li>
+                  <li className="flex items-center gap-2">
+                    <HelpCircle size={16} strokeWidth={1} />
+                    Help Center
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <MessageCircle size={16} strokeWidth={1} />
+                    Chat with us
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Phone size={16} strokeWidth={1} />
+                    Call us
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Mail size={16} strokeWidth={1} />
+                    support@flyfim.com
+                  </li>
                 </ul>
               </div>
               <div className="grid grid-cols-2 gap-4 w-full lg:col-span-2">
