@@ -11,7 +11,7 @@ import {
 const Footer = () => {
   return (
     <div className="border-t">
-      <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28">
+      <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 mb-12 md:mb-0">
         <div className="2xl:max-w-screen-xl mx-auto">
           <div className="py-6 sm:py-10 border-b">
             <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
