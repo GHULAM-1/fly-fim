@@ -1,5 +1,4 @@
 import React from "react";
-import { CarouselItem } from "@/components/ui/carousel";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -16,6 +15,7 @@ interface CarouselCardProps {
   reviews: number;
   description: string;
   price: number;
+  badge?: string;
 }
 
 const CarouselCard = ({
@@ -25,40 +25,48 @@ const CarouselCard = ({
   reviews,
   description,
   price,
+  badge,
 }: CarouselCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <CarouselItem className="basis-3/4 sm:basis-1/2 pt-2 md:basis-1/3 lg:basis-1/4 hover:-translate-y-2 transition-all duration-300 group">
-      <Swiper
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        modules={[Autoplay, Navigation, Pagination]}
-        navigation={{
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        className="mySwiper w-full rounded overflow-hidden mb-4"
-      >
-        <SwiperSlide>
-          <img src={image} className="w-full object-cover" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={image} className="w-full object-cover" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={image} className="w-full object-cover" />
-        </SwiperSlide>
-        <div className="hidden group-hover:block">
-          <div className="swiper-button-next after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
-          <div className="swiper-button-prev after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
-        </div>
-      </Swiper>
+    <div className="w-3/4 sm:w-1/2 pt-2 md:w-1/3 lg:w-1/4 hover:-translate-y-2 transition-all duration-300 group pl-4">
+      <div className="relative">
+        {badge && (
+          <span className="absolute top-2 left-2 z-10 bg-white text-[11px] font-medium px-2 py-1 rounded">
+            {badge}
+          </span>
+        )}
+        <Swiper
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          modules={[Autoplay, Navigation, Pagination]}
+          navigation={{
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          className="mySwiper w-full rounded overflow-hidden mb-4 relative"
+        >
+          <SwiperSlide>
+            <img src={image} className="w-full object-cover" />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img src={image} className="w-full object-cover" />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img src={image} className="w-full object-cover" />
+          </SwiperSlide>
+          <div className="hidden group-hover:block">
+            <div className="swiper-button-next after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
+            <div className="swiper-button-prev after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
+          </div>
+        </Swiper>
+      </div>
       <div className="flex justify-between items-center mt-2">
         <span className="text-gray-500 text-xs">{place}</span>
         <span className="flex items-center gap-1">
@@ -74,7 +82,7 @@ const CarouselCard = ({
         </span>{" "}
         <br /> <PriceDisplay amount={price} />
       </p>
-    </CarouselItem>
+    </div>
   );
 };
 

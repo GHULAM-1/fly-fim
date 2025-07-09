@@ -141,8 +141,26 @@ const Hero = () => {
     currentIndexRef.current = currentPlaceholderIndex;
   }, [currentPlaceholderIndex]);
 
+  // Prevent scrolling when input is focused
+  useEffect(() => {
+    if (isInputFocused) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isInputFocused]);
+
   return (
-    <div className="h-[60vh] md:h-[78vh] 2xl:h-[50vh] relative">
+    <div
+      className={`h-[60vh] md:h-[78vh] 2xl:h-[50vh] relative ${
+        isInputFocused ? "z-50" : ""
+      }`}
+    >
       <div className="h-[60vh] md:h-[78vh] 2xl:h-[50vh] w-full absolute top-0 left-0 -z-20 overflow-hidden">
         <motion.video
           src="/videos/hero.mp4"
@@ -157,7 +175,7 @@ const Hero = () => {
       <div className="absolute top-0 left-0 w-full h-full bg-black/30 -z-10" />
       {/* Focus overlay - covers entire viewport */}
       {isInputFocused && (
-        <div className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" />
+        <div className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300" />
       )}
       <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 2xl:max-w-screen-xl mx-auto">
         <h1

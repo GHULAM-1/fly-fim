@@ -18,7 +18,12 @@ export const CURRENCIES: Currency[] = [
   // Popular currencies (first 6)
   { code: "EUR", symbol: "€", name: "Euro", rate: 0.92 },
   { code: "USD", symbol: "$", name: "United States Dollar", rate: 1 },
-  { code: "AED", symbol: "", name: "United Arab Emirates Dirham", rate: 3.67 },
+  {
+    code: "AED",
+    symbol: "AED ",
+    name: "United Arab Emirates Dirham",
+    rate: 3.67,
+  },
   { code: "SGD", symbol: "S$", name: "Singapore Dollar", rate: 1.35 },
   { code: "INR", symbol: "₹", name: "Indian Rupee", rate: 83.12 },
   { code: "GBP", symbol: "£", name: "British Pound", rate: 0.79 },
@@ -117,6 +122,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   const formatCurrencyDisplay = (curr: Currency): string => {
     if (!curr.symbol) return curr.code;
+    if (curr.code === "AED") return "AED";
 
     const isRightSymbol = RIGHT_SYMBOL_CURRENCIES.includes(curr.code);
     return isRightSymbol
