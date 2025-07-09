@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import CarouselCard from "../cards/CarouselCard";
 
-
 const Recommendations = () => {
   const { t } = useTranslation();
 

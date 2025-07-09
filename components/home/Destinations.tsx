@@ -1,13 +1,7 @@
 "use client";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import Link from "next/link";
-
 
 const Destinations = () => {
   const { t } = useTranslation();
