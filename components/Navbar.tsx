@@ -115,6 +115,20 @@ const Navbar = () => {
     currentIndexRef.current = currentPlaceholderIndex;
   }, [currentPlaceholderIndex]);
 
+  // Prevent scrolling when input is focused
+  useEffect(() => {
+    if (isInputFocused) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isInputFocused]);
+
   // Top destinations data
   const topDestinations = [
     {
@@ -187,7 +201,7 @@ const Navbar = () => {
     <>
       {/* Focus overlay - covers entire viewport */}
       {isInputFocused && (
-        <div className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" />
+        <div className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 pointer-events-none" />
       )}
 
       <div
