@@ -114,7 +114,7 @@ const Recommendations = () => {
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
-          Flyfim’s top recommendations
+          Traveler's top choices
         </h2>
         <div className="hidden md:flex items-center gap-4">
           <Link
