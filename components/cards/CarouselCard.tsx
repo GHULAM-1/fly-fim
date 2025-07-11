@@ -33,7 +33,7 @@ const CarouselCard = ({
   return (
     <div className="w-3/4 sm:w-1/2 pt-2 md:w-1/3 lg:w-1/4 hover:-translate-y-2 transition-all duration-300 group pl-4 cursor-pointer">
       <div className="relative">
-        <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] transition-shadow duration-300 pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_0_30px_rgba(0,0,0,0.5)] transition-shadow duration-300 pointer-events-none" />
         {badge && (
           <span className="absolute top-2 left-2 z-10 bg-white text-[11px] font-medium px-2 py-1 rounded">
             {badge}
@@ -52,7 +52,7 @@ const CarouselCard = ({
           pagination={{
             clickable: true,
             renderBullet: (index: number, className: string) => {
-              return `<span class="${className} !h-1.5 !bg-white !mx-0.5 !rounded-full custom-bullet" style="opacity: 0.5; transition: opacity 0.3s ease;"></span>`;
+              return `<span class="${className} !h-1.5 !mx-0.5 !rounded-full custom-bullet loading"></span>`;
             },
           }}
           className="mySwiper w-full rounded overflow-hidden mb-4 relative pagination-on-hover"
