@@ -361,7 +361,7 @@ const Navbar = () => {
                 onClick={() => setAuthDialogOpen(true)}
                 className={`border ${
                   scrolled || pathname !== "/" ? "" : "border-white"
-                } rounded-md py-1.5 px-3 text-sm font-medium`}
+                } rounded-md cursor-pointer py-1.5 px-3 text-sm font-medium`}
               >
                 Sign in
               </button>

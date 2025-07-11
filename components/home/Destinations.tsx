@@ -117,13 +117,13 @@ const Destinations = () => {
           </Link>
           <div className="hidden md:flex items-center gap-2">
             <button
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
               onClick={scrollLeft}
             >
               <ChevronLeftIcon className="w-4 h-4" />
             </button>
             <button
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
               onClick={scrollRight}
             >
               <ChevronRightIcon className="w-4 h-4" />
@@ -136,7 +136,8 @@ const Destinations = () => {
         ref={scrollContainerRef}
       >
         {destinations.map((destination) => (
-          <div
+          <Link
+            href="#"
             key={destination.id}
             className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
           >
@@ -151,7 +152,7 @@ const Destinations = () => {
             <p className="text-gray-500 text-xs md:text-sm mt-1">
               {destination.place}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

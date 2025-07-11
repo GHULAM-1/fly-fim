@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 
 const Activities = () => {
   const { t } = useTranslation();
@@ -115,13 +116,13 @@ const Activities = () => {
             </button>
             <div className="hidden md:flex items-center gap-2">
               <button
-                className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
                 onClick={scrollLeft}
               >
                 <ChevronLeftIcon className="w-4 h-4" />
               </button>
               <button
-                className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
                 onClick={scrollRight}
               >
                 <ChevronRightIcon className="w-4 h-4" />
@@ -134,7 +135,8 @@ const Activities = () => {
           ref={scrollContainerRef}
         >
           {activities.map((activity) => (
-            <div
+            <Link
+              href="#"
               key={activity.id}
               className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
             >
@@ -149,7 +151,7 @@ const Activities = () => {
               <p className="text-gray-500 text-xs md:text-sm mt-1">
                 {activity.place}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
