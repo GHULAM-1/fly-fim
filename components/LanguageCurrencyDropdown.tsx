@@ -105,7 +105,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`text-sm font-medium flex items-center gap-1 hover:opacity-80 transition-opacity ${
+              className={`text-sm cursor-pointer font-medium flex items-center gap-1 hover:opacity-80 transition-opacity ${
                 scrolled ? "text-black" : "text-white"
               }`}
             >

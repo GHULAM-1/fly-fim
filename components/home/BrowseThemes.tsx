@@ -190,7 +190,7 @@ const BrowseThemes = () => {
             <button
               key={category.key}
               onClick={() => setActiveTab(category.key)}
-              className={`flex items-center gap-2 pb-2 ${
+              className={`flex cursor-pointer items-center gap-2 pb-2 ${
                 isActive
                   ? "text-purple-600 border-b-2 border-purple-600"
                   : "text-gray-600"
@@ -206,7 +206,7 @@ const BrowseThemes = () => {
             </button>
           );
         })}
-        <div className="bg-white shadow-lg border border-gray-200 shadow-white rounded-full p-1.5">
+        <div className="cursor-pointer hover:border-gray-400 bg-white shadow-lg border border-gray-200 shadow-white rounded-full p-1.5">
           <ChevronRight size={16} className="text-gray-400" />
         </div>
       </div>
@@ -228,7 +228,7 @@ const BrowseThemes = () => {
       <div className="mt-4 sm:mt-8">
         <Link
           href="#"
-          className="text-sm text-gray-600 hover:text-gray-900 underline"
+          className="cursor-pointer text-sm text-gray-600 hover:text-gray-900 underline"
         >
           {tabData[activeTab].viewAll}
         </Link>

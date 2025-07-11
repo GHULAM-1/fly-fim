@@ -18,7 +18,7 @@ const Stats = () => {
           </p>
         </div>
         <div>
-          <img src="/images/stat2.png" alt="" className="w-14 md:w-20" />
+          <img src="/images/stat4.png" alt="" className="w-14 md:w-20" />
           <h3 className="text-base sm:text-xl font-semibold text-gray-700 my-2">
             {t("stats.customers.count")}
           </h3>

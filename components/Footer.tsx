@@ -22,19 +22,19 @@ const Footer = () => {
                   <li className="text-xs sm:text-sm font-semibold">
                     GET HELP 24/7
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 cursor-pointer">
                     <HelpCircle size={16} strokeWidth={1} />
                     Help Center
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 cursor-pointer">
                     <MessageCircle size={16} strokeWidth={1} />
                     Chat with us
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 cursor-pointer">
                     <Phone size={16} strokeWidth={1} />
                     Call us
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 cursor-pointer">
                     <Mail size={16} strokeWidth={1} />
                     support@flyfim.com
                   </li>
@@ -43,30 +43,30 @@ const Footer = () => {
               <div className="grid grid-cols-2 gap-4 w-full lg:col-span-2">
                 <ul className="space-y-4">
                   <li className="text-xs sm:text-sm font-semibold">CITIES</li>
-                  <li>Nueva York</li>
-                  <li>Las Vegas</li>
-                  <li>Roma</li>
-                  <li>París</li>
-                  <li>Londres</li>
-                  <li>Dubái</li>
-                  <li>Barcelona</li>
-                  <li>+192 more</li>
+                  <li className="cursor-pointer">Nueva York</li>
+                  <li className="cursor-pointer">Las Vegas</li>
+                  <li className="cursor-pointer">Roma</li>
+                  <li className="cursor-pointer">París</li>
+                  <li className="cursor-pointer">Londres</li>
+                  <li className="cursor-pointer">Dubái</li>
+                  <li className="cursor-pointer">Barcelona</li>
+                  <li className="cursor-pointer">+192 more</li>
                 </ul>
                 <ul className="space-y-4">
                   <li className="text-xs sm:text-sm font-semibold">FLYFIM</li>
-                  <li>Our story</li>
-                  <li>Careers</li>
-                  <li>Newsroom</li>
-                  <li>Company blog</li>
-                  <li>Travel blog</li>
+                  <li className="cursor-pointer">Our story</li>
+                  <li className="cursor-pointer">Careers</li>
+                  <li className="cursor-pointer">Newsroom</li>
+                  <li className="cursor-pointer">Company blog</li>
+                  <li className="cursor-pointer">Travel blog</li>
                 </ul>
               </div>
               <div>
                 <ul className="space-y-4">
                   <li className="text-xs sm:text-sm font-semibold">PARTNERS</li>
-                  <li>Experience providers</li>
-                  <li>Affiliates</li>
-                  <li>Creators & influencers</li>
+                  <li className="cursor-pointer">Experience providers</li>
+                  <li className="cursor-pointer">Affiliates</li>
+                  <li className="cursor-pointer">Creators & influencers</li>
                 </ul>
                 <div className="mt-10">
                   <p className="text-xs sm:text-sm font-semibold">WE ACCEPT</p>
@@ -97,11 +97,11 @@ const Footer = () => {
               <li className="hidden md:block">
                 © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
               </li>
-              <li>Terms of usage</li>
-              <li>•</li>
-              <li>Privacy policy</li>
-              <li>•</li>
-              <li>Company details</li>
+              <li className="cursor-pointer">Terms of usage</li>
+              <li className="cursor-pointer">•</li>
+              <li className="cursor-pointer">Privacy policy</li>
+              <li className="cursor-pointer">•</li>
+              <li className="cursor-pointer">Company details</li>
             </ul>
             <p className="text-xs text-gray-500 md:hidden">
               © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
