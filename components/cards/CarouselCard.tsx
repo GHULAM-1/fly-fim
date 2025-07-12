@@ -40,6 +40,8 @@ const CarouselCard = ({
           </span>
         )}
         <Swiper
+          loop={true}
+          allowTouchMove={false}
           autoplay={{
             delay: 5000,
             disableOnInteraction: false,
