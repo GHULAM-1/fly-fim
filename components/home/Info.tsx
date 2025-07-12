@@ -17,12 +17,12 @@ const Info = () => {
         <img
           src="/images/info1.png"
           alt=""
-          className="w-20 h-20 group-hover:hidden"
+          className="w-24 h-22 group-hover:hidden"
         />
         <img
           src="/images/info1.gif"
           alt=""
-          className="w-20 h-20 hidden group-hover:block"
+          className="w-22 h-22 hidden group-hover:block"
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card1.title")}
@@ -41,12 +41,12 @@ const Info = () => {
         <img
           src="/images/info2.png"
           alt=""
-          className="w-20 h-20 group-hover:hidden p-3"
+          className="w-22 h-22 group-hover:hidden p-3"
         />
         <img
           src="/images/info2.gif"
           alt=""
-          className="w-20 h-20 hidden group-hover:block p-3"
+          className="w-22 h-22 hidden group-hover:block p-3"
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card2.title")}
@@ -65,12 +65,12 @@ const Info = () => {
         <img
           src="/images/info3.png"
           alt=""
-          className="w-20 h-20 group-hover:hidden p-3"
+          className="w-22 h-22 group-hover:hidden p-3"
         />
         <img
           src="/images/info3.gif"
           alt=""
-          className="w-20 h-20 hidden group-hover:block p-3"
+          className="w-22 h-22 hidden group-hover:block p-3"
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card3.title")}
@@ -89,12 +89,12 @@ const Info = () => {
         <img
           src="/images/info4.png"
           alt=""
-          className="w-20 h-20 group-hover:hidden p-3"
+          className="w-22 h-22 group-hover:hidden p-3"
         />
         <img
           src="/images/info4.gif"
           alt=""
-          className="w-20 h-20 hidden group-hover:block p-3"
+          className="w-22 h-22 hidden group-hover:block p-3"
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card4.title")}

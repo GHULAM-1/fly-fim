@@ -95,7 +95,8 @@ const Footer = () => {
           <div className="py-5 flex flex-col sm:flex-row justify-between gap-4">
             <ul className="text-xs text-gray-500 flex items-center gap-4">
               <li className="hidden md:block">
-                © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
+                ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
+                Egypt
               </li>
               <li className="cursor-pointer">Terms of usage</li>
               <li className="cursor-pointer">•</li>
@@ -104,7 +105,8 @@ const Footer = () => {
               <li className="cursor-pointer">Company details</li>
             </ul>
             <p className="text-xs text-gray-500 md:hidden">
-              © 2014-2025 Flyfim, 82 Nassau St #60351 New York, NY 10038
+              ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
+              Egypt
             </p>
             <div className="hidden md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
               <a href="https://www.linkedin.com/company/flyfim">

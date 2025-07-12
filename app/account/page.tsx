@@ -105,13 +105,13 @@ const AccountPage = () => {
         </div>
         <hr />
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-4">My Account</h2>
-          <div className="flex items-center justify-between text-sm mb-4">
+          <h2 className="font-semibold text-gray-800 mb-5">My Account</h2>
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Bookings</span>
             <ChevronRight size={16} className="text-gray-400" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">City</span>
             <div className="flex items-center gap-2">
               <span className="text-gray-500">Select city</span>
@@ -119,7 +119,7 @@ const AccountPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Language</span>
             <div className="flex items-center gap-2">
               <span className="text-gray-500">English</span>
@@ -127,17 +127,17 @@ const AccountPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Credits</span>
             <span className="text-gray-500">$0</span>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Saved cards</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Settings</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
@@ -145,28 +145,28 @@ const AccountPage = () => {
         <hr />
         {/* Help Section */}
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-4">Help</h2>
+          <h2 className="font-semibold text-gray-800 mb-5">Help</h2>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Chat</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">FAQs</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
         </div>
         <hr />
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-4">Legal</h2>
+          <h2 className="font-semibold text-gray-800 mb-5">Legal</h2>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Privacy Policy</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-4">
+          <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Terms of Usage</span>
             <ChevronRight size={20} className="text-gray-400" />
           </div>
