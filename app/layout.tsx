@@ -65,6 +65,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>
+          Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
+        </title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
