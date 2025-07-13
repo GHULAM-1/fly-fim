@@ -386,7 +386,7 @@ const AccountPage = () => {
                           placeholder="Email address"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full text-sm py-5 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-none"
+                          className="w-full text-base py-5 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-none"
                           onKeyDown={(e) => {
                             if (
                               e.key === "Enter" &&
