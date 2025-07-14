@@ -74,7 +74,7 @@ const Testimonials = () => {
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0 bg-gradient-to-b from-white to-purple-50">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
-          Millions love heading out with us
+          Millions love flying out with us
           <img src="/images/info3.png" alt="" className="w-10" />
         </h2>
         <div className="hidden md:flex items-center gap-2">

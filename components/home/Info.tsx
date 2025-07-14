@@ -36,12 +36,10 @@ const Info = () => {
             activeCard === 0 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
+        <h2 className="text-base sm:text-lg font-heading text-gray-700">
           {t("info.card1.title")}
         </h2>
-        <p className="text-gray-500 text-sm mt-1">
-          {t("info.card1.description")}
-        </p>
+        <p className="text-sm mt-1">{t("info.card1.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -67,12 +65,10 @@ const Info = () => {
             activeCard === 1 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
+        <h2 className="text-base sm:text-lg font-heading text-gray-700">
           {t("info.card2.title")}
         </h2>
-        <p className="text-gray-500 text-sm mt-1">
-          {t("info.card2.description")}
-        </p>
+        <p className="text-sm mt-1">{t("info.card2.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -98,12 +94,10 @@ const Info = () => {
             activeCard === 2 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
+        <h2 className="text-base sm:text-lg font-heading text-gray-700">
           {t("info.card3.title")}
         </h2>
-        <p className="text-gray-500 text-sm mt-1">
-          {t("info.card3.description")}
-        </p>
+        <p className="text-sm mt-1">{t("info.card3.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -129,12 +123,10 @@ const Info = () => {
             activeCard === 3 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
+        <h2 className="text-base sm:text-lg font-heading text-gray-700">
           {t("info.card4.title")}
         </h2>
-        <p className="text-gray-500 text-sm mt-1">
-          {t("info.card4.description")}
-        </p>
+        <p className="text-sm mt-1">{t("info.card4.description")}</p>
       </div>
     </div>
   );

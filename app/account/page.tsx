@@ -85,7 +85,7 @@ const AccountPage = () => {
       <div className="mt-20 mb-10 min-h-screen bg-gray-50">
         <div className="flex items-center justify-between gap-4 px-6 py-8">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">
+            <h1 className="text-lg font-heading text-gray-900">
               {user.user_metadata?.full_name ||
                 user.user_metadata?.name ||
                 "User"}
@@ -105,7 +105,7 @@ const AccountPage = () => {
         </div>
         <hr />
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-5">My Account</h2>
+          <h2 className="font-heading text-gray-800 mb-5">My Account</h2>
           <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Bookings</span>
             <ChevronRight size={16} className="text-gray-400" />
@@ -145,7 +145,7 @@ const AccountPage = () => {
         <hr />
         {/* Help Section */}
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-5">Help</h2>
+          <h2 className="font-heading text-gray-800 mb-5">Help</h2>
 
           <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Chat</span>
@@ -159,7 +159,7 @@ const AccountPage = () => {
         </div>
         <hr />
         <div className="px-6 py-8">
-          <h2 className="font-semibold text-gray-800 mb-5">Legal</h2>
+          <h2 className="font-heading text-gray-800 mb-5">Legal</h2>
 
           <div className="flex items-center justify-between text-sm mb-5">
             <span className="text-gray-800">Privacy Policy</span>

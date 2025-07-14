@@ -105,7 +105,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`text-sm cursor-pointer font-medium flex items-center gap-1 hover:opacity-80 transition-opacity ${
+              className={`text-sm cursor-pointer font-semibold flex items-center gap-1 hover:opacity-80 transition-opacity ${
                 scrolled ? "text-black" : "text-white"
               }`}
             >
@@ -208,7 +208,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           onOpenChange={setIsLanguageDrawerOpen}
         >
           <DrawerTrigger asChild>
-            <button className="text-sm font-medium flex items-center gap-1">
+            <button className="text-sm font-semibold flex items-center gap-1">
               <Globe size={12} />
               {getCurrentLanguageCode()}
             </button>
@@ -257,7 +257,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           onOpenChange={setIsCurrencyDrawerOpen}
         >
           <DrawerTrigger asChild>
-            <button className="text-sm font-medium flex items-center gap-1">
+            <button className="text-sm font-semibold flex items-center gap-1">
               {formatCurrencyDisplay(currency)}
             </button>
           </DrawerTrigger>
