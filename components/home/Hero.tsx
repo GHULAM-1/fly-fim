@@ -157,11 +157,11 @@ const Hero = () => {
 
   return (
     <div
-      className={`h-[60vh] md:h-[78vh] 2xl:h-[50vh] relative ${
+      className={`h-[45vh] sm:h-[60vh] md:h-[78vh] 2xl:h-[50vh] relative ${
         isInputFocused ? "z-50" : ""
       }`}
     >
-      <div className="h-[60vh] md:h-[78vh] 2xl:h-[50vh] w-full absolute top-0 left-0 -z-20 overflow-hidden">
+      <div className="h-[45vh] sm:h-[60vh] md:h-[78vh] 2xl:h-[50vh] w-full absolute top-0 left-0 -z-20 overflow-hidden">
         <motion.video
           src="/videos/hero.mp4"
           autoPlay
