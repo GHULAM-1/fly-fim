@@ -106,7 +106,7 @@ const Activities = () => {
     <div className="py-8 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 bg-zinc-100">
       <div className="2xl:max-w-screen-xl mx-auto 2xl:px-0">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+          <h2 className="text-lg sm:text-2xl font-heading text-gray-700">
             {t("activities.title")}
           </h2>
           <div className="flex items-center gap-4">
@@ -145,12 +145,10 @@ const Activities = () => {
                 alt={activity.description}
                 className="rounded"
               />
-              <p className="text-sm md:text-base font-semibold text-gray-700 leading-tight mt-2">
+              <p className="text-sm md:text-base font-heading text-gray-700 leading-tight mt-2">
                 {activity.description}
               </p>
-              <p className="text-gray-500 text-xs md:text-sm mt-1">
-                {activity.place}
-              </p>
+              <p className="text-xs md:text-sm mt-1">{activity.place}</p>
             </Link>
           ))}
         </div>

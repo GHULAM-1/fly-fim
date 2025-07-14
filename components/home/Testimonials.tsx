@@ -91,7 +91,7 @@ const Testimonials = () => {
     <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col md:flex-row gap-6">
       <div className="w-full md:w-2/5 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col justify-center 2xl:items-end">
         <div>
-          <h2 className="text-2xl sm:text-5xl font-semibold md:font-bold mb-2 max-w-[70%] xl:max-w-[271px] leading-tight flex md:block items-center justify-between">
+          <h2 className="text-2xl sm:text-5xl font-heading mb-2 max-w-[70%] xl:max-w-[271px] leading-tight flex md:block items-center justify-between">
             <span className="w-full shrink-0">{t("testimonials.title")}</span>
             <img
               src="/images/info3.gif"
@@ -133,17 +133,15 @@ const Testimonials = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`${testimonial.avatarColor} rounded-full w-12 shrink-0 h-12 flex items-center justify-center text-lg font-bold`}
+                    className={`${testimonial.avatarColor} rounded-full w-12 shrink-0 h-12 flex items-center justify-center text-lg font-heading`}
                   >
                     {testimonial.avatar}
                   </div>
                   <div>
-                    <h2 className="text-white text-base sm:text-lg font-semibold md:font-bold">
+                    <h2 className="text-white text-base sm:text-lg font-heading">
                       {testimonial.name}
                     </h2>
-                    <p className="text-gray-400 text-xs sm:text-sm">
-                      {testimonial.country}
-                    </p>
+                    <p className="text-xs sm:text-sm">{testimonial.country}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

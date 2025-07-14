@@ -59,7 +59,7 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-2xl font-bold">Create Account</h2>
+        <h2 className="text-2xl font-heading">Create Account</h2>
         <p className="text-gray-600 mt-2">
           Join us to get exclusive deals and personalized recommendations
         </p>

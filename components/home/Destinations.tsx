@@ -104,7 +104,7 @@ const Destinations = () => {
   return (
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 max-w-2/3">
+        <h2 className="text-lg sm:text-2xl font-heading text-gray-700 max-w-2/3">
           {t("destinations.title")}
         </h2>
         <div className="flex items-center gap-4">
@@ -146,12 +146,10 @@ const Destinations = () => {
               alt={destination.description}
               className="rounded"
             />
-            <p className="text-sm md:text-base font-semibold text-gray-700 mt-2 leading-tight md:max-w-32">
+            <p className="text-sm md:text-base font-heading text-gray-700 mt-2 leading-tight md:max-w-32">
               {destination.description}
             </p>
-            <p className="text-gray-500 text-xs md:text-sm mt-1">
-              {destination.place}
-            </p>
+            <p className="text-xs md:text-sm mt-1">{destination.place}</p>
           </Link>
         ))}
       </div>

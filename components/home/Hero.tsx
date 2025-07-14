@@ -168,7 +168,7 @@ const Hero = () => {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           style={{ scale }}
         />
       </div>
@@ -180,7 +180,7 @@ const Hero = () => {
       <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 2xl:max-w-screen-xl mx-auto">
         <h1
           id="scroll-target"
-          className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[2.7rem] font-bold max-w-2xl leading-tight"
+          className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight"
         >
           {t("hero.title")}
         </h1>
