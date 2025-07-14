@@ -315,7 +315,7 @@ const Navbar = () => {
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-gray-900 text-sm">
+                            <div className="font-heading text-gray-900 text-sm">
                               {dest.name}
                             </div>
                             <div className="text-gray-500 text-sm">
@@ -340,7 +340,7 @@ const Navbar = () => {
             <LanguageCurrencyDropdown scrolled={scrolled || pathname !== "/"} />
             <Link
               href="/help"
-              className="text-sm font-medium flex items-center gap-1"
+              className="text-sm font-semibold flex items-center gap-1"
             >
               <CircleHelp strokeWidth={1} size={16} />
               Help
@@ -361,7 +361,7 @@ const Navbar = () => {
                 onClick={() => setAuthDialogOpen(true)}
                 className={`border ${
                   scrolled || pathname !== "/" ? "" : "border-white"
-                } rounded-md cursor-pointer py-1.5 px-3 text-sm font-medium`}
+                } rounded-md cursor-pointer font-semibold py-1.5 px-3 text-sm`}
               >
                 Sign in
               </button>
@@ -417,7 +417,7 @@ const Navbar = () => {
                                   />
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
+                                  <div className="font-heading text-gray-900 text-sm">
                                     {dest.name}
                                   </div>
                                   <div className="text-gray-500 text-xs">
@@ -447,7 +447,7 @@ const Navbar = () => {
                                   />
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
+                                  <div className="font-heading text-gray-900 text-sm">
                                     {activity.title}
                                   </div>
                                   <div className="text-gray-500 text-xs">
@@ -480,7 +480,7 @@ const Navbar = () => {
                                     />
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
+                                    <div className="font-heading text-gray-900 text-sm">
                                       {dest.name}
                                     </div>
                                     <div className="text-gray-500 text-xs">
@@ -511,7 +511,7 @@ const Navbar = () => {
                                     />
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
+                                    <div className="font-heading text-gray-900 text-sm">
                                       {activity.title}
                                     </div>
                                     <div className="text-gray-500 text-xs">

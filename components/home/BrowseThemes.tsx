@@ -179,7 +179,7 @@ const BrowseThemes = () => {
 
   return (
     <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10 2xl:max-w-screen-xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 mb-4 md:mb-10">
+      <h2 className="text-lg sm:text-2xl font-heading text-gray-700 mb-4 md:mb-10">
         {t("browseThemes.title")}
       </h2>
       <div className="flex items-center gap-6 mb-4 md:mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
