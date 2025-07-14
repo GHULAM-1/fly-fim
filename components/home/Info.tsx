@@ -1,13 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const Info = () => {
   const { t } = useTranslation();
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+
+  const handleCardClick = (cardIndex: number) => {
+    setActiveCard(activeCard === cardIndex ? null : cardIndex);
+  };
 
   return (
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0 flex justify-between gap-4 sm:gap-8 md:gap-10 overflow-scroll md:overflow-visible scrollbar-hide">
-      <div className="relative w-[65%] md:w-full shrink-0 md:shrink group">
+      <div
+        className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
+        onClick={() => handleCardClick(0)}
+      >
         <img
           src="/images/info1.png"
           alt=""
@@ -17,12 +25,16 @@ const Info = () => {
         <img
           src="/images/info1.png"
           alt=""
-          className="w-18 h-18 group-hover:hidden"
+          className={`w-16 sm:w-18 h-16 sm:h-18 ${
+            activeCard === 0 ? "hidden" : "group-hover:hidden"
+          }`}
         />
         <img
           src="/images/info1.gif"
           alt=""
-          className="w-18 h-18 hidden group-hover:block"
+          className={`w-16 sm:w-18 h-16 sm:h-18 ${
+            activeCard === 0 ? "block" : "hidden group-hover:block"
+          }`}
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card1.title")}
@@ -31,7 +43,10 @@ const Info = () => {
           {t("info.card1.description")}
         </p>
       </div>
-      <div className="relative w-[65%] md:w-full shrink-0 md:shrink group">
+      <div
+        className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
+        onClick={() => handleCardClick(1)}
+      >
         <img
           src="/images/info2.png"
           alt=""
@@ -41,12 +56,16 @@ const Info = () => {
         <img
           src="/images/info2.png"
           alt=""
-          className="w-18 h-18 group-hover:hidden p-3"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-3 ${
+            activeCard === 1 ? "hidden" : "group-hover:hidden"
+          }`}
         />
         <img
           src="/images/info2.gif"
           alt=""
-          className="w-18 h-18 hidden group-hover:block p-3"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-3 ${
+            activeCard === 1 ? "block" : "hidden group-hover:block"
+          }`}
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card2.title")}
@@ -55,7 +74,10 @@ const Info = () => {
           {t("info.card2.description")}
         </p>
       </div>
-      <div className="relative w-[65%] md:w-full shrink-0 md:shrink group">
+      <div
+        className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
+        onClick={() => handleCardClick(2)}
+      >
         <img
           src="/images/info3.png"
           alt=""
@@ -65,12 +87,16 @@ const Info = () => {
         <img
           src="/images/info3.png"
           alt=""
-          className="w-18 h-18 group-hover:hidden p-3"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-3 ${
+            activeCard === 2 ? "hidden" : "group-hover:hidden"
+          }`}
         />
         <img
           src="/images/info3.gif"
           alt=""
-          className="w-18 h-18 hidden group-hover:block p-3"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-3 ${
+            activeCard === 2 ? "block" : "hidden group-hover:block"
+          }`}
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card3.title")}
@@ -79,7 +105,10 @@ const Info = () => {
           {t("info.card3.description")}
         </p>
       </div>
-      <div className="relative w-[65%] md:w-full shrink-0 md:shrink group">
+      <div
+        className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
+        onClick={() => handleCardClick(3)}
+      >
         <img
           src="/images/info4.png"
           alt=""
@@ -89,12 +118,16 @@ const Info = () => {
         <img
           src="/images/info4.png"
           alt=""
-          className="w-18 h-18 group-hover:hidden p-1.5"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-1.5 ${
+            activeCard === 3 ? "hidden" : "group-hover:hidden"
+          }`}
         />
         <img
           src="/images/info4.gif"
           alt=""
-          className="w-18 h-18 hidden group-hover:block p-1.5"
+          className={`w-16 sm:w-18 h-16 sm:h-18 p-1.5 ${
+            activeCard === 3 ? "block" : "hidden group-hover:block"
+          }`}
         />
         <h2 className="text-base sm:text-lg font-semibold sm:font-bold text-gray-700">
           {t("info.card4.title")}
