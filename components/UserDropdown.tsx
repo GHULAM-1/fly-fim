@@ -95,7 +95,7 @@ export function UserDropdown({ user, scrolled }: UserDropdownProps) {
           <div className="flex items-center space-x-3">
             <CustomAvatar user={user} size="large" scrolled={true} />
             <div className="space-y-1">
-              <p className="text-base font-semibold leading-none">
+              <p className="text-base font-heading leading-none">
                 {displayName}
               </p>
               <p className="text-sm text-muted-foreground">{email}</p>

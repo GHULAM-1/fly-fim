@@ -83,7 +83,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "welcome" && (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">
+              <DialogTitle className="text-2xl font-heading">
                 Welcome to Fly in minute
               </DialogTitle>
               <DialogDescription className="text-gray-600">
@@ -151,7 +151,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">
+                <h3 className="text-lg font-heading mb-3">
                   Continue with email
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
@@ -199,7 +199,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
               <div className="mx-auto mb-4 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
                 <Send className="w-8 h-8 text-purple-600" />
               </div>
-              <DialogTitle className="text-2xl font-bold text-center">
+              <DialogTitle className="text-2xl font-heading text-center">
                 Check your email!
               </DialogTitle>
               <DialogDescription className="text-center text-gray-600">
