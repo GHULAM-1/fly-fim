@@ -146,7 +146,7 @@ const Destinations = () => {
               alt={destination.description}
               className="rounded"
             />
-            <p className="text-base font-heading text-gray-700 mt-2 leading-tight md:max-w-32">
+            <p className="text-base font-heading text-gray-700 mt-2 leading-tight max-w-32">
               {destination.description}
             </p>
             <p className="text-sm mt-1">{destination.place}</p>

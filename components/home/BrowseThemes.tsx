@@ -177,9 +177,22 @@ const BrowseThemes = () => {
     { key: "Aerial Sightseeing", icon: Plane, label: "Aerial Sightseeing" },
   ];
 
+  // Additional items that will be combined with tabData items
+  const additionalItems = [
+    { icon: Calendar, text: "Seasonal Events" },
+    { icon: Camera, text: "Photo Spots" },
+    { icon: Users, text: "Group Activities" },
+    { icon: Sparkles, text: "Special Offers" },
+    { icon: MapPin, text: "Local Experiences" },
+    { icon: CreditCard, text: "Gift Cards" },
+  ];
+
+  // Combine tabData items with additional items
+  const combinedItems = [...tabData[activeTab].items, ...additionalItems];
+
   return (
     <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10 2xl:max-w-screen-xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-heading text-gray-700 mb-4 md:mb-10">
+      <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-4 md:mb-10">
         {t("browseThemes.title")}
       </h2>
       <div className="flex items-center gap-6 mb-4 md:mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
@@ -193,12 +206,12 @@ const BrowseThemes = () => {
               className={`flex cursor-pointer items-center gap-2 pb-2 ${
                 isActive
                   ? "text-primary border-b-2 border-primary"
-                  : "text-gray-600"
+                  : "text-[#444444]"
               }`}
             >
               <IconComponent
                 size={16}
-                className={isActive ? "text-primary" : "text-gray-600"}
+                className={isActive ? "text-primary" : "text-[#444444]"}
               />
               <span className="text-sm whitespace-nowrap">
                 {category.label}
@@ -207,28 +220,29 @@ const BrowseThemes = () => {
           );
         })}
         <div className="cursor-pointer hover:border-gray-400 bg-white shadow-lg border border-gray-200 shadow-white rounded-full p-1.5">
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight size={16} className="text-[#444444]" />
         </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
-        {tabData[activeTab].items.map((item, index) => {
+        {combinedItems.map((item, index) => {
           const IconComponent = item.icon;
           return (
             <Link
               key={index}
               href="#"
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-2 group text-[#444444] hover:text-primary"
             >
-              <IconComponent size={16} className="text-gray-600" />
+              <IconComponent
+                size={16}
+                className="text-[#444444] group-hover:text-primary"
+              />
               <span className="text-sm underline">{item.text}</span>
             </Link>
           );
         })}
-      </div>
-      <div className="mt-4 sm:mt-8">
         <Link
           href="#"
-          className="cursor-pointer text-sm text-gray-600 hover:text-gray-900 underline"
+          className="cursor-pointer text-sm text-[#444444] hover:text-primary underline"
         >
           {tabData[activeTab].viewAll}
         </Link>
