@@ -35,7 +35,7 @@ const CarouselCard = ({
       <div className="relative pointer-events-none md:pointer-events-auto">
         <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_0_30px_rgba(0,0,0,0.5)] transition-shadow duration-300 pointer-events-none" />
         {badge && (
-          <span className="absolute top-2 left-2 z-10 bg-white text-[11px] font-medium px-2 py-1 rounded">
+          <span className="absolute top-2 left-2 z-10 bg-white text-[11px] font-extrabold px-2 py-1 rounded">
             {badge}
           </span>
         )}

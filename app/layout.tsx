@@ -9,6 +9,8 @@ import { CurrencyProvider } from "@/lib/currency-context";
 import Tabs from "@/components/Tabs";
 import { usePathname } from "next/navigation";
 import localFont from "next/font/local";
+import { Toaster } from "sonner";
+import { ToastContainerComponent } from "@/components/toast";
 
 const heading = localFont({
   src: "../fonts/heading.otf",
@@ -72,6 +74,8 @@ export default function RootLayout({
       </head>
       <body className={`${heading.variable} ${text.variable} antialiased`}>
         <I18nextProvider i18n={i18n}>
+        <Toaster position="top-center"/>
+        <ToastContainerComponent />
           <CurrencyProvider>
             <LayoutContent>{children}</LayoutContent>
           </CurrencyProvider>

@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { toast } from "@/components/toast";
+
+// Global flag to prevent duplicate toasts
+let hasShownSignInToast = false;
+let hasShownSignOutToast = false;
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -29,9 +34,25 @@ export function useAuth() {
       setUser(session?.user ?? null);
       setLoading(false);
 
+      // Show success toast on successful sign in (only once)
+      if (event === "SIGNED_IN" && session?.user && !hasShownSignInToast) {
+        hasShownSignInToast = true;
+        toast.success("You have successfully signed in!");
+        // Reset flag after a delay to allow for future sign-ins
+        setTimeout(() => {
+          hasShownSignInToast = false;
+        }, 2000);
+      }
+
       // If user signed out, ensure we clear the state immediately
-      if (event === "SIGNED_OUT") {
+      if (event === "SIGNED_OUT" && !hasShownSignOutToast) {
         setUser(null);
+        hasShownSignOutToast = true;
+        toast.success("Signed out successfully");
+        // Reset flag after a delay
+        setTimeout(() => {
+          hasShownSignOutToast = false;
+        }, 2000);
       }
     });
 
