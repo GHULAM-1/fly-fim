@@ -145,10 +145,10 @@ const Activities = () => {
                 alt={activity.description}
                 className="rounded"
               />
-              <p className="text-sm md:text-base font-heading text-gray-700 leading-tight mt-2">
+              <p className="text-base font-heading text-gray-700 leading-tight mt-2">
                 {activity.description}
               </p>
-              <p className="text-xs md:text-sm mt-1">{activity.place}</p>
+              <p className="text-sm mt-1">{activity.place}</p>
             </Link>
           ))}
         </div>
