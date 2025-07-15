@@ -192,13 +192,13 @@ const BrowseThemes = () => {
               onClick={() => setActiveTab(category.key)}
               className={`flex cursor-pointer items-center gap-2 pb-2 ${
                 isActive
-                  ? "text-purple-600 border-b-2 border-purple-600"
+                  ? "text-primary border-b-2 border-primary"
                   : "text-gray-600"
               }`}
             >
               <IconComponent
                 size={16}
-                className={isActive ? "text-purple-600" : "text-gray-600"}
+                className={isActive ? "text-primary" : "text-gray-600"}
               />
               <span className="text-sm whitespace-nowrap">
                 {category.label}

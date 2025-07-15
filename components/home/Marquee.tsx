@@ -7,25 +7,30 @@ const MarqueeComp = () => {
   const { t } = useTranslation();
 
   const partners = [
-    "/images/1.avif",
-    "/images/2.avif",
-    "/images/3.png.avif",
-    "/images/4.png.avif",
-    "/images/5.png.avif",
-    "/images/6.png.avif",
-    "/images/7.png.avif",
-    "/images/8.png.avif",
-    "/images/9.png.avif",
-    "/images/10.png.avif",
-    "/images/11.png.avif",
-    "/images/12.png.avif",
-    "/images/13.png.avif",
-    "/images/14.png.avif",
-    "/images/15.png.avif",
-    "/images/16.png.avif",
-    "/images/17.png.avif",
-    "/images/18.png.avif",
-    "/images/19.png.avif",
+    "/images/1.png",
+    "/images/2.svg",
+    "/images/3.webp",
+    "/images/4.svg.png",
+    "/images/5.png",
+    "/images/6.jpg",
+    "/images/7.png",
+    "/images/8.png",
+    "/images/9.png",
+    "/images/10.png",
+  ];
+
+  const hotels = [
+    "/images/h1.png",
+    "/images/h2.png",
+    "/images/h3.svg.png",
+    "/images/h4.png",
+    "/images/h5.png",
+    "/images/h6.svg.png",
+    "/images/h7.svg.png",
+    "/images/h8.png",
+    "/images/h9.png",
+    "/images/h10.png",
+    "/images/h11.svg.png",
   ];
 
   return (
@@ -40,17 +45,17 @@ const MarqueeComp = () => {
               key={partner}
               src={partner}
               alt=""
-              className="w-24 sm:w-36 mx-6"
+              className="w-24 sm:w-36 h-16 object-contain mx-6"
             />
           ))}
         </Marquee>
         <Marquee direction="right" pauseOnHover className="mt-10">
-          {partners.map((partner) => (
+          {hotels.map((hotel) => (
             <img
-              key={partner}
-              src={partner}
+              key={hotel}
+              src={hotel}
               alt=""
-              className="w-24 sm:w-36 mx-6"
+              className="w-24 sm:w-36 h-16 object-contain mx-6"
             />
           ))}
         </Marquee>
