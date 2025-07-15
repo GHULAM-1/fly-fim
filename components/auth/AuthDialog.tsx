@@ -83,7 +83,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "welcome" && (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl font-heading">
+              <DialogTitle className="text-2xl font-heading font-extralight">
                 Welcome to Fly in minute
               </DialogTitle>
               <DialogDescription className="text-gray-600">
@@ -95,7 +95,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
             <div className="space-y-4 pt-4">
               <Button
                 variant="outline"
-                className="w-full justify-center gap-3 py-6 text-gray-700"
+                className="w-full justify-center gap-3 py-6 shadow-none font-semibold"
                 onClick={handleGoogleSignIn}
                 disabled={isPending}
               >
@@ -122,7 +122,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
               <Button
                 variant="outline"
-                className="w-full justify-center gap-3 py-6 text-gray-700"
+                className="w-full justify-center gap-3 py-6 shadow-none font-semibold"
                 onClick={() => {
                   // TODO: Implement Apple OAuth
                   console.log("Apple sign in");
@@ -165,7 +165,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     placeholder="Email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full"
+                    className="w-full shadow-none h-10"
                     onKeyDown={(e) => {
                       if (
                         e.key === "Enter" &&
@@ -181,7 +181,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                   {error && <p className="text-sm text-red-600">{error}</p>}
 
                   <Button
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6"
+                    className="w-full bg-primary hover:bg-primary/80 text-white py-6"
                     onClick={handleSendMagicLink}
                     disabled={!email || !email.includes("@") || isPending}
                   >
@@ -196,8 +196,8 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "email-sent" && (
           <>
             <DialogHeader>
-              <div className="mx-auto mb-4 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
-                <Send className="w-8 h-8 text-purple-600" />
+              <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <Send className="w-8 h-8 text-primary" />
               </div>
               <DialogTitle className="text-2xl font-heading text-center">
                 Check your email!

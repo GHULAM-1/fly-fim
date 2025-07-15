@@ -184,7 +184,7 @@ const AccountPage = () => {
   // If user is not signed in, show authentication interface
   return (
     <div className="mt-20">
-      <div className="bg-gradient-to-br from-white to-purple-100 px-6 py-8">
+      <div className="bg-gradient-to-br from-white to-primary/10 px-6 py-8">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-4">
             <h1 className="text-sm text-gray-900 leading-tight">
@@ -193,13 +193,13 @@ const AccountPage = () => {
             </h1>
           </div>
           <div className="flex-shrink-0">
-            {/* Purple chart illustration */}
+            {/* Blue chart illustration */}
             <div className="w-20 h-16 relative">
               <svg viewBox="0 0 80 64" className="w-full h-full">
                 {/* Background circles */}
-                <circle cx="65" cy="15" r="3" fill="#e0e7ff" />
-                <circle cx="70" cy="25" r="2" fill="#c7d2fe" />
-                <circle cx="75" cy="35" r="1.5" fill="#a5b4fc" />
+                <circle cx="65" cy="15" r="3" fill="#dbeafe" />
+                <circle cx="70" cy="25" r="2" fill="#bfdbfe" />
+                <circle cx="75" cy="35" r="1.5" fill="#93c5fd" />
 
                 {/* Bar chart */}
                 <rect
@@ -208,7 +208,7 @@ const AccountPage = () => {
                   width="8"
                   height="15"
                   rx="2"
-                  fill="#a855f7"
+                  fill="#3b82f6"
                 />
                 <rect
                   x="32"
@@ -216,7 +216,7 @@ const AccountPage = () => {
                   width="8"
                   height="25"
                   rx="2"
-                  fill="#9333ea"
+                  fill="#2563eb"
                 />
                 <rect
                   x="44"
@@ -224,7 +224,7 @@ const AccountPage = () => {
                   width="8"
                   height="35"
                   rx="2"
-                  fill="#7c3aed"
+                  fill="#1d4ed8"
                 />
                 <rect
                   x="56"
@@ -232,7 +232,7 @@ const AccountPage = () => {
                   width="8"
                   height="45"
                   rx="2"
-                  fill="#6d28d9"
+                  fill="#1e40af"
                 />
               </svg>
             </div>
@@ -243,7 +243,7 @@ const AccountPage = () => {
         <div className="space-y-4 pt-4">
           <Button
             variant="outline"
-            className="w-full justify-center gap-3 py-6 text-gray-700"
+            className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
             onClick={handleGoogleSignIn}
             disabled={isPending}
           >
@@ -270,7 +270,7 @@ const AccountPage = () => {
 
           <Button
             variant="outline"
-            className="w-full justify-center gap-3 py-6 text-gray-700"
+            className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
             onClick={() => {
               // TODO: Implement Apple OAuth
               console.log("Apple sign in");
@@ -286,7 +286,7 @@ const AccountPage = () => {
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-center gap-3 py-6 text-gray-700"
+                className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
               >
                 <Mail className="text-gray-600" size={20} />
                 <span className="text-gray-700 font-medium">
