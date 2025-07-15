@@ -194,7 +194,7 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
 
           <Button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700"
+            className="w-full bg-primary hover:bg-primary/80"
             disabled={isPending}
           >
             {isPending ? "Creating account..." : "Create Account"}

@@ -215,13 +215,15 @@ const Navbar = () => {
       >
         <div className="flex justify-between items-center 2xl:max-w-screen-xl mx-auto">
           <Link href="/">
-            <img
-              src="/images/logo.png"
-              alt="logo"
-              className={`w-24 sm:w-32 ${
-                scrolled || pathname !== "/" ? "" : "invert"
-              }`}
-            />
+            {scrolled || pathname !== "/" ? (
+              <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
+            ) : (
+              <img
+                src="/images/logo-white.png"
+                alt="logo"
+                className="w-24 sm:w-32"
+              />
+            )}
           </Link>
           {(scrolled || pathname !== "/") && (
             <div

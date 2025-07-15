@@ -358,7 +358,6 @@ const Hero = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
-                    autoFocus
                   />
                 </div>
               </div>
