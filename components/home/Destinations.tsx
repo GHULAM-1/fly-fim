@@ -102,15 +102,15 @@ const Destinations = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
+    <div className="py-4  px-[24px] xl:px-0 max-w-[1200px] mx-auto ">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-heading text-gray-700 max-w-2/3">
+        <h2 className="text-[24px] sm:text-2xl font-heading text-[#444444] max-w-2/3">
           {t("destinations.title")}
         </h2>
         <div className="flex items-center gap-4">
           <Link
             href="/cities"
-            className="text-sm text-gray-500 md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
+            className="text-[15px] text-[#444444] font-lightText md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
           >
             {t("destinations.seeAll")}{" "}
             <ChevronRightIcon className="md:hidden w-4 h-4" />
@@ -132,7 +132,7 @@ const Destinations = () => {
         </div>
       </div>
       <div
-        className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {destinations.map((destination) => (
@@ -146,10 +146,10 @@ const Destinations = () => {
               alt={destination.description}
               className="rounded"
             />
-            <p className="text-base font-heading text-gray-700 mt-2 leading-tight max-w-32">
+            <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight max-w-32">
               {destination.description}
             </p>
-            <p className="text-sm mt-1">{destination.place}</p>
+            <p className="text-sm font-lightText text-[#666666] mt-1">{destination.place}</p>
           </Link>
         ))}
       </div>

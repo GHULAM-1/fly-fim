@@ -33,9 +33,9 @@ const CarouselCard = ({
   return (
     <div className="w-3/4 sm:w-1/2 pt-2 md:w-1/3 lg:w-1/4 hover:-translate-y-2 transition-all duration-300 group pl-4 cursor-pointer">
       <div className="relative pointer-events-none md:pointer-events-auto">
-        <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_0_30px_rgba(0,0,0,0.5)] transition-shadow duration-300 pointer-events-none" />
+        <div className="absolute top-0 left-0 w-[99%] h-full z-10 group-hover:shadow-[inset_0_-15px_30px_rgba(0,0,0,0.7)] transition-shadow duration-300 pointer-events-none" />
         {badge && (
-          <span className="absolute top-2 left-2 z-10 bg-white text-[11px] font-extrabold px-2 py-1 rounded">
+          <span className="absolute top-2 left-2 z-10 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
             {badge}
           </span>
         )}
@@ -60,30 +60,30 @@ const CarouselCard = ({
           className="mySwiper w-full rounded overflow-hidden mb-4 relative pagination-on-hover"
         >
           <SwiperSlide>
-            <img src={image} className="w-full object-cover" />
+            <img src={image} className="w-[99%] object-cover rounded-[4px]" />
           </SwiperSlide>
           <SwiperSlide>
-            <img src={image} className="w-full object-cover" />
+            <img src={image} className="w-[99%] object-cover rounded-[4px]" />
           </SwiperSlide>
           <SwiperSlide>
-            <img src={image} className="w-full object-cover" />
+            <img src={image} className="w-[99%] object-cover rounded-[4px]" />
           </SwiperSlide>
           <div className="hidden group-hover:block">
-            <div className="swiper-button-next after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
-            <div className="swiper-button-prev after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg" />
+            <div className="swiper-button-next after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-sm" />
+            <div className="swiper-button-prev after:text-black after:!text-xs after:w-6 after:h-6 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-sm" />
           </div>
         </Swiper>
       </div>
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-gray-500 text-xs">{place}</span>
+      <div className="flex justify-between items-center -mt-2">
+        <span className="text-[#666666] text-xs">{place}</span>
         <span className="flex items-center gap-1">
           <StarIcon className="text-pink-600" fill="currentColor" size={12} />
           <span className="text-pink-600 text-xs font-semibold">{rating}</span>
           <span className="text-pink-600 text-xs">({reviews})</span>
         </span>
       </div>
-      <p className="font-heading text-lg text-gray-700 mt-2">{description}</p>
-      <p className="font-heading text-gray-700 mt-2 max-w-32">
+      <p className="font-heading text-lg text-[#444444] mt-0">{description}</p>
+      <p className="font-heading text-[#444444] mt-2 max-w-32">
         <span className="text-xs font-text">{t("recommendations.from")}</span>{" "}
         <br /> <PriceDisplay amount={price} />
       </p>

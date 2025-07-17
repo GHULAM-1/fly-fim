@@ -1,10 +1,10 @@
 "use client";
+import { t } from "i18next";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import "flag-icons/css/flag-icons.min.css";
 import React, { useRef } from "react";
-import { useTranslation } from "react-i18next";
 
 const Testimonials = () => {
-  const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -76,7 +76,7 @@ const Testimonials = () => {
     },
   ];
 
-  const renderStars = (rating: number) => {
+  const renderStars = (rating: any) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star
         key={index}
@@ -88,79 +88,115 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white flex flex-col md:flex-row gap-6">
-      <div className="w-full md:w-2/5 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 flex flex-col justify-center 2xl:items-end">
-        <div>
-          <h2 className="text-2xl sm:text-5xl font-heading mb-2 max-w-[70%] xl:max-w-[271px] leading-tight flex md:block items-center justify-between">
-            <span className="w-full shrink-0">{t("testimonials.title")}</span>
-            <img
-              src="/images/info3.gif"
-              alt=""
-              className="ml-5 w-12 h-12 inline"
-            />
-          </h2>
-          <div className="hidden md:flex items-center gap-2 mt-4">
-            <button
-              onClick={scrollLeft}
-              className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+    <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white">
+      <div className="flex flex-col md:flex-row">
+        <div className="md:w-2/5">
+          <div className="mb-[25px] md:py-[48px] xl:py-[60px]">
+            <div
+              className="sm:pr-8 md:pr-16 lg:pr-24 xl:pr-28"
+              style={{ marginLeft: "max(16px, calc((100vw - 1200px) / 2))" }}
             >
-              <ChevronLeft size={32} />
-            </button>
-            <button
-              onClick={scrollRight}
-              className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
-            >
-              <ChevronRight size={32} />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        ref={scrollContainerRef}
-        className="w-full md:w-3/5 flex gap-6 overflow-scroll scrollbar-hide px-4 sm:px-8 md:px-0 sm:pr-28"
-      >
-        {testimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            className="bg-black/30 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10 max-w-sm flex-shrink-0 w-full sm:w-auto"
-          >
-            <img
-              src={testimonial.image}
-              alt={testimonial.experience}
-              className="w-full h-80 object-cover"
-            />
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`${testimonial.avatarColor} rounded-full w-12 shrink-0 h-12 flex items-center justify-center text-lg font-heading`}
-                  >
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <h2 className="text-white text-base sm:text-lg font-heading">
-                      {testimonial.name}
-                    </h2>
-                    <p className="text-xs sm:text-sm">{testimonial.country}</p>
-                  </div>
+              <div className="flex md:hidden items-center justify-between">
+                <div>
+                  <h2 className="text-2xl md:text-5xl font-heading mb-2 max-w-[80%] sm:max-w-[90%] md:max-w-[70%] xl:max-w-[350px] leading-tight flex md:block items-center justify-between">
+                    <span
+                      className="w-full hidden md:block shrink-0"
+                      dangerouslySetInnerHTML={{
+                        __html: t("testimonials.title"),
+                      }}
+                    />
+                    <span
+                      className="w-full block md:hidden ml-2 shrink-0"
+                      dangerouslySetInnerHTML={{
+                        __html: t("testimonials.title2"),
+                      }}
+                    />
+                  </h2>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    {renderStars(testimonial.rating)}
-                  </div>
-                  <p>{testimonial.rating}/5</p>
+                <div>
+                  <img
+                    src="/images/info3.gif"
+                    alt=""
+                    className=" mr-3 w-12 h-12 inline"
+                  />
                 </div>
               </div>
-              <p className="mt-4 mb-10 h-24 text-sm sm:text-base text-gray-300">
-                {testimonial.review}
-              </p>
-              <hr className="my-2 border-gray-600" />
-              <button className="text-xs text-gray-400 underline underline-offset-4">
-                {testimonial.experience}
-              </button>
+              <h2 className="text-2xl md:text-5xl font-heading mb-2 max-w-[80%] sm:max-w-[90%] md:max-w-[70%] xl:max-w-[350px] leading-tight hidden md:flex items-center justify-between">
+                <span
+                  className="w-full hidden md:block shrink-0"
+                  dangerouslySetInnerHTML={{ __html: t("testimonials.title") }}
+                />
+              </h2>
+              <div className="hidden md:flex items-center gap-[34px] mt-[42px]">
+                <button
+                  onClick={scrollLeft}
+                  className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronLeft size={40} />
+                </button>
+                <button
+                  onClick={scrollRight}
+                  className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronRight size={40} />
+                </button>
+              </div>
             </div>
           </div>
-        ))}
+        </div>
+
+        <div
+          ref={scrollContainerRef}
+          className="md:w-3/5 flex gap-6 overflow-x-scroll scrollbar-hide px-[24px] md:px-0"
+        >
+          {testimonials.map((testimonial) => (
+            <div
+              key={testimonial.id}
+              className="bg-black/30 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10 max-w-sm flex-shrink-0 w-full sm:w-auto"
+            >
+              <img
+                src={testimonial.image}
+                alt={testimonial.experience}
+                className="w-[384px] h-[364px] object-cover"
+              />
+              <div className="p-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`${testimonial.avatarColor} rounded-full w-12 shrink-0 h-12 flex items-center justify-center text-lg font-heading`}
+                    >
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <h2 className="text-white text-[18px] md:text-[21px] font-heading">
+                        {testimonial.name}
+                      </h2>
+                      <div className="flex items-center gap-1">
+                        <img src="/flag.png" alt="" className="w-4 h-4" />
+                        <p className="text-xs sm:text-sm text-[#C4C4C4] font-lightText">
+                          {testimonial.country}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      {renderStars(testimonial.rating)}
+                    </div>
+                    <p>{testimonial.rating}/5</p>
+                  </div>
+                </div>
+                <p className="mt-4 mb-10 h-24 text-sm sm:text-base font-text text-[#F8F8F8]">
+                  {testimonial.review}
+                </p>
+                <hr className="my-2 border-[#C4C4C4]" />
+                <button className="text-[9px] text-[#C4C4C4] underline underline-offset-4">
+                  {testimonial.experience}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

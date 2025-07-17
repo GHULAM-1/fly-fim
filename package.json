@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
+    "flag-icons": "^7.5.0",
     "framer-motion": "^12.23.0",
     "i18next": "^25.2.1",
     "lucide-react": "^0.516.0",

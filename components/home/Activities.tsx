@@ -103,10 +103,10 @@ const Activities = () => {
   ];
 
   return (
-    <div className="py-8 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 bg-zinc-100">
-      <div className="2xl:max-w-screen-xl mx-auto 2xl:px-0">
+    <div className="py-8 sm:py-10 xl:px-0 px-[24px]   bg-zinc-100">
+      <div className="max-w-[1200px] mx-auto 2xl:px-0">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-2xl font-heading text-gray-700">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {t("activities.title")}
           </h2>
           <div className="flex items-center gap-4">
@@ -131,7 +131,7 @@ const Activities = () => {
           </div>
         </div>
         <div
-          className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+          className="mt-4 sm:mt-2 flex overflow-x-scroll -ml-4 scrollbar-hide"
           ref={scrollContainerRef}
         >
           {activities.map((activity) => (
@@ -143,12 +143,12 @@ const Activities = () => {
               <img
                 src={activity.image}
                 alt={activity.description}
-                className="rounded"
+                className="rounded w-[180px] h-[240px]"
               />
-              <p className="text-base font-heading text-gray-700 leading-tight mt-2">
+              <p className="text-[17px] w-[90%] font-heading text-[#444444] leading-tight mt-2">
                 {activity.description}
               </p>
-              <p className="text-sm mt-1">{activity.place}</p>
+              <p className="text-sm font-lightText text-[#666666] mt-1">{activity.place}</p>
             </Link>
           ))}
         </div>

@@ -55,7 +55,7 @@ const Hero = () => {
       image: "/images/d3.jpg.avif",
     },
   ];
-  
+
   const topActivities = [
     {
       id: 1,
@@ -121,7 +121,7 @@ const Hero = () => {
         // Set up the transition immediately
         setPreviousPlaceholderIndex(currentIndexRef.current);
         setIsTransitioning(true);
-        
+
         // Update to next index immediately
         currentIndexRef.current = nextIndex;
         setCurrentPlaceholderIndex(nextIndex);
@@ -165,8 +165,8 @@ const Hero = () => {
             key={`prev-${previousPlaceholderIndex}`}
             className="absolute whitespace-nowrap"
             style={{
-              animation: 'slideOutUp 0.7s ease-out forwards',
-              animationFillMode: 'both'
+              animation: "slideOutUp 0.7s ease-out forwards",
+              animationFillMode: "both",
             }}
           >
             {placeholderOptions[previousPlaceholderIndex]}
@@ -179,11 +179,11 @@ const Hero = () => {
           className="absolute whitespace-nowrap"
           style={{
             animation: isTransitioning
-              ? 'slideInUp 0.7s ease-out forwards'
-              : 'none',
-            animationFillMode: 'both',
+              ? "slideInUp 0.7s ease-out forwards"
+              : "none",
+            animationFillMode: "both",
             opacity: isTransitioning ? 0 : 1,
-            transform: isTransitioning ? 'translateY(100%)' : 'translateY(0)',
+            transform: isTransitioning ? "translateY(100%)" : "translateY(0)",
           }}
         >
           {placeholderOptions[currentPlaceholderIndex]}
@@ -224,9 +224,7 @@ const Hero = () => {
       `}</style>
 
       <div
-        className={`h-[414px] md:h-[640px] relative ${
-          isInputFocused ? "z-50" : ""
-        }`}
+        className={`h-[414px] md:h-[640px]  relative`}
       >
         <div className="h-[414px] md:h-[640px] w-full absolute top-0 left-0 -z-20 overflow-hidden">
           <motion.video
@@ -240,25 +238,29 @@ const Hero = () => {
           />
         </div>
         <div className="absolute top-0 left-0 w-full h-full bg-black/30 -z-10" />
-        
+
         {/* Focus overlay - covers entire viewport */}
         {isInputFocused && (
-          <div className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300" />
+          <div
+            className="fixed inset-0  bg-black/50 transition-opacity duration-300"
+            style={{ zIndex: 10 }}
+          />
         )}
-        
-        <div className="w-full h-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:px-0 py-10 sm:py-20 flex flex-col justify-end gap-10 2xl:max-w-screen-xl mx-auto">
+
+        <div className="w-full h-full xl:px-0 px-[24px] max-w-[1200px]  py-10 md:py-20 flex flex-col justify-end gap-10  mx-auto relative ">
           <h1
             id="scroll-target"
-            className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight"
+            className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight relative "
           >
             {t("hero.title")}
           </h1>
 
           {/* Desktop Search Container */}
           <div
-            className={`relative hidden md:block transition-all duration-300 z-50 ${
+            className={`relative hidden md:block transition-all  duration-300 ${
               isInputFocused ? "max-w-md" : "max-w-sm"
             }`}
+            style={{ zIndex: 90 }}
             ref={searchRef}
           >
             <div
@@ -266,10 +268,12 @@ const Hero = () => {
               onClick={() => {
                 setIsSearchOpen(true);
                 inputRef.current?.focus();
-                const target = document.getElementById("scroll-target");
-                if (target) {
-                  target.scrollIntoView({ behavior: "smooth" });
-                }
+                setTimeout(() => {
+                  const target = document.getElementById("scroll-target");
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                  }
+                }, 100);
               }}
             >
               <div className="flex-1 relative">
@@ -284,19 +288,28 @@ const Hero = () => {
                   onFocus={() => {
                     setIsSearchOpen(true);
                     setIsInputFocused(true);
+                    setTimeout(() => {
+                      const target = document.getElementById("scroll-target");
+                      if (target) {
+                        target.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }, 100);
                   }}
                   onBlur={() => {
                     setIsInputFocused(false);
                   }}
                 />
                 {/* Animated placeholder for desktop */}
-                {!isInputFocused && <AnimatedPlaceholder />}
+                { !isInputFocused && !searchQuery && <AnimatedPlaceholder />}
               </div>
               <Search strokeWidth={1} />
             </div>
 
             {isSearchOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
+              <div
+                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-80 overflow-y-auto"
+                style={{ zIndex: 60 }}
+              >
                 <div className="p-4">
                   <h3 className="text-sm font-medium text-gray-600 mb-3">
                     Top destinations near you
@@ -344,7 +357,16 @@ const Hero = () => {
 
           {/* Mobile Search Drawer */}
           <Drawer>
-            <DrawerTrigger className="max-w-sm flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative">
+            <DrawerTrigger
+              className="max-w-sm flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
+              onClick={() => {
+                const target = document.getElementById("scroll-target");
+                if (target) {
+                  target.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              {" "}
               <div className="flex-1 relative">
                 <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full" />
                 {/* Animated placeholder for mobile */}
@@ -352,7 +374,7 @@ const Hero = () => {
               </div>
               <Search strokeWidth={1} />
             </DrawerTrigger>
-            
+
             <DrawerContent className="h-full max-h-[90vh]">
               <DrawerTitle className="bg-white p-4">
                 <div className="flex items-center border border-black rounded-md">

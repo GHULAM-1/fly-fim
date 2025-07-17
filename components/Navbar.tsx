@@ -44,17 +44,14 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const getHeroHeight = () => {
-        const vh = window.innerHeight;
         const width = window.innerWidth;
 
-        if (width >= 1536) {
-          // 2xl breakpoint
-          return vh * 0.5; // 50vh
-        } else if (width >= 768) {
-          // md breakpoint
-          return vh * 0.78; // 78vh
+        if (width >= 768) {
+          // md breakpoint and up - trigger just before Hero ends
+          return 580; // 640px - 60px early
         } else {
-          return vh * 0.6; // 60vh
+          // mobile - trigger just before Hero ends
+          return 364; // 414px - 50px early
         }
       };
 
@@ -205,7 +202,7 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-50 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-5 ${
+        className={`fixed top-0 left-0 w-full z-50 py-2 ${
           scrolled || pathname !== "/"
             ? `bg-white ${
                 pathname === "/" || scrolled ? "border-b border-gray-200" : ""
@@ -213,18 +210,19 @@ const Navbar = () => {
             : "text-white"
         }`}
       >
-        <div className="flex justify-between items-center 2xl:max-w-screen-xl mx-auto">
-          <Link href="/">
-            {scrolled || pathname !== "/" ? (
-              <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
-            ) : (
-              <img
-                src="/images/logo-white.png"
-                alt="logo"
-                className="w-24 sm:w-32"
-              />
-            )}
-          </Link>
+                <div className="max-w-[1200px] mx-auto xl:px-[0px] px-[24px]">
+          <div className="flex justify-between items-center">
+            <Link href="/">
+              {scrolled || pathname !== "/" ? (
+                <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
+              ) : (
+                <img
+                  src="/images/logo-white.png"
+                  alt="logo"
+                  className="w-24 sm:w-32"
+                />
+              )}
+            </Link>
           {(scrolled || pathname !== "/") && (
             <div
               ref={searchRef}
@@ -345,7 +343,9 @@ const Navbar = () => {
               className="text-sm font-semibold flex items-center gap-1"
             >
               <CircleHelp strokeWidth={1} size={16} />
-              Help
+              <span className="hidden font-extralight md:block">
+                Help
+              </span>
             </Link>
 
             {loading ? (
@@ -363,7 +363,7 @@ const Navbar = () => {
                 onClick={() => setAuthDialogOpen(true)}
                 className={`border ${
                   scrolled || pathname !== "/" ? "" : "border-white"
-                } rounded-md cursor-pointer font-semibold py-1.5 px-3 text-sm`}
+                } rounded-md cursor-pointer font-extralight py-1.5 px-3 text-sm`}
               >
                 Sign in
               </button>
@@ -543,6 +543,7 @@ const Navbar = () => {
 
             <LanguageCurrencyDropdown scrolled={scrolled || pathname !== "/"} />
           </div>
+        </div>
         </div>
       </div>
 
