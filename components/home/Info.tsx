@@ -11,7 +11,7 @@ const Info = () => {
   };
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0 flex justify-between gap-4 sm:gap-8 md:gap-10 overflow-scroll md:overflow-visible scrollbar-hide">
+    <div className="py-4 sm:py-10 px-[24px] max-w-[1220px] mx-auto xl:px-0 flex justify-between gap-4 sm:gap-8 md:gap-10 overflow-scroll md:overflow-visible scrollbar-hide">
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
         onClick={() => handleCardClick(0)}
@@ -36,10 +36,10 @@ const Info = () => {
             activeCard === 0 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base ml-3 sm:text-lg font-heading text-gray-700">
+        <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card1.title")}
         </h2>
-        <p className="text-sm ml-3 mt-1">{t("info.card1.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-lightText   text-[#666666]">{t("info.card1.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -65,10 +65,10 @@ const Info = () => {
             activeCard === 1 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base ml-3 sm:text-lg font-heading text-gray-700">
+        <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card2.title")}
         </h2>
-        <p className="text-sm ml-3 mt-1">{t("info.card2.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-lightText text-[#666666]">{t("info.card2.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -94,10 +94,10 @@ const Info = () => {
             activeCard === 2 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base ml-3 sm:text-lg font-heading text-gray-700">
+        <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card3.title")}
         </h2>
-        <p className="text-sm ml-3 mt-1">{t("info.card3.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-lightText text-[#666666]">{t("info.card3.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -123,10 +123,10 @@ const Info = () => {
             activeCard === 3 ? "block" : "hidden group-hover:block"
           }`}
         />
-        <h2 className="text-base ml-3 sm:text-lg font-heading text-gray-700">
+        <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card4.title")}
         </h2>
-        <p className="text-sm ml-3 mt-1">{t("info.card4.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-lightText text-[#666666]">{t("info.card4.description")}</p>
       </div>
     </div>
   );

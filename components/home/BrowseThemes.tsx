@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
 import {
   Ticket,
   MapPin,
@@ -23,6 +22,7 @@ import {
   Fish,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
   Camera,
   Bus,
   ShoppingBag,
@@ -39,11 +39,18 @@ type TabKey =
   | "Food & Drink"
   | "Entertainment"
   | "Adventure"
-  | "Aerial Sightseeing";
+  | "Aerial Sightseeing"
+  | "Wellness"
+  | "Education"
+  | "Sports"
+  | "Photography"
+  | "Nightlife";
 
 const BrowseThemes = () => {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>("Tickets");
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [showRightButton, setShowRightButton] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const tabData: Record<
     TabKey,
@@ -163,6 +170,56 @@ const BrowseThemes = () => {
       ],
       viewAll: "View all Aerial Sightseeing",
     },
+    Wellness: {
+      items: [
+        { icon: Sparkles, text: "Spa Treatments" },
+        { icon: TreePine, text: "Yoga Classes" },
+        { icon: Mountain, text: "Meditation Retreats" },
+        { icon: Waves, text: "Hot Springs" },
+        { icon: Building, text: "Wellness Centers" },
+      ],
+      viewAll: "View all Wellness",
+    },
+    Education: {
+      items: [
+        { icon: Building, text: "Language Classes" },
+        { icon: Camera, text: "Art Workshops" },
+        { icon: Music, text: "Music Lessons" },
+        { icon: UtensilsCrossed, text: "Cooking Schools" },
+        { icon: History, text: "Cultural Workshops" },
+      ],
+      viewAll: "View all Education",
+    },
+    Sports: {
+      items: [
+        { icon: Car, text: "Golf Courses" },
+        { icon: Waves, text: "Water Sports" },
+        { icon: Mountain, text: "Skiing" },
+        { icon: Car, text: "Tennis Courts" },
+        { icon: Mountain, text: "Rock Climbing" },
+      ],
+      viewAll: "View all Sports",
+    },
+    Photography: {
+      items: [
+        { icon: Camera, text: "Photo Tours" },
+        { icon: Camera, text: "Photography Workshops" },
+        { icon: MapPin, text: "Scenic Spots" },
+        { icon: Building, text: "Architecture Photography" },
+        { icon: Users, text: "Portrait Sessions" },
+      ],
+      viewAll: "View all Photography",
+    },
+    Nightlife: {
+      items: [
+        { icon: Music, text: "Bars & Pubs" },
+        { icon: Music, text: "Nightclubs" },
+        { icon: Music, text: "Live Music Venues" },
+        { icon: Music, text: "Comedy Clubs" },
+        { icon: Music, text: "Karaoke Bars" },
+      ],
+      viewAll: "View all Nightlife",
+    },
   };
 
   const categories: Array<{ key: TabKey; icon: any; label: string }> = [
@@ -175,6 +232,11 @@ const BrowseThemes = () => {
     { key: "Entertainment", icon: Music, label: "Entertainment" },
     { key: "Adventure", icon: Mountain, label: "Adventure" },
     { key: "Aerial Sightseeing", icon: Plane, label: "Aerial Sightseeing" },
+    { key: "Wellness", icon: Sparkles, label: "Wellness" },
+    { key: "Education", icon: Building, label: "Education" },
+    { key: "Sports", icon: Car, label: "Sports" },
+    { key: "Photography", icon: Camera, label: "Photography" },
+    { key: "Nightlife", icon: Music, label: "Nightlife" },
   ];
 
   // Additional items that will be combined with tabData items
@@ -190,40 +252,119 @@ const BrowseThemes = () => {
   // Combine tabData items with additional items
   const combinedItems = [...tabData[activeTab].items, ...additionalItems];
 
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowLeftButton(scrollLeft > 0);
+      setShowRightButton(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -1000,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 1000,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkScrollButtons();
+    const handleResize = () => checkScrollButtons();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.addEventListener('scroll', checkScrollButtons);
+      return () => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.removeEventListener('scroll', checkScrollButtons);
+        }
+      };
+    }
+  }, []);
+
   return (
-    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 py-10 2xl:max-w-screen-xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-4 md:mb-10">
-        {t("browseThemes.title")}
+    <div className=" max-w-[1200px] mx-auto ">
+      <h2 className="text-lg sm:text-2xl px-[24px] xl:px-0 tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
+        Browse By Themes
       </h2>
-      <div className="flex items-center gap-6 mb-4 md:mb-8 justify-between border-b border-gray-200 overflow-x-auto scrollbar-none">
-        {categories.map((category) => {
-          const IconComponent = category.icon;
-          const isActive = activeTab === category.key;
-          return (
-            <button
-              key={category.key}
-              onClick={() => setActiveTab(category.key)}
-              className={`flex cursor-pointer items-center gap-2 pb-2 ${
-                isActive
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-[#444444]"
-              }`}
-            >
-              <IconComponent
-                size={16}
-                className={isActive ? "text-primary" : "text-[#444444]"}
-              />
-              <span className="text-sm whitespace-nowrap">
-                {category.label}
-              </span>
-            </button>
-          );
-        })}
-        <div className="cursor-pointer hover:border-gray-400 bg-white shadow-lg border border-gray-200 shadow-white rounded-full p-1.5">
-          <ChevronRight size={16} className="text-[#444444]" />
+      <div className="relative">
+        <div className="flex items-center mb-4 md:mb-8 ">
+          {showLeftButton && (
+            <div className="absolute md:flex hidden left-0 top-0 z-10 bottom-0 items-center">
+              <div className="bg-gradient-to-r from-white via-white to-transparent w-20 h-full flex items-center justify-start">
+                <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                  <ChevronLeft size={16} className="text-[#444444]" onClick={scrollLeft} />
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div
+            ref={scrollContainerRef}
+            className="flex items-center px-[24px] xl:px-0 gap-[24px] border-b border-gray-200 overflow-x-auto scrollbar-none pb-2 "
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {categories.map((category) => {
+              const IconComponent = category.icon;
+              const isActive = activeTab === category.key;
+              return (
+                <button
+                  key={category.key}
+                  onClick={() => setActiveTab(category.key)}
+                  className={`cursor-pointer  relative ${
+                    isActive
+                      ? "text-primary"
+                      : "text-[#444444]"
+                  }`}
+                  style={{ minWidth: 'fit-content' }}
+                >
+                  <div className="flex  items-center gap-2">
+                    <IconComponent
+                      size={16}
+                      className={isActive ? "text-primary" : "text-[#444444]"}
+                    />
+                    <span className="text-[15px]  tracking-wide font-text whitespace-nowrap">
+                      {category.label}
+                    </span>
+                  </div>
+                  {isActive && (
+                    <div className="absolute bottom-[-8px] left-0 right-0 h-0.5 bg-primary"></div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {showRightButton && (
+            <div className="absolute right-[0px] top-0 bottom-0 z-10 md:flex hidden items-center">
+              <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
+                <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
+                <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                  <ChevronRight size={16} className="text-[#444444]" onClick={scrollRight} />
+                </div>
+
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 px-[24px] xl:px-0 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
         {combinedItems.map((item, index) => {
           const IconComponent = item.icon;
           return (

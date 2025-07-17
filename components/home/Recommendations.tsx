@@ -111,12 +111,12 @@ const Recommendations = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 2xl:max-w-screen-xl mx-auto 2xl:px-0">
+    <div className="py-4 sm:py-10 xl:px-0 px-[24px] max-w-[1200px] mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-heading text-gray-700">
+        <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
           Traveler's top choices
         </h2>
-        <div className="hidden md:flex items-center gap-4">
+        {/* <div className="hidden md:flex items-center gap-4">
           <Link
             href="/cities"
             className="text-sm underline underline-offset-4 whitespace-nowrap"
@@ -137,10 +137,10 @@ const Recommendations = () => {
               <ChevronRightIcon className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
       <div
-        className="mt-4 sm:mt-8 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (
