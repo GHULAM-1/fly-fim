@@ -19,6 +19,7 @@ const Hero = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -355,15 +356,12 @@ const Hero = () => {
             )}
           </div>
 
-          {/* Mobile Search Drawer */}
-          <Drawer>
+          {/* Mobile Search Drawer - ONLY MOBILE FIX APPLIED */}
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger
               className="max-w-sm flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
               onClick={() => {
-                const target = document.getElementById("scroll-target");
-                if (target) {
-                  target.scrollIntoView({ behavior: "smooth" });
-                }
+                setIsDrawerOpen(true);
               }}
             >
               {" "}
