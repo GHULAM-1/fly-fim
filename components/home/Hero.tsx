@@ -20,12 +20,33 @@ const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
+
+  // Handle hydration and viewport
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // Set CSS custom property for viewport height
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+    
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+    };
+  }, []);
 
   const placeholderOptions = [
     "experiences and cities",
@@ -114,6 +135,8 @@ const Hero = () => {
 
   // Rotate placeholder text with smoother timing
   useEffect(() => {
+    if (!isMounted) return;
+    
     if (!isInputFocused && !searchQuery) {
       const interval = setInterval(() => {
         const nextIndex =
@@ -135,7 +158,7 @@ const Hero = () => {
       }, 3000); // Show each text for 3 seconds
       return () => clearInterval(interval);
     }
-  }, [isInputFocused, searchQuery, placeholderOptions.length]);
+  }, [isInputFocused, searchQuery, placeholderOptions.length, isMounted]);
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -356,43 +379,58 @@ const Hero = () => {
             )}
           </div>
 
-          {/* Mobile Search Drawer - ONLY MOBILE FIX APPLIED */}
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          {/* Mobile Search Drawer */}
+          <Drawer 
+            open={isDrawerOpen} 
+            onOpenChange={setIsDrawerOpen}
+            shouldScaleBackground={false}
+          >
             <DrawerTrigger
               className="max-w-sm flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
-              onClick={() => {
-                setIsDrawerOpen(true);
-              }}
+              asChild
             >
-              {" "}
-              <div className="flex-1 relative">
-                <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full" />
-                {/* Animated placeholder for mobile */}
-                <AnimatedPlaceholder />
-              </div>
-              <Search strokeWidth={1} />
+              <button
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+              >
+                <div className="flex-1 relative">
+                  <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
+                  {/* Animated placeholder for mobile */}
+                  <AnimatedPlaceholder />
+                </div>
+                <Search strokeWidth={1} />
+              </button>
             </DrawerTrigger>
 
-            <DrawerContent className="h-full max-h-[90vh]">
-              <DrawerTitle className="bg-white p-4">
-                <div className="flex items-center border border-black rounded-md">
-                  <DrawerClose asChild>
-                    <button className="p-2">
-                      <ArrowLeft size={20} className="text-gray-600" />
-                    </button>
-                  </DrawerClose>
-                  <div className="flex-1">
-                    <Input
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
-                      placeholder="Search for experiences and cities"
-                    />
+            <DrawerContent 
+              className="drawer-content"
+              style={{
+                transform: 'translateY(0)',
+                transition: 'transform 0.3s ease-out'
+              }}
+            >
+              <div className="h-full flex flex-col">
+                <DrawerTitle className="bg-white p-4 flex-shrink-0">
+                  <div className="flex items-center border border-black rounded-md">
+                    <DrawerClose asChild>
+                      <button className="p-2">
+                        <ArrowLeft size={20} className="text-gray-600" />
+                      </button>
+                    </DrawerClose>
+                    <div className="flex-1">
+                      <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
+                        placeholder="Search for experiences and cities"
+                        autoFocus
+                      />
+                    </div>
                   </div>
-                </div>
-              </DrawerTitle>
+                </DrawerTitle>
 
-              <div className="flex-1 overflow-y-auto px-4 pb-4">
+                <div className="flex-1 overflow-y-auto px-4 pb-4">
                 {!searchQuery ? (
                   <>
                     {/* Top destinations near you */}
@@ -531,6 +569,7 @@ const Hero = () => {
                   </>
                 )}
               </div>
+            </div>
             </DrawerContent>
           </Drawer>
         </div>
