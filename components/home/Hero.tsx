@@ -34,20 +34,20 @@ const Hero = () => {
   useEffect(() => {
     setIsMounted(true);
     
-    // Set CSS custom property for viewport height
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
+    // // Set CSS custom property for viewport height
+    // const setVH = () => {
+    //   const vh = window.innerHeight * 0.01;
+    //   document.documentElement.style.setProperty('--vh', `${vh}px`);
+    // };
     
-    setVH();
-    window.addEventListener('resize', setVH);
-    window.addEventListener('orientationchange', setVH);
+    // setVH();
+    // window.addEventListener('resize', setVH);
+    // window.addEventListener('orientationchange', setVH);
     
-    return () => {
-      window.removeEventListener('resize', setVH);
-      window.removeEventListener('orientationchange', setVH);
-    };
+    // return () => {
+    //   window.removeEventListener('resize', setVH);
+    //   window.removeEventListener('orientationchange', setVH);
+    // };
   }, []);
 
   const placeholderOptions = [
@@ -135,34 +135,6 @@ const Hero = () => {
     };
   }, []);
 
-  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    const currentTime = Date.now();
-    const timeDiff = currentTime - lastClickTime;
-    
-    // Reset click count if more than 500ms has passed
-    if (timeDiff > 500) {
-      setInputClickCount(1);
-    } else {
-      setInputClickCount(prev => prev + 1);
-    }
-    
-    setLastClickTime(currentTime);
-    
-    // First click: focus without opening keyboard
-    if (inputClickCount === 0) {
-      e.preventDefault();
-      e.currentTarget.focus();
-      // Prevent keyboard from showing on first click
-      e.currentTarget.blur();
-      setTimeout(() => {
-        e.currentTarget.focus();
-      }, 10);
-    }
-    // Second click: allow keyboard to open
-    else if (inputClickCount >= 1) {
-      // Allow normal behavior
-    }
-  };
 
   // Rotate placeholder text with smoother timing
   useEffect(() => {
@@ -340,7 +312,6 @@ const Hero = () => {
                     setSearchQuery(e.target.value);
                     setIsSearchOpen(true);
                   }}
-                  onClick={handleInputClick}
                   onFocus={() => {
                     setIsSearchOpen(true);
                     setIsInputFocused(true);
@@ -414,14 +385,6 @@ const Hero = () => {
           {/* Mobile Search Drawer */}
           <Drawer 
             open={isDrawerOpen} 
-            onOpenChange={(open) => {
-              setIsDrawerOpen(open);
-              if (!open) {
-                // Reset click count when drawer closes
-                setInputClickCount(0);
-                setLastClickTime(0);
-              }
-            }}
             shouldScaleBackground={false}
           >
             <DrawerTrigger
@@ -461,7 +424,6 @@ const Hero = () => {
                       <Input
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        onClick={handleInputClick}
                         className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
                         placeholder="Search for experiences and cities"
                         autoFocus
