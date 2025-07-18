@@ -404,11 +404,11 @@ const Hero = () => {
             </DrawerTrigger>
 
             <DrawerContent 
-              className="drawer-content"
-              // style={{
-              //   transform: 'translateY(0)',
-              //   transition: 'transform 0.3s ease-out'
-              // }}
+              // className="drawer-content"
+              // // style={{
+              // //   transform: 'translateY(0)',
+              // //   transition: 'transform 0.3s ease-out'
+              // // }}
             >
               <div className="h-full flex flex-col">
                 <DrawerTitle className="bg-white p-4 flex-shrink-0">
