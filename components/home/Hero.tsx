@@ -147,11 +147,11 @@ const Hero = () => {
     {
       goal: 349,
     },
-  ]
-  
-  const [goal, setGoal] = React.useState(350)
+  ];
+
+  const [goal, setGoal] = React.useState(350);
   function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)))
+    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
   }
   const filteredDestinations = topDestinations.filter(
     (dest) =>
@@ -456,48 +456,208 @@ const Hero = () => {
           </div>
           <Drawer>
             <DrawerTrigger asChild>
-              <Button variant="outline">Open Drawer</Button>
+              <button
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+              >
+                <div className="flex-1 relative">
+                  <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
+                  <AnimatedPlaceholder />
+                </div>
+                <Search strokeWidth={1} />
+              </button>{" "}
             </DrawerTrigger>
             <DrawerContent>
-              <div className="mx-auto w-full max-w-sm">
-                <div className="p-4 pb-0">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 shrink-0 rounded-full"
-                      onClick={() => onClick(-10)}
-                      disabled={goal <= 200}
-                    >
-                      <Minus />
-                      <span className="sr-only">Decrease</span>
-                    </Button>
-                    <div className="flex-1 text-center">
-                      <div className="text-7xl font-bold tracking-tighter">
-                        {goal}
-                      </div>
-                      <div className="text-muted-foreground text-[0.70rem] uppercase">
-                        Calories/day
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 shrink-0 rounded-full"
-                      onClick={() => onClick(10)}
-                      disabled={goal >= 400}
-                    >
-                      <Plus />
-                      <span className="sr-only">Increase</span>
-                    </Button>
-                  </div>
-                  <div className="mt-3 h-[120px]">
-                    <div className="flex items-center justify-center">
-                      <div className="text-sm text-gray-500">
-                        {goal}
-                      </div>
+              <div className=" flex flex-col">
+                <DrawerTitle className="bg-white p-4 flex-shrink-0">
+                  <div className="flex items-center border border-black rounded-md">
+                    <DrawerClose asChild>
+                      <button className="p-2">
+                        <ArrowLeft size={20} className="text-gray-600" />
+                      </button>
+                    </DrawerClose>
+                    <div className="flex-1">
+                      <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onClick={handleInputClick}
+                        className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
+                        placeholder="Search for experiences and cities"
+                        autoFocus
+                      />
                     </div>
                   </div>
+                </DrawerTitle>
+
+                <div className="flex-1 overflow-y-auto px-4 pb-4">
+                  {!searchQuery ? (
+                    <>
+                      {/* Top destinations near you */}
+                      <div className="mb-4">
+                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                          Top destinations near you
+                        </h3>
+                        <div className="space-y-0">
+                          {topDestinations.map((dest) => (
+                            <div key={dest.id}>
+                              <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="relative w-10 h-10">
+                                  {/* Main image */}
+                                  <div className="relative w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={dest.image}
+                                      alt={dest.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {dest.name}
+                                  </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {dest.country}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Top things to do worldwide */}
+                      <div className="mb-4">
+                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                          Top things to do worldwide
+                        </h3>
+                        <div className="space-y-0">
+                          {topActivities.map((activity) => (
+                            <div key={activity.id}>
+                              <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="relative w-10 h-10">
+                                  {/* Stacked background images */}
+                                  <div className="absolute left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="absolute -left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform -rotate-4  opacity-50">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+
+                                  <div className="absolute -left-[0px] -top-[3px] inset-0 w-10 h-10 rounded overflow-hidden z-0 transform -rotate-0  opacity-30">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full  object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gray-500 bg-blend-overlay z-0"></div>
+                                  </div>
+                                  {/* Main image */}
+                                  <div className="relative border-white border-[1px] w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {activity.title}
+                                  </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {activity.location}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Search Results */}
+                      {filteredDestinations.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            Destinations ({filteredDestinations.length})
+                          </h3>
+                          <div className="space-y-0">
+                            {filteredDestinations.map((dest) => (
+                              <div key={dest.id}>
+                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={dest.image}
+                                      alt={dest.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-gray-900 text-sm">
+                                      {dest.name}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {dest.country}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {filteredActivities.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            Activities ({filteredActivities.length})
+                          </h3>
+                          <div className="space-y-0">
+                            {filteredActivities.map((activity) => (
+                              <div key={activity.id}>
+                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-gray-900 text-sm">
+                                      {activity.title}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {activity.location}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {filteredDestinations.length === 0 &&
+                        filteredActivities.length === 0 && (
+                          <div className="text-center py-8">
+                            <div className="text-gray-500">
+                              No results found for "{searchQuery}"
+                            </div>
+                          </div>
+                        )}
+                    </>
+                  )}
                 </div>
               </div>
             </DrawerContent>
