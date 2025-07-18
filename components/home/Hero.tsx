@@ -385,6 +385,13 @@ const Hero = () => {
           {/* Mobile Search Drawer */}
           <Drawer 
             open={isDrawerOpen} 
+            onOpenChange={(open) => {
+              setIsDrawerOpen(open);  // This handles outside clicks!
+              if (!open) {
+                setInputClickCount(0);
+                setLastClickTime(0);
+              }
+            }}
             shouldScaleBackground={false}
           >
             <DrawerTrigger
