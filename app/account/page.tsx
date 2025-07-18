@@ -20,6 +20,8 @@ import {
   TbBrandLinkedinFilled,
   TbBrandFacebookFilled,
   TbBrandTwitterFilled,
+  TbBrandPinterest,
+  TbBrandPinterestFilled,
 } from "react-icons/tb";
 import { toast } from "@/components/toast";
 
@@ -94,7 +96,7 @@ const AccountPage = () => {
       user?.identities?.[0]?.identity_data?.picture;
 
     return (
-      <div className="mt-20 mb-10 min-h-screen bg-gray-50">
+      <div className="mt-15 mb-10 min-h-screen bg-gray-50">
         <div className="flex items-center justify-between gap-4 px-6 py-8">
           <div>
             <h1 className="text-lg font-heading text-gray-900">
@@ -195,11 +197,11 @@ const AccountPage = () => {
 
   // If user is not signed in, show authentication interface
   return (
-    <div className="mt-20">
+    <div className="mt-15">
       <div className="bg-gradient-to-br from-white to-primary/10 px-6 py-8">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-4 mb-[32px]">
-            <h1 className="text-sm font-semibold text-[#444444] leading-tight">
+            <h1 className="text-sm font-text text-[#444444] leading-[20px] tracking-wide">
               Sign in or register to get exclusive members-only deals,
               personalised recommendations and so much more
             </h1>
@@ -252,10 +254,10 @@ const AccountPage = () => {
         </div>
 
         {/* Auth Buttons */}
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 ">
           <Button
             variant="outline"
-            className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
+            className="w-full rounded-[12px] justify-center shadow-none gap-3 py-6 text-gray-700"
             onClick={handleGoogleSignIn}
             disabled={isPending}
           >
@@ -313,13 +315,13 @@ const AccountPage = () => {
                 </span>
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="h-[90vh] rounded-t-3xl">
+            <DrawerContent className="rounded-t-3xl">
               <div className="flex flex-col h-full">
                 {mode === "welcome" && (
                   <>
                     {/* Header */}
-                    <DrawerHeader className="flex flex-row items-center justify-between p-5 border-b border-gray-100">
-                      <DrawerTitle className="text-xl font-medium text-gray-900">
+                    <DrawerHeader className="flex flex-row items-center justify-between pb-[12px] border-b border-gray-100">
+                      <DrawerTitle className="text-[18px] font-medium text-gray-900">
                         Welcome to Fly in minute
                       </DrawerTitle>
                       <DrawerClose asChild>
@@ -330,8 +332,8 @@ const AccountPage = () => {
                     </DrawerHeader>
 
                     {/* Content */}
-                    <div className="flex-1 px-5 py-4 overflow-auto">
-                      <p className="text-[#444444] text-sm mb-6 leading-relaxed">
+                    <div className="flex-1 px-5 pb-4 pt-[12px] overflow-auto">
+                      <p className="text-[#444444] text-[12px] mb-6 leading-relaxed">
                         Sign in or register to get exclusive members-only deals,
                         personalised recommendations and so much more
                       </p>
@@ -400,7 +402,7 @@ const AccountPage = () => {
                           <h3 className="text-lg font-medium text-gray-900 mb-2">
                             Continue with email
                           </h3>
-                          <p className="text-gray-600 text-sm mb-4">
+                          <p className="text-[#444444] font-lightText text-[12px] mb-4">
                             We'll send a link to your email that will instantly
                             sign you in
                           </p>
@@ -411,7 +413,7 @@ const AccountPage = () => {
                           placeholder="Email address"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full text-base py-5 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-none"
+                          className="w-full text-[14px] font-text text-[#444444] py-5 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-none"
                           onKeyDown={(e) => {
                             if (
                               e.key === "Enter" &&
@@ -490,17 +492,17 @@ const AccountPage = () => {
 
         <div className="">
           <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-text ">City</span>
+            <span className="font-lightText ">City</span>
             <div className="flex items-center gap-2">
-              <span className="font-text">Select city</span>
+              <span className="font-lightText">Select city</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
 
           <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-text ">Language</span>
+            <span className="font-lightText ">Language</span>
             <div className="flex items-center gap-2">
-              <span className="font-text">English</span>
+              <span className="font-lightText">English</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
@@ -514,11 +516,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Chat</span>
+          <span className="font-lightText">Chat</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">FAQs</span>
+          <span className="font-lightText">FAQs</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
       </div>
@@ -530,11 +532,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Privacy Policy</span>
+          <span className="font-lightText">Privacy Policy</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Terms of Usage</span>
+          <span className="font-lightText">Terms of Usage</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
       </div>
@@ -565,14 +567,15 @@ const AccountPage = () => {
           <TbBrandFacebookFilled size={16} />
         </a>
         <a href="https://www.x.com/flyfim.com" className="hover:text-primary">
-          <TbBrandTwitterFilled size={16} />
+          <TbBrandPinterestFilled size={16} />
         </a>
+
       </div>
 
-      <div className="mt-[16px] text-[#888888] mx-6 pb-[180px]">
+      {/* <div className="mt-[16px] text-[#888888] mx-6 pb-[180px]">
         <p className=" text-[12px]">Headout Inc.</p>
         <p className=" text-[12px]">Made with ❤️ all over the 🌎</p>
-      </div>
+      </div> */}
 
       {/* Bottom padding for mobile tabs */}
       <div className="h-20 md:h-0"></div>

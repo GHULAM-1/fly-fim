@@ -98,7 +98,7 @@ const Testimonials = () => {
             >
               <div className="flex md:hidden items-center justify-between">
                 <div>
-                  <h2 className="text-2xl md:text-5xl font-heading mb-2 max-w-[80%] sm:max-w-[90%] md:max-w-[70%] xl:max-w-[350px] leading-tight flex md:block items-center justify-between">
+                  <h2 className="text-2xl md:text-5xl font-heading mb-2 max-w-[100%] sm:max-w-[100%] md:max-w-[70%] xl:max-w-[350px] leading-tight flex md:block items-center justify-between">
                     <span
                       className="w-full hidden md:block shrink-0"
                       dangerouslySetInnerHTML={{
@@ -122,10 +122,17 @@ const Testimonials = () => {
                 </div>
               </div>
               <h2 className="text-2xl md:text-5xl font-heading mb-2 max-w-[80%] sm:max-w-[90%] md:max-w-[70%] xl:max-w-[350px] leading-tight hidden md:flex items-center justify-between">
-                <span
-                  className="w-full hidden md:block shrink-0"
-                  dangerouslySetInnerHTML={{ __html: t("testimonials.title") }}
-                />
+                <span className="w-full hidden md:block shrink-0">
+                  <span
+                  className="mr-2"
+                    dangerouslySetInnerHTML={{ __html: t("testimonials.title") }}
+                  />
+                  <img
+                    src="/images/info3.gif"
+                    alt=""
+                    className="mr-3 w-12 h-12 inline"
+                  />
+                </span>
               </h2>
               <div className="hidden md:flex items-center gap-[34px] mt-[42px]">
                 <button

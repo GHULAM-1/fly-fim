@@ -405,10 +405,10 @@ const Hero = () => {
 
             <DrawerContent 
               className="drawer-content"
-              style={{
-                transform: 'translateY(0)',
-                transition: 'transform 0.3s ease-out'
-              }}
+              // style={{
+              //   transform: 'translateY(0)',
+              //   transition: 'transform 0.3s ease-out'
+              // }}
             >
               <div className="h-full flex flex-col">
                 <DrawerTitle className="bg-white p-4 flex-shrink-0">
@@ -442,12 +442,15 @@ const Hero = () => {
                         {topDestinations.map((dest) => (
                           <div key={dest.id}>
                             <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={dest.image}
-                                  alt={dest.name}
-                                  className="w-full h-full object-cover"
-                                />
+                              <div className="relative w-10 h-10">
+                                {/* Main image */}
+                                <div className="relative w-10 h-10 rounded overflow-hidden">
+                                  <img
+                                    src={dest.image}
+                                    alt={dest.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <div className="font-semibold text-gray-900 text-sm">
@@ -472,12 +475,39 @@ const Hero = () => {
                         {topActivities.map((activity) => (
                           <div key={activity.id}>
                             <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
+                              <div className="relative w-10 h-10">
+                                {/* Stacked background images */}
+                                <div className="absolute left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
+                                  <img
+                                    src={activity.image}
+                                    alt={activity.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="absolute -left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform -rotate-4  opacity-50">
+                                  <img
+                                    src={activity.image}
+                                    alt={activity.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              
+                                <div className="absolute -left-[0px] -top-[3px] inset-0 w-10 h-10 rounded overflow-hidden z-0 transform -rotate-0  opacity-30">
+                                  <img
+                                    src={activity.image}
+                                    alt={activity.title}
+                                    className="w-full h-full  object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-gray-500 bg-blend-overlay z-0"></div>
+                                </div>
+                                {/* Main image */}
+                                <div className="relative border-white border-[1px] w-10 h-10 rounded overflow-hidden">
+                                  <img
+                                    src={activity.image}
+                                    alt={activity.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <div className="font-semibold text-gray-900 text-sm">
