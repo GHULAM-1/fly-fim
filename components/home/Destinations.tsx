@@ -104,7 +104,7 @@ const Destinations = () => {
   return (
     <div className="py-4  px-[24px] xl:px-0 max-w-[1200px] mx-auto ">
       <div className="flex justify-between items-center">
-        <h2 className="text-[24px] sm:text-2xl font-heading text-[#444444] max-w-2/3">
+        <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
           {t("destinations.title")}
         </h2>
         <div className="flex items-center gap-4">

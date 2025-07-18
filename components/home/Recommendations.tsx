@@ -114,8 +114,8 @@ const Recommendations = () => {
     <div className="py-4 sm:py-10 xl:px-0 px-[24px] max-w-[1200px] mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
-          Traveler's top choices
-        </h2>
+        Travelers' favorite choices
+                </h2>
         {/* <div className="hidden md:flex items-center gap-4">
           <Link
             href="/cities"

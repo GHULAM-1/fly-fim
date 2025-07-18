@@ -138,12 +138,12 @@ const Activities = () => {
             <Link
               href="#"
               key={activity.id}
-              className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
+              className="basis-[50%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
             >
               <img
                 src={activity.image}
                 alt={activity.description}
-                className="rounded w-[180px] h-[240px]"
+                className="rounded w-[156px] h-[208px] md:w-[180px] md:h-[240px]"
               />
               <p className="text-[17px] w-[90%] font-heading text-[#444444] leading-tight mt-2">
                 {activity.description}
