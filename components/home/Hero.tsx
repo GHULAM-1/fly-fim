@@ -413,7 +413,7 @@ const Hero = () => {
             </DrawerTrigger>
 
             <DrawerContent 
-              className="drawer-content"
+              // className="drawer-content"
               style={{
                 transform: 'translateY(0)',
                 transition: 'transform 0.3s ease-out'
