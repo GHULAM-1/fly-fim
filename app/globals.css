@@ -143,8 +143,8 @@ body {
 }
 /* Add to your global CSS */
 .drawer-content {
-  height: 85vh !important;
-  max-height: 85vh !important;
+  height: 75vh !important;
+  max-height: 75vh !important;
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
