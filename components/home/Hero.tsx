@@ -410,7 +410,7 @@ const Hero = () => {
               // //   transition: 'transform 0.3s ease-out'
               // // }}
             >
-              <div className="h-full flex flex-col">
+              <div className=" flex flex-col">
                 <DrawerTitle className="bg-white p-4 flex-shrink-0">
                   <div className="flex items-center border border-black rounded-md">
                     <DrawerClose asChild>
