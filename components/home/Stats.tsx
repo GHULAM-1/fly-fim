@@ -16,7 +16,7 @@ const Stats = () => {
           <p className="mt-2 ml-[4px] text-[#666666]  text-[14px] ">{t("stats.reviews")}</p>
         </div>
         <div>
-          <img src="/images/stat2.png" alt="" className="w-14 md:w-21" />
+          <img src="/images/stat2-new.png" alt="" className="w-14 md:w-20" />
           <h3 className="text-base sm:text-xl font-heading text-gray-700 my-2">
             {t("stats.customers.count")}
           </h3>
