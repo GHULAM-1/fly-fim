@@ -96,13 +96,13 @@ const Footer = () => {
                   <a href="https://www.linkedin.com/company/fly-in-minute">
                     <TbBrandLinkedinFilled size={16} />
                   </a>
-                  <a href="https://www.instagram.com/flyfim.com">
+                  <a href="https://www.instagram.com/flyfim/">
                     <TbBrandInstagramFilled size={16} />
                   </a>
                   <a href="https://www.youtube.com/@flyfim650">
                     <TbBrandYoutubeFilled size={16} />
                   </a>
-                  <a href="https://www.facebook.com/flyfim.com">
+                  <a href="https://www.facebook.com/flyfim">
                     <TbBrandFacebookFilled size={16} />
                   </a>
                   <a href="https://www.pinterest.com/flyfim/">
@@ -112,7 +112,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div className="py-5 flex flex-col  sm:flex-row justify-between gap-2">
+          <div className="py-5 flex flex-col md:mb-0 mb-10  sm:flex-row justify-between gap-2">
             <ul className="text-xs text-gray-500 flex items-center gap-4">
               <li className="hidden md:block !text-[12px]">
                 ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
@@ -130,19 +130,19 @@ const Footer = () => {
                 Company details
               </li>
             </ul>
-            <p className="text-xs font-text md:mb-0 mb-20 text-[#444444] md:hidden">
+            <p className="text-xs font-text md:mb-0 mb-10 text-[#444444] md:hidden">
               © 2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
               Egypt
             </p>
             <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
               <a
-                href="https://www.linkedin.com/company/flyfim-in-minute"
+                href="https://www.linkedin.com/company/fly-in-minute"
                 className="hover:text-primary"
               >
                 <TbBrandLinkedinFilled size={16} />
               </a>
               <a
-                href="https://www.instagram.com/flyfim.com"
+                href="https://www.instagram.com/flyfim/"
                 className="hover:text-primary"
               >
                 <TbBrandInstagramFilled size={16} />
@@ -154,7 +154,7 @@ const Footer = () => {
                 <TbBrandYoutubeFilled size={16} />
               </a>
               <a
-                href="https://www.facebook.com/flyfim.com"
+                href="https://www.facebook.com/flyfim"
                 className="hover:text-primary"
               >
                 <TbBrandFacebookFilled size={16} />
