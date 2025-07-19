@@ -564,7 +564,7 @@ const Navbar = () => {
               </div>
 
               {/* Scrollable content */}
-              <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+              <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4" style={{ minHeight: 'calc(var(--vh, 1vh) * 85 - 120px)' }}>
                 {!searchQuery ? (
                   <>
                     {/* Top destinations near you */}

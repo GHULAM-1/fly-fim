@@ -196,8 +196,8 @@ const Testimonials = () => {
                 <p className="mt-4 mb-10 h-24 text-sm sm:text-base font-text text-[#F8F8F8]">
                   {testimonial.review}
                 </p>
-                <hr className="my-2 border-[#C4C4C4]" />
-                <button className="text-[9px] text-[#C4C4C4] underline underline-offset-4">
+                <hr className="my-0 border-[#C4C4C4]" />
+                <button className="text-[12px] md:text-[9px] text-[#C4C4C4] md:underline md:underline-offset-4">
                   {testimonial.experience}
                 </button>
               </div>

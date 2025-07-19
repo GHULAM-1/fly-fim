@@ -103,14 +103,14 @@ const Activities = () => {
   ];
 
   return (
-    <div className="py-8 sm:py-10 xl:px-0 px-[24px]   bg-zinc-100">
+    <div className="py-8 sm:py-10  bg-zinc-100">
       <div className="max-w-[1200px] mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+        <div className="flex justify-between xl:px-0 px-[24px] items-center">
+          <h2 className="text-lg sm:text-2xl max-w-[180px] sm:max-w-full font-heading text-[#444444]">
             {t("activities.title")}
           </h2>
           <div className="flex items-center gap-4">
-            <button className="text-sm text-gray-500 md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1">
+            <button className="text-sm text-[#444444] md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1">
               {t("activities.seeAll")}{" "}
               <ChevronRightIcon className="md:hidden w-4 h-4" />
             </button>
@@ -131,21 +131,21 @@ const Activities = () => {
           </div>
         </div>
         <div
-          className="mt-4 sm:mt-2 flex overflow-x-scroll -ml-4 scrollbar-hide"
+          className="mt-4 sm:mt-2 pl-[24px] xl:px-0 flex overflow-x-scroll -ml-4 scrollbar-hide"
           ref={scrollContainerRef}
         >
           {activities.map((activity) => (
             <Link
               href="#"
               key={activity.id}
-              className="basis-[50%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
+              className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px]  md:w-[180px]"
             >
               <img
                 src={activity.image}
                 alt={activity.description}
                 className="rounded w-[156px] h-[208px] md:w-[180px] md:h-[240px]"
               />
-              <p className="text-[17px] w-[90%] font-heading text-[#444444] leading-tight mt-2">
+              <p className="text-[17px] font-heading text-[#444444] leading-tight mt-2">
                 {activity.description}
               </p>
               <p className="text-sm font-lightText text-[#666666] mt-1">{activity.place}</p>

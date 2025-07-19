@@ -234,13 +234,13 @@ const Hero = () => {
   // Animated placeholder component for reusability
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
     <div className="absolute inset-0 flex items-center pointer-events-none text-gray-500">
-      <span className="mr-1 flex-shrink-0">{prefix}</span>
+      <span className="mr-1 font-text md:text-base text-sm flex-shrink-0">{prefix}</span>
       <div className="relative overflow-hidden h-5 flex items-center flex-1 min-w-0">
         {/* Previous text - sliding out upward */}
         {isTransitioning && previousPlaceholderIndex >= 0 && (
           <span
             key={`prev-${previousPlaceholderIndex}`}
-            className="absolute whitespace-nowrap"
+            className="absolute font-text md:text-base text-sm whitespace-nowrap"
             style={{
               animation: "slideOutUp 0.7s ease-out forwards",
               animationFillMode: "both",
@@ -253,7 +253,7 @@ const Hero = () => {
         {/* Current text - sliding in from below */}
         <span
           key={`current-${currentPlaceholderIndex}`}
-          className="absolute whitespace-nowrap"
+          className="absolute font-text md:text-base text-sm whitespace-nowrap"
           style={{
             animation: isTransitioning
               ? "slideInUp 0.7s ease-out forwards"
@@ -445,7 +445,7 @@ const Hero = () => {
 
           {/* Mobile Search Trigger */}
           <button 
-            className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
+            className="flex md:hidden items-center bg-white gap-2 rounded-md p-[7px] px-4 shadow cursor-pointer relative"
             onClick={() => setIsCustomDrawerOpen(true)}
           >
             <div className="flex-1 relative">
@@ -520,7 +520,7 @@ const Hero = () => {
                   </div>
 
                   {/* Scrollable content */}
-                  <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+                  <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4" style={{ minHeight: 'calc(var(--vh, 1vh) * 85 - 120px)' }}>
                     {!searchQuery ? (
                       <>
                         {/* Top destinations near you */}

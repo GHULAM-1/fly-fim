@@ -13,14 +13,14 @@ const Stats = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-10 mt-4 md:mt-[51px]">
         <div>
           <img src="/images/stat1.png" alt="" className="w-40 md:w-60" />
-          <p className="mt-2 ml-[4px] text-[#666666] font-lightText md:text-sm">{t("stats.reviews")}</p>
+          <p className="mt-2 ml-[4px] text-[#666666] font-lightText text-[12px] ">{t("stats.reviews")}</p>
         </div>
         <div>
           <img src="/images/stat2.png" alt="" className="w-14 md:w-21" />
           <h3 className="text-base sm:text-xl font-heading text-gray-700 my-2">
             {t("stats.customers.count")}
           </h3>
-          <p className=" text-[#666666] font-lightText sm:text-sm">
+          <p className=" text-[#666666] font-lightText text-[12px] ">
             {t("stats.customers.description")}
           </p>
         </div>
@@ -29,14 +29,14 @@ const Stats = () => {
           <h3 className="text-base sm:text-xl font-heading text-gray-700 my-2">
             {t("stats.media.title")}
           </h3>
-          <p className=" text-[#666666] font-lightText sm:text-sm">{t("stats.media.description")}</p>
+          <p className=" text-[#666666] font-lightText text-[12px]">{t("stats.media.description")}</p>
         </div>
         <div>
           <img src="/images/stat4.png" alt="" className="w-14 md:w-18" />
           <h3 className="text-base sm:text-xl font-heading text-gray-700 my-2">
             {t("stats.support.title")}
           </h3>
-          <p className=" text-[#666666] font-lightText sm:text-sm">{t("stats.support.description")}</p>
+          <p className=" text-[#666666] font-lightText text-[12px]">{t("stats.support.description")}</p>
         </div>
       </div>
     </div>
