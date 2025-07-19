@@ -520,7 +520,7 @@ const Hero = () => {
                   </div>
 
                   {/* Scrollable content */}
-                  <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4" style={{ minHeight: 'calc(var(--vh, 1vh) * 85 - 120px)' }}>
+                  <div className="flex-1 min-h-0 px-4 pb-4" style={{ minHeight: 'calc(var(--vh, 1vh) * 85 - 120px)' }}>
                     {!searchQuery ? (
                       <>
                         {/* Top destinations near you */}
@@ -528,7 +528,7 @@ const Hero = () => {
                           <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
                             Top destinations near you
                           </h3>
-                          <div className="space-y-0">
+                          <div className="space-y-0 max-h-48 overflow-y-auto">
                             {topDestinations.map((dest) => (
                               <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
                                 <div className="w-10 h-10 rounded overflow-hidden">
@@ -556,7 +556,7 @@ const Hero = () => {
                           <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
                             Top things to do worldwide
                           </h3>
-                          <div className="space-y-0">
+                          <div className="space-y-0 max-h-64 overflow-y-auto">
                             {topActivities.map((activity) => (
                               <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
                                 <div className="relative w-10 h-10">
@@ -613,7 +613,7 @@ const Hero = () => {
                             <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
                               Destinations ({filteredDestinations.length})
                             </h3>
-                            <div className="space-y-0">
+                            <div className="space-y-0 max-h-48 overflow-y-auto">
                               {filteredDestinations.map((dest) => (
                                 <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
                                   <div className="w-10 h-10 rounded overflow-hidden">
@@ -642,7 +642,7 @@ const Hero = () => {
                             <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
                               Activities ({filteredActivities.length})
                             </h3>
-                            <div className="space-y-0">
+                            <div className="space-y-0 max-h-64 overflow-y-auto">
                               {filteredActivities.map((activity) => (
                                 <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
                                   <div className="w-10 h-10 rounded overflow-hidden">
