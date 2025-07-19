@@ -480,6 +480,14 @@ const Hero = () => {
                     stiffness: 400,
                     mass: 0.8
                   }}
+                  drag="y"
+                  dragConstraints={{ top: 0, bottom: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(event, info) => {
+                    if (info.offset.y > 100) {
+                      setIsCustomDrawerOpen(false);
+                    }
+                  }}
                   className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] drawer-container flex flex-col"
                   style={{
                     paddingBottom: `max(1rem, ${safeAreaBottom}px)`
