@@ -93,19 +93,19 @@ const Footer = () => {
                   <img src="/images/cards.png" alt="" className="w-56 mt-2" />
                 </div>
                 <div className="md:hidden flex items-center gap-4 mt-5">
-                  <a href="https://www.linkedin.com/company/flyfim">
+                  <a href="https://www.linkedin.com/company/fly-in-minute">
                     <TbBrandLinkedinFilled size={16} />
                   </a>
                   <a href="https://www.instagram.com/flyfim.com">
                     <TbBrandInstagramFilled size={16} />
                   </a>
-                  <a href="https://www.youtube.com/flyfim.com">
+                  <a href="https://www.youtube.com/@flyfim650">
                     <TbBrandYoutubeFilled size={16} />
                   </a>
                   <a href="https://www.facebook.com/flyfim.com">
                     <TbBrandFacebookFilled size={16} />
                   </a>
-                  <a href="https://www.x.com/flyfim.com">
+                  <a href="https://www.pinterest.com/flyfim/">
                     <TbBrandPinterestFilled size={16} />
                   </a>
                 </div>
@@ -148,7 +148,7 @@ const Footer = () => {
                 <TbBrandInstagramFilled size={16} />
               </a>
               <a
-                href="https://www.youtube.com/flyfim.com"
+                href="https://www.youtube.com/@flyfim650"
                 className="hover:text-primary"
               >
                 <TbBrandYoutubeFilled size={16} />
@@ -160,7 +160,7 @@ const Footer = () => {
                 <TbBrandFacebookFilled size={16} />
               </a>
               <a
-                href="https://www.x.com/flyfim.com"
+                href="https://www.pinterest.com/flyfim/"
                 className="hover:text-primary"
               >
                 <TbBrandPinterestFilled size={16} />
