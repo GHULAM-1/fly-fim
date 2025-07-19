@@ -21,12 +21,9 @@ const Hero = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [isDrawerReady, setIsDrawerReady] = useState(false);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [inputClickCount, setInputClickCount] = useState(0);
-  const [lastClickTime, setLastClickTime] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
@@ -122,32 +119,7 @@ const Hero = () => {
   }, []);
 
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    const currentTime = Date.now();
-    const timeDiff = currentTime - lastClickTime;
-    
-    // Reset click count if more than 500ms has passed
-    if (timeDiff > 500) {
-      setInputClickCount(1);
-    } else {
-      setInputClickCount(prev => prev + 1);
-    }
-    
-    setLastClickTime(currentTime);
-    
-    // First click: focus without opening keyboard
-    if (inputClickCount === 0) {
-      e.preventDefault();
-      e.currentTarget.focus();
-      // Prevent keyboard from showing on first click
-      e.currentTarget.blur();
-      setTimeout(() => {
-        e.currentTarget.focus();
-      }, 10);
-    }
-    // Second click: allow keyboard to open
-    else if (inputClickCount >= 1) {
-      // Allow normal behavior
-    }
+    // Simplified - no complex click counting needed
   };
 
   // Rotate placeholder text with smoother timing
@@ -400,68 +372,43 @@ const Hero = () => {
           {/* Mobile Search Drawer */}
           <Drawer 
             open={isDrawerOpen} 
-            onOpenChange={(open) => {
-              setIsDrawerOpen(open);
-              if (!open) {
-                setInputClickCount(0);
-                setLastClickTime(0);
-              }
-            }}
-            shouldScaleBackground={false}
+            onOpenChange={setIsDrawerOpen}
           >
-            <DrawerTrigger
-              className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
-              asChild
-            >
-              <button
-                onClick={() => {
-                  setIsDrawerOpen(true);
-                }}
-              >
-                  <div className="flex-1 relative">
-                    <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
-                    {/* Animated placeholder for mobile */}
-                    <AnimatedPlaceholder />
+            <DrawerTrigger asChild>
+              <button className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative">
+                <div className="flex-1 relative">
+                  <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
+                  <AnimatedPlaceholder />
+                </div>
+                <Search strokeWidth={1} />
+              </button>
+            </DrawerTrigger>
+
+            <DrawerContent className="max-h-[85vh]">
+              <DrawerTitle className="sr-only">Search</DrawerTitle>
+              
+              {/* Header with search input */}
+              <div className="bg-white p-4 border-b">
+                <div className="flex items-center border border-black rounded-md">
+                  <DrawerClose asChild>
+                    <button className="p-2">
+                      <ArrowLeft size={20} className="text-gray-600" />
+                    </button>
+                  </DrawerClose>
+                  <div className="flex-1">
+                    <Input
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
+                      placeholder="Search for experiences and cities"
+                      autoFocus
+                    />
                   </div>
-                  <Search strokeWidth={1} />
-                </button>
-              </DrawerTrigger>
+                </div>
+              </div>
 
-              <DrawerContent 
-                className="drawer-content"
-                style={{
-                  transform: 'translateY(0)',
-                  transition: 'transform 0.3s ease-out',
-                  willChange: 'transform'
-                }}
-                onAnimationStart={() => {
-                  // Ensure viewport is correct when animation starts
-                  const vh = window.innerHeight * 0.01;
-                  document.documentElement.style.setProperty('--vh', `${vh}px`);
-                }}
-              >
-                <div className="h-full flex flex-col">
-                  <DrawerTitle className="bg-white p-4 flex-shrink-0">
-                    <div className="flex items-center border border-black rounded-md">
-                      <DrawerClose asChild>
-                        <button className="p-2">
-                          <ArrowLeft size={20} className="text-gray-600" />
-                        </button>
-                      </DrawerClose>
-                      <div className="flex-1">
-                        <Input
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          onClick={handleInputClick}
-                          className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
-                          placeholder="Search for experiences and cities"
-                          autoFocus
-                        />
-                      </div>
-                    </div>
-                  </DrawerTitle>
-
-                  <div className="flex-1 overflow-y-auto px-4 pb-4">
+              {/* Scrollable content */}
+              <div className="overflow-y-auto px-4 pb-4 flex-1">
                   {!searchQuery ? (
                     <>
                       {/* Top destinations near you */}
@@ -629,10 +576,10 @@ const Hero = () => {
                         )}
                     </>
                   )}
-                </div>
               </div>
-              </DrawerContent>
-            </Drawer>
+            </DrawerContent>
+          </Drawer>
+
         </div>
       </div>
     </>
