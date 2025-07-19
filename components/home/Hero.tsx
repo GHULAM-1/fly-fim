@@ -388,7 +388,7 @@ const Hero = () => {
               <DrawerTitle className="sr-only">Search</DrawerTitle>
               
               {/* Header with search input */}
-              <div className="bg-white p-4 border-b">
+              <div className="bg-white p-4 ">
                 <div className="flex items-center border border-black rounded-md">
                   <DrawerClose asChild>
                     <button className="p-2">
