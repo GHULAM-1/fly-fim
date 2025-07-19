@@ -391,7 +391,7 @@ const Navbar = () => {
                   <DrawerTitle className="sr-only">Search</DrawerTitle>
                   
                   {/* Header with search input */}
-                  <div className="bg-white p-4 border-b">
+                  <div className="bg-white p-4 ">
                     <div className="flex items-center border border-black rounded-md">
                       <DrawerClose asChild>
                         <button className="p-2">
@@ -430,10 +430,10 @@ const Navbar = () => {
                                   />
                                 </div>
                                 <div>
-                                  <div className="font-heading text-gray-900 text-sm">
+                                  <div className="font-heading text-[#444444] text-sm">
                                     {dest.name}
                                   </div>
-                                  <div className="text-gray-500 text-xs">
+                                  <div className="text-[#888888] font-lightText text-xs">
                                     {dest.country}
                                   </div>
                                 </div>
@@ -484,10 +484,10 @@ const Navbar = () => {
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
+                                  <div className="font-heading  text-[#444444] text-[15px]">
                                     {activity.title}
                                   </div>
-                                  <div className="text-gray-500 text-xs">
+                                  <div className="text-[#888888] font-lightText text-xs">
                                     {activity.location}
                                   </div>
                                 </div>

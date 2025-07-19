@@ -51,7 +51,7 @@ const ToastComponent: React.FC<ToastProps & { onRemove: () => void }> = ({
 
   return (
     <div
-      className={`fixed top-23 md:top-28 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
+      className={`fixed top-21 md:top-28 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
