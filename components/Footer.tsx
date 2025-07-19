@@ -136,7 +136,7 @@ const Footer = () => {
             </p>
             <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
               <a
-                href="https://www.linkedin.com/company/flyfim"
+                href="https://www.linkedin.com/company/flyfim-in-minute"
                 className="hover:text-primary"
               >
                 <TbBrandLinkedinFilled size={16} />
