@@ -30,6 +30,10 @@ const lightText = localFont({
   src: "../fonts/light.otf",
   variable: "--font-lightText",
 });
+const displayLight = localFont({
+  src: "../fonts/display-light.otf",
+  variable: "--font-display-light",
+});
 
 const RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
 function LayoutContent({ children }: { children: React.ReactNode }) {
@@ -81,7 +85,7 @@ export default function RootLayout({
           Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
         </title>
       </head>
-      <body className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} antialiased`}>
+      <body className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} ${displayLight.variable} antialiased`}>
         <I18nextProvider i18n={i18n}>
         <Toaster position="top-center"/>
         <ToastContainerComponent />
