@@ -17,6 +17,8 @@ const Hero = () => {
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const [safeAreaBottom, setSafeAreaBottom] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +27,49 @@ const Hero = () => {
   // Handle hydration only
   useEffect(() => {
     setIsMounted(true);
+  }, []);
+
+  // Dynamic viewport height detection
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      // Get the actual viewport height
+      const vh = window.innerHeight * 0.01;
+      setViewportHeight(vh);
+      
+      // Get safe area bottom for devices with home indicator
+      const safeAreaBottomValue = parseInt(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--sat') || '0'
+      );
+      setSafeAreaBottom(safeAreaBottomValue);
+    };
+
+    // Set CSS custom property for viewport height
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    updateViewportHeight();
+    setVH();
+
+    window.addEventListener('resize', () => {
+      updateViewportHeight();
+      setVH();
+    });
+
+    // Handle iOS Safari viewport changes
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        updateViewportHeight();
+        setVH();
+      }, 100);
+    });
+
+    return () => {
+      window.removeEventListener('resize', updateViewportHeight);
+      window.removeEventListener('orientationchange', updateViewportHeight);
+    };
   }, []);
 
   const placeholderOptions = [
@@ -161,12 +206,19 @@ const Hero = () => {
   useEffect(() => {
     if (isCustomDrawerOpen) {
       document.body.style.overflow = "hidden";
+      // Prevent iOS Safari from scrolling the body
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
     } else {
       document.body.style.overflow = "unset";
+      document.body.style.position = "";
+      document.body.style.width = "";
     }
 
     return () => {
       document.body.style.overflow = "unset";
+      document.body.style.position = "";
+      document.body.style.width = "";
     };
   }, [isCustomDrawerOpen]);
 
@@ -219,7 +271,7 @@ const Hero = () => {
 
   return (
     <>
-      {/* Add the CSS animations as a style tag */}
+      {/* Add the CSS animations and viewport fixes as a style tag */}
       <style jsx>{`
         @keyframes slideOutUp {
           0% {
@@ -245,6 +297,19 @@ const Hero = () => {
 
         .smooth-transition {
           transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* iOS Safari viewport height fix */
+        .drawer-container {
+          height: calc(var(--vh, 1vh) * 85);
+          max-height: calc(var(--vh, 1vh) * 85);
+        }
+
+        /* Safe area support */
+        @supports (padding: max(0px)) {
+          .drawer-container {
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+          }
         }
       `}</style>
 
@@ -415,7 +480,10 @@ const Hero = () => {
                     stiffness: 400,
                     mass: 0.8
                   }}
-                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] max-h-[85vh] flex flex-col"
+                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] drawer-container flex flex-col"
+                  style={{
+                    paddingBottom: `max(1rem, ${safeAreaBottom}px)`
+                  }}
                 >
                   {/* Handle */}
                   <div className="flex justify-center pt-3 pb-2">
@@ -423,7 +491,7 @@ const Hero = () => {
                   </div>
 
                   {/* Header with search input */}
-                  <div className="bg-white px-4 pb-4  border-gray-200 flex-shrink-0">
+                  <div className="bg-white px-4 pb-4 border-gray-200 flex-shrink-0">
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button 
                         className="p-2 flex-shrink-0"
