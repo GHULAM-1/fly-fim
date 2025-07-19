@@ -111,8 +111,8 @@ const Recommendations = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 xl:px-0 px-[24px] max-w-[1200px] mx-auto 2xl:px-0">
-      <div className="flex justify-between items-center">
+    <div className="py-4 sm:py-10  max-w-[1200px] mx-auto 2xl:px-0">
+      <div className="flex justify-between items-center px-[24px] xl:px-0">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
         Travelers' favorite choices
                 </h2>
@@ -140,7 +140,7 @@ const Recommendations = () => {
         </div> */}
       </div>
       <div
-        className="mt-4 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 pl-[24px] xl:px-0 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (

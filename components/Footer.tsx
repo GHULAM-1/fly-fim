@@ -6,6 +6,7 @@ import {
   TbBrandFacebookFilled,
   TbBrandTwitterFilled,
   TbBrandX,
+  TbBrandPinterestFilled,
 } from "react-icons/tb";
 import { HelpCircle, MessageCircle, Phone, Mail } from "lucide-react";
 
@@ -105,14 +106,14 @@ const Footer = () => {
                     <TbBrandFacebookFilled size={16} />
                   </a>
                   <a href="https://www.x.com/flyfim.com">
-                    <TbBrandTwitterFilled size={16} />
+                    <TbBrandPinterestFilled size={16} />
                   </a>
                 </div>
               </div>
             </div>
           </div>
           <div className="py-5 flex flex-col sm:flex-row justify-between gap-4">
-            <ul className="text-xs text-gray-500 flex items-center gap-4">
+            <ul className="text-xs text-gray-500 md:mb-0 mb-10 flex items-center gap-4">
               <li className="hidden md:block !text-[12px]">
                 ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
                 Egypt
@@ -133,7 +134,7 @@ const Footer = () => {
               ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
               Egypt
             </p>
-            <div className="hidden md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
+            <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
               <a
                 href="https://www.linkedin.com/company/flyfim"
                 className="hover:text-primary"
@@ -162,7 +163,7 @@ const Footer = () => {
                 href="https://www.x.com/flyfim.com"
                 className="hover:text-primary"
               >
-                <TbBrandTwitterFilled size={16} />
+                <TbBrandPinterestFilled size={16} />
               </a>
             </div>
           </div>

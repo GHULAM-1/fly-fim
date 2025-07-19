@@ -102,15 +102,15 @@ const Destinations = () => {
   ];
 
   return (
-    <div className="py-4  px-[24px] xl:px-0 max-w-[1200px] mx-auto ">
-      <div className="flex justify-between items-center">
+    <div className="py-4   max-w-[1200px] mx-auto ">
+      <div className="flex px-[24px] xl:px-0 justify-between items-start">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
           {t("destinations.title")}
         </h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center mt-[6px] md:mt-[0px] gap-4">
           <Link
             href="/cities"
-            className="text-[15px] text-[#444444] font-lightText md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
+            className="text-[14px] md:text-[15px] text-[#444444] font-lightText md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
           >
             {t("destinations.seeAll")}{" "}
             <ChevronRightIcon className="md:hidden w-4 h-4" />
@@ -132,7 +132,7 @@ const Destinations = () => {
         </div>
       </div>
       <div
-        className="mt-4 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 pl-[24px] xl:px-0 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {destinations.map((destination) => (
