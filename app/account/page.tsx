@@ -558,7 +558,7 @@ const AccountPage = () => {
           <TbBrandLinkedinFilled size={16} />
         </a>
         <a
-          href="https://www.instagram.com/flyfim.com"
+          href="https://www.instagram.com/flyfim/"
           className="hover:text-primary"
         >
           <TbBrandInstagramFilled size={16} />
@@ -570,7 +570,7 @@ const AccountPage = () => {
           <TbBrandYoutubeFilled size={16} />
         </a>
         <a
-          href="https://www.facebook.com/flyfim.com"
+          href="https://www.facebook.com/flyfim"
           className="hover:text-primary"
         >
           <TbBrandFacebookFilled size={16} />
