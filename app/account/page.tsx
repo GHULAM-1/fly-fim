@@ -33,8 +33,6 @@ const AccountPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user, signOut } = useAuth();
 
-
-
   // Close drawer when user becomes authenticated
   useEffect(() => {
     if (user && isDrawerOpen) {
@@ -186,10 +184,19 @@ const AccountPage = () => {
           </div>
         </div>
         <hr />
-        <div className="px-6 py-8">
+        <div className="px-6 py-8 ">
           <button className="text-sm text-gray-800" onClick={signOut}>
             Sign Out
           </button>
+        </div>
+        <div className="px-6 py-8 ">
+          <button className="text-sm text-gray-800"></button>
+        </div>
+        <div className="px-6 py-8 ">
+          <button className="text-sm text-gray-800"></button>
+        </div>
+        <div className="px-6 py-8 ">
+          <button className="text-sm text-gray-800"></button>
         </div>
       </div>
     );
@@ -282,7 +289,7 @@ const AccountPage = () => {
             {isPending ? (
               "Connecting..."
             ) : (
-              <span className="font-bold text-[16px]">
+              <span className="font-heading tracking-wider text-[16px] text-[#444444]">
                 Continue with Google
               </span>
             )}
@@ -290,7 +297,7 @@ const AccountPage = () => {
 
           <Button
             variant="outline"
-            className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
+            className="w-full justify-center shadow-none gap-3 py-6 text-[#444444]"
             onClick={() => {
               // TODO: Implement Apple OAuth
               console.log("Apple sign in");
@@ -301,7 +308,9 @@ const AccountPage = () => {
               <path d="M15.53 3.83c.893-1.09 1.477-2.602 1.305-4.112-1.265.056-2.79.856-3.683 1.928-.826.942-1.553 2.455-1.36 3.902 1.426.104 2.88-.717 3.738-1.718z" />
             </svg>
 
-            <span className="font-bold text-[16px]">Continue with Apple</span>
+            <span className="font-heading tracking-wider text-[16px]">
+              Continue with Apple
+            </span>
           </Button>
           <Drawer open={isDrawerOpen} onOpenChange={handleDrawerOpenChange}>
             <DrawerTrigger asChild>
@@ -309,8 +318,8 @@ const AccountPage = () => {
                 variant="outline"
                 className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
               >
-                <Mail className="text-gray-600" size={20} />
-                <span className="text-gray-700 font-bold text-[16px]">
+                <Mail className="text-[#444444]" size={20} />
+                <span className="text-[#444444] font-heading tracking-wider text-[16px]">
                   Continue with email
                 </span>
               </Button>
@@ -492,17 +501,17 @@ const AccountPage = () => {
 
         <div className="">
           <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-lightText ">City</span>
+            <span className="font-text ">City</span>
             <div className="flex items-center gap-2">
-              <span className="font-lightText">Select city</span>
+              <span className="font-text">Select city</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
 
           <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-lightText ">Language</span>
+            <span className="font-text ">Language</span>
             <div className="flex items-center gap-2">
-              <span className="font-lightText">English</span>
+              <span className="font-text">English</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
@@ -516,11 +525,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-lightText">Chat</span>
+          <span className="font-text">Chat</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-lightText">FAQs</span>
+          <span className="font-text">FAQs</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
       </div>
@@ -532,11 +541,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-lightText">Privacy Policy</span>
+          <span className="font-text">Privacy Policy</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
         <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-lightText">Terms of Usage</span>
+          <span className="font-text">Terms of Usage</span>
           <ChevronRight size={16} className="text-gray-400" />
         </button>
       </div>
@@ -569,7 +578,6 @@ const AccountPage = () => {
         <a href="https://www.x.com/flyfim.com" className="hover:text-primary">
           <TbBrandPinterestFilled size={16} />
         </a>
-
       </div>
 
       {/* <div className="mt-[16px] text-[#888888] mx-6 pb-[180px]">
