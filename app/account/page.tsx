@@ -104,7 +104,7 @@ const AccountPage = () => {
             </h1>
             <p className="text-gray-600 text-sm">{user.email}</p>
           </div>
-          <Avatar className="h-16 w-16">
+          <Avatar className="h-16 w-16 mr-2">
             <AvatarImage
               src="/images/user.svg"
               alt="Profile picture"
