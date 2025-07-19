@@ -552,7 +552,7 @@ const AccountPage = () => {
 
       <div className="flex items-center gap-4 justify-start mx-6 text-gray-500">
         <a
-          href="https://www.linkedin.com/company/flyfim"
+          href="https://www.linkedin.com/company/fly-in-minute"
           className="hover:text-primary"
         >
           <TbBrandLinkedinFilled size={16} />
@@ -564,7 +564,7 @@ const AccountPage = () => {
           <TbBrandInstagramFilled size={16} />
         </a>
         <a
-          href="https://www.youtube.com/flyfim.com"
+          href="https://www.youtube.com/@flyfim650"
           className="hover:text-primary"
         >
           <TbBrandYoutubeFilled size={16} />
@@ -575,7 +575,7 @@ const AccountPage = () => {
         >
           <TbBrandFacebookFilled size={16} />
         </a>
-        <a href="https://www.x.com/flyfim.com" className="hover:text-primary">
+        <a href="https://www.pinterest.com/flyfim/" className="hover:text-primary">
           <TbBrandPinterestFilled size={16} />
         </a>
       </div>
