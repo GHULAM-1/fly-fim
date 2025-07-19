@@ -123,7 +123,43 @@ body {
 .font-lightText {
   font-family: var(--font-lightText) !important;
 }
+/* Add this to your global.css for bulletproof mobile compatibility */
+[data-radix-dialog-content] {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-height: 85vh !important;
+  height: 85vh !important;
+  transform: translateY(0) !important;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+}
 
+[data-radix-dialog-content][data-state="closed"] {
+  transform: translateY(100%) !important;
+}
+
+[data-radix-dialog-content][data-state="open"] {
+  transform: translateY(0) !important;
+}
+
+/* Prevent viewport unit issues on mobile */
+@supports (-webkit-touch-callout: none) {
+  [data-radix-dialog-content] {
+    height: 85vh !important;
+    max-height: 85vh !important;
+  }
+}
+
+/* Ensure proper flex behavior */
+[data-radix-dialog-content] > * {
+  flex-shrink: 0;
+}
+
+[data-radix-dialog-content] > *:last-child {
+  flex: 1;
+  min-height: 0;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
