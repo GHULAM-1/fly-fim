@@ -376,7 +376,7 @@ const Navbar = () => {
               )}
             </div>
             <div className="md:hidden flex items-center gap-4">
-              {/* Mobile Search Drawer */}
+              {/* Mobile Search Drawer - Refactored */}
               <Drawer
                 open={isSearchDrawerOpen}
                 onOpenChange={setIsSearchDrawerOpen}
@@ -386,15 +386,12 @@ const Navbar = () => {
                     <Search size={16} />
                   </button>
                 </DrawerTrigger>
-                <DrawerContent
-                  // className="drawer-content"
-                  style={{
-                    transform: "translateY(0)",
-                    transition: "transform 0.3s ease-out",
-                  }}
-                >
-                  {" "}
-                  <DrawerTitle className="bg-white p-4">
+                
+                <DrawerContent className="max-h-[85vh]">
+                  <DrawerTitle className="sr-only">Search</DrawerTitle>
+                  
+                  {/* Header with search input */}
+                  <div className="bg-white p-4 border-b">
                     <div className="flex items-center border border-black rounded-md">
                       <DrawerClose asChild>
                         <button className="p-2">
@@ -406,12 +403,15 @@ const Navbar = () => {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
+                          placeholder="Search for experiences and cities"
                           autoFocus
                         />
                       </div>
                     </div>
-                  </DrawerTitle>
-                  <div className="flex-1 overflow-y-auto px-4 pb-4">
+                  </div>
+
+                  {/* Scrollable content */}
+                  <div className="overflow-y-auto px-4 pb-4 flex-1">
                     {!searchQuery ? (
                       <>
                         {/* Top destinations near you */}
@@ -420,23 +420,21 @@ const Navbar = () => {
                             Top destinations near you
                           </h3>
                           <div className="space-y-0">
-                            {topDestinations.map((dest, index) => (
-                              <div key={dest.id}>
-                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer">
-                                  <div className="w-10 h-10 rounded overflow-hidden">
-                                    <img
-                                      src={dest.image}
-                                      alt={dest.name}
-                                      className="w-full h-full object-cover"
-                                    />
+                            {topDestinations.map((dest) => (
+                              <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="w-10 h-10 rounded overflow-hidden">
+                                  <img
+                                    src={dest.image}
+                                    alt={dest.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="font-heading text-gray-900 text-sm">
+                                    {dest.name}
                                   </div>
-                                  <div>
-                                    <div className="font-heading text-gray-900 text-sm">
-                                      {dest.name}
-                                    </div>
-                                    <div className="text-gray-500 text-xs">
-                                      {dest.country}
-                                    </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {dest.country}
                                   </div>
                                 </div>
                               </div>
@@ -450,50 +448,47 @@ const Navbar = () => {
                             Top things to do worldwide
                           </h3>
                           <div className="space-y-0">
-                            {topActivities.map((activity, index) => (
-                              <div key={activity.id}>
-                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                                  <div className="relative w-10 h-10">
-                                    {/* Stacked background images */}
-                                    <div className="absolute left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
-                                      <img
-                                        src={activity.image}
-                                        alt={activity.title}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </div>
-                                    <div className="absolute -left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform -rotate-4  opacity-50">
-                                      <img
-                                        src={activity.image}
-                                        alt={activity.title}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </div>
-
-                                    <div className="absolute -left-[0px] -top-[3px] inset-0 w-10 h-10 rounded overflow-hidden z-0 transform -rotate-0  opacity-30">
-                                      <img
-                                        src={activity.image}
-                                        alt={activity.title}
-                                        className="w-full h-full  object-cover"
-                                      />
-                                      <div className="absolute inset-0 bg-gray-500 bg-blend-overlay z-0"></div>
-                                    </div>
-                                    {/* Main image */}
-                                    <div className="relative border-white border-[1px] w-10 h-10 rounded overflow-hidden">
-                                      <img
-                                        src={activity.image}
-                                        alt={activity.title}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </div>
+                            {topActivities.map((activity) => (
+                              <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="relative w-10 h-10">
+                                  {/* Stacked background images */}
+                                  <div className="absolute left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
                                   </div>
-                                  <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
-                                      {activity.title}
-                                    </div>
-                                    <div className="text-gray-500 text-xs">
-                                      {activity.location}
-                                    </div>
+                                  <div className="absolute -left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform -rotate-4 opacity-50">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="absolute -left-[0px] -top-[3px] w-10 h-10 rounded overflow-hidden transform opacity-30">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
+                                  </div>
+                                  {/* Main image */}
+                                  <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {activity.title}
+                                  </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {activity.location}
                                   </div>
                                 </div>
                               </div>
@@ -511,22 +506,20 @@ const Navbar = () => {
                             </h3>
                             <div className="space-y-0">
                               {filteredDestinations.map((dest) => (
-                                <div key={dest.id}>
-                                  <div className="flex items-center gap-2 py-3 px-2 cursor-pointer">
-                                    <div className="w-10 h-10 rounded overflow-hidden">
-                                      <img
-                                        src={dest.image}
-                                        alt={dest.name}
-                                        className="w-full h-full object-cover"
-                                      />
+                                <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={dest.image}
+                                      alt={dest.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-heading text-gray-900 text-sm">
+                                      {dest.name}
                                     </div>
-                                    <div>
-                                      <div className="font-heading text-gray-900 text-sm">
-                                        {dest.name}
-                                      </div>
-                                      <div className="text-gray-500 text-xs">
-                                        {dest.country}
-                                      </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {dest.country}
                                     </div>
                                   </div>
                                 </div>
@@ -542,22 +535,20 @@ const Navbar = () => {
                             </h3>
                             <div className="space-y-0">
                               {filteredActivities.map((activity) => (
-                                <div key={activity.id}>
-                                  <div className="flex items-center gap-2 py-3 px-2 cursor-pointer">
-                                    <div className="w-10 h-10 rounded overflow-hidden">
-                                      <img
-                                        src={activity.image}
-                                        alt={activity.title}
-                                        className="w-full h-full object-cover"
-                                      />
+                                <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-heading text-gray-900 text-sm">
+                                      {activity.title}
                                     </div>
-                                    <div>
-                                      <div className="font-heading text-gray-900 text-sm">
-                                        {activity.title}
-                                      </div>
-                                      <div className="text-gray-500 text-xs">
-                                        {activity.location}
-                                      </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {activity.location}
                                     </div>
                                   </div>
                                 </div>
