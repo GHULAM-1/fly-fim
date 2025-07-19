@@ -90,10 +90,10 @@ const Testimonials = () => {
   return (
     <div className="py-10 bg-gradient-to-r from-[#130D1A] via-[#2F1025] to-[#130D1A] text-white">
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-2/5">
+        <div className="md:w-2/5 ">
           <div className="mb-[25px] md:py-[48px] xl:py-[60px]">
             <div
-              className="sm:pr-8 md:pr-16 lg:pr-24 xl:pr-28"
+              className="sm:pr-8 md:pr-0 lg:pr-0 xl:pr-0"
               style={{ marginLeft: "max(16px, calc((100vw - 1200px) / 2))" }}
             >
               <div className="flex md:hidden items-center justify-between">

@@ -40,7 +40,7 @@ const Tabs = () => {
         ) : user ? (
           <Avatar className="h-6 w-6 border border-white">
             <AvatarImage
-              src={profileImage}
+              src="/images/user.svg"
               alt="Profile picture"
               className="object-cover"
             />

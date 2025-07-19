@@ -181,7 +181,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                   {error && <p className="text-sm text-red-600">{error}</p>}
 
                   <Button
-                    className="w-full bg-primary hover:bg-primary/80 text-white py-6"
+                    className="w-full bg-[#7f00fe] hover:bg-[#7f00fe]/80 text-white py-6"
                     onClick={handleSendMagicLink}
                     disabled={!email || !email.includes("@") || isPending}
                   >
@@ -196,8 +196,8 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "email-sent" && (
           <>
             <DialogHeader>
-              <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                <Send className="w-8 h-8 text-primary" />
+              <div className="mx-auto mb-4 w-16 h-16 bg-[#7f00fe]/10 rounded-full flex items-center justify-center">
+                <Send className="w-8 h-8 text-[#7f00fe]" />
               </div>
               <DialogTitle className="text-2xl font-heading text-center">
                 Check your email!
