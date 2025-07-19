@@ -28,7 +28,7 @@ const Hero = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
 
-  // Handle hydration only (removed viewport calculation)
+  // Handle hydration only
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -117,10 +117,6 @@ const Hero = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    // Simplified - no complex click counting needed
-  };
 
   // Rotate placeholder text with smoother timing
   useEffect(() => {
@@ -236,9 +232,7 @@ const Hero = () => {
         }
       `}</style>
 
-      <div
-        className={`h-[414px] md:h-[640px]  relative`}
-      >
+      <div className={`h-[414px] md:h-[640px] relative`}>
         <div className="h-[414px] md:h-[640px] w-full absolute top-0 left-0 -z-20 overflow-hidden">
           <motion.video
             src="/videos/hero.mp4"
@@ -255,22 +249,22 @@ const Hero = () => {
         {/* Focus overlay - covers entire viewport */}
         {isInputFocused && (
           <div
-            className="fixed inset-0  bg-black/50 transition-opacity duration-300"
+            className="fixed inset-0 bg-black/50 transition-opacity duration-300"
             style={{ zIndex: 10 }}
           />
         )}
 
-        <div className="w-full h-full xl:px-0 px-[24px] max-w-[1200px]  py-10 md:py-20 flex flex-col justify-end gap-10  mx-auto relative ">
+        <div className="w-full h-full xl:px-0 px-[24px] max-w-[1200px] py-10 md:py-20 flex flex-col justify-end gap-10 mx-auto relative">
           <h1
             id="scroll-target"
-            className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight relative "
+            className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight relative"
           >
             {t("hero.title")}
           </h1>
 
           {/* Desktop Search Container */}
           <div
-            className={`relative hidden md:block transition-all  duration-300 ${
+            className={`relative hidden md:block transition-all duration-300 ${
               isInputFocused ? "max-w-md" : "max-w-sm"
             }`}
             style={{ zIndex: 90 }}
@@ -298,7 +292,6 @@ const Hero = () => {
                     setSearchQuery(e.target.value);
                     setIsSearchOpen(true);
                   }}
-                  onClick={handleInputClick}
                   onFocus={() => {
                     setIsSearchOpen(true);
                     setIsInputFocused(true);
@@ -314,7 +307,7 @@ const Hero = () => {
                   }}
                 />
                 {/* Animated placeholder for desktop */}
-                { !isInputFocused && !searchQuery && <AnimatedPlaceholder />}
+                {!isInputFocused && !searchQuery && <AnimatedPlaceholder />}
               </div>
               <Search strokeWidth={1} />
             </div>
@@ -369,11 +362,8 @@ const Hero = () => {
             )}
           </div>
 
-          {/* Mobile Search Drawer */}
-          <Drawer 
-            open={isDrawerOpen} 
-            onOpenChange={setIsDrawerOpen}
-          >
+          {/* Mobile Search Drawer - BULLETPROOF VERSION */}
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
               <button className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative">
                 <div className="flex-1 relative">
@@ -384,18 +374,21 @@ const Hero = () => {
               </button>
             </DrawerTrigger>
 
-            <DrawerContent className="max-h-[85vh]">
+            <DrawerContent 
+              className="mobile-drawer-content"
+              data-testid="mobile-search-drawer"
+            >
               <DrawerTitle className="sr-only">Search</DrawerTitle>
               
-              {/* Header with search input */}
-              <div className="bg-white p-4 ">
+              {/* Header with search input - Fixed height */}
+              <div className="bg-white p-4 border-b flex-shrink-0">
                 <div className="flex items-center border border-black rounded-md">
                   <DrawerClose asChild>
-                    <button className="p-2">
+                    <button className="p-2 flex-shrink-0">
                       <ArrowLeft size={20} className="text-gray-600" />
                     </button>
                   </DrawerClose>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <Input
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -407,179 +400,165 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Scrollable content */}
-              <div className="overflow-y-auto px-4 pb-4 flex-1">
-                  {!searchQuery ? (
-                    <>
-                      {/* Top destinations near you */}
+              {/* Scrollable content - Explicit flex properties */}
+              <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+                {!searchQuery ? (
+                  <>
+                    {/* Top destinations near you */}
+                    <div className="mb-4">
+                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                        Top destinations near you
+                      </h3>
+                      <div className="space-y-0">
+                        {topDestinations.map((dest) => (
+                          <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                            <div className="w-10 h-10 rounded overflow-hidden">
+                              <img
+                                src={dest.image}
+                                alt={dest.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900 text-sm">
+                                {dest.name}
+                              </div>
+                              <div className="text-gray-500 text-xs">
+                                {dest.country}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Top things to do worldwide */}
+                    <div className="mb-4">
+                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                        Top things to do worldwide
+                      </h3>
+                      <div className="space-y-0">
+                        {topActivities.map((activity) => (
+                          <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                            <div className="relative w-10 h-10">
+                              {/* Stacked background images */}
+                              <div className="absolute left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
+                                <img
+                                  src={activity.image}
+                                  alt={activity.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="absolute -left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform -rotate-4 opacity-50">
+                                <img
+                                  src={activity.image}
+                                  alt={activity.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="absolute -left-[0px] -top-[3px] w-10 h-10 rounded overflow-hidden transform opacity-30">
+                                <img
+                                  src={activity.image}
+                                  alt={activity.title}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
+                              </div>
+                              {/* Main image */}
+                              <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
+                                <img
+                                  src={activity.image}
+                                  alt={activity.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900 text-sm">
+                                {activity.title}
+                              </div>
+                              <div className="text-gray-500 text-xs">
+                                {activity.location}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Search Results */}
+                    {filteredDestinations.length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                          Top destinations near you
+                          Destinations ({filteredDestinations.length})
                         </h3>
                         <div className="space-y-0">
-                          {topDestinations.map((dest) => (
-                            <div key={dest.id}>
-                              <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                                <div className="relative w-10 h-10">
-                                  {/* Main image */}
-                                  <div className="relative w-10 h-10 rounded overflow-hidden">
-                                    <img
-                                      src={dest.image}
-                                      alt={dest.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
+                          {filteredDestinations.map((dest) => (
+                            <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                              <div className="w-10 h-10 rounded overflow-hidden">
+                                <img
+                                  src={dest.image}
+                                  alt={dest.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-gray-900 text-sm">
+                                  {dest.name}
                                 </div>
-                                <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
-                                    {dest.name}
-                                  </div>
-                                  <div className="text-gray-500 text-xs">
-                                    {dest.country}
-                                  </div>
+                                <div className="text-gray-500 text-xs">
+                                  {dest.country}
                                 </div>
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
+                    )}
 
-                      {/* Top things to do worldwide */}
+                    {filteredActivities.length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                          Top things to do worldwide
+                          Activities ({filteredActivities.length})
                         </h3>
                         <div className="space-y-0">
-                          {topActivities.map((activity) => (
-                            <div key={activity.id}>
-                              <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                                <div className="relative w-10 h-10">
-                                  {/* Stacked background images */}
-                                  <div className="absolute left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
-                                    <img
-                                      src={activity.image}
-                                      alt={activity.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div className="absolute -left-[2px] -top-[1px] inset-0 w-10 h-10 rounded overflow-hidden transform -rotate-4  opacity-50">
-                                    <img
-                                      src={activity.image}
-                                      alt={activity.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                
-                                  <div className="absolute -left-[0px] -top-[3px] inset-0 w-10 h-10 rounded overflow-hidden z-0 transform -rotate-0  opacity-30">
-                                    <img
-                                      src={activity.image}
-                                      alt={activity.title}
-                                      className="w-full h-full  object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-gray-500 bg-blend-overlay z-0"></div>
-                                  </div>
-                                  {/* Main image */}
-                                  <div className="relative border-white border-[1px] w-10 h-10 rounded overflow-hidden">
-                                    <img
-                                      src={activity.image}
-                                      alt={activity.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
+                          {filteredActivities.map((activity) => (
+                            <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                              <div className="w-10 h-10 rounded overflow-hidden">
+                                <img
+                                  src={activity.image}
+                                  alt={activity.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-gray-900 text-sm">
+                                  {activity.title}
                                 </div>
-                                <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
-                                    {activity.title}
-                                  </div>
-                                  <div className="text-gray-500 text-xs">
-                                    {activity.location}
-                                  </div>
+                                <div className="text-gray-500 text-xs">
+                                  {activity.location}
                                 </div>
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Search Results */}
-                      {filteredDestinations.length > 0 && (
-                        <div className="mb-4">
-                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                            Destinations ({filteredDestinations.length})
-                          </h3>
-                          <div className="space-y-0">
-                            {filteredDestinations.map((dest) => (
-                              <div key={dest.id}>
-                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                                  <div className="w-10 h-10 rounded overflow-hidden">
-                                    <img
-                                      src={dest.image}
-                                      alt={dest.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
-                                      {dest.name}
-                                    </div>
-                                    <div className="text-gray-500 text-xs">
-                                      {dest.country}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                    )}
 
-                      {filteredActivities.length > 0 && (
-                        <div className="mb-4">
-                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                            Activities ({filteredActivities.length})
-                          </h3>
-                          <div className="space-y-0">
-                            {filteredActivities.map((activity) => (
-                              <div key={activity.id}>
-                                <div className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                                  <div className="w-10 h-10 rounded overflow-hidden">
-                                    <img
-                                      src={activity.image}
-                                      alt={activity.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
-                                      {activity.title}
-                                    </div>
-                                    <div className="text-gray-500 text-xs">
-                                      {activity.location}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                    {filteredDestinations.length === 0 && filteredActivities.length === 0 && (
+                      <div className="text-center py-8">
+                        <div className="text-gray-500">
+                          No results found for "{searchQuery}"
                         </div>
-                      )}
-
-                      {filteredDestinations.length === 0 &&
-                        filteredActivities.length === 0 && (
-                          <div className="text-center py-8">
-                            <div className="text-gray-500">
-                              No results found for "{searchQuery}"
-                            </div>
-                          </div>
-                        )}
-                    </>
-                  )}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </DrawerContent>
           </Drawer>
-
         </div>
       </div>
     </>
