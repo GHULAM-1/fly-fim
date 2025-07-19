@@ -106,7 +106,7 @@ const Activities = () => {
     <div className="py-8 sm:py-10  bg-zinc-100">
       <div className="max-w-[1200px] mx-auto 2xl:px-0">
         <div className="flex justify-between xl:px-0 px-[24px] items-center">
-          <h2 className="text-lg sm:text-2xl max-w-[180px] sm:max-w-full font-heading text-[#444444]">
+          <h2 className="text-lg sm:text-2xl  font-heading text-[#444444]">
             {t("activities.title")}
           </h2>
           <div className="flex items-center gap-4">

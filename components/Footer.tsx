@@ -112,8 +112,8 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div className="py-5 flex flex-col sm:flex-row justify-between gap-4">
-            <ul className="text-xs text-gray-500 md:mb-0 mb-10 flex items-center gap-4">
+          <div className="py-5 flex flex-col  sm:flex-row justify-between gap-2">
+            <ul className="text-xs text-gray-500 flex items-center gap-4">
               <li className="hidden md:block !text-[12px]">
                 ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
                 Egypt
@@ -130,8 +130,8 @@ const Footer = () => {
                 Company details
               </li>
             </ul>
-            <p className="text-xs text-gray-500 md:hidden">
-              ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
+            <p className="text-xs font-text md:mb-0 mb-20 text-[#444444] md:hidden">
+              © 2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
               Egypt
             </p>
             <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
