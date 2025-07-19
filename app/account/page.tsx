@@ -106,7 +106,7 @@ const AccountPage = () => {
           </div>
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src={profileImage}
+              src="/images/user.svg"
               alt="Profile picture"
               className="object-cover"
             />
@@ -184,19 +184,10 @@ const AccountPage = () => {
           </div>
         </div>
         <hr />
-        <div className="px-6 py-8 ">
+        <div className="px-6 pb-18 pt-8 ">
           <button className="text-sm text-gray-800" onClick={signOut}>
             Sign Out
           </button>
-        </div>
-        <div className="px-6 py-8 ">
-          <button className="text-sm text-gray-800"></button>
-        </div>
-        <div className="px-6 py-8 ">
-          <button className="text-sm text-gray-800"></button>
-        </div>
-        <div className="px-6 py-8 ">
-          <button className="text-sm text-gray-800"></button>
         </div>
       </div>
     );
@@ -213,49 +204,10 @@ const AccountPage = () => {
               personalised recommendations and so much more
             </h1>
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 mt-[-20px]">
             {/* Blue chart illustration */}
-            <div className="w-20 h-16 relative">
-              <svg viewBox="0 0 80 64" className="w-full h-full">
-                {/* Background circles */}
-                <circle cx="65" cy="15" r="3" fill="#dbeafe" />
-                <circle cx="70" cy="25" r="2" fill="#bfdbfe" />
-                <circle cx="75" cy="35" r="1.5" fill="#93c5fd" />
-
-                {/* Bar chart */}
-                <rect
-                  x="20"
-                  y="45"
-                  width="8"
-                  height="15"
-                  rx="2"
-                  fill="#3b82f6"
-                />
-                <rect
-                  x="32"
-                  y="35"
-                  width="8"
-                  height="25"
-                  rx="2"
-                  fill="#2563eb"
-                />
-                <rect
-                  x="44"
-                  y="25"
-                  width="8"
-                  height="35"
-                  rx="2"
-                  fill="#1d4ed8"
-                />
-                <rect
-                  x="56"
-                  y="15"
-                  width="8"
-                  height="45"
-                  rx="2"
-                  fill="#1e40af"
-                />
-              </svg>
+            <div>
+              <img src="/images/account-2.png" className="w-20 h-20" alt="" />
             </div>
           </div>
         </div>
@@ -553,29 +505,29 @@ const AccountPage = () => {
       <div className="flex items-center gap-4 justify-start mx-6 text-gray-500">
         <a
           href="https://www.linkedin.com/company/fly-in-minute"
-          className="hover:text-primary"
+          className="hover:text-[#7f00fe]"
         >
           <TbBrandLinkedinFilled size={16} />
         </a>
         <a
           href="https://www.instagram.com/flyfim/"
-          className="hover:text-primary"
+          className="hover:text-[#7f00fe]"
         >
           <TbBrandInstagramFilled size={16} />
         </a>
         <a
           href="https://www.youtube.com/@flyfim650"
-          className="hover:text-primary"
+          className="hover:text-[#7f00fe]"
         >
           <TbBrandYoutubeFilled size={16} />
         </a>
         <a
           href="https://www.facebook.com/flyfim"
-          className="hover:text-primary"
+          className="hover:text-[#7f00fe]"
         >
           <TbBrandFacebookFilled size={16} />
         </a>
-        <a href="https://www.pinterest.com/flyfim/" className="hover:text-primary">
+        <a href="https://www.pinterest.com/flyfim/" className="hover:text-[#7f00fe]">
           <TbBrandPinterestFilled size={16} />
         </a>
       </div>

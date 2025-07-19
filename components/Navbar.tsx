@@ -322,9 +322,9 @@ const Navbar = () => {
             <Link href="/">
               {scrolled || pathname !== "/" ? (
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo-new.png"
                   alt="logo"
-                  className="w-24 sm:w-32"
+                  className="w-27 sm:w-32"
                 />
               ) : (
                 <img

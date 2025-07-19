@@ -254,7 +254,8 @@ const BrowseThemes = () => {
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
       setShowLeftButton(scrollLeft > 0);
       setShowRightButton(scrollLeft < scrollWidth - clientWidth - 5);
     }
@@ -281,16 +282,19 @@ const BrowseThemes = () => {
   useEffect(() => {
     checkScrollButtons();
     const handleResize = () => checkScrollButtons();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.addEventListener('scroll', checkScrollButtons);
+      scrollContainerRef.current.addEventListener("scroll", checkScrollButtons);
       return () => {
         if (scrollContainerRef.current) {
-          scrollContainerRef.current.removeEventListener('scroll', checkScrollButtons);
+          scrollContainerRef.current.removeEventListener(
+            "scroll",
+            checkScrollButtons
+          );
         }
       };
     }
@@ -299,7 +303,7 @@ const BrowseThemes = () => {
   return (
     <div className=" max-w-[1200px] mx-auto ">
       <h2 className="text-lg sm:text-2xl px-[24px] xl:px-0 tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
-        Browse By Themes
+        Browse by themes{" "}
       </h2>
       <div className="relative">
         <div className="flex items-center mb-4 md:mb-8 ">
@@ -307,16 +311,20 @@ const BrowseThemes = () => {
             <div className="absolute md:flex hidden left-0 top-0 z-10 bottom-0 items-center">
               <div className="bg-gradient-to-r from-white via-white to-transparent w-20 h-full flex items-center justify-start">
                 <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                  <ChevronLeft size={16} className="text-[#444444]" onClick={scrollLeft} />
+                  <ChevronLeft
+                    size={16}
+                    className="text-[#444444]"
+                    onClick={scrollLeft}
+                  />
                 </div>
               </div>
             </div>
           )}
-          
+
           <div
             ref={scrollContainerRef}
             className="flex items-center px-[24px] xl:px-0 gap-[24px] border-b border-gray-200 overflow-x-auto scrollbar-none pb-2 "
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {categories.map((category) => {
               const IconComponent = category.icon;
@@ -326,23 +334,21 @@ const BrowseThemes = () => {
                   key={category.key}
                   onClick={() => setActiveTab(category.key)}
                   className={`cursor-pointer  relative ${
-                    isActive
-                      ? "text-primary"
-                      : "text-[#444444]"
+                    isActive ? "text-[#7f00fe]" : "text-[#444444]"
                   }`}
-                  style={{ minWidth: 'fit-content' }}
+                  style={{ minWidth: "fit-content" }}
                 >
                   <div className="flex  items-center gap-2">
                     <IconComponent
                       size={16}
-                      className={isActive ? "text-primary" : "text-[#444444]"}
+                      className={isActive ? "text-[#7f00fe]" : "text-[#444444]"}
                     />
                     <span className="text-[15px]  tracking-wide font-text whitespace-nowrap">
                       {category.label}
                     </span>
                   </div>
                   {isActive && (
-                    <div className="absolute bottom-[-8px] left-0 right-0 h-0.5 bg-primary"></div>
+                    <div className="absolute bottom-[-8px] left-0 right-0 h-0.5 bg-[#7f00fe]"></div>
                   )}
                 </button>
               );
@@ -353,17 +359,20 @@ const BrowseThemes = () => {
             <div className="absolute right-[0px] top-0 bottom-0 z-10 md:flex hidden items-center">
               <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
                 <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
-                <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                  <ChevronRight size={16} className="text-[#444444]" onClick={scrollRight} />
-                </div>
-
+                  <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                    <ChevronRight
+                      size={16}
+                      className="text-[#444444]"
+                      onClick={scrollRight}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           )}
         </div>
       </div>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-3 px-[24px] xl:px-0 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
         {combinedItems.map((item, index) => {
           const IconComponent = item.icon;
@@ -371,11 +380,11 @@ const BrowseThemes = () => {
             <Link
               key={index}
               href="#"
-              className="flex items-center gap-2 group text-[#444444] hover:text-primary"
+              className="flex items-center gap-2 group text-[#444444] hover:text-[#7f00fe]"
             >
               <IconComponent
                 size={16}
-                className="text-[#444444] group-hover:text-primary"
+                className="text-[#444444] group-hover:text-[#7f00fe]"
               />
               <span className="text-sm underline">{item.text}</span>
             </Link>
@@ -383,7 +392,7 @@ const BrowseThemes = () => {
         })}
         <Link
           href="#"
-          className="cursor-pointer text-sm text-[#444444] hover:text-primary underline"
+          className="cursor-pointer text-sm text-[#444444] hover:text-[#7f00fe] underline"
         >
           {tabData[activeTab].viewAll}
         </Link>

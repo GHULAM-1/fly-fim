@@ -129,7 +129,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       key={language.code}
                       className={`block w-full text-left text-sm hover:opacity-80 cursor-pointer transition-opacity ${
                         language.code === activeLanguage
-                          ? "text-primary font-medium"
+                          ? "text-[#7f00fe] font-medium"
                           : "text-gray-600"
                       }`}
                     >
@@ -156,7 +156,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       }}
                       className={`text-left text-sm hover:opacity-80 transition-opacity ${
                         curr.code === currency.code
-                          ? "text-primary font-medium"
+                          ? "text-[#7f00fe] font-medium"
                           : "text-gray-600"
                       }`}
                     >
@@ -183,7 +183,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       }}
                       className={`text-left text-sm hover:opacity-80 transition-opacity ${
                         curr.code === currency.code
-                          ? "text-primary font-medium"
+                          ? "text-[#7f00fe] font-medium"
                           : "text-gray-600"
                       }`}
                     >
@@ -239,7 +239,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                         </span>
                         <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
                           {language.code === activeLanguage && (
-                            <div className="w-3 h-3 bg-primary rounded-full"></div>
+                            <div className="w-3 h-3 bg-[#7f00fe] rounded-full"></div>
                           )}
                         </div>
                       </div>
@@ -310,7 +310,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                           </div>
                           <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
                             {curr.code === currency.code && (
-                              <div className="w-3 h-3 bg-primary rounded-full"></div>
+                              <div className="w-3 h-3 bg-[#7f00fe] rounded-full"></div>
                             )}
                           </div>
                         </div>
@@ -342,7 +342,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                           </div>
                           <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
                             {curr.code === currency.code && (
-                              <div className="w-3 h-3 bg-primary rounded-full"></div>
+                              <div className="w-3 h-3 bg-[#7f00fe] rounded-full"></div>
                             )}
                           </div>
                         </div>
