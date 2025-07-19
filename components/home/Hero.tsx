@@ -1,16 +1,9 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Input } from "../ui/input";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerClose,
-  DrawerTrigger,
-} from "../ui/drawer";
 
 const Hero = () => {
   const { scrollY } = useScroll();
@@ -19,13 +12,14 @@ const Hero = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isCustomDrawerOpen, setIsCustomDrawerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
 
   // Handle hydration only
@@ -162,6 +156,28 @@ const Hero = () => {
       document.body.style.overflow = "unset";
     };
   }, [isInputFocused]);
+
+  // Prevent scrolling when custom drawer is open
+  useEffect(() => {
+    if (isCustomDrawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isCustomDrawerOpen]);
+
+  // Focus mobile input when drawer opens
+  useEffect(() => {
+    if (isCustomDrawerOpen && mobileInputRef.current) {
+      setTimeout(() => {
+        mobileInputRef.current?.focus();
+      }, 300);
+    }
+  }, [isCustomDrawerOpen]);
 
   // Animated placeholder component for reusability
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
@@ -362,203 +378,232 @@ const Hero = () => {
             )}
           </div>
 
-          {/* Mobile Search Drawer - BULLETPROOF VERSION */}
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild>
-              <button className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative">
-                <div className="flex-1 relative">
-                  <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
-                  <AnimatedPlaceholder />
-                </div>
-                <Search strokeWidth={1} />
-              </button>
-            </DrawerTrigger>
+          {/* Mobile Search Trigger */}
+          <button 
+            className="flex md:hidden items-center bg-white gap-2 rounded-md py-3 px-4 shadow cursor-pointer relative"
+            onClick={() => setIsCustomDrawerOpen(true)}
+          >
+            <div className="flex-1 relative">
+              <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer w-full pointer-events-none" />
+              <AnimatedPlaceholder />
+            </div>
+            <Search strokeWidth={1} />
+          </button>
 
-            <DrawerContent 
-              className="mobile-drawer-content"
-              data-testid="mobile-search-drawer"
-            >
-              <DrawerTitle className="sr-only">Search</DrawerTitle>
-              
-              {/* Header with search input - Fixed height */}
-              <div className="bg-white p-4 border-b flex-shrink-0">
-                <div className="flex items-center border border-black rounded-md">
-                  <DrawerClose asChild>
-                    <button className="p-2 flex-shrink-0">
-                      <ArrowLeft size={20} className="text-gray-600" />
-                    </button>
-                  </DrawerClose>
-                  <div className="flex-1 min-w-0">
-                    <Input
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
-                      placeholder="Search for experiences and cities"
-                      autoFocus
-                    />
+          {/* Custom Mobile Drawer */}
+          <AnimatePresence>
+            {isCustomDrawerOpen && (
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="fixed inset-0 bg-black/50 z-[9998]"
+                  onClick={() => setIsCustomDrawerOpen(false)}
+                />
+                
+                {/* Drawer Content */}
+                <motion.div
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "100%" }}
+                  transition={{ 
+                    type: "spring", 
+                    damping: 30, 
+                    stiffness: 400,
+                    mass: 0.8
+                  }}
+                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] max-h-[85vh] flex flex-col"
+                >
+                  {/* Handle */}
+                  <div className="flex justify-center pt-3 pb-2">
+                    <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
                   </div>
-                </div>
-              </div>
 
-              {/* Scrollable content - Explicit flex properties */}
-              <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
-                {!searchQuery ? (
-                  <>
-                    {/* Top destinations near you */}
-                    <div className="mb-4">
-                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                        Top destinations near you
-                      </h3>
-                      <div className="space-y-0">
-                        {topDestinations.map((dest) => (
-                          <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                            <div className="w-10 h-10 rounded overflow-hidden">
-                              <img
-                                src={dest.image}
-                                alt={dest.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-semibold text-gray-900 text-sm">
-                                {dest.name}
-                              </div>
-                              <div className="text-gray-500 text-xs">
-                                {dest.country}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                  {/* Header with search input */}
+                  <div className="bg-white px-4 pb-4  border-gray-200 flex-shrink-0">
+                    <div className="flex items-center border border-gray-300 rounded-md">
+                      <button 
+                        className="p-2 flex-shrink-0"
+                        onClick={() => setIsCustomDrawerOpen(false)}
+                      >
+                        <ArrowLeft size={20} className="text-gray-600" />
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <Input
+                          ref={mobileInputRef}
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full h-12 border-none px-2 text-base focus:border-gray-400 focus-visible:ring-0"
+                          placeholder="Search for experiences and cities"
+                        />
                       </div>
                     </div>
+                  </div>
 
-                    {/* Top things to do worldwide */}
-                    <div className="mb-4">
-                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                        Top things to do worldwide
-                      </h3>
-                      <div className="space-y-0">
-                        {topActivities.map((activity) => (
-                          <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                            <div className="relative w-10 h-10">
-                              {/* Stacked background images */}
-                              <div className="absolute left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
+                  {/* Scrollable content */}
+                  <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+                    {!searchQuery ? (
+                      <>
+                        {/* Top destinations near you */}
+                        <div className="mb-4">
+                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            Top destinations near you
+                          </h3>
+                          <div className="space-y-0">
+                            {topDestinations.map((dest) => (
+                              <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="w-10 h-10 rounded overflow-hidden">
+                                  <img
+                                    src={dest.image}
+                                    alt={dest.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {dest.name}
+                                  </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {dest.country}
+                                  </div>
+                                </div>
                               </div>
-                              <div className="absolute -left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform -rotate-4 opacity-50">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Top things to do worldwide */}
+                        <div className="mb-4">
+                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            Top things to do worldwide
+                          </h3>
+                          <div className="space-y-0">
+                            {topActivities.map((activity) => (
+                              <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                <div className="relative w-10 h-10">
+                                  {/* Stacked background images */}
+                                  <div className="absolute left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="absolute -left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform -rotate-4 opacity-50">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="absolute -left-[0px] -top-[3px] w-10 h-10 rounded overflow-hidden transform opacity-30">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
+                                  </div>
+                                  {/* Main image */}
+                                  <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900 text-sm">
+                                    {activity.title}
+                                  </div>
+                                  <div className="text-gray-500 text-xs">
+                                    {activity.location}
+                                  </div>
+                                </div>
                               </div>
-                              <div className="absolute -left-[0px] -top-[3px] w-10 h-10 rounded overflow-hidden transform opacity-30">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
-                              </div>
-                              {/* Main image */}
-                              <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <div className="font-semibold text-gray-900 text-sm">
-                                {activity.title}
-                              </div>
-                              <div className="text-gray-500 text-xs">
-                                {activity.location}
-                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Search Results */}
+                        {filteredDestinations.length > 0 && (
+                          <div className="mb-4">
+                            <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                              Destinations ({filteredDestinations.length})
+                            </h3>
+                            <div className="space-y-0">
+                              {filteredDestinations.map((dest) => (
+                                <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={dest.image}
+                                      alt={dest.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-gray-900 text-sm">
+                                      {dest.name}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {dest.country}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Search Results */}
-                    {filteredDestinations.length > 0 && (
-                      <div className="mb-4">
-                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                          Destinations ({filteredDestinations.length})
-                        </h3>
-                        <div className="space-y-0">
-                          {filteredDestinations.map((dest) => (
-                            <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={dest.image}
-                                  alt={dest.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <div className="font-semibold text-gray-900 text-sm">
-                                  {dest.name}
-                                </div>
-                                <div className="text-gray-500 text-xs">
-                                  {dest.country}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                        )}
 
-                    {filteredActivities.length > 0 && (
-                      <div className="mb-4">
-                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
-                          Activities ({filteredActivities.length})
-                        </h3>
-                        <div className="space-y-0">
-                          {filteredActivities.map((activity) => (
-                            <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <div className="font-semibold text-gray-900 text-sm">
-                                  {activity.title}
+                        {filteredActivities.length > 0 && (
+                          <div className="mb-4">
+                            <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                              Activities ({filteredActivities.length})
+                            </h3>
+                            <div className="space-y-0">
+                              {filteredActivities.map((activity) => (
+                                <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-gray-900 text-sm">
+                                      {activity.title}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      {activity.location}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="text-gray-500 text-xs">
-                                  {activity.location}
-                                </div>
-                              </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                          </div>
+                        )}
 
-                    {filteredDestinations.length === 0 && filteredActivities.length === 0 && (
-                      <div className="text-center py-8">
-                        <div className="text-gray-500">
-                          No results found for "{searchQuery}"
-                        </div>
-                      </div>
+                        {filteredDestinations.length === 0 && filteredActivities.length === 0 && (
+                          <div className="text-center py-8">
+                            <div className="text-gray-500">
+                              No results found for "{searchQuery}"
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-            </DrawerContent>
-          </Drawer>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </>
