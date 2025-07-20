@@ -260,7 +260,7 @@ const AccountPage = () => {
               <path d="M15.53 3.83c.893-1.09 1.477-2.602 1.305-4.112-1.265.056-2.79.856-3.683 1.928-.826.942-1.553 2.455-1.36 3.902 1.426.104 2.88-.717 3.738-1.718z" />
             </svg>
 
-            <span className="font-heading tracking-wider text-[16px]">
+            <span className="font-heading text-[#444444] tracking-wider text-[16px]">
               Continue with Apple
             </span>
           </Button>
@@ -328,7 +328,7 @@ const AccountPage = () => {
                           {isPending ? (
                             "Connecting..."
                           ) : (
-                            <span className="font-heading text-[16px]">
+                            <span className="font-heading text-[#444444] text-[16px]">
                               Continue with Google
                             </span>
                           )}
@@ -346,7 +346,9 @@ const AccountPage = () => {
                             <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09z" />
                             <path d="M15.53 3.83c.893-1.09 1.477-2.602 1.305-4.112-1.265.056-2.79.856-3.683 1.928-.826.942-1.553 2.455-1.36 3.902 1.426.104 2.88-.717 3.738-1.718z" />
                           </svg>
-                          Continue with Apple
+                          <span className="font-heading tracking-wider text-[16px] text-[#444444]">
+                            Continue with Apple
+                          </span>
                         </Button>
                       </div>
 
