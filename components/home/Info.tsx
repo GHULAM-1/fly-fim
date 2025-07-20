@@ -11,7 +11,7 @@ const Info = () => {
   };
 
   return (
-    <div className="py-4 sm:py-10 px-[24px] max-w-[1220px] mx-auto xl:px-0 flex justify-between gap-4 sm:gap-8 md:gap-10 overflow-scroll md:overflow-visible scrollbar-hide">
+    <div className="py-4 sm:py-10 pl-[16px] pr-[24px] max-w-[1220px] mx-auto xl:px-0 flex justify-between gap-4 sm:gap-8 md:gap-10 overflow-scroll md:overflow-visible scrollbar-hide">
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
         onClick={() => handleCardClick(0)}
