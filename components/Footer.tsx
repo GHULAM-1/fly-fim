@@ -16,11 +16,17 @@ const Footer = () => {
       <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 mb-12 md:mb-0">
         <div className="2xl:max-w-screen-xl mx-auto">
           <div className="py-6 sm:py-10 border-b">
-            <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
+            <img
+              src="/images/purpule-logo.png"
+              alt="logo"
+              className="w-24 sm:w-32"
+            />{" "}
             <div className="grid grid-cols-1 !text-[12px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-10 md:gap-20 mt-10">
               <div className="">
                 <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest ">GET HELP 24/7</li>
+                  <li className="font-heading text-[#444444] tracking-widest ">
+                    GET HELP 24/7
+                  </li>
                   <li className="flex text-[#666666] font-regular  items-center gap-2 cursor-pointer hover:text-[#7f00fe]">
                     <HelpCircle size={16} strokeWidth={1} />
                     Help Center
@@ -41,16 +47,24 @@ const Footer = () => {
               </div>
               <div className="grid grid-cols-2 gap-4 w-full lg:col-span-2">
                 <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest">CITIES</li>
+                  <li className="font-heading text-[#444444] tracking-widest">
+                    CITIES
+                  </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Nueva York
                   </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Las Vegas
                   </li>
-                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">Roma</li>
-                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">París</li>
-                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">Londres</li>
+                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
+                    Roma
+                  </li>
+                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
+                    París
+                  </li>
+                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
+                    Londres
+                  </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Barcelona
                   </li>
@@ -59,11 +73,15 @@ const Footer = () => {
                   </li>
                 </ul>
                 <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest">FLYFIM</li>
+                  <li className="font-heading text-[#444444] tracking-widest">
+                    FLYFIM
+                  </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Our story
                   </li>
-                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">Careers</li>
+                  <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
+                    Careers
+                  </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Newsroom
                   </li>
@@ -77,7 +95,9 @@ const Footer = () => {
               </div>
               <div>
                 <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest">PARTNERS</li>
+                  <li className="font-heading text-[#444444] tracking-widest">
+                    PARTNERS
+                  </li>
                   <li className="text-[#666666] cursor-pointer hover:text-[#7f00fe]">
                     Experience providers
                   </li>
@@ -89,7 +109,9 @@ const Footer = () => {
                   </li>
                 </ul>
                 <div className="mt-10">
-                  <p className="font-heading text-[#444444] tracking-widest">WE ACCEPT</p>
+                  <p className="font-heading text-[#444444] tracking-widest">
+                    WE ACCEPT
+                  </p>
                   <img src="/images/cards.png" alt="" className="w-56 mt-2" />
                 </div>
                 <div className="md:hidden flex items-center gap-4 mt-5">
@@ -121,11 +143,15 @@ const Footer = () => {
               <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">
                 Terms of usage
               </li>
-              <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">•</li>
+              <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">
+                •
+              </li>
               <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">
                 Privacy policy
               </li>
-              <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">•</li>
+              <li className="text-[#666666] cursor-pointer text-[9px] hover:text-[#7f00fe]">
+                •
+              </li>
               <li className="cursor-pointer text-[9px] hover:text-[#7f00fe]">
                 Company details
               </li>
