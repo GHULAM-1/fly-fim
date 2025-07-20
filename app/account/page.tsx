@@ -455,17 +455,17 @@ const AccountPage = () => {
 
         <div className="">
           <button className="w-full flex items-center justify-between pb-[22px] hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-text ">City</span>
+            <span className="font-halyard-text-light ">City</span>
             <div className="flex items-center gap-2">
-              <span className="font-text">Select city</span>
+              <span className="font-halyard-text-light">Select city</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
 
           <button className="w-full flex items-center justify-between pb-[12px] hover:bg-gray-50 transition-colors text-sm">
-            <span className="font-text ">Language</span>
+            <span className="font-halyard-text-light ">Language</span>
             <div className="flex items-center gap-2">
-              <span className="font-text">English</span>
+              <span className="font-halyard-text-light">English</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
@@ -479,11 +479,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between pb-[19px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Chat</span>
+          <span className="font-halyard-text-light">Chat</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
         <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">FAQs</span>
+          <span className="font-halyard-text-light">FAQs</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
       </div>
@@ -495,11 +495,11 @@ const AccountPage = () => {
         </div>
 
         <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Privacy Policy</span>
+          <span className="font-halyard-text-light">Privacy Policy</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
         <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-text">Terms of Usage</span>
+          <span className="font-halyard-text-light">Terms of Usage</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
       </div>

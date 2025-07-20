@@ -343,7 +343,7 @@ const BrowseThemes = () => {
                       size={16}
                       className={isActive ? "text-[#7f00fe]" : "text-[#444444]"}
                     />
-                    <span className="text-[15px]  tracking-wide font-text whitespace-nowrap">
+                    <span className="text-[15px]  font-halyard-text-light whitespace-nowrap">
                       {category.label}
                     </span>
                   </div>
@@ -380,7 +380,7 @@ const BrowseThemes = () => {
             <Link
               key={index}
               href="#"
-              className="flex items-center gap-2 group text-[#444444] hover:text-[#7f00fe]"
+              className="flex font-halyard-text-light items-center gap-2 group text-[#444444] hover:text-[#7f00fe]"
             >
               <IconComponent
                 size={16}
@@ -392,7 +392,7 @@ const BrowseThemes = () => {
         })}
         <Link
           href="#"
-          className="cursor-pointer text-sm text-[#444444] hover:text-[#7f00fe] underline"
+          className="cursor-pointer font-halyard-text-light text-sm text-[#444444] hover:text-[#7f00fe] underline"
         >
           {tabData[activeTab].viewAll}
         </Link>
