@@ -39,7 +39,7 @@ const Info = () => {
         <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card1.title")}
         </h2>
-        <p className="text-[15px] ml-3 mt-1 font-text   text-[#666666]">{t("info.card1.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-halyard-text-light   text-[#666666]">{t("info.card1.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -68,7 +68,7 @@ const Info = () => {
         <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card2.title")}
         </h2>
-        <p className="text-[15px] ml-3 mt-1 font-text text-[#666666]">{t("info.card2.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-halyard-text-light text-[#666666]">{t("info.card2.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -97,7 +97,7 @@ const Info = () => {
         <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card3.title")}
         </h2>
-        <p className="text-[15px] ml-3 mt-1 font-text text-[#666666]">{t("info.card3.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-halyard-text-light text-[#666666]">{t("info.card3.description")}</p>
       </div>
       <div
         className="relative w-[65%] md:w-full shrink-0 md:shrink group cursor-pointer"
@@ -126,7 +126,7 @@ const Info = () => {
         <h2 className="text-base ml-3 sm:text-[21px] font-heading text-[#444444]">
           {t("info.card4.title")}
         </h2>
-        <p className="text-[15px] ml-3 mt-1 font-text text-[#666666]">{t("info.card4.description")}</p>
+        <p className="text-[15px] ml-3 mt-1 font-halyard-text-light text-[#666666]">{t("info.card4.description")}</p>
       </div>
     </div>
   );
