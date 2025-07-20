@@ -97,12 +97,12 @@ const AccountPage = () => {
       <div className="mt-15 mb-10 min-h-screen bg-gray-50">
         <div className="flex items-center justify-between gap-4 px-6 py-8">
           <div>
-            <h1 className="text-lg font-heading text-gray-900">
+            <h1 className="text-lg font-heading text-[#444444]">
               {user.user_metadata?.full_name ||
                 user.user_metadata?.name ||
                 "User"}
             </h1>
-            <p className="text-gray-600 text-sm">{user.email}</p>
+            <p className="text-[#444444] text-sm">{user.email}</p>
           </div>
           <Avatar className="h-16 w-16 mr-2">
             <AvatarImage
@@ -117,75 +117,75 @@ const AccountPage = () => {
         </div>
         <hr />
         <div className="px-6 py-8">
-          <h2 className="font-heading text-gray-800 mb-5">My Account</h2>
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Bookings</span>
-            <ChevronRight size={16} className="text-gray-400" />
+          <h2 className="font-heading text-[#444444] mb-5">My Account</h2>
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Bookings</span>
+            <ChevronRight size={16} className="text-[#666666]" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">City</span>
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">City</span>
             <div className="flex items-center gap-2">
-              <span className="text-gray-500">Select city</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-[#666666]">Select city</span>
+              <ChevronRight size={20} className="text-[#666666]" />
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Language</span>
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Language</span>
             <div className="flex items-center gap-2">
-              <span className="text-gray-500">English</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-[#666666]">English</span>
+              <ChevronRight size={20} className="text-[#666666]" />
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Credits</span>
-            <span className="text-gray-500">$0</span>
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Credits</span>
+            <span className="text-[#666666]">$0</span>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Saved cards</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Saved cards</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Settings</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Settings</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
+          <hr />
         </div>
-        <hr />
         {/* Help Section */}
-        <div className="px-6 py-8">
-          <h2 className="font-heading text-gray-800 mb-5">Help</h2>
+        <div className="px-6 pb-8">
+          <h2 className="font-heading text-[#444444] mb-[22px]">Help</h2>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Chat</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Chat</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">FAQs</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">FAQs</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
+          <hr />
         </div>
-        <hr />
-        <div className="px-6 py-8">
-          <h2 className="font-heading text-gray-800 mb-5">Legal</h2>
+        <div className="px-6 pb-8">
+          <h2 className="font-heading text-[#444444] mb-[22px]">Legal</h2>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Privacy Policy</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Privacy Policy</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-5">
-            <span className="text-gray-800">Terms of Usage</span>
-            <ChevronRight size={20} className="text-gray-400" />
+          <div className="flex items-center justify-between text-sm mb-[22px]">
+            <span className="text-[#444444]">Terms of Usage</span>
+            <ChevronRight size={20} className="text-[#666666]" />
           </div>
+          <hr />
         </div>
-        <hr />
-        <div className="px-6 pb-18 pt-8 ">
-          <button className="text-sm text-gray-800" onClick={signOut}>
+        <div className="px-6 pb-18 pt-0 ">
+          <button className="text-sm text-[#444444]" onClick={signOut}>
             Sign Out
           </button>
         </div>
@@ -196,7 +196,7 @@ const AccountPage = () => {
   // If user is not signed in, show authentication interface
   return (
     <div className="mt-15">
-      <div className="bg-gradient-to-br from-white to-primary/10 px-6 py-8">
+      <div className="bg-gradient-to-br from-white to-[#f8f7ff] px-6 py-8">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-4 mb-[32px]">
             <h1 className="text-sm font-text text-[#444444] leading-[20px] tracking-wide">
@@ -207,7 +207,7 @@ const AccountPage = () => {
           <div className="flex-shrink-0 mt-[-20px]">
             {/* Blue chart illustration */}
             <div>
-              <img src="/images/account-2.png" className="w-20 h-20" alt="" />
+              <img src="/images/account-ani.png" className="w-20 h-20" alt="" />
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ const AccountPage = () => {
         <div className="space-y-4 ">
           <Button
             variant="outline"
-            className="w-full rounded-[12px] justify-center shadow-none gap-3 py-6 text-gray-700"
+            className="w-full rounded-[12px] justify-center shadow-none gap-3 py-6 text-[#444444]"
             onClick={handleGoogleSignIn}
             disabled={isPending}
           >
@@ -268,7 +268,7 @@ const AccountPage = () => {
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-center shadow-none gap-3 py-6 text-gray-700"
+                className="w-full justify-center shadow-none gap-3 py-6 text-[#444444]"
               >
                 <Mail className="text-[#444444]" size={20} />
                 <span className="text-[#444444] font-heading tracking-wider text-[16px]">
@@ -282,12 +282,12 @@ const AccountPage = () => {
                   <>
                     {/* Header */}
                     <DrawerHeader className="flex flex-row items-center justify-between pb-[12px] border-b border-gray-100">
-                      <DrawerTitle className="text-[18px] font-medium text-gray-900">
-                        Welcome to Fly in minute
+                      <DrawerTitle className="text-[18px] font-medium text-[#444444]">
+                        Welcome to Fly in Minute
                       </DrawerTitle>
                       <DrawerClose asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <X size={20} className="text-gray-500" />
+                          <X size={20} className="text-[#666666]" />
                         </Button>
                       </DrawerClose>
                     </DrawerHeader>
@@ -303,7 +303,7 @@ const AccountPage = () => {
                       <div className="space-y-4 mb-6">
                         <Button
                           variant="outline"
-                          className="w-full justify-center gap-3 py-5 text-gray-700 shadow-none"
+                          className="w-full justify-center gap-3 py-5 text-[#444444] shadow-none"
                           onClick={handleGoogleSignIn}
                           disabled={isPending}
                         >
@@ -336,7 +336,7 @@ const AccountPage = () => {
 
                         <Button
                           variant="outline"
-                          className="w-full justify-center gap-3 py-5 text-gray-700 shadow-none"
+                          className="w-full justify-center gap-3 py-5 text-[#444444] shadow-none"
                         >
                           <svg
                             className="w-5 h-5"
@@ -353,14 +353,14 @@ const AccountPage = () => {
                       {/* OR Divider */}
                       <div className="flex items-center my-6">
                         <div className="flex-1 border-t border-gray-200"></div>
-                        <span className="px-4 text-gray-500 text-sm">OR</span>
+                        <span className="px-4 text-[#666666] text-sm">OR</span>
                         <div className="flex-1 border-t border-gray-200"></div>
                       </div>
 
                       {/* Email Section */}
                       <div className="space-y-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          <h3 className="text-lg font-medium text-[#444444] mb-2">
                             Continue with email
                           </h3>
                           <p className="text-[#444444] font-lightText text-[12px] mb-4">
@@ -407,12 +407,12 @@ const AccountPage = () => {
                   <>
                     {/* Header */}
                     <DrawerHeader className="flex flex-row items-center justify-between p-5 border-b border-gray-100">
-                      <DrawerTitle className="text-xl font-medium text-gray-900">
+                      <DrawerTitle className="text-xl font-medium text-[#444444]">
                         Check your email!
                       </DrawerTitle>
                       <DrawerClose asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <X size={20} className="text-gray-500" />
+                          <X size={20} className="text-[#666666]" />
                         </Button>
                       </DrawerClose>
                     </DrawerHeader>
@@ -423,7 +423,7 @@ const AccountPage = () => {
                         <Send className="w-8 h-8 text-purple-600" />
                       </div>
 
-                      <p className="text-gray-600 text-sm mb-8 leading-relaxed">
+                      <p className="text-[#444444] text-sm mb-8 leading-relaxed">
                         To sign in, tap the button in the email we sent to
                         <br />
                         <strong>{email}</strong>
@@ -447,12 +447,12 @@ const AccountPage = () => {
 
       {/* Settings Section */}
       <div className="mt-8 mx-6 pb-[20px] mb-[32px] bg-white text-[#444444] border-b border-[#E2E2E2]">
-        <div className="py-4 ">
-          <h2 className="text-[16px] font-bold text-[#444444]">Settings</h2>
+        <div className="pb-[22px] ">
+          <h2 className="text-[16px] font-text text-[#444444]">Settings</h2>
         </div>
 
         <div className="">
-          <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
+          <button className="w-full flex items-center justify-between pb-[22px] hover:bg-gray-50 transition-colors text-sm">
             <span className="font-text ">City</span>
             <div className="flex items-center gap-2">
               <span className="font-text">Select city</span>
@@ -460,7 +460,7 @@ const AccountPage = () => {
             </div>
           </button>
 
-          <button className="w-full flex items-center justify-between py-2 hover:bg-gray-50 transition-colors text-sm">
+          <button className="w-full flex items-center justify-between pb-[12px] hover:bg-gray-50 transition-colors text-sm">
             <span className="font-text ">Language</span>
             <div className="flex items-center gap-2">
               <span className="font-text">English</span>
@@ -471,38 +471,38 @@ const AccountPage = () => {
       </div>
 
       {/* Help Section */}
-      <div className="mt-4 mx-6 pb-[20px] mb-[32px] bg-white text-[#444444] border-b border-[#E2E2E2]">
-        <div className="mb-[12px] ">
-          <h2 className="text-[16px] font-bold text-[#444444]">Help</h2>
+      <div className="mt-4 mx-6 pb-[14px] mb-[32px] bg-white text-[#444444] border-b border-[#E2E2E2]">
+        <div className="pb-[18px] ">
+          <h2 className="text-[16px] font-text text-[#444444]">Help</h2>
         </div>
 
-        <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
+        <button className="w-full flex items-center justify-between pb-[19px] hover:bg-gray-50 transition-colors text-sm">
           <span className="font-text">Chat</span>
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight size={16} className="text-[#666666]" />
         </button>
-        <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
+        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
           <span className="font-text">FAQs</span>
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight size={16} className="text-[#666666]" />
         </button>
       </div>
 
       {/* Legal Section */}
-      <div className="mt-4 mx-6 pb-[20px] mb-[32px] bg-white text-[#444444] border-b border-[#E2E2E2]">
-        <div className="mb-[12px] ">
-          <h2 className="text-[16px] font-bold text-[#444444]">Legal</h2>
+      <div className="mt-4 mx-6 pb-[14px] mb-[32px] bg-white text-[#444444] border-b border-[#E2E2E2]">
+        <div className="pb-[18px] ">
+          <h2 className="text-[16px] font-text text-[#444444]">Legal</h2>
         </div>
 
-        <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
+        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
           <span className="font-text">Privacy Policy</span>
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight size={16} className="text-[#666666]" />
         </button>
-        <button className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors text-sm">
+        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
           <span className="font-text">Terms of Usage</span>
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight size={16} className="text-[#666666]" />
         </button>
       </div>
 
-      <div className="flex items-center gap-4 justify-start mx-6 text-gray-500">
+      <div className="flex items-center gap-4 justify-start mx-6 text-[#666666]">
         <a
           href="https://www.linkedin.com/company/fly-in-minute"
           className="hover:text-[#7f00fe]"
@@ -527,7 +527,10 @@ const AccountPage = () => {
         >
           <TbBrandFacebookFilled size={16} />
         </a>
-        <a href="https://www.pinterest.com/flyfim/" className="hover:text-[#7f00fe]">
+        <a
+          href="https://www.pinterest.com/flyfim/"
+          className="hover:text-[#7f00fe]"
+        >
           <TbBrandPinterestFilled size={16} />
         </a>
       </div>
