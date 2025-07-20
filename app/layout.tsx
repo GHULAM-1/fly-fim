@@ -18,7 +18,7 @@ const heading = localFont({
 });
 
 const text = localFont({
-  src: "../fonts/text.otf",
+  src: "../fonts/halyard-display.otf",
   variable: "--font-text",
 });
 

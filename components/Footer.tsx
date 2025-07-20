@@ -18,10 +18,10 @@ const Footer = () => {
           <div className="py-6 sm:py-10 border-b">
             <img src="/images/logo.png" alt="logo" className="w-24 sm:w-32" />
             <div className="grid grid-cols-1 !text-[12px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-10 md:gap-20 mt-10">
-              <div>
+              <div className="">
                 <ul className="space-y-[10px] ">
                   <li className="font-heading text-[#444444] tracking-widest ">GET HELP 24/7</li>
-                  <li className="flex text-[#666666]  items-center gap-2 cursor-pointer hover:text-[#7f00fe]">
+                  <li className="flex text-[#666666] font-regular  items-center gap-2 cursor-pointer hover:text-[#7f00fe]">
                     <HelpCircle size={16} strokeWidth={1} />
                     Help Center
                   </li>
