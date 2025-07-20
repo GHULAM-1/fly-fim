@@ -23,7 +23,7 @@ const text = localFont({
 });
 
 const regular = localFont({
-  src: "../fonts/regular.otf",
+  src: "../fonts/halyard-display.otf",
   variable: "--font-regular",
 });
 const lightText = localFont({

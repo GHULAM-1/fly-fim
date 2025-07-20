@@ -116,13 +116,13 @@ const Activities = () => {
             </button>
             <div className="hidden md:flex items-center gap-2">
               <button
-                className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
                 onClick={scrollLeft}
               >
                 <ChevronLeftIcon className="w-4 h-4" />
               </button>
               <button
-                className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
                 onClick={scrollRight}
               >
                 <ChevronRightIcon className="w-4 h-4" />

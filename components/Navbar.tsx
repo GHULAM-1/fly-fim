@@ -322,9 +322,9 @@ const Navbar = () => {
             <Link href="/">
               {scrolled || pathname !== "/" ? (
                 <img
-                  src="/images/logo-new.png"
+                  src="/images/purpule-logo.png"
                   alt="logo"
-                  className="w-27 sm:w-32"
+                  className="w-24 sm:w-32"
                 />
               ) : (
                 <img
@@ -366,7 +366,7 @@ const Navbar = () => {
                   />
                   {/* Custom animated placeholder */}
                   {!isSearchOpen && (
-                    <div className="absolute inset-0 flex items-center pointer-events-none text-gray-500">
+                    <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
                       <span className="mr-1">Search for</span>
                       <div className="relative overflow-hidden h-5 flex items-center w-40">
                         {/* Previous text - fading out upward */}
@@ -404,7 +404,7 @@ const Navbar = () => {
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
                     {/* Top destinations */}
                     <div className="p-4">
-                      <h3 className="text-sm font-medium text-gray-600 mb-3">
+                      <h3 className="text-sm font-medium text-[#444444] mb-3">
                         Top destinations near you
                       </h3>
                       <div className="space-y-0">
@@ -428,10 +428,10 @@ const Navbar = () => {
                               />
                             </div>
                             <div>
-                              <div className="font-heading text-gray-900 text-sm">
+                              <div className="font-heading text-[#444444] text-sm">
                                 {dest.name}
                               </div>
-                              <div className="text-gray-500 text-sm">
+                              <div className="text-[#666666] text-sm">
                                 {dest.country}
                               </div>
                             </div>
@@ -439,7 +439,7 @@ const Navbar = () => {
                         ))}
 
                         {searchQuery && filteredDestinations.length === 0 && (
-                          <div className="py-3 px-2 text-gray-500 text-sm text-center">
+                          <div className="py-3 px-2 text-[#666666] text-sm text-center">
                             No destinations found for "{searchQuery}"
                           </div>
                         )}
@@ -549,7 +549,7 @@ const Navbar = () => {
                     className="p-2 flex-shrink-0"
                     onClick={() => setIsCustomSearchDrawerOpen(false)}
                   >
-                    <ArrowLeft size={20} className="text-gray-600" />
+                    <ArrowLeft size={20} className="text-[#444444]" />
                   </button>
                   <div className="flex-1 min-w-0">
                     <Input
@@ -569,7 +569,7 @@ const Navbar = () => {
                   <>
                     {/* Top destinations near you */}
                     <div className="mb-4">
-                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                      <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                         Top destinations near you
                       </h3>
                       <div className="space-y-0 max-h-48 overflow-y-auto">
@@ -597,7 +597,7 @@ const Navbar = () => {
 
                     {/* Top things to do worldwide */}
                     <div className="mb-4">
-                      <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                      <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                         Top things to do worldwide
                       </h3>
                       <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -625,7 +625,7 @@ const Navbar = () => {
                                   alt={activity.title}
                                   className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
+                                <div className="absolute inset-0 bg-[#666666] bg-blend-overlay"></div>
                               </div>
                               {/* Main image */}
                               <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
@@ -654,7 +654,7 @@ const Navbar = () => {
                     {/* Search Results */}
                     {filteredDestinations.length > 0 && (
                       <div className="mb-4">
-                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                        <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                           Destinations ({filteredDestinations.length})
                         </h3>
                         <div className="space-y-0 max-h-48 overflow-y-auto">
@@ -668,10 +668,10 @@ const Navbar = () => {
                                 />
                               </div>
                               <div>
-                                <div className="font-heading text-gray-900 text-sm">
+                                <div className="font-heading text-[#444444] text-sm">
                                   {dest.name}
                                 </div>
-                                <div className="text-gray-500 text-xs">
+                                <div className="text-[#666666] text-xs">
                                   {dest.country}
                                 </div>
                               </div>
@@ -683,7 +683,7 @@ const Navbar = () => {
 
                     {filteredActivities.length > 0 && (
                       <div className="mb-4">
-                        <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                        <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                           Activities ({filteredActivities.length})
                         </h3>
                         <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -697,10 +697,10 @@ const Navbar = () => {
                                 />
                               </div>
                               <div>
-                                <div className="font-heading text-gray-900 text-sm">
+                                <div className="font-heading text-[#444444] text-sm">
                                   {activity.title}
                                 </div>
-                                <div className="text-gray-500 text-xs">
+                                <div className="text-[#666666] text-xs">
                                   {activity.location}
                                 </div>
                               </div>
@@ -713,7 +713,7 @@ const Navbar = () => {
                     {filteredDestinations.length === 0 &&
                       filteredActivities.length === 0 && (
                         <div className="text-center py-8">
-                          <div className="text-gray-500">
+                          <div className="text-[#666666]">
                             No results found for "{searchQuery}"
                           </div>
                         </div>

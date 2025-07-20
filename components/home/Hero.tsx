@@ -233,7 +233,7 @@ const Hero = () => {
 
   // Animated placeholder component for reusability
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
-    <div className="absolute inset-0 flex items-center pointer-events-none text-gray-500">
+    <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
       <span className="mr-1 font-text md:text-base text-sm flex-shrink-0">{prefix}</span>
       <div className="relative overflow-hidden h-5 flex items-center flex-1 min-w-0">
         {/* Previous text - sliding out upward */}
@@ -399,7 +399,7 @@ const Hero = () => {
                 style={{ zIndex: 60 }}
               >
                 <div className="p-4">
-                  <h3 className="text-sm font-medium text-gray-600 mb-3">
+                  <h3 className="text-sm font-medium text-[#444444] mb-3">
                     Top destinations near you
                   </h3>
                   <div className="space-y-0">
@@ -421,10 +421,10 @@ const Hero = () => {
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-gray-900 text-sm">
+                            <div className="font-semibold text-[#444444] text-sm">
                               {dest.name}
                             </div>
-                            <div className="text-gray-500 text-sm">
+                            <div className="text-[#666666] text-sm">
                               {dest.country}
                             </div>
                           </div>
@@ -433,7 +433,7 @@ const Hero = () => {
                     )}
 
                     {searchQuery && filteredDestinations.length === 0 && (
-                      <div className="py-3 px-2 text-gray-500 text-sm text-center">
+                      <div className="py-3 px-2 text-[#666666] text-sm text-center">
                         No destinations found for "{searchQuery}"
                       </div>
                     )}
@@ -505,7 +505,7 @@ const Hero = () => {
                         className="p-2 flex-shrink-0"
                         onClick={() => setIsCustomDrawerOpen(false)}
                       >
-                        <ArrowLeft size={20} className="text-gray-600" />
+                        <ArrowLeft size={20} className="text-[#444444]" />
                       </button>
                       <div className="flex-1 min-w-0">
                         <Input
@@ -525,7 +525,7 @@ const Hero = () => {
                       <>
                         {/* Top destinations near you */}
                         <div className="mb-4">
-                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                          <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                             Top destinations near you
                           </h3>
                           <div className="space-y-0 max-h-48 overflow-y-auto">
@@ -539,10 +539,10 @@ const Hero = () => {
                                   />
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
+                                  <div className="font-semibold text-[#444444] text-sm">
                                     {dest.name}
                                   </div>
-                                  <div className="text-gray-500 text-xs">
+                                  <div className="text-[#666666] text-xs">
                                     {dest.country}
                                   </div>
                                 </div>
@@ -553,7 +553,7 @@ const Hero = () => {
 
                         {/* Top things to do worldwide */}
                         <div className="mb-4">
-                          <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                          <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                             Top things to do worldwide
                           </h3>
                           <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -593,10 +593,10 @@ const Hero = () => {
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 text-sm">
+                                  <div className="font-semibold text-[#444444] text-sm">
                                     {activity.title}
                                   </div>
-                                  <div className="text-gray-500 text-xs">
+                                  <div className="text-[#666666] text-xs">
                                     {activity.location}
                                   </div>
                                 </div>
@@ -610,7 +610,7 @@ const Hero = () => {
                         {/* Search Results */}
                         {filteredDestinations.length > 0 && (
                           <div className="mb-4">
-                            <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                               Destinations ({filteredDestinations.length})
                             </h3>
                             <div className="space-y-0 max-h-48 overflow-y-auto">
@@ -624,10 +624,10 @@ const Hero = () => {
                                     />
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
+                                    <div className="font-semibold text-[#444444] text-sm">
                                       {dest.name}
                                     </div>
-                                    <div className="text-gray-500 text-xs">
+                                    <div className="text-[#666666] text-xs">
                                       {dest.country}
                                     </div>
                                   </div>
@@ -639,7 +639,7 @@ const Hero = () => {
 
                         {filteredActivities.length > 0 && (
                           <div className="mb-4">
-                            <h3 className="text-xs font-medium text-gray-600 mb-2 px-2">
+                            <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
                               Activities ({filteredActivities.length})
                             </h3>
                             <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -653,10 +653,10 @@ const Hero = () => {
                                     />
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-gray-900 text-sm">
+                                    <div className="font-semibold text-[#444444] text-sm">
                                       {activity.title}
                                     </div>
-                                    <div className="text-gray-500 text-xs">
+                                    <div className="text-[#666666] text-xs">
                                       {activity.location}
                                     </div>
                                   </div>
@@ -668,7 +668,7 @@ const Hero = () => {
 
                         {filteredDestinations.length === 0 && filteredActivities.length === 0 && (
                           <div className="text-center py-8">
-                            <div className="text-gray-500">
+                            <div className="text-[#666666]">
                               No results found for "{searchQuery}"
                             </div>
                           </div>

@@ -19,18 +19,18 @@ const Banner = () => {
           className="w-full h-60 object-cover block md:hidden rounded-lg"
         />
         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 xl:left-16">
-          <h2 className="text-xl xl:text-3xl font-heading">
+          <h2 className="text-xl xl:text-3xl text-[#444444] font-heading">
             {t("banner.title")}
           </h2>
-          <p className="text-sm xl:text-lg mt-2 max-w-sm xl:max-w-xl">
+          <p className="text-sm xl:text-lg mt-2 text-[#444444] max-w-sm xl:max-w-xl">
             {t("banner.subtitle")}
           </p>
         </div>
         <div className="block md:hidden absolute top-10 px-5">
-          <h2 className="text-lg sm:text-xl xl:text-3xl font-heading">
+          <h2 className="text-lg sm:text-xl xl:text-3xl text-[#444444] font-heading">
             {t("banner.title")}
           </h2>
-          <p className="text-gray-500 text-sm xl:text-lg mt-2 max-w-sm xl:max-w-xl">
+          <p className="text-[#444444] text-sm xl:text-lg mt-2 max-w-sm xl:max-w-xl">
             {t("banner.subtitle")}
           </p>
         </div>
