@@ -234,13 +234,13 @@ const Hero = () => {
   // Animated placeholder component for reusability
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
     <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
-      <span className="mr-1 font-text md:text-base text-sm flex-shrink-0">{prefix}</span>
+      <span className="mr-1 font-halyard-text-light md:text-base text-sm flex-shrink-0">{prefix}</span>
       <div className="relative overflow-hidden h-5 flex items-center flex-1 min-w-0">
         {/* Previous text - sliding out upward */}
         {isTransitioning && previousPlaceholderIndex >= 0 && (
           <span
             key={`prev-${previousPlaceholderIndex}`}
-            className="absolute font-text md:text-base text-sm whitespace-nowrap"
+            className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
             style={{
               animation: "slideOutUp 0.7s ease-out forwards",
               animationFillMode: "both",
@@ -253,7 +253,7 @@ const Hero = () => {
         {/* Current text - sliding in from below */}
         <span
           key={`current-${currentPlaceholderIndex}`}
-          className="absolute font-text md:text-base text-sm whitespace-nowrap"
+          className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
           style={{
             animation: isTransitioning
               ? "slideInUp 0.7s ease-out forwards"
