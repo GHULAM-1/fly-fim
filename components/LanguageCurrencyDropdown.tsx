@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +30,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isLanguageDrawerOpen, setIsLanguageDrawerOpen] = useState(false);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Sync with localStorage and i18n changes
   useEffect(() => {
@@ -47,6 +48,8 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
       i18n.off("languageChanged", handleLanguageChange);
     };
   }, [i18n]);
+
+
 
   const languages = [
     { code: "en", name: "English" },
@@ -259,7 +262,12 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
         {/* Currency Button */}
         <Drawer
           open={isCurrencyDrawerOpen}
-          onOpenChange={setIsCurrencyDrawerOpen}
+          onOpenChange={(open) => {
+            setIsCurrencyDrawerOpen(open);
+            if (!open && searchInputRef.current) {
+              searchInputRef.current.blur();
+            }
+          }}
         >
           <DrawerTrigger asChild>
             <button className={`text-sm font-halyard-text-light flex items-center gap-1 ${
@@ -288,6 +296,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                   className="absolute left-3 text-[#444444] top-1/2 transform -translate-y-1/2"
                 />
                 <Input
+                  ref={searchInputRef}
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
