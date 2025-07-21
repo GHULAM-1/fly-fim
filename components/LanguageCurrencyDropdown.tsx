@@ -276,7 +276,14 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {formatCurrencyDisplay(currency)}
             </button>
           </DrawerTrigger>
-          <DrawerContent className="max-h-[90vh] h-full">
+          <DrawerContent 
+            className="max-h-[90vh] h-full"
+            onTouchStart={() => {
+              if (searchInputRef.current) {
+                searchInputRef.current.blur();
+              }
+            }}
+          >
             <DrawerHeader className="flex items-center justify-between px-[24px] pb-0 pt-2">
               <DrawerTitle className="text-lg font-heading text-[#444444] p-0 font-medium text-left">
                 Select currency
