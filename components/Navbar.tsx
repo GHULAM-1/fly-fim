@@ -322,13 +322,13 @@ const Navbar = () => {
             <Link href="/">
               {scrolled || pathname !== "/" ? (
                 <img
-                  src="/images/purpule-logo.png"
+                  src="/images/new-purple-logo.png"
                   alt="logo"
-                  className="w-24 sm:w-32"
+                  className="w-24 sm:w-32 py-2"
                 />
               ) : (
                 <img
-                  src="/images/logo-white.png"
+                  src="/images/white-logo-re.png"
                   alt="logo"
                   className="w-24 sm:w-32"
                 />
@@ -367,13 +367,13 @@ const Navbar = () => {
                   {/* Custom animated placeholder */}
                   {!isSearchOpen && (
                     <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
-                      <span className="mr-1">Search for</span>
+                      <span className="mr-1 font-halyard-text-light">Search for</span>
                       <div className="relative overflow-hidden h-5 flex items-center w-40">
                         {/* Previous text - fading out upward */}
                         {isTransitioning && previousPlaceholderIndex >= 0 && (
                           <span
                             key={`prev-${previousPlaceholderIndex}`}
-                            className="absolute whitespace-nowrap"
+                            className="absolute font-halyard-text-light whitespace-nowrap"
                             style={{
                               animation: "slideOutUp 0.6s ease-out forwards",
                             }}
@@ -385,7 +385,7 @@ const Navbar = () => {
                         {/* Current text - fading in from below */}
                         <span
                           key={`current-${currentPlaceholderIndex}`}
-                          className="absolute whitespace-nowrap"
+                          className="absolute font-halyard-text-light whitespace-nowrap"
                           style={{
                             animation: isTransitioning
                               ? "slideInUp 0.6s ease-out 0.05s both"
@@ -399,7 +399,7 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-                <Search strokeWidth={1} />
+                <Search  strokeWidth={1} />
                 {isSearchOpen && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
                     {/* Top destinations */}
@@ -486,9 +486,9 @@ const Navbar = () => {
               {/* Mobile Search Trigger */}
               <button 
                 onClick={() => setIsCustomSearchDrawerOpen(true)}
-                className="p-2"
+                className="p-2 font-halyard-text-light"
               >
-                <Search size={16} />
+                <Search size={16} className="text-[#444444] font-halyard-text-light" />
               </button>
 
               <LanguageCurrencyDropdown

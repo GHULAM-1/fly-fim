@@ -199,7 +199,7 @@ const AccountPage = () => {
       <div className="bg-gradient-to-br from-white to-[#f8f7ff] px-6 py-8">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-4 mb-[32px]">
-            <h1 className="text-sm font-text text-[#444444] leading-[20px] tracking-wide">
+            <h1 className="text-sm font-halyard-text-light text-[#444444] leading-[20px]">
               Sign in or register to get exclusive members-only deals,
               personalised recommendations and so much more
             </h1>
