@@ -119,38 +119,38 @@ const AccountPage = () => {
         <div className="px-6 py-8">
           <h2 className="font-heading text-[#444444] mb-5">My Account</h2>
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Bookings</span>
+            <span className="text-[#444444] font-halyard-text-light">Bookings</span>
             <ChevronRight size={16} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">City</span>
+            <span className="text-[#444444] font-halyard-text-light">City</span>
             <div className="flex items-center gap-2">
-              <span className="text-[#666666]">Select city</span>
+              <span className="text-[#666666] font-halyard-text-light">Select city</span>
               <ChevronRight size={20} className="text-[#666666]" />
             </div>
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Language</span>
+            <span className="text-[#444444] font-halyard-text-light">Language</span>
             <div className="flex items-center gap-2">
-              <span className="text-[#666666]">English</span>
+              <span className="text-[#666666] font-halyard-text-light">English</span>
               <ChevronRight size={20} className="text-[#666666]" />
             </div>
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Credits</span>
-            <span className="text-[#666666]">$0</span>
+            <span className="text-[#444444] font-halyard-text-light">Credits</span>
+            <span className="text-[#666666] font-halyard-text-light">$0</span>
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Saved cards</span>
+            <span className="text-[#444444] font-halyard-text-light">Saved cards</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Settings</span>
+            <span className="text-[#444444] font-halyard-text-light">Settings</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
           <hr />
@@ -160,12 +160,12 @@ const AccountPage = () => {
           <h2 className="font-heading text-[#444444] mb-[22px]">Help</h2>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Chat</span>
+            <span className="text-[#444444] font-halyard-text-light">Chat</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">FAQs</span>
+            <span className="text-[#444444] font-halyard-text-light">FAQs</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
           <hr />
@@ -174,18 +174,18 @@ const AccountPage = () => {
           <h2 className="font-heading text-[#444444] mb-[22px]">Legal</h2>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Privacy Policy</span>
+            <span className="text-[#444444] font-halyard-text-light">Privacy Policy</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444]">Terms of Usage</span>
+            <span className="text-[#444444] font-halyard-text-light">Terms of Usage</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
           <hr />
         </div>
         <div className="px-6 pb-18 pt-0 ">
-          <button className="text-sm text-[#444444]" onClick={signOut}>
+          <button className="text-sm text-[#444444] font-halyard-text-light" onClick={signOut}>
             Sign Out
           </button>
         </div>
