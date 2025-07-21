@@ -83,7 +83,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "welcome" && (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl font-heading font-extralight">
+              <DialogTitle className="text-2xl text-[#444444] font-heading font-extralight">
                 Welcome to Fly in minute
               </DialogTitle>
               <DialogDescription className="text-[#444444] font-halyard-text-light">
@@ -117,13 +117,9 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                {isPending ? (
-                  "Connecting..."
-                ) : (
-                  <span className="font-text tracking-wider text-[16px] text-[#444444]">
-                    Continue with Google
-                  </span>
-                )}{" "}
+                <span className="font-text tracking-wider text-[16px] text-[#444444]">
+                  Continue with Google
+                </span>
               </Button>
 
               <Button
@@ -159,7 +155,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
               </div>
 
               <div>
-                <h3 className="text-lg font-heading mb-3">
+                <h3 className="text-lg text-[#444444] font-heading mb-3">
                   Continue with email
                 </h3>
                 <p className="text-sm text-[#444444] font-halyard-text-light mb-4">
@@ -170,10 +166,13 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                 <div className="space-y-3">
                   <Input
                     type="email"
-                    placeholder="Email address"
+                    placeholder="Email address "
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full shadow-none h-10"
+                    className="w-full shadow-none h-10 placeholder:text-[#444444]"
+                    style={{
+                      fontFamily: "var(--font-halyard-text-light)",
+                    }}
                     onKeyDown={(e) => {
                       if (
                         e.key === "Enter" &&
@@ -189,7 +188,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                   {error && <p className="text-sm text-red-600">{error}</p>}
 
                   <Button
-                    className="w-full bg-[#7f00fe] hover:bg-[#7f00fe]/80 text-white py-6"
+                    className="w-full bg-[#8000ff] hover:bg-[#8000ff]/80 text-white py-6"
                     onClick={handleSendMagicLink}
                     disabled={!email || !email.includes("@") || isPending}
                   >
@@ -204,13 +203,13 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         {mode === "email-sent" && (
           <>
             <DialogHeader>
-              <div className="mx-auto mb-4 w-16 h-16 bg-[#7f00fe]/10 rounded-full flex items-center justify-center">
+              <div className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center">
                 <Send className="w-8 h-8 text-[#7f00fe]" />
               </div>
-              <DialogTitle className="text-2xl font-heading text-center">
+              <DialogTitle className="text-2xl text-[#444444] font-heading text-center">
                 Check your email!
               </DialogTitle>
-              <DialogDescription className="text-center text-gray-600">
+              <DialogDescription className="text-center text-[#444444] font-halyard-text-light">
                 To sign in, tap the button in the email we sent to
                 <br />
                 <strong>{email}</strong>

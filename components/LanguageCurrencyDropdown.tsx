@@ -291,7 +291,10 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 shadow-none placeholder:text-[#444444] placeholder:font-halyard-text-light"
+                  className="pl-10 h-12 shadow-none placeholder:text-[#444444]"
+                  style={{
+                    fontFamily: 'var(--font-halyard-text-light)'
+                  }}
                 />
               </div>
 

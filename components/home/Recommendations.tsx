@@ -116,28 +116,20 @@ const Recommendations = () => {
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
         Travelers' favorite choices
                 </h2>
-        {/* <div className="hidden md:flex items-center gap-4">
-          <Link
-            href="/cities"
-            className="text-sm underline underline-offset-4 whitespace-nowrap"
+        <div className="hidden md:flex items-center gap-2">
+          <button
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+            onClick={scrollLeft}
           >
-            {t("recommendations.seeAll")}
-          </Link>
-          <div className="flex items-center gap-2">
-            <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-              onClick={scrollLeft}
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-            </button>
-            <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-              onClick={scrollRight}
-            >
-              <ChevronRightIcon className="w-4 h-4" />
-            </button>
-          </div>
-        </div> */}
+            <ChevronLeftIcon className="w-4 h-4" />
+          </button>
+          <button
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+            onClick={scrollRight}
+          >
+            <ChevronRightIcon className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       <div
         className="mt-4 pl-[24px] xl:px-0 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
