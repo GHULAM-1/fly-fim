@@ -163,34 +163,34 @@ const Footer = () => {
               © 2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
               Egypt
             </p>
-            <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
+            <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-[#666666]">
               <a
                 href="https://www.linkedin.com/company/fly-in-minute"
-                className="hover:text-[#666666]"
+                className="hover:text-[#7f00fe]"
               >
                 <TbBrandLinkedinFilled size={16} />
               </a>
               <a
                 href="https://www.instagram.com/flyfim/"
-                className="hover:text-[#666666]"
+                className="hover:text-[#7f00fe]"
               >
                 <TbBrandInstagramFilled size={16} />
               </a>
               <a
                 href="https://www.youtube.com/@flyfim650"
-                className="hover:text-[#666666]"
+                className="hover:text-[#7f00fe]"
               >
                 <TbBrandYoutubeFilled size={16} />
               </a>
               <a
                 href="https://www.facebook.com/flyfim"
-                className="hover:text-[#666666]"
+                className="hover:text-[#7f00fe]"
               >
                 <TbBrandFacebookFilled size={16} />
               </a>
               <a
                 href="https://www.pinterest.com/flyfim/"
-                className="hover:text-[#666666]"
+                className="hover:text-[#7f00fe]"
               >
                 <TbBrandPinterestFilled size={16} />
               </a>
