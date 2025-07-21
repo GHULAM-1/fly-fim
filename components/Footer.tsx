@@ -166,31 +166,31 @@ const Footer = () => {
             <div className="hidden  md:flex items-center gap-4 justify-center sm:justify-start text-gray-500">
               <a
                 href="https://www.linkedin.com/company/fly-in-minute"
-                className="hover:text-[#7f00fe]"
+                className="hover:text-[#666666]"
               >
                 <TbBrandLinkedinFilled size={16} />
               </a>
               <a
                 href="https://www.instagram.com/flyfim/"
-                className="hover:text-[#7f00fe]"
+                className="hover:text-[#666666]"
               >
                 <TbBrandInstagramFilled size={16} />
               </a>
               <a
                 href="https://www.youtube.com/@flyfim650"
-                className="hover:text-[#7f00fe]"
+                className="hover:text-[#666666]"
               >
                 <TbBrandYoutubeFilled size={16} />
               </a>
               <a
                 href="https://www.facebook.com/flyfim"
-                className="hover:text-[#7f00fe]"
+                className="hover:text-[#666666]"
               >
                 <TbBrandFacebookFilled size={16} />
               </a>
               <a
                 href="https://www.pinterest.com/flyfim/"
-                className="hover:text-[#7f00fe]"
+                className="hover:text-[#666666]"
               >
                 <TbBrandPinterestFilled size={16} />
               </a>
