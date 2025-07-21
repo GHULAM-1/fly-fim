@@ -110,7 +110,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           <DropdownMenuTrigger asChild>
             <button
               className={`text-sm cursor-pointer font-extralight flex items-center gap-1 hover:opacity-80 transition-opacity ${
-                scrolled ? "text-black" : "text-white"
+                scrolled ? "text-[#444444]" : "text-white"
               }`}
             >
               {getCurrentLanguageName()} / {formatCurrencyDisplay(currency)}
