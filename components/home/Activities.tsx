@@ -114,12 +114,12 @@ const Activities = () => {
             <Link
               href="#"
               key={activity.id}
-              className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px]  md:w-[180px]"
+              className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px]  md:w-[200px]"
             >
               <img
                 src={activity.image}
                 alt={activity.description}
-                className="rounded w-[156px] h-[208px] md:w-[180px] md:h-[240px]"
+                className="rounded w-[156px] h-[208px] md:w-[220px] md:h-[240px]"
               />
               <p className="text-[17px] font-heading text-[#444444] leading-tight mt-2">
                 {activity.description}
