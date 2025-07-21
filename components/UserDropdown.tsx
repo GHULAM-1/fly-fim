@@ -28,41 +28,14 @@ function CustomAvatar({
   scrolled?: boolean;
 }) {
   const sizeClasses = size === "large" ? "h-12 w-12" : "h-10 w-10";
-  const faceSize = size === "large" ? "text-2xl" : "text-lg";
-  const profileImage =
-    user.user_metadata?.avatar_url ||
-    user.user_metadata?.picture ||
-    user.identities?.[0]?.identity_data?.avatar_url ||
-    user.identities?.[0]?.identity_data?.picture;
-
-  if (profileImage) {
-    return (
-      <Avatar className={`${sizeClasses} border border-white`}>
-        <AvatarImage
-          src={"/images/user.svg"}
-          alt="Profile picture"
-          className="object-cover"
-        />
-        <AvatarFallback
-          className={`bg-gradient-to-br from-pink-400 to-rose-400 flex items-center justify-center ${
-            scrolled ? "shadow-sm" : "shadow-sm"
-          }`}
-        >
-          <div className={`${faceSize} text-white/90 select-none`}>😊</div>
-        </AvatarFallback>
-      </Avatar>
-    );
-  }
-
-  // Fallback to emoji avatar
   return (
-    <div
-      className={`${sizeClasses} rounded-full bg-gradient-to-br from-pink-400 to-rose-400 flex items-center justify-center ${
-        scrolled ? "shadow-sm" : "shadow-sm"
-      }`}
-    >
-      <div className={`${faceSize} text-white/90 select-none`}>😊</div>
-    </div>
+    <Avatar className={`${sizeClasses} border border-white`}>
+      <AvatarImage
+        src={"/images/user.svg"}
+        alt="Profile picture"
+        className="object-cover"
+      />
+    </Avatar>
   );
 }
 
