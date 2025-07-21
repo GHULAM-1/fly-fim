@@ -143,16 +143,16 @@ const Footer = () => {
                 ©️2005-2025 Fly in Minute, 1 Cornish Al Nile St #85953 Luxor,
                 Egypt
               </li>
-              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[9px] hover:text-[#7f00fe]">
+              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 Terms of usage
               </li>
-              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[9px] hover:text-[#7f00fe]">
+              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 •
               </li>
-              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[9px] hover:text-[#7f00fe]">
+              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 Privacy policy
               </li>
-              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[9px] hover:text-[#7f00fe]">
+              <li className="text-[#666666] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 •
               </li>
               <li className="font-halyard-text-light cursor-pointer text-[9px] hover:text-[#7f00fe]">
