@@ -98,7 +98,7 @@ const Footer = () => {
               </div>
               <div>
                 <ul className="space-y-[10px] md:space-y-[12px]">
-                  <li className="font-heading text-[#444444] tracking-widest">
+                  <li className="font-heading text-[12px] text-[#444444] tracking-widest">
                     PARTNERS
                   </li>
                   <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
