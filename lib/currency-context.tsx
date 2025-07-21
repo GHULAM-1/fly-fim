@@ -20,7 +20,7 @@ export const CURRENCIES: Currency[] = [
   { code: "USD", symbol: "$", name: "United States Dollar", rate: 1 },
   {
     code: "AED",
-    symbol: "AED ",
+    symbol: "",
     name: "United Arab Emirates Dirham",
     rate: 3.67,
   },

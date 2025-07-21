@@ -64,6 +64,18 @@ const Activities = () => {
       place: "Paris",
       image: "/images/a1.jpg.avif",
     },
+    {
+      id: 7,
+      description: "Eiffel Tower Tickets",
+      place: "Paris",
+      image: "/images/a1.jpg.avif",
+    },
+    {
+      id: 8,
+      description: "Eiffel Tower Tickets",
+      place: "Paris",
+      image: "/images/a1.jpg.avif",
+    },
   ];
 
   return (
