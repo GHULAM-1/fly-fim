@@ -17,14 +17,14 @@ const Footer = () => {
         <div className="2xl:max-w-screen-xl mx-auto">
           <div className="py-6 sm:py-10 border-b">
             <img
-              src="/images/purpule-logo.png"
+              src="/images/new-purple-logo.png"
               alt="logo"
-              className="w-24 sm:w-32"
+              className="w-36 sm:w-32"
             />{" "}
-            <div className="grid grid-cols-1 !text-[12px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-10 md:gap-20 mt-10">
+            <div className="grid grid-cols-1 !text-[15px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-[64px] md:gap-20 mt-4 md:mt-8">
               <div className="">
-                <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest ">
+                <ul className="space-y-[10px] md:space-y-[12px]">
+                  <li className="font-heading text-[12px] text-[#444444] tracking-widest ">
                     GET HELP 24/7
                   </li>
                   <li className="flex text-[#666666] font-halyard-text-light  items-center gap-2 cursor-pointer hover:text-[#7f00fe]">
@@ -45,9 +45,9 @@ const Footer = () => {
                   </li>
                 </ul>
               </div>
-              <div className="grid grid-cols-2 gap-4 w-full lg:col-span-2">
-                <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest">
+              <div className="grid grid-cols-2 gap-[25px] w-full lg:col-span-2">
+                <ul className="space-y-[10px] md:space-y-[12px]">
+                  <li className="font-heading text-[12px] text-[#444444] tracking-widest">
                     CITIES
                   </li>
                   <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
@@ -66,14 +66,17 @@ const Footer = () => {
                     Londres
                   </li>
                   <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
+                    Dubai
+                  </li>
+                  <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
                     Barcelona
                   </li>
                   <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
                     +192 more
                   </li>
                 </ul>
-                <ul className="space-y-[10px] ">
-                  <li className="font-heading text-[#444444] tracking-widest">
+                <ul className="space-y-[10px] md:space-y-[12px]">
+                  <li className="font-heading text-[12px] text-[#444444] tracking-widest">
                     FLYFIM
                   </li>
                   <li className="text-[#666666] font-halyard-text-light cursor-pointer hover:text-[#7f00fe]">
@@ -94,7 +97,7 @@ const Footer = () => {
                 </ul>
               </div>
               <div>
-                <ul className="space-y-[10px] ">
+                <ul className="space-y-[10px] md:space-y-[12px]">
                   <li className="font-heading text-[#444444] tracking-widest">
                     PARTNERS
                   </li>
@@ -108,13 +111,13 @@ const Footer = () => {
                     Creators & influencers
                   </li>
                 </ul>
-                <div className="mt-10">
-                  <p className="font-heading text-[#444444] tracking-widest">
+                <div className="mt-[64px]">
+                  <p className="font-heading text-[12px] text-[#444444] tracking-widest">
                     WE ACCEPT
                   </p>
                   <img src="/images/cards.png" alt="" className="w-56 mt-2" />
                 </div>
-                <div className="md:hidden flex items-center gap-4 mt-5">
+                <div className="md:hidden flex items-center gap-4 mt-[46px]">
                   <a href="https://www.linkedin.com/company/fly-in-minute">
                     <TbBrandLinkedinFilled size={16} />
                   </a>
