@@ -458,7 +458,7 @@ const Navbar = () => {
                 className="text-sm font-semibold flex items-center gap-1"
               >
                 <CircleHelp strokeWidth={1} size={16} />
-                <span className="hidden text-[#444444] font-extralight md:block">Help</span>
+                <span className={`hidden font-extralight md:block ${scrolled ? "text-[#444444]" : "text-white"}`}>Help</span>
               </Link>
 
               {loading ? (

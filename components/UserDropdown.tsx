@@ -39,7 +39,7 @@ function CustomAvatar({
     return (
       <Avatar className={`${sizeClasses} border border-white`}>
         <AvatarImage
-          src={profileImage}
+          src={"/images/user.svg"}
           alt="Profile picture"
           className="object-cover"
         />
