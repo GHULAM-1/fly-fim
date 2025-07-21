@@ -21,7 +21,7 @@ const Footer = () => {
               alt="logo"
               className="w-36 sm:w-32"
             />{" "}
-            <div className="grid grid-cols-1 !text-[15px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-[64px] md:gap-20 mt-4 md:mt-8">
+            <div className="grid grid-cols-1 !text-[15px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-sm text-gray-500 gap-[64px] md:gap-20 mt-8 md:mt-8">
               <div className="">
                 <ul className="space-y-[10px] md:space-y-[12px]">
                   <li className="font-heading text-[12px] text-[#444444] tracking-widest ">

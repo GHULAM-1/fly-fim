@@ -488,7 +488,9 @@ const Navbar = () => {
                 onClick={() => setIsCustomSearchDrawerOpen(true)}
                 className="p-2 font-halyard-text-light"
               >
-                <Search size={16} className="text-[#444444] font-halyard-text-light" />
+                <Search size={16} className={`font-halyard-text-light ${
+                  scrolled || pathname !== "/" ? "text-[#444444]" : "text-white"
+                }`} />
               </button>
 
               <LanguageCurrencyDropdown

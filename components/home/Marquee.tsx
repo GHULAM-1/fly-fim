@@ -49,7 +49,7 @@ const MarqueeComp = () => {
             />
           ))}
         </Marquee>
-        <Marquee direction="right" pauseOnHover className="mt-10">
+        <Marquee direction="right" pauseOnHover className="mt-10 md:mt-20  md:mb-5">
           {hotels.map((hotel) => (
             <img
               key={hotel}
