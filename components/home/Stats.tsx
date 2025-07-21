@@ -11,10 +11,14 @@ const Stats = () => {
         {t("stats.title")}
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-10 mt-4 md:mt-[51px]">
-        <div>
-          <img src="/images/stat1.png" alt="" className="w-40 md:w-60" />
-          <p className="mt-2 ml-[4px] font-halyard-text-light text-[#666666]  text-[14px] ">{t("stats.reviews")}</p>
-        </div>
+        <a href="https://www.trustpilot.com/review/flyfim.com">
+          <div>
+            <img src="/images/stat1.png" alt="" className="w-40 md:w-60" />
+            <p className="mt-2 ml-[4px] font-halyard-text-light text-[#666666]  text-[14px] ">
+              {t("stats.reviews")}
+            </p>
+          </div>
+        </a>
         <div>
           <img src="/images/stat2-new.png" alt="" className="w-14 md:w-20" />
           <h3 className="text-base sm:text-xl font-heading text-[#444444] my-2">
@@ -29,14 +33,18 @@ const Stats = () => {
           <h3 className="text-base sm:text-xl font-heading text-[#444444] my-2">
             {t("stats.media.title")}
           </h3>
-          <p className=" text-[#666666] font-halyard-text-light text-[14px]">{t("stats.media.description")}</p>
+          <p className=" text-[#666666] font-halyard-text-light text-[14px]">
+            {t("stats.media.description")}
+          </p>
         </div>
         <div>
           <img src="/images/stat4.png" alt="" className="w-14 md:w-18" />
           <h3 className="text-base sm:text-xl font-heading text-[#444444] my-2">
             {t("stats.support.title")}
           </h3>
-          <p className=" text-[#666666] font-halyard-text-light text-[14px]">{t("stats.support.description")}</p>
+          <p className=" text-[#666666] font-halyard-text-light text-[14px]">
+            {t("stats.support.description")}
+          </p>
         </div>
       </div>
     </div>
