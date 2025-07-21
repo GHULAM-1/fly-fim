@@ -87,6 +87,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
 
   const handleCurrencySelect = (curr: (typeof CURRENCIES)[0]) => {
     setCurrency(curr);
+    console.log(curr);
     setIsCurrencyDrawerOpen(false);
     setSearchQuery("");
   };
@@ -112,14 +113,14 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {getCurrentLanguageName()} / {formatCurrencyDisplay(currency)}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-0 mt-2" align="end" side="bottom">
+          <DropdownMenuContent className="p-[20px] mt-2" align="end" side="bottom">
             <div className="flex">
               {/* Language Section */}
-              <div className="w-[180px] p-6 border-r border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-6">
+              <div className="w-[180px] border-r border-gray-200 pr-[24px]">
+                <h3 className="text-lg font-heading text-[#444444] mb-6">
                   Language
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-0">
                   {languages.map((language) => (
                     <button
                       onClick={() => {
@@ -129,8 +130,8 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       key={language.code}
                       className={`block w-full text-left text-sm hover:opacity-80 cursor-pointer transition-opacity ${
                         language.code === activeLanguage
-                          ? "text-[#] font-medium"
-                          : "text-gray-600"
+                          ? "text-[#8000ff] bg-[#F8F6FF] rounded-[4px] p-[6.4px] font-medium"
+                          : "text-[#666666] p-[6.4px]"
                       }`}
                     >
                       {language.name}
@@ -140,14 +141,14 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               </div>
 
               {/* Currencies Section */}
-              <div className="flex-1 p-6">
+              <div className="flex-1 pl-[24px]">
                 <div className="flex gap-3">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-6 shrink-0">
+                  <h3 className="text-lg font-heading text-[#444444] mb-6 shrink-0">
                     Popular currencies
                   </h3>
                   <hr className="w-full mt-4" />
                 </div>
-                <div className="grid grid-cols-3 gap-x-8 gap-y-4 mb-8">
+                <div className="grid grid-cols-3 mb-[20px]">
                   {popularCurrencies.map((curr) => (
                     <button
                       key={curr.code}
@@ -156,8 +157,8 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       }}
                       className={`text-left text-sm hover:opacity-80 transition-opacity ${
                         curr.code === currency.code
-                          ? "text-[#] font-medium"
-                          : "text-gray-600"
+                         ? "text-[#8000ff] bg-[#F8F6FF] rounded-[4px] p-[6.4px] font-medium"
+                          : "text-[#666666] p-[6.4px]"
                       }`}
                     >
                       <span className="font-semibold">
@@ -169,12 +170,12 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                 </div>
 
                 <div className="flex gap-3">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-6 shrink-0">
+                  <h3 className="text-lg font-heading text-[#444444] mb-6 shrink-0">
                     More currencies
                   </h3>
                   <hr className="w-full mt-4" />
                 </div>
-                <div className="grid grid-cols-3 gap-x-8 gap-y-4">
+                <div className="grid grid-cols-3">
                   {moreCurrencies.map((curr) => (
                     <button
                       key={curr.code}
@@ -183,14 +184,14 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       }}
                       className={`text-left text-sm hover:opacity-80 transition-opacity ${
                         curr.code === currency.code
-                          ? "text-[#] font-medium"
-                          : "text-gray-600"
+                          ? "text-[#8000ff] bg-[#F8F6FF] rounded-[4px] p-[6.4px] font-medium"
+                          : "text-[#666666] p-[6.4px]"
                       }`}
                     >
                       <span className="font-semibold">
                         {curr.code} {curr.symbol}
                       </span>
-                      <span className="ml-1">• {curr.name}</span>
+                      <span className="ml-1 font-halyard-text-light">• {curr.name}</span>
                     </button>
                   ))}
                 </div>
@@ -219,7 +220,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           </DrawerTrigger>
           <DrawerContent className="max-h-[90vh] h-full">
             <DrawerHeader className="flex items-center justify-between p-4">
-              <DrawerTitle className="text-lg font-semibold text-left">
+              <DrawerTitle className="text-lg font-heading text-[#444444] font-medium text-left">
                 Select language
               </DrawerTitle>
               <DrawerClose asChild>
@@ -238,12 +239,12 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
                     >
                       <div className="flex items-center justify-between w-full gap-3">
-                        <span className="text-sm text-gray-900">
+                        <span className={`text-sm ${language.code === activeLanguage ? "text-[#8000ff]" : "text-[#444444]"}`}>
                           {language.name}
                         </span>
-                        <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
+                        <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${language.code === activeLanguage ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
                           {language.code === activeLanguage && (
-                            <div className="w-3 h-3 bg-[#] rounded-full"></div>
+                            <div className="w-2 h-2 bg-white  rounded-full"></div>
                           )}
                         </div>
                       </div>
@@ -268,36 +269,36 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
             </button>
           </DrawerTrigger>
           <DrawerContent className="max-h-[90vh] h-full">
-            <DrawerHeader className="flex items-center justify-between p-4">
-              <DrawerTitle className="text-lg font-semibold text-left">
+            <DrawerHeader className="flex items-center justify-between px-[24px] pb-0 pt-2">
+              <DrawerTitle className="text-lg font-heading text-[#444444] p-0 font-medium text-left">
                 Select currency
               </DrawerTitle>
               <DrawerClose asChild>
                 <button className="p-1">
-                  <X size={20} className="text-gray-500" />
+                  <X size={20} className="text-[#444444]" />
                 </button>
               </DrawerClose>
             </DrawerHeader>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="flex-1 overflow-y-auto py-4 px-[24px] space-y-6">
               {/* Search Input */}
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                  className="absolute left-3 text-[#444444] top-1/2 transform -translate-y-1/2"
                 />
                 <Input
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 shadow-none"
+                  className="pl-10 h-12 shadow-none placeholder:text-[#444444] placeholder:font-halyard-text-light"
                 />
               </div>
 
               {/* Popular Currencies */}
               {filteredPopularCurrencies.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800 mb-4">
+                  <h3 className="text-[15px] font-heading font-medium text-[#444444] mb-2">
                     Popular currencies
                   </h3>
                   <div className="space-y-3">
@@ -308,17 +309,17 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                         className="w-full flex items-center border-b justify-between py-3 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center justify-between w-full gap-3">
-                          <div className="text-sm">
-                            <span className="font-semibold text-gray-900">
+                          <div className="text-[15px]">
+                            <span className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}>
                               {curr.code} {curr.symbol}
                             </span>
-                            <span className="text-gray-600">• {curr.name}</span>
+                            <span className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}> • {curr.name}</span>
                           </div>
-                          <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
-                            {curr.code === currency.code && (
-                              <div className="w-3 h-3 bg-[#] rounded-full"></div>
-                            )}
-                          </div>
+                          <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
+                          {curr.code === currency.code && (
+                            <div className="w-2 h-2 bg-white  rounded-full"></div>
+                          )}
+                        </div>
                         </div>
                       </button>
                     ))}
@@ -329,7 +330,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {/* More Currencies */}
               {filteredMoreCurrencies.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800 mb-4">
+                  <h3 className="text-[15px] font-heading font-medium text-[#444444] mb-4">
                     More currencies
                   </h3>
                   <div className="space-y-3">
@@ -341,16 +342,16 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       >
                         <div className="flex items-center justify-between w-full gap-3">
                           <div className="text-sm">
-                            <span className="font-semibold text-gray-900">
+                            <span className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}>
                               {curr.code} {curr.symbol}
                             </span>
-                            <span className="text-gray-600">• {curr.name}</span>
+                            <span className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}> • {curr.name}</span>
                           </div>
-                          <div className="flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full">
-                            {curr.code === currency.code && (
-                              <div className="w-3 h-3 bg-[#] rounded-full"></div>
-                            )}
-                          </div>
+                          <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
+                          {curr.code === currency.code && (
+                            <div className="w-2 h-2 bg-white  rounded-full"></div>
+                          )}
+                        </div>
                         </div>
                       </button>
                     ))}

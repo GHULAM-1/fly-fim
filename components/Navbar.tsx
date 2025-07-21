@@ -330,7 +330,7 @@ const Navbar = () => {
                 <img
                   src="/images/white-logo-re.png"
                   alt="logo"
-                  className="w-24 sm:w-32"
+                  className="w-24 sm:w-32 py-2"
                 />
               )}
             </Link>
