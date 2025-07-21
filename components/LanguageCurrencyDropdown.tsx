@@ -208,8 +208,12 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           onOpenChange={setIsLanguageDrawerOpen}
         >
           <DrawerTrigger asChild>
-            <button className="text-sm font-halyard-text-light text-[#444444] flex items-center gap-1">
-              <Globe size={12} className="text-[#444444] font-halyard-text-light" />
+            <button className={`text-sm font-halyard-text-light flex items-center gap-1 ${
+              scrolled ? "text-[#444444]" : "text-white"
+            }`}>
+              <Globe size={12} className={`font-halyard-text-light ${
+                scrolled ? "text-[#444444]" : "text-white"
+              }`} />
               {getCurrentLanguageCode()}
             </button>
           </DrawerTrigger>
@@ -257,7 +261,9 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           onOpenChange={setIsCurrencyDrawerOpen}
         >
           <DrawerTrigger asChild>
-            <button className="text-sm font-halyard-text-light text-[#444444] flex items-center gap-1">
+            <button className={`text-sm font-halyard-text-light flex items-center gap-1 ${
+              scrolled ? "text-[#444444]" : "text-white"
+            }`}>
               {formatCurrencyDisplay(currency)}
             </button>
           </DrawerTrigger>
