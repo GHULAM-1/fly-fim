@@ -30,6 +30,10 @@ const halyardText = localFont({
   src: "../fonts/halyard-text.otf",
   variable: "--font-halyard-text",
 });
+const halyardTextRegular = localFont({
+  src: "../fonts/halyard-text-regular.otf",
+  variable: "--font-halyard-text-regular",
+});
 const halyardTextLight = localFont({
   src: "../fonts/halyard-text-light.otf",
   variable: "--font-halyard-text-light",
@@ -93,7 +97,7 @@ export default function RootLayout({
           Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
         </title>
       </head>
-      <body className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} ${displayLight.variable} ${halyardText.variable} ${halyardTextLight.variable} antialiased`}>
+      <body className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} ${displayLight.variable} ${halyardText.variable} ${halyardTextLight.variable} ${halyardTextRegular.variable} antialiased`}>
         <I18nextProvider i18n={i18n}>
         <Toaster position="top-center"/>
         <ToastContainerComponent />

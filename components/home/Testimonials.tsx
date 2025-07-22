@@ -2,10 +2,31 @@
 import { t } from "i18next";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 const Testimonials = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    setIsAtStart(el.scrollLeft <= 0);
+    setIsAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener('scroll', checkScroll);
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -137,15 +158,17 @@ const Testimonials = () => {
               <div className="hidden md:flex items-center gap-[34px] mt-[42px]">
                 <button
                   onClick={scrollLeft}
-                  className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+                  disabled={isAtStart}
+                  className={`bg-white/10 rounded-full p-2 transition-colors active:opacity-60 `}
                 >
-                  <ChevronLeft size={40} />
+                  <ChevronLeft size={40} style={{ color: isAtStart ? '#f8f8f833' : '#fff' }} />
                 </button>
                 <button
                   onClick={scrollRight}
-                  className="bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors"
+                  disabled={isAtEnd}
+                  className={`bg-white/10 rounded-full p-2 transition-colors active:opacity-60 `}
                 >
-                  <ChevronRight size={40} />
+                  <ChevronRight size={40} style={{ color: isAtEnd ? '#f8f8f833' : '#fff' }} />
                 </button>
               </div>
             </div>
@@ -197,7 +220,7 @@ const Testimonials = () => {
                   {testimonial.review}
                 </p>
                 <hr className="my-0 border-[#C4C4C4]" />
-                <button className="text-[12px] md:text-[9px] text-[#C4C4C4] md:underline md:underline-offset-4">
+                <button className="text-[12px] md:text-[12px] text-[#C4C4C4] md:underline md:underline-offset-4">
                   {testimonial.experience}
                 </button>
               </div>

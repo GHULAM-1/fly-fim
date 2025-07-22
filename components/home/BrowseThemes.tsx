@@ -383,7 +383,7 @@ const BrowseThemes = () => {
               className="flex font-halyard-text-light items-center gap-2 group text-[#444444] hover:text-[#7f00fe]"
             >
               <IconComponent
-                size={16}
+                size={12}
                 className="text-[#444444] group-hover:text-[#7f00fe]"
               />
               <span className="text-sm underline">{item.text}</span>

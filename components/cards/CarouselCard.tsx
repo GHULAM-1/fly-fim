@@ -82,7 +82,7 @@ const CarouselCard = ({
           <span className="text-pink-600 text-xs">({reviews})</span>
         </span>
       </div>
-      <p className="font-heading text-lg text-[#444444] mt-0">{description}</p>
+      <p className="font-halyard-text-regular text-lg text-[#444444] mt-0">{description}</p>
       <p className="font-heading text-[#444444] mt-2 max-w-32">
         <span className="text-xs font-text">{t("recommendations.from")}</span>{" "}
         <br /> <PriceDisplay amount={price} />

@@ -110,7 +110,7 @@ const Destinations = () => {
         <div className="flex items-center mt-[6px] md:mt-[0px] gap-4">
           <Link
             href="/cities"
-            className="text-[14px] md:text-[15px] text-[#444444] font-lightText md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
+            className="text-[14px] md:text-[15px] hover:text-[#7f00fe] text-[#444444] font-lightText md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1"
           >
             {t("destinations.seeAll")}{" "}
             <ChevronRightIcon className="md:hidden w-4 h-4" />
