@@ -159,14 +159,14 @@ const Testimonials = () => {
                 <button
                   onClick={scrollLeft}
                   disabled={isAtStart}
-                  className={`bg-white/10 rounded-full p-2 transition-colors active:opacity-60 `}
+                  className={`bg-white/10 hover:cursor-pointer rounded-full p-2 transition-colors active:opacity-60 `}
                 >
                   <ChevronLeft size={40} style={{ color: isAtStart ? '#f8f8f833' : '#fff' }} />
                 </button>
                 <button
                   onClick={scrollRight}
                   disabled={isAtEnd}
-                  className={`bg-white/10 rounded-full p-2 transition-colors active:opacity-60 `}
+                  className={`bg-white/10 hover:cursor-pointer rounded-full p-2 transition-colors active:opacity-60 `}
                 >
                   <ChevronRight size={40} style={{ color: isAtEnd ? '#f8f8f833' : '#fff' }} />
                 </button>
