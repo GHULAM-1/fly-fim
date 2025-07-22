@@ -86,7 +86,7 @@ const Activities = () => {
             {t("activities.title")}
           </h2>
           <div className="flex items-center gap-4">
-            <button className="text-[14px] md:text-[15px] text-[#444444] font-lightText hover:text-[#7f00fe] md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1">
+            <button className="text-[14px] md:text-[15px] text-[#444444] font-lightText hover:cursor-pointer hover:text-[#7f00fe] md:underline underline-offset-4 whitespace-nowrap flex items-center gap-1">
               {t("activities.seeAll")}{" "}
               <ChevronRightIcon className="md:hidden w-4 h-4" />
             </button>
