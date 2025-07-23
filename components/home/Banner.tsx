@@ -16,7 +16,7 @@ const Banner = () => {
         <img
           src="/images/banner-mobile-new.jpg"
           alt=""
-          className="w-full h-60 object-cover block md:hidden rounded-lg"
+          className="w-full object-cover block md:hidden rounded-lg"
         />
         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 xl:left-16">
           <h2 className="text-xl xl:text-3xl text-[#444444] font-heading">
