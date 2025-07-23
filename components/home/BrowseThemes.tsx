@@ -301,7 +301,7 @@ const BrowseThemes = () => {
   }, []);
 
   return (
-    <div className=" max-w-[1200px] mx-auto ">
+    <div className=" max-w-[1200px] mt-3 mx-auto ">
       <h2 className="text-lg sm:text-2xl px-[24px] xl:px-0 tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
         Browse by themes{" "}
       </h2>
