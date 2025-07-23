@@ -534,6 +534,11 @@ const Navbar = () => {
                   setIsCustomSearchDrawerOpen(false);
                 }
               }}
+              onTouchStart={() => {
+                if (mobileInputRef.current) {
+                  mobileInputRef.current.blur();
+                }
+              }}
               className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] drawer-container flex flex-col"
               style={{
                 paddingBottom: `max(1rem, ${safeAreaBottom}px)`

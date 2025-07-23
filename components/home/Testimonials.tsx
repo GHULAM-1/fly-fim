@@ -220,7 +220,7 @@ const Testimonials = () => {
                   {testimonial.review}
                 </p>
                 <hr className="my-0 border-[#C4C4C4]" />
-                <button className="text-[12px] md:text-[12px] text-[#C4C4C4] md:underline md:underline-offset-4">
+                <button className="text-[12px] md:text-[12px] hover:cursor-pointer hover:text-white text-[#C4C4C4] md:underline md:underline-offset-4">
                   {testimonial.experience}
                 </button>
               </div>
