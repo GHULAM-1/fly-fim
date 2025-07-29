@@ -19,7 +19,7 @@ const CityCard = ({ image, description, place, city }: CityCardProps) => {
           <img src={image} alt={description} className="rounded md:w-full w-[41px]" />
         </div>
         <div>
-          <p className="font-halyard-text text-[#444444] md:mt-2 leading-tight md:max-w-32">
+          <p className="font-text text-[#444444] md:mt-2 leading-tight md:max-w-32">
             {description}
           </p>
           <p className="text-[#666666] font-halyard-text-light text-sm mt-1">
