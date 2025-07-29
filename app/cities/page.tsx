@@ -108,7 +108,7 @@ const Cities = () => {
   return (
     <>
       <div className="max-w-[1200px] mx-auto  md:py-[32px] pt-20 md:pt-32 pb-10 px-[24px]   xl:px-0">
-        <h2 className="text-[24px] sm:text-2xl font-text  text-[#444444] max-w-2/3">
+        <h2 className="text-[24px] sm:text-2xl font-text  text-[#444444] sm:max-w-2/3">
           Discover all cities worldwide
         </h2>
         <div className="flex gap-3 overflow-x-auto py-4 mt-2 scrollbar-hide">
