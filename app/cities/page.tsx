@@ -108,7 +108,7 @@ const Cities = () => {
   return (
     <>
       <div className="max-w-[1200px] mx-auto  md:py-[32px] pt-20 md:pt-32 pb-10 px-[24px]   xl:px-0">
-        <h2 className="text-[24px] sm:text-2xl font-halyard-text font-semibold text-[#444444] max-w-2/3">
+        <h2 className="text-[24px] sm:text-2xl font-text  text-[#444444] max-w-2/3">
           Discover all cities worldwide
         </h2>
         <div className="flex gap-3 overflow-x-auto py-4 mt-2 scrollbar-hide">
@@ -116,7 +116,7 @@ const Cities = () => {
             <button
               key={city}
               onClick={() => setSelectedFilter(city)}
-              className={`px-4 py-1.5 text-sm rounded hover:cursor-pointer font-halyard-text whitespace-nowrap border transition-all duration-200 ${
+              className={`px-4 py-1.5 text-sm rounded hover:cursor-pointer font-halyard-text-light whitespace-nowrap border transition-all duration-200 ${
                 selectedFilter === city
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/10"
                   : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600 hover:border-purple-600/10"
