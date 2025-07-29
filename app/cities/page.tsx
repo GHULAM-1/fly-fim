@@ -107,8 +107,8 @@ const Cities = () => {
 
   return (
     <>
-      <div className="max-w-[1200px] mx-auto px-[24px] py-[32px] xl:px-0 pt-32 pb-10 sm:px-8 md:px-16 lg:px-24   2xl:px-0">
-        <h2 className="text-lg sm:text-2xl font-halyard-text font-semibold text-[#444444] max-w-2/3">
+      <div className="max-w-[1200px] mx-auto  md:py-[32px] pt-20 md:pt-32 pb-10 px-[24px]   xl:px-0">
+        <h2 className="text-[24px] sm:text-2xl font-halyard-text font-semibold text-[#444444] max-w-2/3">
           Discover all cities worldwide
         </h2>
         <div className="flex gap-3 overflow-x-auto py-4 mt-2 scrollbar-hide">
@@ -126,7 +126,7 @@ const Cities = () => {
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap -ml-4 gap-y-10 mt-6">
+        <div className="flex flex-wrap md:flex-row flex-col justify-center md:justify-start -ml-4 gap-y-4 md:gap-y-10 mt-6">
           {filteredDestinations.map((destination) => (
             <CityCard
               key={destination.id}
