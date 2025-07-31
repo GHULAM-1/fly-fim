@@ -1,5 +1,5 @@
 "use client";
-import { LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -78,6 +78,12 @@ export function UserDropdown({ user, scrolled }: UserDropdownProps) {
         <DropdownMenuItem>Booking</DropdownMenuItem>
         <DropdownMenuItem>Credits</DropdownMenuItem>
         <DropdownMenuItem>Saved Cards</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <a href="/dashboard" className="flex items-center">
+            <Settings className="w-4 h-4 mr-2" />
+            Dashboard
+          </a>
+        </DropdownMenuItem>
         <DropdownMenuItem>Delete Account</DropdownMenuItem>
         <DropdownMenuItem
           onClick={signOut}

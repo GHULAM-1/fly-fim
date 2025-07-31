@@ -75,12 +75,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const pathname = usePathname();
 
+  // Check if current path is dashboard route
+  const isDashboard = pathname?.startsWith('/dashboard');
+
   return (
     <>
-      <Navbar />
+      {!isDashboard && <Navbar />}
       {children}
-      {pathname !== "/account" && <Footer />}
-      <Tabs />
+      {!isDashboard && pathname !== "/account" && <Footer />}
+      {!isDashboard && <Tabs />}
     </>
   );
 }
