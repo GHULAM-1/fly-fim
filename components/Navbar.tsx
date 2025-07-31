@@ -309,7 +309,7 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-50 py-2 ${
+        className={`fixed top-0 left-0 w-full z-40 py-2 ${
           scrolled || pathname !== "/"
             ? `bg-white ${
                 pathname === "/" || scrolled ? "border-b border-gray-200" : ""
@@ -337,7 +337,7 @@ const Navbar = () => {
             {(scrolled || pathname !== "/") && (
               <div
                 ref={searchRef}
-                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-50 ${
+                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-30 ${
                   isInputFocused
                     ? "min-w-sm xl:min-w-md"
                     : "min-w-xs xl:min-w-sm"
@@ -401,7 +401,7 @@ const Navbar = () => {
                 </div>
                 <Search  strokeWidth={1} />
                 {isSearchOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-40 max-h-80 overflow-y-auto">
                     {/* Top destinations */}
                     <div className="p-4">
                       <h3 className="text-sm font-medium text-[#444444] mb-3">

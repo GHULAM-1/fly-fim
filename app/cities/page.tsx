@@ -9,7 +9,7 @@ const Cities = () => {
   const destinations = [
     {
       id: 1,
-      description: "Things to do in York",
+      description: "Things to do in",
       place: "United States",
       image: "/images/d6.jpeg.avif",
       city: "New York",
