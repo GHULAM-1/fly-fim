@@ -116,7 +116,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {getCurrentLanguageName()} / {formatCurrencyDisplay(currency)}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-[20px] mt-2" align="end" side="bottom">
+          <DropdownMenuContent className="p-[20px] mt-2 z-[9999]" align="end" side="bottom">
             <div className="flex">
               {/* Language Section */}
               <div className="w-[180px] border-r border-gray-200 pr-[24px]">

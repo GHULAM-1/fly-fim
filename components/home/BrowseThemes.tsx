@@ -306,7 +306,7 @@ const BrowseThemes = () => {
         Browse by themes{" "}
       </h2>
       <div className="relative">
-        <div className="flex items-center mb-4 md:mb-8 ">
+        <div className="flex items-center mb-4 md:mb-4 ">
           {showLeftButton && (
             <div className="absolute md:flex hidden left-0 top-0 z-10 bottom-0 items-center">
               <div className="bg-gradient-to-r from-white via-white to-transparent w-20 h-full flex items-center justify-start">
