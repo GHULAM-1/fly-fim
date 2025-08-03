@@ -303,9 +303,9 @@ const Navbar = () => {
         }
       `}</style>
 
-      {/* Focus overlay - covers entire viewport */}
+      {/* Focus overlay - covers entire viewport except search dropdown */}
       {isInputFocused && (
-        <div className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 pointer-events-none" />
+        <div className="fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 pointer-events-none" />
       )}
 
       <div
