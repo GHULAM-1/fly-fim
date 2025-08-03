@@ -126,7 +126,7 @@ const Cities = () => {
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap md:flex-row flex-col justify-center md:justify-start -ml-4 gap-y-4 md:gap-y-10 mt-6">
+        <div className="flex flex-wrap md:flex-row flex-col justify-center md:justify-start -ml-4 gap-y-0 md:gap-y-10 mt-6">
           {filteredDestinations.map((destination) => (
             <CityCard
               key={destination.id}
