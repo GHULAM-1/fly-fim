@@ -38,11 +38,11 @@ const MustDo = () => {
   ];
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
         Must do things in London
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-17 mt-4 sm:mt-10">
         {mustDo.map((item) => (
           <div key={item.id} className="flex flex-col sm:flex-row gap-5">
             <img
@@ -55,7 +55,7 @@ const MustDo = () => {
                 <div className="h-6 w-6 shrink-0 text-sm text-white rounded-full flex items-center justify-center bg-gray-700">
                   {item.id}
                 </div>
-                <h3 className="text-lg font-bold text-gray-700">
+                <h3 className="text-lg font-halyard-text text-gray-700">
                   {item.title}
                 </h3>
               </div>
@@ -68,7 +68,7 @@ const MustDo = () => {
           </div>
         ))}
       </div>
-      <button className="w-full sm:w-auto py-3 px-12 rounded-lg border border-gray-700 text-gray-700 font-semibold mt-4 sm:mt-10 mx-auto block">
+      <button className="w-full font-halyard-text hover:cursor-pointer sm:w-auto py-3 px-12 rounded-lg border border-gray-700 text-gray-700 font-semibold mt-4 sm:mt-10 mx-auto block">
         Show more
       </button>
     </div>

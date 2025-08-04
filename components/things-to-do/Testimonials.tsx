@@ -71,7 +71,7 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0 bg-gradient-to-b from-white to-purple-50">
+    <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0 bg-gradient-to-b from-white to-purple-50">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
           Millions love flying out with us
@@ -102,10 +102,10 @@ const Testimonials = () => {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-halyard-text text-[#444444]">
                       {testimonial.name}
                     </h3>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-[#666666] font-halyard-text-light text-sm">
                       {testimonial.country}
                     </p>
                   </div>
@@ -133,21 +133,21 @@ const Testimonials = () => {
               </div>
 
               {/* Review text */}
-              <p className="text-gray-700 text-sm leading-relaxed mb-3">
+              <p className="text-gray-700 text-sm font-halyard-text-light mb-3">
                 {testimonial.review}
               </p>
 
               {/* View original review link */}
               <Link
                 href="#"
-                className="text-blue-600 text-sm hover:underline block mb-4"
+                className="text-blue-600 text-sm font-halyard-text hover:underline block mb-4"
               >
                 View original review in {testimonial.originalLanguage}
               </Link>
 
               {/* Experience name */}
               <div className="border-t pt-3">
-                <p className="text-gray-600 text-sm font-medium">
+                <p className="text-gray-600 text-sm font-halyard-text-light underline">
                   {testimonial.experience}
                 </p>
               </div>

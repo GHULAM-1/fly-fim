@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -18,6 +18,63 @@ import { ArrowLeft } from "lucide-react";
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Progress animation effect
+  useEffect(() => {
+    let animationId: number;
+    let startTime: number | null = null;
+    
+    const animateProgress = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      
+      const elapsed = currentTime - startTime;
+      const progressPercent = Math.min((elapsed / 5000) * 100, 100); // 5 seconds = 5000ms
+      
+      setProgress(progressPercent);
+      
+      if (progressPercent < 100) {
+        animationId = requestAnimationFrame(animateProgress);
+      } else {
+        setProgress(0);
+        startTime = null;
+      }
+    };
+    
+    animationId = requestAnimationFrame(animateProgress);
+    
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [currentSlide]);
+
+  // Update CSS custom property for progress
+  useEffect(() => {
+    const activeBullet = document.querySelector('.swiper-pagination-bullet-active');
+    if (activeBullet) {
+      (activeBullet as HTMLElement).style.setProperty('--progress', `${progress}%`);
+    }
+    
+    // Make previous dots white
+    const allBullets = document.querySelectorAll('.swiper-pagination-bullet');
+    allBullets.forEach((bullet, index) => {
+      if (index < currentSlide) {
+        bullet.classList.add('swiper-pagination-bullet-active-prev');
+      } else {
+        bullet.classList.remove('swiper-pagination-bullet-active-prev');
+      }
+    });
+  }, [progress, currentSlide]);
+
+  // Reset progress when slide changes
+  const handleSlideChange = (swiper: any) => {
+    setCurrentSlide(swiper.activeIndex);
+    setProgress(0);
+  };
+
   const topDestinations = [
     {
       id: 1,
@@ -253,8 +310,13 @@ const Hero = () => {
         }}
         pagination={{
           clickable: true,
+          dynamicBullets: false,
+          renderBullet: function (index, className) {
+            return '<span class="' + className + ' custom-bullet"></span>';
+          },
         }}
         className="mySwiper w-full rounded-2xl overflow-hidden mb-4"
+        onSlideChange={handleSlideChange}
       >
         <SwiperSlide className="rounded-2xl">
           <img
