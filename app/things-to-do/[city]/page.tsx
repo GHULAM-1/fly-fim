@@ -46,7 +46,12 @@ const ThingsToDo = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScroll(window.scrollY > window.innerHeight - 260);
+      // Calculate when navigation becomes sticky based on viewport
+      const viewportHeight = window.innerHeight;
+      const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
+      const stickyThreshold = heroHeight - 200; // Show shadow earlier
+
+      setScroll(window.scrollY > stickyThreshold);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -76,6 +81,19 @@ const ThingsToDo = () => {
               // Show section nav and set active section for carousel sections
               setShowSectionNav(true);
               setActiveSection(entry.target.id);
+            }
+          } else {
+            // When a section is no longer intersecting, check if it's the last navigation section
+            if (entry.target.id === "hop-on-hop-off-tours") {
+              // Check if activities section is coming into view
+              const activitiesElement = document.getElementById("activities");
+              if (activitiesElement) {
+                const activitiesRect = activitiesElement.getBoundingClientRect();
+                if (activitiesRect.top < window.innerHeight * 0.8) {
+                  setShowSectionNav(false);
+                  setActiveSection("");
+                }
+              }
             }
           }
         });
@@ -145,11 +163,11 @@ const ThingsToDo = () => {
   ];
   return (
     <div className="relative min-h-screen">
-      <div className="hidden md:block fixed top-22 bg-white w-full py-3 z-50 border-b">
-        <div className="flex justify-between items-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto">
-          <ul className="flex gap-3 lg:gap-8 text-xs lg:text-sm text-gray-600">
+      <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-50 border-b">
+        <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
+          <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#666666] font-light">
             <li className="flex items-center gap-1">
-              <Menu size={16} className="text-gray-600" />
+              <Menu size={16} className="text-[#666666]" />
               All Categories
             </li>
             <li>Best Sellers</li>
@@ -158,7 +176,7 @@ const ThingsToDo = () => {
             <li>Tower of London</li>
           </ul>
           <button
-            className="text-sm text-gray-600 flex items-center gap-1"
+            className="text-[15px] text-[#666666] font-halyard-text-light flex items-center gap-1"
             onMouseEnter={() => setShowBanner(true)}
             onMouseLeave={() => setShowBanner(false)}
           >
@@ -167,27 +185,29 @@ const ThingsToDo = () => {
           </button>
         </div>
         <div
-          className={`transition-all duration-300 origin-top overflow-hidden ${
+          className={` transition-all duration-300 origin-top overflow-hidden ${
             showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
           }`}
         >
           <Banner />
         </div>
       </div>
-      <Hero />
+      <div className="max-w-[1200px] mx-auto px-[24px]   xl:px-0">
+        <Hero />
+      </div>
       {showSectionNav && (
         <div
-          className={`sticky top-16 md:top-33 w-full bg-white z-50 py-3 transition-all duration-300 ${
-            scroll ? "border-y" : ""
+          className={`sticky top-16 md:top-30 w-full bg-white z-50 py-4 transition-all duration-300 ${
+            scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
           }`}
         >
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide z-10 w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px]   xl:px-0  ">
             <button
               onClick={() => scrollToSection("musicals")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "musicals"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <Music strokeWidth={1} />
@@ -195,10 +215,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("landmarks")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "landmarks"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <Landmark strokeWidth={1} />
@@ -206,10 +226,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("day-trips")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "day-trips"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <SunMedium strokeWidth={1} />
@@ -217,10 +237,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("combos")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "combos"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <BadgePercent strokeWidth={1} />
@@ -228,10 +248,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("cruises")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "cruises"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <Ship strokeWidth={1} />
@@ -239,10 +259,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("plays")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "plays"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <Leaf strokeWidth={1} />
@@ -250,10 +270,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("museums")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "museums"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <Tv strokeWidth={1} />
@@ -261,10 +281,10 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("hop-on-hop-off-tours")}
-              className={`flex items-center text-sm sm:text-base gap-2 py-1.5 px-3 border rounded whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "hop-on-hop-off-tours"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                  : "text-gray-700 border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                  : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
               }`}
             >
               <BusFront strokeWidth={1} />
@@ -273,69 +293,74 @@ const ThingsToDo = () => {
           </div>
         </div>
       )}
-      <CarouselGrid
-        title="Top experiences in London"
-        recommendations={recommendations}
-      />
-      <div id="musicals">
+      <div className="max-w-[1200px] mx-auto  pb-10 px-[24px] xl:px-0">
         <CarouselGrid
-          title="London Musicals"
+          title="Top experiences in London"
           recommendations={recommendations}
         />
+        <div id="musicals">
+          <CarouselGrid
+            title="London Musicals"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="landmarks">
+          <CarouselGrid
+            title="Landmarks in London"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="day-trips">
+          <CarouselGrid
+            title="Day Trips From London"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="combos">
+          <CarouselGrid
+            title="Combos Tickets in London"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="cruises">
+          <CarouselGrid
+            title="Thames River Cruise"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="plays">
+          <CarouselGrid
+            title="Plays in London"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="museums">
+          <CarouselGrid
+            title="Museums in London"
+            recommendations={recommendations}
+          />
+        </div>
+        <div id="hop-on-hop-off-tours">
+          <CarouselGrid
+            title="Hop-on Hop-off Tours London"
+            recommendations={recommendations}
+          />
+        </div>
       </div>
-      <div id="landmarks">
-        <CarouselGrid
-          title="Landmarks in London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="day-trips">
-        <CarouselGrid
-          title="Day Trips From London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="combos">
-        <CarouselGrid
-          title="Combos Tickets in London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="cruises">
-        <CarouselGrid
-          title="Thames River Cruise"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="plays">
-        <CarouselGrid
-          title="Plays in London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="museums">
-        <CarouselGrid
-          title="Museums in London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="hop-on-hop-off-tours">
-        <CarouselGrid
-          title="Hop-on Hop-off Tours London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="activities">
-        <Activities />
-      </div>
-      <MustDo />
-      <TravelGuide />
-      <BrowseThemes />
-      <Testimonials />
-      <Destinations />
-      <Faqs />
-      <Banner />
-      <Stats />
+        <div id="activities">
+          <Activities />
+        </div>
+        <div className="max-w-[1200px] mx-auto mt-10  pb-10 px-[24px] xl:px-0">
+
+        <MustDo />
+        <TravelGuide />
+        <BrowseThemes />
+        <Testimonials />
+        <Destinations />
+        <Faqs />
+        <Banner />
+        <Stats />
+        </div>
     </div>
   );
 };

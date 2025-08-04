@@ -65,7 +65,7 @@ const CarouselGrid = ({
 
   if (variant === "full") {
     return (
-      <div className="py-4 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+      <div className="py-4  max-w-screen-2xl mx-auto 2xl:px-0">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
         <div className="flex justify-between items-start mb-6">
           <p className="text-gray-600 text-sm">
@@ -171,7 +171,7 @@ const CarouselGrid = ({
 
   // Default variant (existing layout)
   return (
-    <div className="py-4 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
           {title}

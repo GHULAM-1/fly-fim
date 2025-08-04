@@ -8,13 +8,13 @@ import {
 
 const Faqs = () => {
   return (
-    <div className="py-4 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1" className="border-y py-3">
           <AccordionTrigger className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             Explore by Interest
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="font-halyard-text-light">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus
             error id iure fugiat esse nam, voluptatum asperiores eaque sunt!
             Nemo deleniti voluptate porro eveniet omnis fuga quod accusamus nisi
