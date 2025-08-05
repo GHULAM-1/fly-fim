@@ -207,7 +207,7 @@ const AccountPage = () => {
           <div className="flex-shrink-0 mt-[-20px]">
             {/* Blue chart illustration */}
             <div>
-              <img src="/images/account-ani.png" className="w-20 h-20" alt="" />
+              <img src="/images/account-ani.png" className="w-23 h-23" alt="" />
             </div>
           </div>
         </div>

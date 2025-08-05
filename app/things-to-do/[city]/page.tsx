@@ -5,8 +5,8 @@ import BrowseThemes from "@/components/home/BrowseThemes";
 import Faqs from "@/components/things-to-do/Faqs";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import Stats from "@/components/home/Stats";
-import { Menu, Smartphone } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Menu, Smartphone, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
 import Destinations from "@/components/home/Destinations";
 import MustDo from "@/components/things-to-do/MustDo";
 import Hero from "@/components/things-to-do/Hero";
@@ -28,6 +28,9 @@ const ThingsToDo = () => {
   const [scroll, setScroll] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [showSectionNav, setShowSectionNav] = useState(true);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [showRightButton, setShowRightButton] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Custom scroll function that accounts for navigation height
   const scrollToSection = (sectionId: string) => {
@@ -44,6 +47,33 @@ const ThingsToDo = () => {
     }
   };
 
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setShowLeftButton(scrollLeft > 0);
+      setShowRightButton(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       // Calculate when navigation becomes sticky based on viewport
@@ -55,6 +85,27 @@ const ThingsToDo = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    checkScrollButtons();
+    const handleResize = () => checkScrollButtons();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.addEventListener("scroll", checkScrollButtons);
+      return () => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.removeEventListener(
+            "scroll",
+            checkScrollButtons
+          );
+        }
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -88,7 +139,8 @@ const ThingsToDo = () => {
               // Check if activities section is coming into view
               const activitiesElement = document.getElementById("activities");
               if (activitiesElement) {
-                const activitiesRect = activitiesElement.getBoundingClientRect();
+                const activitiesRect =
+                  activitiesElement.getBoundingClientRect();
                 if (activitiesRect.top < window.innerHeight * 0.8) {
                   setShowSectionNav(false);
                   setActiveSection("");
@@ -165,9 +217,9 @@ const ThingsToDo = () => {
     <div className="relative min-h-screen">
       <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-50 border-b">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
-          <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#666666] font-light">
+          <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
             <li className="flex items-center gap-1">
-              <Menu size={16} className="text-[#666666]" />
+              <Menu size={16} className="text-[#444444]" />
               All Categories
             </li>
             <li>Best Sellers</li>
@@ -176,12 +228,12 @@ const ThingsToDo = () => {
             <li>Tower of London</li>
           </ul>
           <button
-            className="text-[15px] text-[#666666] font-halyard-text-light flex items-center gap-1"
+            className="text-[15px] text-[#444444] font-halyard-text-light flex items-center gap-1"
             onMouseEnter={() => setShowBanner(true)}
             onMouseLeave={() => setShowBanner(false)}
           >
             <Smartphone size={16} />
-            Download App
+            Get Offer{" "}
           </button>
         </div>
         <div
@@ -195,13 +247,30 @@ const ThingsToDo = () => {
       <div className="max-w-[1200px] mx-auto px-[24px]   xl:px-0">
         <Hero />
       </div>
-      {showSectionNav && (
-        <div
-          className={`sticky top-16 md:top-30 w-full bg-white z-50 py-4 transition-all duration-300 ${
-            scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
-          }`}
-        >
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px]   xl:px-0  ">
+      <div
+        className={`sticky top-16 md:top-30 w-full bg-white z-50 py-4 transition-all duration-300 ${
+          scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
+        }`}
+      >
+        <div className="relative">
+          <div
+            ref={scrollContainerRef}
+            className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {showLeftButton && (
+              <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center md:flex hidden">
+                <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
+                  <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                    <ChevronLeft
+                      size={16}
+                      className="text-[#444444]"
+                      onClick={scrollLeft}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
             <button
               onClick={() => scrollToSection("musicals")}
               className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
@@ -290,9 +359,23 @@ const ThingsToDo = () => {
               <BusFront strokeWidth={1} />
               Hop-On Hop-Off Tours London
             </button>
+
+            {showRightButton && (
+              <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
+                <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
+                  <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                    <ChevronRight
+                      size={16}
+                      className="text-[#444444]"
+                      onClick={scrollRight}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
       <div className="max-w-[1200px] mx-auto  pb-10 px-[24px] xl:px-0">
         <CarouselGrid
           title="Top experiences in London"
@@ -347,11 +430,10 @@ const ThingsToDo = () => {
           />
         </div>
       </div>
-        <div id="activities">
-          <Activities />
-        </div>
-        <div className="max-w-[1200px] mx-auto mt-10  pb-10 px-[24px] xl:px-0">
-
+      <div id="activities">
+        <Activities />
+      </div>
+      <div className="max-w-[1200px] mx-auto mt-10  pb-10 px-[24px] xl:px-0">
         <MustDo />
         <TravelGuide />
         <BrowseThemes />
@@ -360,7 +442,7 @@ const ThingsToDo = () => {
         <Faqs />
         <Banner />
         <Stats />
-        </div>
+      </div>
     </div>
   );
 };
