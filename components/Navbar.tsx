@@ -474,7 +474,7 @@ const Navbar = () => {
                 // Unauthenticated state - show sign in button
                 <button
                   onClick={() => setAuthDialogOpen(true)}
-                  className={`border ${
+                  className={`border text-[#444444] ${
                     scrolled || pathname !== "/" ? "" : "border-white"
                   } rounded-md cursor-pointer font-extralight py-1.5 px-3 text-sm`}
                 >

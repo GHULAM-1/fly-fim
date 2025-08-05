@@ -173,7 +173,7 @@ const CarouselGrid = ({
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444]">
           {title}
         </h2>
         <div className="flex items-center gap-4">
