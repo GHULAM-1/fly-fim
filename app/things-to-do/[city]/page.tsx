@@ -218,17 +218,17 @@ const ThingsToDo = () => {
       <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-50 border-b">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
           <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
-            <li className="flex items-center gap-1">
+            <li className="flex hover:cursor-pointer items-center gap-1">
               <Menu size={16} className="text-[#444444]" />
               All Categories
             </li>
-            <li>Best Sellers</li>
-            <li>London theatre tickets</li>
-            <li>London Eye</li>
-            <li>Tower of London</li>
+            <li className="hover:cursor-pointer">Best Sellers</li>
+            <li className="hover:cursor-pointer">London theatre tickets</li>
+            <li className="hover:cursor-pointer">London Eye</li>
+            <li className="hover:cursor-pointer">Tower of London</li>
           </ul>
           <button
-            className="text-[15px] text-[#444444] font-halyard-text-light flex items-center gap-1"
+            className="text-[15px] text-[#444444] hover:cursor-pointer font-halyard-text-light flex items-center gap-1"
             onMouseEnter={() => setShowBanner(true)}
             onMouseLeave={() => setShowBanner(false)}
           >
@@ -248,7 +248,7 @@ const ThingsToDo = () => {
         <Hero />
       </div>
       <div
-        className={`sticky top-16 md:top-30 w-full bg-white z-50 py-4 transition-all duration-300 ${
+        className={`sticky top-16 md:top-30 w-full bg-white z-600 py-4 transition-all duration-300 ${
           scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
         }`}
       >
@@ -273,7 +273,7 @@ const ThingsToDo = () => {
             )}
             <button
               onClick={() => scrollToSection("musicals")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "musicals"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -284,7 +284,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("landmarks")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "landmarks"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -295,7 +295,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("day-trips")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "day-trips"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -306,7 +306,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("combos")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "combos"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -317,7 +317,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("cruises")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "cruises"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -328,7 +328,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("plays")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "plays"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -339,7 +339,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("museums")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "museums"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -350,7 +350,7 @@ const ThingsToDo = () => {
             </button>
             <button
               onClick={() => scrollToSection("hop-on-hop-off-tours")}
-              className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+              className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                 activeSection === "hop-on-hop-off-tours"
                   ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                   : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
