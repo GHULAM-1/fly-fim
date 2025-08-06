@@ -388,7 +388,17 @@ const Hero = () => {
         }
       `}</style>
 
-      <div className="relative pt-20 md:pt-36 pb-4 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
+      <div className="relative pt-20 md:pt-36 pb-4 mx-auto ">
+        {/* Dark overlay when search is open */}
+        {isSearchOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-[9998]"
+            onClick={() => {
+              setIsSearchOpen(false);
+              setIsInputFocused(false);
+            }}
+          />
+        )}
         <Swiper
           autoplay={{
             delay: 5000,
@@ -406,25 +416,25 @@ const Hero = () => {
               return '<span class="' + className + ' custom-bullet"></span>';
             },
           }}
-          className="mySwiper w-full rounded-t-2xl overflow-hidden "
+          className="mySwiper w-full rounded-t-2xl md:rounded-2xl overflow-hidden "
           onSlideChange={handleSlideChange}
         >
-          <SwiperSlide className="rounded-t-2xl">
+          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
             <img
               src="https://cdn-imgix.headout.com/media/images/8515c147e2627c8da9f48f62c9bf254a-Harry%20Potter-Dweb.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl"
+              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
             />
           </SwiperSlide>
-          <SwiperSlide className="rounded-t-2xl">
+          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
             <img
               src="https://cdn-imgix.headout.com/media/images/d8700da23f2d351a6f107c1f67da371b-Mean%20Girls%20London%20promo%20banner%20desktop.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl"
+              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
             />
           </SwiperSlide>
-          <SwiperSlide className="rounded-t-2xl">
+          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
             <img
               src="https://cdn-imgix.headout.com/media/images/0a8f6ede9e1b32f3277c4e49bb6aba93-MocoMuseum-Desktop%20Banner-min.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl"
+              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
             />
           </SwiperSlide>
           <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
@@ -434,7 +444,7 @@ const Hero = () => {
         {/* Mobile Search Trigger */}
         <div className="flex justify-center">
           <button
-            className=" pl-2  z-10 w-full mt-[-10px] flex md:hidden items-center bg-white gap-2 rounded-md p-1 shadow text-sm cursor-pointer"
+            className=" pl-2  z-[9999] w-full mt-[-10px] flex md:hidden items-center bg-white gap-2 rounded-md p-1 shadow text-sm cursor-pointer"
             onClick={() => setIsCustomDrawerOpen(true)}
           >
             <div className="flex-1 relative">
