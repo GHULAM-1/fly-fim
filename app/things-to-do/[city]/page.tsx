@@ -82,6 +82,22 @@ const ThingsToDo = () => {
       const stickyThreshold = heroHeight - 200; // Show shadow earlier
 
       setScroll(window.scrollY > stickyThreshold);
+
+      // Check if we should hide the section navigation
+      const activitiesElement = document.getElementById("activities");
+      const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
+      
+      if (activitiesElement && lastSectionElement) {
+        const activitiesRect = activitiesElement.getBoundingClientRect();
+        const lastSectionRect = lastSectionElement.getBoundingClientRect();
+        
+        // Hide nav if activities section is visible or if we're past the last section
+        if (activitiesRect.top < window.innerHeight * 0.5 || lastSectionRect.bottom < window.innerHeight * 0.2) {
+          console.log("Hiding navigation - Activities visible or past last section");
+          setShowSectionNav(false);
+          setActiveSection("");
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -134,16 +150,22 @@ const ThingsToDo = () => {
               setActiveSection(entry.target.id);
             }
           } else {
-            // When a section is no longer intersecting, check if it's the last navigation section
-            if (entry.target.id === "hop-on-hop-off-tours") {
-              // Check if activities section is coming into view
+            // When a section is no longer intersecting, check if we should hide the nav
+            if (sections.includes(entry.target.id)) {
+              // Check if activities section is coming into view or if we're past the last section
               const activitiesElement = document.getElementById("activities");
               if (activitiesElement) {
-                const activitiesRect =
-                  activitiesElement.getBoundingClientRect();
-                if (activitiesRect.top < window.innerHeight * 0.8) {
-                  setShowSectionNav(false);
-                  setActiveSection("");
+                const activitiesRect = activitiesElement.getBoundingClientRect();
+                const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
+                
+                if (lastSectionElement) {
+                  const lastSectionRect = lastSectionElement.getBoundingClientRect();
+                  
+                  // Hide nav if activities section is visible or if we're past the last section
+                  if (activitiesRect.top < window.innerHeight * 0.5 || lastSectionRect.bottom < window.innerHeight * 0.2) {
+                    setShowSectionNav(false);
+                    setActiveSection("");
+                  }
                 }
               }
             }
@@ -215,7 +237,7 @@ const ThingsToDo = () => {
   ];
   return (
     <div className="relative min-h-screen">
-      <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-50 border-b">
+      <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-40 border-b">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
           <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
             <li className="flex hover:cursor-pointer items-center gap-1">
@@ -248,8 +270,12 @@ const ThingsToDo = () => {
         <Hero />
       </div>
       <div
-        className={`sticky top-16 md:top-30 w-full bg-white z-600 py-4 transition-all duration-300 ${
+        className={` hidden md:block fixed top-16 md:top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
           scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
+        } ${
+          showSectionNav 
+            ? "translate-y-0" 
+            : "-translate-y-full"
         }`}
       >
         <div className="relative">
