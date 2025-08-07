@@ -28,9 +28,12 @@ const ThingsToDo = () => {
   const [scroll, setScroll] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [showSectionNav, setShowSectionNav] = useState(true);
+  const [isSectionActive, setIsSectionActive] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const navigationRef = useRef<HTMLDivElement>(null);
 
   // Custom scroll function that accounts for navigation height
   const scrollToSection = (sectionId: string) => {
@@ -83,6 +86,15 @@ const ThingsToDo = () => {
 
       setScroll(window.scrollY > stickyThreshold);
 
+      // Check if navigation is about to go out of viewport
+      if (navigationRef.current) {
+        const navigationRect = navigationRef.current.getBoundingClientRect();
+        
+        // Make it fixed when it's about to go out of viewport (when top is near 0)
+        const shouldBeFixed = navigationRect.top <= 50; // 50px threshold
+        setIsSectionActive(shouldBeFixed);
+      }
+      
       // Check if we should hide the section navigation
       const activitiesElement = document.getElementById("activities");
       const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
@@ -91,9 +103,9 @@ const ThingsToDo = () => {
         const activitiesRect = activitiesElement.getBoundingClientRect();
         const lastSectionRect = lastSectionElement.getBoundingClientRect();
         
-        // Hide nav if activities section is visible or if we're past the last section
-        if (activitiesRect.top < window.innerHeight * 0.5 || lastSectionRect.bottom < window.innerHeight * 0.2) {
-          console.log("Hiding navigation - Activities visible or past last section");
+        // Only hide nav if we're completely past the last section
+        if (lastSectionRect.bottom < 0) {
+          console.log("Hiding navigation - Past last section");
           setShowSectionNav(false);
           setActiveSection("");
         }
@@ -140,11 +152,7 @@ const ThingsToDo = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (entry.target.id === "activities") {
-              // Hide section nav when Activities section is visible
-              setShowSectionNav(false);
-              setActiveSection("");
-            } else if (sections.includes(entry.target.id)) {
+            if (sections.includes(entry.target.id)) {
               // Show section nav and set active section for carousel sections
               setShowSectionNav(true);
               setActiveSection(entry.target.id);
@@ -161,8 +169,8 @@ const ThingsToDo = () => {
                 if (lastSectionElement) {
                   const lastSectionRect = lastSectionElement.getBoundingClientRect();
                   
-                  // Hide nav if activities section is visible or if we're past the last section
-                  if (activitiesRect.top < window.innerHeight * 0.5 || lastSectionRect.bottom < window.innerHeight * 0.2) {
+                  // Only hide nav if we're completely past the last section
+                  if (lastSectionRect.bottom < 0) {
                     setShowSectionNav(false);
                     setActiveSection("");
                   }
@@ -186,11 +194,7 @@ const ThingsToDo = () => {
       }
     });
 
-    // Observe Activities section to hide nav
-    const activitiesElement = document.getElementById("activities");
-    if (activitiesElement) {
-      observer.observe(activitiesElement);
-    }
+
 
     return () => observer.disconnect();
   }, []);
@@ -240,9 +244,98 @@ const ThingsToDo = () => {
       <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-40 border-b">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
           <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
-            <li className="flex hover:cursor-pointer items-center gap-1">
+            <li 
+              className="relative flex hover:cursor-pointer items-center gap-1"
+              onMouseEnter={() => setShowCategoriesDropdown(true)}
+              onMouseLeave={() => setShowCategoriesDropdown(false)}
+            >
               <Menu size={16} className="text-[#444444]" />
               All Categories
+              
+              {/* Categories Dropdown */}
+              <div
+                className={`absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-all duration-300 origin-top ${
+                  showCategoriesDropdown 
+                    ? "scale-y-100 opacity-100" 
+                    : "scale-y-0 opacity-0"
+                }`}
+                style={{ zIndex: 1000 }}
+              >
+                <div className="p-4 min-w-[200px]">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Tours</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">City Tours</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Walking Tours</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Food Tours</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Cultural Tours</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Transportation</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Airport Transfers</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Car Rentals</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Public Transport</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Private Drivers</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Travel Services</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Travel Insurance</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Visa Services</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Travel Planning</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Concierge</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Cruises</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">River Cruises</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Ocean Cruises</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Day Cruises</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Luxury Cruises</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Food & Drink</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Cooking Classes</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Wine Tasting</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Restaurant Tours</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Food Markets</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Entertainment</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Theater Shows</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Concerts</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Museums</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Theme Parks</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Adventure</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Hiking</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Rock Climbing</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Zip Lining</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Paragliding</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Water Sports</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Scuba Diving</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Snorkeling</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Jet Skiing</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Sailing</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Wellness</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Spa Treatments</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Yoga Classes</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Meditation</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Hot Springs</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-[#444444] mb-2">Specials</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Seasonal Offers</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Group Discounts</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Last Minute</div>
+                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">VIP Experiences</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
             <li className="hover:cursor-pointer">Best Sellers</li>
             <li className="hover:cursor-pointer">London theatre tickets</li>
@@ -270,7 +363,8 @@ const ThingsToDo = () => {
         <Hero />
       </div>
       <div
-        className={` hidden md:block fixed top-16 md:top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+        ref={navigationRef}
+        className={`hidden md:block ${isSectionActive ? 'fixed' : 'sticky'} top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
           scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
         } ${
           showSectionNav 
