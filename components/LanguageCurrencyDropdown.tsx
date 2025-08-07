@@ -221,7 +221,13 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
               {getCurrentLanguageCode()}
             </button>
           </DrawerTrigger>
-          <DrawerContent className="max-h-[90vh] h-full">
+          <DrawerContent 
+            className="h-full"
+            style={{
+              height: "calc(var(--vh, 1vh) * 85)",
+              maxHeight: "calc(var(--vh, 1vh) * 85)"
+            }}
+          >
             <DrawerHeader className="flex items-center justify-between p-4">
               <DrawerTitle className="text-lg font-heading text-[#444444] font-medium text-left">
                 Select language
@@ -277,7 +283,11 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
             </button>
           </DrawerTrigger>
           <DrawerContent 
-            className="max-h-[90vh] h-full"
+            className="h-full"
+            style={{
+              height: "calc(var(--vh, 1vh) * 85)",
+              maxHeight: "calc(var(--vh, 1vh) * 85)"
+            }}
             onTouchStart={() => {
               if (searchInputRef.current) {
                 searchInputRef.current.blur();
