@@ -11,7 +11,7 @@ const Faqs = () => {
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1" className="border-y py-3">
-          <AccordionTrigger className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+          <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             Explore by Interest
           </AccordionTrigger>
           <AccordionContent className="font-halyard-text-light">
@@ -53,7 +53,7 @@ const Faqs = () => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2" className="border-b py-3">
-          <AccordionTrigger className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+          <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             Plan Your Visit To London
           </AccordionTrigger>
           <AccordionContent>
@@ -95,7 +95,7 @@ const Faqs = () => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3" className="border-b py-3">
-          <AccordionTrigger className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+          <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             London FAQs
           </AccordionTrigger>
           <AccordionContent>

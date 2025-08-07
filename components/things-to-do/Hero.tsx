@@ -222,29 +222,25 @@ const Hero = () => {
   // Rotate placeholder text with smoother timing
   useEffect(() => {
     if (!isMounted) return;
-
+    
     if (!isInputFocused && !searchQuery) {
       const interval = setInterval(() => {
         const nextIndex =
           (currentIndexRef.current + 1) % placeholderOptions.length;
 
-        // Set up the transition with a small delay to prevent glitch
+        // Set up the transition immediately
         setPreviousPlaceholderIndex(currentIndexRef.current);
-        
-        // Small delay to ensure smooth transition
-        setTimeout(() => {
-          setIsTransitioning(true);
-          
-          // Update to next index
-          currentIndexRef.current = nextIndex;
-          setCurrentPlaceholderIndex(nextIndex);
-        }, 50);
+        setIsTransitioning(true);
+
+        // Update to next index immediately
+        currentIndexRef.current = nextIndex;
+        setCurrentPlaceholderIndex(nextIndex);
 
         // Reset transition state after animation completes
         setTimeout(() => {
           setIsTransitioning(false);
           setPreviousPlaceholderIndex(-1);
-        }, 750); // Slightly longer than animation duration
+        }, 700); // Match animation duration
       }, 3000); // Show each text for 3 seconds
       return () => clearInterval(interval);
     }
@@ -300,15 +296,13 @@ const Hero = () => {
   // Animated placeholder component for reusability
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
     <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
-      <span className="mr-1 font-halyard-text-light md:text-base text-sm flex-shrink-0">
-        {prefix}
-      </span>
+      <span className="mr-1 font-halyard-text-light md:text-base text-sm flex-shrink-0">{prefix}</span>
       <div className="relative overflow-hidden h-5 flex items-center flex-1 min-w-0">
         {/* Previous text - sliding out upward */}
         {isTransitioning && previousPlaceholderIndex >= 0 && (
           <span
             key={`prev-${previousPlaceholderIndex}`}
-            className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap placeholder-text"
+            className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
             style={{
               animation: "slideOutUp 0.7s ease-out forwards",
               animationFillMode: "both",
@@ -321,7 +315,7 @@ const Hero = () => {
         {/* Current text - sliding in from below */}
         <span
           key={`current-${currentPlaceholderIndex}`}
-          className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap placeholder-text"
+          className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
           style={{
             animation: isTransitioning
               ? "slideInUp 0.7s ease-out forwards"
@@ -361,13 +355,6 @@ const Hero = () => {
             transform: translateY(0);
             opacity: 1;
           }
-        }
-
-        /* Prevent glitch by ensuring smooth transitions */
-        .placeholder-text {
-          will-change: transform, opacity;
-          backface-visibility: hidden;
-          transform-style: preserve-3d;
         }
 
         .smooth-transition {
@@ -444,7 +431,7 @@ const Hero = () => {
         {/* Mobile Search Trigger */}
         <div className="flex justify-center">
           <button
-            className=" pl-2  z-[9999] w-full mt-[-10px] flex md:hidden items-center bg-white gap-2 rounded-md p-1 shadow text-sm cursor-pointer"
+            className=" pl-2  z-10 w-full mt-[-10px] flex md:hidden items-center bg-white gap-2 rounded-md p-1 shadow text-sm cursor-pointer"
             onClick={() => setIsCustomDrawerOpen(true)}
           >
             <div className="flex-1 relative">
