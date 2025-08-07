@@ -32,7 +32,7 @@ const ThingsToDo = () => {
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState(0);
+  const [hoveredCategory, setHoveredCategory] = useState(1);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
   const categoriesScrollRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ const ThingsToDo = () => {
 
   // Categories data
   const categories = [
-    { id: 1, name: "Top things to do in Rome", color: "gray" },
+    { id: 1, name: "Top things to do in Rome", color: "purple" },
     { id: 2, name: "Tickets", color: "gray" },
     { id: 3, name: "Tours", color: "gray" },
     { id: 4, name: "Transportation", color: "gray" },
@@ -403,14 +403,14 @@ const ThingsToDo = () => {
         <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
           <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
             <li 
-              className="relative flex hover:cursor-pointer items-center gap-1"
+              className="relative flex hover:cursor-pointer items-center gap-1 hover:text-[#8000ff] transition-colors duration-200"
               onMouseEnter={() => setShowCategoriesDropdown(true)}
               onMouseLeave={() => {
                 setShowCategoriesDropdown(false);
                 setHoveredCategory(0);
               }}
             >
-              <Menu size={16} className="text-[#444444]" />
+              <Menu size={16} className="text-[#444444] group-hover:text-[#8000ff]" />
               All Categories
               
               {/* Categories Dropdown */}
@@ -437,6 +437,8 @@ const ThingsToDo = () => {
                             key={category.id}
                             className={`text-[15px] font-halyard-text cursor-pointer py-2 flex items-center justify-between ${
                               hoveredCategory === category.id
+                                ? 'text-[#8000ff]' 
+                                : hoveredCategory === 0 && category.color === 'purple'
                                 ? 'text-[#8000ff]' 
                                 : 'text-[#666666]'
                             } hover:text-[#8000ff]`}
@@ -466,8 +468,8 @@ const ThingsToDo = () => {
                                     {/* Right Content - Tour Listings */}
                   <div className="w-[75%] p-4">
                     <div className="grid grid-cols-3 gap-6">
-                      {hoveredCategory && tourListings[hoveredCategory as keyof typeof tourListings] ? (
-                        // Show simple list for hovered category
+                      {hoveredCategory && hoveredCategory !== 1 && tourListings[hoveredCategory as keyof typeof tourListings] ? (
+                        // Show simple list for hovered category (except "Tickets")
                         <div className="col-span-3">
                           <div className="space-y-3">
                             {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => (
@@ -603,10 +605,10 @@ const ThingsToDo = () => {
               </div>
               </div>
             </li>
-            <li className="hover:cursor-pointer">Best Sellers</li>
-            <li className="hover:cursor-pointer">London theatre tickets</li>
-            <li className="hover:cursor-pointer">London Eye</li>
-            <li className="hover:cursor-pointer">Tower of London</li>
+            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">Best Sellers</li>
+            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">London theatre tickets</li>
+            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">London Eye</li>
+            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">Tower of London</li>
           </ul>
           <button
             className="text-[15px] text-[#444444] hover:cursor-pointer font-halyard-text-light flex items-center gap-1"
