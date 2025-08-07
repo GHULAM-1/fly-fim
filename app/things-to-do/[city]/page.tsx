@@ -32,8 +32,109 @@ const ThingsToDo = () => {
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
+  const categoriesScrollRef = useRef<HTMLDivElement>(null);
+  const customScrollbarRef = useRef<HTMLDivElement>(null);
+
+  // Categories data
+  const categories = [
+    { id: 1, name: "Top things to do in Rome", color: "gray" },
+    { id: 2, name: "Tickets", color: "gray" },
+    { id: 3, name: "Tours", color: "gray" },
+    { id: 4, name: "Transportation", color: "gray" },
+    { id: 5, name: "Travel Services", color: "gray" },
+    { id: 6, name: "Cruises", color: "gray" },
+    { id: 7, name: "Food & Drink", color: "gray" },
+    { id: 8, name: "Entertainment", color: "gray" },
+    { id: 9, name: "Adventure", color: "gray" },
+    { id: 10, name: "Water Sports", color: "gray" },
+  ];
+
+  // Tour listings data for each category
+  const tourListings = {
+    1: [ // Top things to do in Rome
+      "Colosseum",
+      "Vatican Museums", 
+      "Rome To Pompeii Tours",
+      "St. Peter's Basilica",
+      "Rome Pantheon",
+    ],
+    2: [ // Tickets
+      "Colosseum Tickets",
+      "Vatican Museums Pass",
+      "Roman Forum Access",
+      "Pantheon Entry",
+      "Castel Sant'Angelo"
+    ],
+    3: [ // Tours
+      "Rome Walking Tour",
+      "Vatican City Tour",
+      "Colosseum Guided Tour",
+      "Food & Wine Tour",
+      "Night Photography Tour",
+      "Historical Rome Tour",
+    ],
+    4: [ // Transportation
+      "Airport Transfers",
+      "Public Transport",
+      "Train Tickets",
+      "Train Passes",
+      "Private Airport Transfers",
+      "Shared Airport Transfers"
+    ],
+    5: [ // Travel Services
+      "Wifi & SIM Cards",
+      "Airport Services",
+      "Luggage Storage",
+      "Travel Insurance",
+      "Visa Services",
+    ],
+    6: [ // Cruises
+      "River Cruises",
+      "Day Cruises",
+      "Luxury Cruises",
+      "Dinner Cruises",
+    ],
+    7: [ // Food & Drink
+      "Cooking Classes",
+      "Wine Tasting",
+      "Restaurant Tours",
+      "Food Markets",
+      "Pizza Making",
+      "Gelato Tours",
+      "Coffee Tours",
+      "Street Food Tours"
+    ],
+    8: [ // Entertainment
+      "Theater Shows",
+      "Concerts",
+      "Opera Tickets",
+      "Comedy Shows",
+      "Dance Performances",
+      "Live Music",
+      "Cinema Tickets"
+    ],
+    9: [ // Adventure
+      "Hiking Tours",
+      "Rock Climbing",
+      "Zip Lining",
+      "Paragliding",
+      "Mountain Biking",
+      "Caving Tours",
+      "Rafting Adventures"
+    ],
+    10: [ // Water Sports
+      "Scuba Diving",
+      "Snorkeling",
+      "Jet Skiing",
+      "Sailing",
+      "Kayaking",
+      "Paddleboarding",
+      "Fishing Tours"
+    ]
+  };
 
   // Custom scroll function that accounts for navigation height
   const scrollToSection = (sectionId: string) => {
@@ -135,6 +236,63 @@ const ThingsToDo = () => {
       };
     }
   }, []);
+
+  // Custom scrollbar functionality
+  useEffect(() => {
+    const handleCategoriesScroll = () => {
+      if (categoriesScrollRef.current && customScrollbarRef.current) {
+        const scrollElement = categoriesScrollRef.current;
+        const scrollbarThumb = customScrollbarRef.current;
+        
+        const scrollTop = scrollElement.scrollTop;
+        const scrollHeight = scrollElement.scrollHeight;
+        const clientHeight = scrollElement.clientHeight;
+        
+        if (scrollHeight > clientHeight) {
+          const maxScroll = scrollHeight - clientHeight;
+          const scrollPercentage = Math.min(scrollTop / maxScroll, 1);
+          const thumbHeight = Math.max((clientHeight / scrollHeight) * clientHeight, 30);
+          const maxThumbTop = clientHeight - thumbHeight;
+          const thumbTop = scrollPercentage * maxThumbTop;
+          
+          // Force thumb to bottom when at the very end
+          const finalThumbTop = scrollTop >= maxScroll - 1 ? maxThumbTop : thumbTop;
+          
+          scrollbarThumb.style.height = `${thumbHeight}px`;
+          scrollbarThumb.style.top = `${finalThumbTop}px`;
+          scrollbarThumb.style.display = 'block';
+          
+          console.log('Scroll Debug:', {
+            scrollTop,
+            maxScroll,
+            scrollPercentage,
+            thumbTop,
+            finalThumbTop,
+            maxThumbTop
+          });
+        } else {
+          scrollbarThumb.style.display = 'none';
+        }
+      }
+    };
+
+    const scrollElement = categoriesScrollRef.current;
+    if (scrollElement) {
+      // Initial setup
+      handleCategoriesScroll();
+      
+      // Add multiple event listeners to catch all scroll events
+      scrollElement.addEventListener("scroll", handleCategoriesScroll);
+      scrollElement.addEventListener("wheel", handleCategoriesScroll);
+      scrollElement.addEventListener("touchmove", handleCategoriesScroll);
+      
+      return () => {
+        scrollElement.removeEventListener("scroll", handleCategoriesScroll);
+        scrollElement.removeEventListener("wheel", handleCategoriesScroll);
+        scrollElement.removeEventListener("touchmove", handleCategoriesScroll);
+      };
+    }
+  }, [showCategoriesDropdown]);
 
   useEffect(() => {
     const sections = [
@@ -247,94 +405,202 @@ const ThingsToDo = () => {
             <li 
               className="relative flex hover:cursor-pointer items-center gap-1"
               onMouseEnter={() => setShowCategoriesDropdown(true)}
-              onMouseLeave={() => setShowCategoriesDropdown(false)}
+              onMouseLeave={() => {
+                setShowCategoriesDropdown(false);
+                setHoveredCategory(0);
+              }}
             >
               <Menu size={16} className="text-[#444444]" />
               All Categories
               
               {/* Categories Dropdown */}
               <div
-                className={`absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-all duration-300 origin-top ${
+                className={`fixed top-28 left-1/2 transform -translate-x-1/2 mt-2 bg-white  overflow-hidden transition-all duration-300 origin-top ${
                   showCategoriesDropdown 
                     ? "scale-y-100 opacity-100" 
                     : "scale-y-0 opacity-0"
                 }`}
-                style={{ zIndex: 1000 }}
+                style={{ zIndex: 1000, width: '1200px', maxWidth: 'calc(100vw - 48px)' }}
               >
-                <div className="p-4 min-w-[200px]">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Tours</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">City Tours</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Walking Tours</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Food Tours</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Cultural Tours</div>
+                <div className="flex">
+                  {/* Left Sidebar - Categories */}
+                  <div className="w-[25%] p-4 relative">
+                    <div className="border-r border-gray-200 h-full absolute right-0 top-0 bottom-0"></div>
+                    <div 
+                      ref={categoriesScrollRef}
+                      className="max-h-[400px] overflow-y-auto pr-0 scrollbar-hide" 
+                      id="categories-scroll"
+                    >
+                      <div className="space-y-2">
+                        {categories.map((category) => (
+                          <div 
+                            key={category.id}
+                            className={`text-[15px] font-halyard-text cursor-pointer py-2 flex items-center justify-between ${
+                              hoveredCategory === category.id
+                                ? 'text-[#8000ff]' 
+                                : 'text-[#666666]'
+                            } hover:text-[#8000ff]`}
+                            onMouseEnter={() => setHoveredCategory(category.id)}
+                          >
+                            {category.name} <ChevronRight size={20} />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Transportation</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Airport Transfers</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Car Rentals</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Public Transport</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Private Drivers</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Travel Services</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Travel Insurance</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Visa Services</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Travel Planning</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Concierge</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Cruises</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">River Cruises</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Ocean Cruises</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Day Cruises</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Luxury Cruises</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Food & Drink</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Cooking Classes</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Wine Tasting</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Restaurant Tours</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Food Markets</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Entertainment</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Theater Shows</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Concerts</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Museums</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Theme Parks</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Adventure</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Hiking</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Rock Climbing</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Zip Lining</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Paragliding</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Water Sports</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Scuba Diving</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Snorkeling</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Jet Skiing</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Sailing</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Wellness</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Spa Treatments</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Yoga Classes</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Meditation</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Hot Springs</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-[#444444] mb-2">Specials</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Seasonal Offers</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Group Discounts</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">Last Minute</div>
-                      <div className="text-xs text-[#666666] hover:text-[#8000ff] cursor-pointer py-1">VIP Experiences</div>
+                    {/* Gradient overlay for scroll effect */}
+                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                    
+                    {/* Custom scrollbar positioned over border */}
+                    <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-gray-100 pointer-events-none">
+                      <div 
+                        ref={customScrollbarRef}
+                        className="w-[1px] bg-black rounded-full transition-all duration-200 absolute"
+                        style={{ 
+                          height: '20%',
+                          top: '0%'
+                        }}
+                      ></div>
                     </div>
                   </div>
-                </div>
+                  
+                                    {/* Right Content - Tour Listings */}
+                  <div className="w-[75%] p-4">
+                    <div className="grid grid-cols-3 gap-6">
+                      {hoveredCategory && tourListings[hoveredCategory as keyof typeof tourListings] ? (
+                        // Show simple list for hovered category
+                        <div className="col-span-3">
+                          <div className="space-y-3">
+                            {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => (
+                              <div key={index} className="text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1">
+                                {item}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        // Default content when no category is hovered
+                        <>
+                          {/* Column 1 */}
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a1.jpg.avif" alt="Colosseum" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Colosseum</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $21.04</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a2.jpg.avif" alt="Vatican Museums" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Vatican Museums</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a3.png.avif" alt="Rome To Pompeii Tours" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Pompeii Tours</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $93.89</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a4.jpg.avif" alt="St. Peter's Basilica" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">St. Peter's Basilica</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $7.01</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a5.jpg.avif" alt="Rome Pantheon" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome Pantheon</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $5.73</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Column 2 */}
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a6.jpg.avif" alt="Castel Sant Angelo" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Castel Sant Angelo</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $18.70</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d1.jpg.avif" alt="Sistine Chapel" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Sistine Chapel</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d2.jpg.avif" alt="Musei Capitolini" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Musei Capitolini</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $32.61</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d3.jpg.avif" alt="Roman Catacombs Tour" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Roman Catacombs Tour</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $14.03</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d4.jpg.avif" alt="Borghese Gallery" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Borghese Gallery</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $26.89</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Column 3 */}
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d5.jpg.avif" alt="Altare della Patria" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Altare della Patria</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $38.58</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/d6.jpeg.avif" alt="Doria Pamphilj Gallery" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Doria Pamphilj Gallery</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $33.90</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a1.jpg.avif" alt="Rome To Amalfi Coast Tours" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Amalfi Coast Tours</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $139.11</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a2.jpg.avif" alt="Rome To Tuscany Tours" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Tuscany Tours</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $115.73</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <img src="/images/a4.jpg.avif" alt="Bioparco Rome" className="w-12 h-12 object-cover rounded" />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">Bioparco Rome</div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $22.21</div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+              </div>
               </div>
             </li>
             <li className="hover:cursor-pointer">Best Sellers</li>
