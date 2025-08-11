@@ -21,7 +21,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 interface CarouselGridProps {
   title: string;
   recommendations: any[];
-  variant?: "default" | "full";
+  variant?: "default" | "full" | "pills" | "museums" | "simple";
 }
 
 const CarouselGrid = ({
@@ -31,6 +31,8 @@ const CarouselGrid = ({
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState("Picked for you");
+  const [visibleCards, setVisibleCards] = useState(4); // Initially show 4 cards
+  const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -61,6 +63,15 @@ const CarouselGrid = ({
   const handleSortChange = (option: string) => {
     setSortBy(option);
     // Add sorting logic here if needed
+  };
+
+  const handleShowMore = () => {
+    setIsLoading(true);
+    // Simulate loading delay
+    setTimeout(() => {
+      setVisibleCards((prev) => prev + 4); // Load 4 more cards
+      setIsLoading(false);
+    }, 1000);
   };
 
   if (variant === "full") {
@@ -168,12 +179,274 @@ const CarouselGrid = ({
       </div>
     );
   }
+  if (variant === "pills") {
+    return (
+      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+        </div>
+        {/* Pills Section */}
+        <div
+          className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
+          ref={scrollContainerRef}
+        >
+          {[
+            { icon: "🏛️", label: "Museums" },
+            { icon: "🐘", label: "Zoos" },
+            { icon: "🎫", label: "City Cards" },
+            { icon: "⛪", label: "Religious Sites" },
+            { icon: "🏛️", label: "Landmarks" },
+          ].map((pill, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
+            >
+              <span className="text-sm">{pill.icon}</span>
+              <span className="text-sm font-halyard-text">{pill.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Original Carousel Section */}
+        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {recommendations.slice(0, visibleCards).map((recommendation) => (
+            <CarouselCard
+              key={recommendation.id}
+              image={recommendation.image}
+              place={recommendation.place}
+              rating={recommendation.rating}
+              reviews={recommendation.reviews}
+              description={recommendation.description}
+              price={recommendation.price}
+              off={recommendation.off}
+              badge={recommendation.cancellation}
+              variant="full"
+            />
+          ))}
+        </div>
+
+        {/* Show More Button */}
+        {visibleCards < recommendations.length && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={handleShowMore}
+              disabled={isLoading}
+              className="px-[46px] py-[10px] min-w-[174.4px] hover:cursor-pointer min-h-[43.6px] bg-white border border-gray-300 text-[#444444] rounded-lg hover:border-gray-400 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-1">
+                  <div className="w-1 h-1 bg-gray-700 rounded-full animate-pulse"></div>
+                  <div
+                    className="w-1 h-1 bg-gray-700 rounded-full animate-pulse"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-1 h-1 bg-gray-700 rounded-full animate-pulse"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
+                </div>
+              ) : (
+                "Show More"
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (variant === "museums") {
+    return (
+      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/museums"
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+            >
+              See all
+            </Link>
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={scrollLeft}
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={scrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="flex gap-4  overflow-x-scroll h-[369px] scrollbar-hide "
+          ref={scrollContainerRef}
+        >
+          {recommendations.map((museum) => (
+            <div
+              key={museum.id}
+              className="flex-shrink-0 w-80 cursor-pointer group max-w-[280px] h-[354px] relative"
+            >
+              <div className="flex justify-center relative h-[15px] items-center flex-col ">
+                <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
+                <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
+              </div>
+              {/* Main card - stays in place */}
+              <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
+                {/* Image */}
+                <div className="relative h-full overflow-hidden">
+                  <img
+                    src={museum.image}
+                    alt={museum.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  {/* Dark overlay for text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                  {/* Dark overlay for text - using the same gradient as PopularThings */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
+                    }}
+                  />
+
+                  {/* Text overlay - positioned at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
+                      <h3 className="text-lg font-halyard-text mb-1">
+                        {museum.place}
+                      </h3>
+                      {museum.description && (
+                        <p className="text-sm font-halyard-text-light text-gray-200 mb-2 line-clamp-2">
+                          {museum.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-lg font-bold">${museum.price}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (variant === "simple") {
+    // Local state for simple variant pagination
+    const [currentPage, setCurrentPage] = useState(0);
+    
+    const simpleScrollLeft = () => {
+      if (currentPage > 0) {
+        console.log('Scrolling left from page', currentPage, 'to', currentPage - 1);
+        setCurrentPage(prev => prev - 1);
+      }
+    };
+
+    const simpleScrollRight = () => {
+      const totalPages = Math.ceil(recommendations.length / 6);
+      if (currentPage < totalPages - 1) {
+        console.log('Scrolling right from page', currentPage, 'to', currentPage + 1);
+        setCurrentPage(prev => prev + 1);
+      }
+    };
+
+    return (
+      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/museums"
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+            >
+              See all
+            </Link>
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollLeft}
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="mt-6 relative overflow-hidden">
+          <div 
+            className="flex gap-2 transition-transform duration-700 ease-in-out"
+            style={{
+              transform: `translateX(-${currentPage * 100}%)`,
+              width: `${Math.ceil(recommendations.length / 6) * 100}%`
+            }}
+          >
+            {Array.from({ length: Math.ceil(recommendations.length / 6) }, (_, pageIndex) => (
+              <div key={pageIndex} className="flex gap-2 w-full flex-shrink-0">
+                {recommendations.slice(pageIndex * 6, (pageIndex + 1) * 6).map((recommendation) => (
+                  <Link
+                    key={recommendation.id}
+                    href={`/things-to-do/${recommendation.city}`}
+                    className="flex-shrink-0 cursor-pointer group w-[190px]"
+                  >
+                    <div className="flex flex-row md:flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg p-2">
+                      <div>
+                        <img
+                          src={recommendation.image}
+                          alt={recommendation.description}
+                          className="rounded md:w-full w-[144px]"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-text text-[#444444] md:mt-2 leading-tight md:max-w-32">
+                          {recommendation.description}{" "}
+                          <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight md:max-w-32">
+                            {recommendation.city}
+                          </span>
+                        </p>
+                        <p className="font-text md:block hidden text-[#444444] md:mt-2 leading-tight md:max-w-32">
+                          {recommendation.city}
+                        </p>
+
+                        <p className="text-[#666666] font-halyard-text-light text-sm mt-1">
+                          {recommendation.place}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Default variant (existing layout)
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444]">
+        <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
           {title}
         </h2>
         <div className="flex items-center gap-4">

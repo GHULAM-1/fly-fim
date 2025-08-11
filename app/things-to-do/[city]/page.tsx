@@ -5,12 +5,13 @@ import BrowseThemes from "@/components/home/BrowseThemes";
 import Faqs from "@/components/things-to-do/Faqs";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import Stats from "@/components/home/Stats";
-import { Menu, Smartphone, ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Destinations from "@/components/home/Destinations";
 import MustDo from "@/components/things-to-do/MustDo";
 import Hero from "@/components/things-to-do/Hero";
 import TravelGuide from "@/components/things-to-do/TravelGuide";
+import Testimonials from "@/components/things-to-do/Testimonials";
+import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import {
   BadgePercent,
   BusFront,
@@ -20,127 +21,33 @@ import {
   Ship,
   Tv,
   SunMedium,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import Testimonials from "@/components/things-to-do/Testimonials";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 
 const ThingsToDo = () => {
-  const [showBanner, setShowBanner] = useState(false);
-  const [scroll, setScroll] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
-  const [showSectionNav, setShowSectionNav] = useState(true);
-  const [isSectionActive, setIsSectionActive] = useState(false);
+  const { 
+    showBanner, 
+    setShowBanner, 
+    setScroll, 
+    setIsSectionActive,
+    setShowSectionNavigation,
+    activeSection,
+    setActiveSection
+  } = useNavigationStore();
+  
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
-  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState(1);
+  const [isCarouselVisible, setIsCarouselVisible] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
-  const categoriesScrollRef = useRef<HTMLDivElement>(null);
-  const customScrollbarRef = useRef<HTMLDivElement>(null);
 
-  // Categories data
-  const categories = [
-    { id: 1, name: "Top things to do in Rome", color: "purple" },
-    { id: 2, name: "Tickets", color: "gray" },
-    { id: 3, name: "Tours", color: "gray" },
-    { id: 4, name: "Transportation", color: "gray" },
-    { id: 5, name: "Travel Services", color: "gray" },
-    { id: 6, name: "Cruises", color: "gray" },
-    { id: 7, name: "Food & Drink", color: "gray" },
-    { id: 8, name: "Entertainment", color: "gray" },
-    { id: 9, name: "Adventure", color: "gray" },
-    { id: 10, name: "Water Sports", color: "gray" },
-  ];
-
-  // Tour listings data for each category
-  const tourListings = {
-    1: [ // Top things to do in Rome
-      "Colosseum",
-      "Vatican Museums", 
-      "Rome To Pompeii Tours",
-      "St. Peter's Basilica",
-      "Rome Pantheon",
-    ],
-    2: [ // Tickets
-      "Colosseum Tickets",
-      "Vatican Museums Pass",
-      "Roman Forum Access",
-      "Pantheon Entry",
-      "Castel Sant'Angelo"
-    ],
-    3: [ // Tours
-      "Rome Walking Tour",
-      "Vatican City Tour",
-      "Colosseum Guided Tour",
-      "Food & Wine Tour",
-      "Night Photography Tour",
-      "Historical Rome Tour",
-    ],
-    4: [ // Transportation
-      "Airport Transfers",
-      "Public Transport",
-      "Train Tickets",
-      "Train Passes",
-      "Private Airport Transfers",
-      "Shared Airport Transfers"
-    ],
-    5: [ // Travel Services
-      "Wifi & SIM Cards",
-      "Airport Services",
-      "Luggage Storage",
-      "Travel Insurance",
-      "Visa Services",
-    ],
-    6: [ // Cruises
-      "River Cruises",
-      "Day Cruises",
-      "Luxury Cruises",
-      "Dinner Cruises",
-    ],
-    7: [ // Food & Drink
-      "Cooking Classes",
-      "Wine Tasting",
-      "Restaurant Tours",
-      "Food Markets",
-      "Pizza Making",
-      "Gelato Tours",
-      "Coffee Tours",
-      "Street Food Tours"
-    ],
-    8: [ // Entertainment
-      "Theater Shows",
-      "Concerts",
-      "Opera Tickets",
-      "Comedy Shows",
-      "Dance Performances",
-      "Live Music",
-      "Cinema Tickets"
-    ],
-    9: [ // Adventure
-      "Hiking Tours",
-      "Rock Climbing",
-      "Zip Lining",
-      "Paragliding",
-      "Mountain Biking",
-      "Caving Tours",
-      "Rafting Adventures"
-    ],
-    10: [ // Water Sports
-      "Scuba Diving",
-      "Snorkeling",
-      "Jet Skiing",
-      "Sailing",
-      "Kayaking",
-      "Paddleboarding",
-      "Fishing Tours"
-    ]
-  };
-
-  // Custom scroll function that accounts for navigation height
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = 200; // Approximate height of both navigation bars
+      const navHeight = 200;
       const elementPosition = element.offsetTop;
       const offsetPosition = elementPosition - navHeight;
 
@@ -178,122 +85,64 @@ const ThingsToDo = () => {
     }
   };
 
+  // Global scroll handler to coordinate all navigation state
   useEffect(() => {
-    const handleScroll = () => {
+    const handleGlobalScroll = () => {
+      const scrollTop = window.scrollY;
+      
       // Calculate when navigation becomes sticky based on viewport
       const viewportHeight = window.innerHeight;
       const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
       const stickyThreshold = heroHeight - 200; // Show shadow earlier
 
-      setScroll(window.scrollY > stickyThreshold);
+      setScroll(scrollTop > stickyThreshold);
 
       // Check if navigation is about to go out of viewport
-      if (navigationRef.current) {
-        const navigationRect = navigationRef.current.getBoundingClientRect();
+      const navigationElement = document.querySelector('[data-navigation]');
+      if (navigationElement) {
+        const navigationRect = navigationElement.getBoundingClientRect();
         
         // Make it fixed when it's about to go out of viewport (when top is near 0)
-        const shouldBeFixed = navigationRect.top <= 50; // 50px threshold
+        const shouldBeFixed = navigationRect.top <= 50; // Back to original threshold
         setIsSectionActive(shouldBeFixed);
       }
-      
+
       // Check if we should hide the section navigation
       const activitiesElement = document.getElementById("activities");
       const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
-      
+
       if (activitiesElement && lastSectionElement) {
         const activitiesRect = activitiesElement.getBoundingClientRect();
         const lastSectionRect = lastSectionElement.getBoundingClientRect();
-        
-        // Only hide nav if we're completely past the last section
+
+        // Hide nav if we're completely past the last section
         if (lastSectionRect.bottom < 0) {
-          console.log("Hiding navigation - Past last section");
-          setShowSectionNav(false);
-          setActiveSection("");
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    checkScrollButtons();
-    const handleResize = () => checkScrollButtons();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.addEventListener("scroll", checkScrollButtons);
-      return () => {
-        if (scrollContainerRef.current) {
-          scrollContainerRef.current.removeEventListener(
-            "scroll",
-            checkScrollButtons
-          );
-        }
-      };
-    }
-  }, []);
-
-  // Custom scrollbar functionality
-  useEffect(() => {
-    const handleCategoriesScroll = () => {
-      if (categoriesScrollRef.current && customScrollbarRef.current) {
-        const scrollElement = categoriesScrollRef.current;
-        const scrollbarThumb = customScrollbarRef.current;
-        
-        const scrollTop = scrollElement.scrollTop;
-        const scrollHeight = scrollElement.scrollHeight;
-        const clientHeight = scrollElement.clientHeight;
-        
-        if (scrollHeight > clientHeight) {
-          const maxScroll = scrollHeight - clientHeight;
-          const scrollPercentage = Math.min(scrollTop / maxScroll, 1);
-          const thumbHeight = Math.max((clientHeight / scrollHeight) * clientHeight, 30);
-          const maxThumbTop = clientHeight - thumbHeight;
-          const thumbTop = scrollPercentage * maxThumbTop;
-          
-          // Force thumb to bottom when at the very end
-          const finalThumbTop = scrollTop >= maxScroll - 1 ? maxThumbTop : thumbTop;
-          
-          scrollbarThumb.style.height = `${thumbHeight}px`;
-          scrollbarThumb.style.top = `${finalThumbTop}px`;
-          scrollbarThumb.style.display = 'block';
-          
-          console.log('Scroll Debug:', {
-            scrollTop,
-            maxScroll,
-            scrollPercentage,
-            thumbTop,
-            finalThumbTop,
-            maxThumbTop
-          });
+          setShowSectionNavigation(false);
+          setIsCarouselVisible(false);
         } else {
-          scrollbarThumb.style.display = 'none';
+          setShowSectionNavigation(true);
+          setIsCarouselVisible(true);
         }
       }
     };
 
-    const scrollElement = categoriesScrollRef.current;
-    if (scrollElement) {
-      // Initial setup
-      handleCategoriesScroll();
-      
-      // Add multiple event listeners to catch all scroll events
-      scrollElement.addEventListener("scroll", handleCategoriesScroll);
-      scrollElement.addEventListener("wheel", handleCategoriesScroll);
-      scrollElement.addEventListener("touchmove", handleCategoriesScroll);
-      
-      return () => {
-        scrollElement.removeEventListener("scroll", handleCategoriesScroll);
-        scrollElement.removeEventListener("wheel", handleCategoriesScroll);
-        scrollElement.removeEventListener("touchmove", handleCategoriesScroll);
-      };
-    }
-  }, [showCategoriesDropdown]);
+    // Use throttled scroll handler
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleGlobalScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
+    window.addEventListener("scroll", throttledHandleScroll);
+    return () => window.removeEventListener("scroll", throttledHandleScroll);
+  }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
+
+  // Intersection observer for active section tracking
   useEffect(() => {
     const sections = [
       "musicals",
@@ -311,40 +160,17 @@ const ThingsToDo = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             if (sections.includes(entry.target.id)) {
-              // Show section nav and set active section for carousel sections
-              setShowSectionNav(true);
               setActiveSection(entry.target.id);
-            }
-          } else {
-            // When a section is no longer intersecting, check if we should hide the nav
-            if (sections.includes(entry.target.id)) {
-              // Check if activities section is coming into view or if we're past the last section
-              const activitiesElement = document.getElementById("activities");
-              if (activitiesElement) {
-                const activitiesRect = activitiesElement.getBoundingClientRect();
-                const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
-                
-                if (lastSectionElement) {
-                  const lastSectionRect = lastSectionElement.getBoundingClientRect();
-                  
-                  // Only hide nav if we're completely past the last section
-                  if (lastSectionRect.bottom < 0) {
-                    setShowSectionNav(false);
-                    setActiveSection("");
-                  }
-                }
-              }
             }
           }
         });
       },
       {
-        rootMargin: "-20% 0px -60% 0px",
-        threshold: 0.1,
+        rootMargin: "-40% 0px -40% 0px",
+        threshold: 0.3,
       }
     );
 
-    // Observe all carousel sections
     sections.forEach((sectionId) => {
       const element = document.getElementById(sectionId);
       if (element) {
@@ -352,9 +178,27 @@ const ThingsToDo = () => {
       }
     });
 
-
-
     return () => observer.disconnect();
+  }, [setActiveSection]);
+
+  // Scroll button handlers
+  useEffect(() => {
+    const handleResize = () => checkScrollButtons();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => checkScrollButtons();
+    const scrollElement = scrollContainerRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+      return () => scrollElement.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkScrollButtons();
   }, []);
 
   const recommendations = [
@@ -397,227 +241,16 @@ const ThingsToDo = () => {
       reviews: 100,
     },
   ];
+
   return (
     <div className="relative min-h-screen">
       <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-40 border-b">
-        <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
-          <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
-            <li 
-              className="relative flex hover:cursor-pointer items-center gap-1 hover:text-[#8000ff] transition-colors duration-200"
-              onMouseEnter={() => setShowCategoriesDropdown(true)}
-              onMouseLeave={() => {
-                setShowCategoriesDropdown(false);
-                setHoveredCategory(0);
-              }}
-            >
-              <Menu size={16} className="text-[#444444] group-hover:text-[#8000ff]" />
-              All Categories
-              
-              {/* Categories Dropdown */}
-              <div
-                className={`fixed top-28 left-1/2 transform -translate-x-1/2 mt-2 bg-white  overflow-hidden transition-all duration-300 origin-top ${
-                  showCategoriesDropdown 
-                    ? "scale-y-100 opacity-100" 
-                    : "scale-y-0 opacity-0"
-                }`}
-                style={{ zIndex: 1000, width: '1200px', maxWidth: 'calc(100vw - 48px)' }}
-              >
-                <div className="flex">
-                  {/* Left Sidebar - Categories */}
-                  <div className="w-[25%] p-4 relative">
-                    <div className="border-r border-gray-200 h-full absolute right-0 top-0 bottom-0"></div>
-                    <div 
-                      ref={categoriesScrollRef}
-                      className="max-h-[400px] overflow-y-auto pr-0 scrollbar-hide" 
-                      id="categories-scroll"
-                    >
-                      <div className="space-y-2">
-                        {categories.map((category) => (
-                          <div 
-                            key={category.id}
-                            className={`text-[15px] font-halyard-text cursor-pointer py-2 flex items-center justify-between ${
-                              hoveredCategory === category.id
-                                ? 'text-[#8000ff]' 
-                                : hoveredCategory === 0 && category.color === 'purple'
-                                ? 'text-[#8000ff]' 
-                                : 'text-[#666666]'
-                            } hover:text-[#8000ff]`}
-                            onMouseEnter={() => setHoveredCategory(category.id)}
-                          >
-                            {category.name} <ChevronRight size={20} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {/* Gradient overlay for scroll effect */}
-                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
-                    
-                    {/* Custom scrollbar positioned over border */}
-                    <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-gray-100 pointer-events-none">
-                      <div 
-                        ref={customScrollbarRef}
-                        className="w-[1px] bg-black rounded-full transition-all duration-200 absolute"
-                        style={{ 
-                          height: '20%',
-                          top: '0%'
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                  
-                                    {/* Right Content - Tour Listings */}
-                  <div className="w-[75%] p-4">
-                    <div className="grid grid-cols-3 gap-6">
-                      {hoveredCategory && hoveredCategory !== 1 && tourListings[hoveredCategory as keyof typeof tourListings] ? (
-                        // Show simple list for hovered category (except "Tickets")
-                        <div className="col-span-3">
-                          <div className="space-y-3">
-                            {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => (
-                              <div key={index} className="text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1">
-                                {item}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        // Default content when no category is hovered
-                        <>
-                          {/* Column 1 */}
-                          <div className="space-y-4">
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a1.jpg.avif" alt="Colosseum" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Colosseum</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $21.04</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a2.jpg.avif" alt="Vatican Museums" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Vatican Museums</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a3.png.avif" alt="Rome To Pompeii Tours" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Pompeii Tours</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $93.89</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a4.jpg.avif" alt="St. Peter's Basilica" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">St. Peter's Basilica</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $7.01</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a5.jpg.avif" alt="Rome Pantheon" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome Pantheon</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $5.73</div>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Column 2 */}
-                          <div className="space-y-4">
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a6.jpg.avif" alt="Castel Sant Angelo" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Castel Sant Angelo</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $18.70</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d1.jpg.avif" alt="Sistine Chapel" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Sistine Chapel</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d2.jpg.avif" alt="Musei Capitolini" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Musei Capitolini</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $32.61</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d3.jpg.avif" alt="Roman Catacombs Tour" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Roman Catacombs Tour</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $14.03</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d4.jpg.avif" alt="Borghese Gallery" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Borghese Gallery</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $26.89</div>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Column 3 */}
-                          <div className="space-y-4">
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d5.jpg.avif" alt="Altare della Patria" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Altare della Patria</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $38.58</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/d6.jpeg.avif" alt="Doria Pamphilj Gallery" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Doria Pamphilj Gallery</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $33.90</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a1.jpg.avif" alt="Rome To Amalfi Coast Tours" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Amalfi Coast Tours</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $139.11</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a2.jpg.avif" alt="Rome To Tuscany Tours" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Tuscany Tours</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $115.73</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <img src="/images/a4.jpg.avif" alt="Bioparco Rome" className="w-12 h-12 object-cover rounded" />
-                              <div>
-                                <div className="font-halyard-text text-[16px] text-[#444444]">Bioparco Rome</div>
-                                <div className="text-[12px] font-halyard-text-light text-[#666666]">from $22.21</div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-              </div>
-              </div>
-            </li>
-            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">Best Sellers</li>
-            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">London theatre tickets</li>
-            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">London Eye</li>
-            <li className="hover:cursor-pointer hover:text-[#8000ff] transition-colors duration-200">Tower of London</li>
-          </ul>
-          <button
-            className="text-[15px] text-[#444444] hover:cursor-pointer font-halyard-text-light flex items-center gap-1"
-            onMouseEnter={() => setShowBanner(true)}
-            onMouseLeave={() => setShowBanner(false)}
-          >
-            <Smartphone size={16} />
-            Get Offer{" "}
-          </button>
+        <div className="hidden md:block">
+          <CategoriesDropdown
+            showCategoriesDropdown={showCategoriesDropdown}
+            setShowCategoriesDropdown={setShowCategoriesDropdown}
+            setShowBanner={setShowBanner}
+          />
         </div>
         <div
           className={` transition-all duration-300 origin-top overflow-hidden ${
@@ -627,17 +260,16 @@ const ThingsToDo = () => {
           <Banner />
         </div>
       </div>
-      <div className="max-w-[1200px] mx-auto px-[24px]   xl:px-0">
+      <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
         <Hero />
       </div>
-      <div
+      
+      {/* Category Carousel - Now integrated directly in the page */}
+      <div 
         ref={navigationRef}
-        className={`hidden md:block ${isSectionActive ? 'fixed' : 'sticky'} top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
-          scroll ? "border-y shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]" : ""
-        } ${
-          showSectionNav 
-            ? "translate-y-0" 
-            : "-translate-y-full"
+        data-navigation
+        className={`hidden md:block sticky top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+          isCarouselVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
         <div className="relative">
@@ -764,7 +396,8 @@ const ThingsToDo = () => {
           </div>
         </div>
       </div>
-      <div className="max-w-[1200px] mx-auto  pb-10 px-[24px] xl:px-0">
+
+      <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
         <CarouselGrid
           title="Top experiences in London"
           recommendations={recommendations}
@@ -821,11 +454,11 @@ const ThingsToDo = () => {
       <div id="activities">
         <Activities />
       </div>
-      <div className="max-w-[1200px] mx-auto mt-10  pb-10 px-[24px] xl:px-0">
+      <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />
         <TravelGuide />
         <BrowseThemes />
-        <Testimonials />
+        <Testimonials variant="default" />
         <Destinations />
         <Faqs />
         <Banner />
