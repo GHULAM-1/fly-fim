@@ -1,75 +1,237 @@
 import Link from "next/link";
-import React from "react";
+import React, { useRef } from "react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Star } from "lucide-react";
+import { Star, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-const Testimonials = () => {
+interface TestimonialsProps {
+  variant: "things-to-do" | "default";
+}
+
+const Testimonials = ({ variant }: TestimonialsProps) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: scrollContainerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const testimonials = [
     {
       id: 1,
       name: "Sara",
       country: "Italy",
+      date: "Jul 2025",
       avatar: "/images/t1.jpeg",
       images: ["/images/d4.jpg.avif", "/images/d3.jpg.avif"],
       rating: 5,
       review:
         "Very positive experience. To change the digital tickets, just go to the cashiers (the attendants will show you the correct way) and you will be given the paper tickets. Audio guide well done and very interesting tour of the castle",
       originalLanguage: "Italian",
-      experience: "Windsor Castle Entry Tickets",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
     },
     {
       id: 2,
       name: "Sarah",
       country: "United States",
+      date: "Jul 2025",
       avatar: "/images/t2.jpeg",
       images: ["/images/d1.jpg.avif", "/images/d2.jpg.avif"],
       rating: 5,
       review:
         "Absolutely fantastic trip! Everything was perfectly planned and executed. The attention to detail was remarkable and exceeded all expectations. The guide was knowledgeable and friendly throughout the entire experience.",
       originalLanguage: "English",
-      experience: "London Eye Fast Track Tickets",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
     },
     {
       id: 3,
       name: "Marco",
       country: "Spain",
+      date: "Jul 2025",
       avatar: "/images/t3.jpeg",
       images: ["/images/d5.jpg.avif", "/images/d6.jpeg.avif"],
       rating: 4,
       review:
         "Great value for money! The booking process was smooth and the experience was memorable. Would definitely book again for my next trip. The staff was helpful and the facilities were clean and well-maintained.",
       originalLanguage: "Spanish",
-      experience: "Tower Bridge Exhibition",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
     },
     {
       id: 4,
       name: "Emma",
       country: "Australia",
+      date: "Jul 2025",
       avatar: "/images/t1.jpeg",
       images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
       rating: 5,
       review:
         "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
       originalLanguage: "English",
-      experience: "Westminster Abbey Tickets",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
+    },
+    {
+      id: 5,
+      name: "Emma",
+      country: "Australia",
+      date: "Jul 2025",
+      avatar: "/images/t1.jpeg",
+      images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
+      rating: 5,
+      review:
+        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
+      originalLanguage: "English",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
+    },
+    {
+      id: 6,
+      name: "Emma",
+      country: "Australia",
+      date: "Jul 2025",
+      avatar: "/images/t1.jpeg",
+      images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
+      rating: 5,
+      review:
+        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
+      originalLanguage: "English",
+      experience:
+        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
     },
   ];
 
-  const renderStars = (rating: number) => {
+  const renderStars = (
+    rating: number,
+    width: string = "w-4",
+    height: string = "h-4"
+  ) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${
+        className={`${width} ${height} ${
           i < rating ? "text-pink-500 fill-pink-500" : "text-gray-300"
         }`}
       />
     ));
   };
 
+  if (variant == "things-to-do") {
+    return (
+      <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
+            Millions love flying out with us
+            <img src="/images/info3.png" alt="" className="w-10" />
+          </h2>
+          <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={scrollLeft}
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={scrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          className="flex gap-4 overflow-x-scroll scrollbar-hide"
+          ref={scrollContainerRef}
+        >
+          {testimonials.map((testimonial) => (
+            <div
+              key={testimonial.id}
+              className=" bg-white border rounded-xl flex-shrink-0 w-[287px]"
+            >
+              {/* Header with avatar, name, country and rating */}
+              <div className="flex justify-between px-4 py-2 flex-col items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
+                    className="w-9 h-9 rounded-full object-cover"
+                  />
+                  <div>
+                    <h3 className="text-[16px] font-halyard-text text-[#444444]">
+                      {testimonial.name}
+                    </h3>
+                    <p className="text-[#666666] font-halyard-text-light text-xs">
+                      {testimonial.date}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 mt-1">
+                  <div className="flex text-sm items-center">
+                    {renderStars(testimonial.rating, "w-3 h-3")}
+                  </div>
+                  <span className="text-pink-500 font-semibold ml-1">
+                    {testimonial.rating}/5
+                  </span>
+                </div>
+              </div>
+
+              {/* Images */}
+              <div className="flex px-4 gap-2 mb-4">
+                {testimonial.images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Experience image ${index + 1}`}
+                    className="w-1/2 h-24 object-cover rounded-xl"
+                  />
+                ))}
+              </div>
+
+              {/* Review text */}
+              <p className="text-[#444444] px-4 text-sm font-halyard-text-light mb-3 line-clamp-4">
+                {testimonial.review}
+              </p>
+
+              {/* View original review link */}
+              <Link
+                href="#"
+                className="text-[#0f43bd] px-4 text-sm font-halyard-text hover:underline block mb-4"
+              >
+                View original review in {testimonial.originalLanguage}
+              </Link>
+
+              {/* Experience name */}
+              <div className="pt-3 px-4 pb-2  bg-gray-50">
+                <p className="text-[#444444] w-[70%] text-xs line-clamp-2 font-halyard-text">
+                  {testimonial.experience}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0 bg-gradient-to-b from-white to-purple-50">
       <div className="flex justify-between items-center mb-6">
