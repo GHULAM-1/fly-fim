@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ChevronRight, Menu, Smartphone, Star } from "lucide-react";
+import { Car, ChevronRight, Menu, Utensils ,Smartphone, Star } from "lucide-react";
 import {
   Building,
   Sparkles,
@@ -10,6 +10,12 @@ import {
   Landmark,
   Eye,
   Fish,
+  Globe,
+  MapPin,
+  Ticket,
+  ChefHat,
+  Bus,
+  Footprints,
 } from "lucide-react";
 import Banner from "@/components/home/Banner";
 import Testimonials from "@/components/things-to-do/Testimonials";
@@ -440,12 +446,54 @@ const Tickets = () => {
         recommendations={recommendations}
         variant="full"
       />
-      <BrowseThemes />
+      <BrowseThemes       title="Browse by themes"
+                themes={[
+                  {
+                    icon: MapPin,
+                    text: "Rome Tours",
+                    href: "#",
+                  },
+                  {
+                    icon: Globe,
+                    text: "Day Trips From Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: ChefHat,
+                    text: "Cooking Classes in Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: Bus,
+                    text: "Hop-on Hop-off Tours Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: Ticket,
+                    text: "Combos Tickets in Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: Utensils,
+                    text: "Food Tours in Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: Footprints,
+                    text: "Walking Tours in Rome",
+                    href: "#",
+                  },
+                  {
+                    icon: Car,
+                    text: "Transportation in Rome",
+                    href: "#",
+                  },
+                ]}  />
       <TravelGuides />
       <Faqs />
       <Destinations />
       <Banner />
-      <Testimonials />
+      <Testimonials variant="default" />
       <Stats />
     </div>
   );
