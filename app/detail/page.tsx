@@ -13,6 +13,16 @@ import Banner from "@/components/home/Banner";
 import Destinations from "@/components/home/Destinations";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Activities from "@/components/home/Activities";
+import {
+  Bus,
+  Car,
+  Footprints,
+  Globe,
+  MapPin,
+  Ticket,
+  Utensils,
+} from "lucide-react";
+import { ChefHat } from "lucide-react";
 
 const ProductDetail = () => {
   return (
@@ -34,10 +44,54 @@ const ProductDetail = () => {
         </div>
       </div>
       <Activities />
-      <BrowseThemes />
+      <BrowseThemes
+        title="Browse by themes"
+        themes={[
+          {
+            icon: MapPin,
+            text: "Rome Tours",
+            href: "#",
+          },
+          {
+            icon: Globe,
+            text: "Day Trips From Rome",
+            href: "#",
+          },
+          {
+            icon: ChefHat,
+            text: "Cooking Classes in Rome",
+            href: "#",
+          },
+          {
+            icon: Bus,
+            text: "Hop-on Hop-off Tours Rome",
+            href: "#",
+          },
+          {
+            icon: Ticket,
+            text: "Combos Tickets in Rome",
+            href: "#",
+          },
+          {
+            icon: Utensils,
+            text: "Food Tours in Rome",
+            href: "#",
+          },
+          {
+            icon: Footprints,
+            text: "Walking Tours in Rome",
+            href: "#",
+          },
+          {
+            icon: Car,
+            text: "Transportation in Rome",
+            href: "#",
+          },
+        ]}
+      />
       <Destinations />
       <Banner />
-      <Testimonials />
+      <Testimonials variant="default" />
       <Stats />
     </div>
   );
