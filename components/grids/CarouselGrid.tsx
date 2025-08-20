@@ -34,6 +34,7 @@ const CarouselGrid = ({
   const [visibleCards, setVisibleCards] = useState(4); // Initially show 4 cards
   const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -258,6 +259,46 @@ const CarouselGrid = ({
   }
 
   if (variant === "museums") {
+    const [currentMuseumIndex, setCurrentMuseumIndex] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const handleNavigate = (direction: 'prev' | 'next') => {
+      if (direction === 'prev') {
+        setCurrentMuseumIndex(prev => 
+          prev === 0 ? recommendations.length - 1 : prev - 1
+        );
+      } else {
+        setCurrentMuseumIndex(prev => 
+          prev === recommendations.length - 1 ? 0 : prev + 1
+        );
+      }
+    };
+
+    const onTouchStart = (e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+      if (!touchStart || !touchEnd) return;
+      
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+
+      if (isLeftSwipe) {
+        handleNavigate('next');
+      }
+      if (isRightSwipe) {
+        handleNavigate('prev');
+      }
+    };
+
     return (
       <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-8">
@@ -288,78 +329,195 @@ const CarouselGrid = ({
           </div>
         </div>
 
-        <div
-          className="flex gap-4  overflow-x-scroll h-[369px] scrollbar-hide "
-          ref={scrollContainerRef}
-        >
-          {recommendations.map((museum) => (
-            <div
-              key={museum.id}
-              className="flex-shrink-0 w-80 cursor-pointer group max-w-[280px] h-[354px] relative"
-            >
-              <div className="flex justify-center relative h-[15px] items-center flex-col ">
-                <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
-                <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
-              </div>
-              {/* Main card - stays in place */}
-              <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
-                {/* Image */}
-                <div className="relative h-full overflow-hidden">
-                  <img
-                    src={museum.image}
-                    alt={museum.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {/* Dark overlay for text */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {/* Desktop: Horizontal scroll with multiple cards */}
+        <div className="hidden md:block">
+          <div
+            className="flex gap-4 overflow-x-scroll h-[369px] scrollbar-hide"
+            ref={scrollContainerRef}
+          >
+            {recommendations.map((museum) => (
+              <div
+                key={museum.id}
+                className="flex-shrink-0 w-80 cursor-pointer group max-w-[280px] h-[354px] relative"
+              >
+                <div className="flex justify-center relative h-[15px] items-center flex-col ">
+                  <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
+                  <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
+                </div>
+                {/* Main card - stays in place */}
+                <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
+                  {/* Image */}
+                  <div className="relative h-full overflow-hidden">
+                    <img
+                      src={museum.image}
+                      alt={museum.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    {/* Dark overlay for text */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                  {/* Dark overlay for text - using the same gradient as PopularThings */}
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
-                    }}
-                  />
+                    {/* Dark overlay for text - using the same gradient as PopularThings */}
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
+                      }}
+                    />
 
-                  {/* Text overlay - positioned at bottom */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
-                      <h3 className="text-lg font-halyard-text mb-1">
-                        {museum.place}
-                      </h3>
-                      {museum.description && (
-                        <p className="text-sm font-halyard-text-light text-gray-200 mb-2 line-clamp-2">
-                          {museum.description}
-                        </p>
-                      )}
+                    {/* Text overlay - positioned at bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                      <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
+                        <h3 className="text-lg font-halyard-text mb-1">
+                          {museum.place}
+                        </h3>
+                        {museum.description && (
+                          <p className="text-sm font-halyard-text-light text-gray-200 mb-2 line-clamp-2">
+                            {museum.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-lg font-bold">${museum.price}</div>
                     </div>
-                    <div className="text-lg font-bold">${museum.price}</div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* Mobile: Single card with museums variant hover effect */}
+        <div className="md:hidden">
+          <div className="relative overflow-hidden w-full max-w-[420px] mx-auto">
+            <div
+              className="flex transition-transform duration-500 ease-out"
+              style={{ 
+                transform: `translateX(-${currentMuseumIndex * 25}%)`,
+                width: `${recommendations.length * 25}%`
+              }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {recommendations.map((museum, index) => {
+                const active = index === currentMuseumIndex;
+                
+                return (
+                  <div 
+                    key={museum.id}
+                    className="w-[25%] shrink-0 px-2"
+                  >
+                    <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
+                      {/* Browser-like top decoration - positioned above image content */}
+                      <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
+                        <div className={`w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg transition-all duration-150 ease-in-out ${
+                          active ? 'h-[12px] mb-[-6px]' : 'h-[12px] mb-0'
+                        }`}></div>
+                        <div className={`w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg transition-all duration-100 ease-in-out ${
+                          active ? 'h-[12px] mb-[-6px]' : 'h-[12px] mb-0'
+                        }`}></div>
+                      </div>
+                      
+                      <img
+                        src={museum.image}
+                        alt={museum.name}
+                        className="w-full h-full rounded-lg object-cover mt-0 relative z-20"
+                      />
+
+                      {/* Dark overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-20" />
+
+                      {/* Bottom gradient pad - always expanded like museums variant */}
+                      <div
+                        className="absolute bottom-0 left-0 right-0 pointer-events-none transition-all duration-500 z-20"
+                        style={{
+                          height: "50%",
+                          background:
+                            "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
+                        }}
+                      />
+
+                      {/* Text: slide-up + fade for active */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-20">
+                        <div
+                          className={`transform transition-all duration-700 ease-in-out ${
+                            active
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-4 opacity-0"
+                          }`}
+                        >
+                          <h3 className="text-lg mb-1">{museum.place}</h3>
+                          <p className="text-sm text-gray-200 mb-2 line-clamp-2">
+                            {museum.description}
+                          </p>
+                          <div className="text-lg font-bold">${museum.price}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
       </div>
     );
   }
   if (variant === "simple") {
     // Local state for simple variant pagination
     const [currentPage, setCurrentPage] = useState(0);
-    
+
     const simpleScrollLeft = () => {
       if (currentPage > 0) {
-        console.log('Scrolling left from page', currentPage, 'to', currentPage - 1);
-        setCurrentPage(prev => prev - 1);
+        console.log(
+          "Scrolling left from card",
+          currentPage,
+          "to",
+          currentPage - 1
+        );
+        setCurrentPage((prev) => prev - 1);
       }
     };
 
     const simpleScrollRight = () => {
-      const totalPages = Math.ceil(recommendations.length / 6);
-      if (currentPage < totalPages - 1) {
-        console.log('Scrolling right from page', currentPage, 'to', currentPage + 1);
-        setCurrentPage(prev => prev + 1);
+      const maxCards = Math.max(0, recommendations.length - 3); // Show 3 cards at once
+      if (currentPage < maxCards) {
+        console.log(
+          "Scrolling right from card",
+          currentPage,
+          "to",
+          currentPage + 1
+        );
+        setCurrentPage((prev) => prev + 1);
+      }
+    };
+
+    // Touch/swipe functionality for mobile
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+      if (!touchStart || !touchEnd) return;
+      
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+
+      if (isLeftSwipe) {
+        simpleScrollRight(); // Swipe left = go to next card
+      }
+      if (isRightSwipe) {
+        simpleScrollLeft(); // Swipe right = go to previous card
       }
     };
 
@@ -369,14 +527,14 @@ const CarouselGrid = ({
           <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
             {title}
           </h2>
-          <div className="flex items-center gap-4">
+          <div className="md:flex hidden items-center gap-4">
             <Link
               href="/museums"
               className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
             >
               See all
             </Link>
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <button
                 className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
                 onClick={simpleScrollLeft}
@@ -393,48 +551,47 @@ const CarouselGrid = ({
           </div>
         </div>
         <div className="mt-6 relative overflow-hidden">
-          <div 
-            className="flex gap-2 transition-transform duration-700 ease-in-out"
+          <div
+            className="flex gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${currentPage * 100}%)`,
-              width: `${Math.ceil(recommendations.length / 6) * 100}%`
+              transform: `translateX(-${currentPage * 200}px)`,
+              width: `${recommendations.length * 200}px`,
             }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           >
-            {Array.from({ length: Math.ceil(recommendations.length / 6) }, (_, pageIndex) => (
-              <div key={pageIndex} className="flex gap-2 w-full flex-shrink-0">
-                {recommendations.slice(pageIndex * 6, (pageIndex + 1) * 6).map((recommendation) => (
-                  <Link
-                    key={recommendation.id}
-                    href={`/things-to-do/${recommendation.city}`}
-                    className="flex-shrink-0 cursor-pointer group w-[190px]"
-                  >
-                    <div className="flex flex-row md:flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg p-2">
-                      <div>
-                        <img
-                          src={recommendation.image}
-                          alt={recommendation.description}
-                          className="rounded md:w-full w-[144px]"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-text text-[#444444] md:mt-2 leading-tight md:max-w-32">
-                          {recommendation.description}{" "}
-                          <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight md:max-w-32">
-                            {recommendation.city}
-                          </span>
-                        </p>
-                        <p className="font-text md:block hidden text-[#444444] md:mt-2 leading-tight md:max-w-32">
-                          {recommendation.city}
-                        </p>
+            {recommendations.map((recommendation) => (
+              <Link
+                key={recommendation.id}
+                href={`/things-to-do/${recommendation.city}`}
+                className="flex-shrink-0 cursor-pointer group w-[200px] md:w-[190px]"
+              >
+                <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg p-2">
+                  <div>
+                    <img
+                      src={recommendation.image}
+                      alt={recommendation.description}
+                      className="rounded md:w-full w-full"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-sm md:text-base break-words">
+                      {recommendation.description}{" "}
+                      <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight break-words">
+                        {recommendation.city}
+                      </span>
+                    </p>
+                    <p className="font-text md:block hidden text-[#444444] md:mt-2 leading-tight md:max-w-32">
+                      {recommendation.city}
+                    </p>
 
-                        <p className="text-[#666666] font-halyard-text-light text-sm mt-1">
-                          {recommendation.place}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    <p className="text-[#666666] font-halyard-text-light text-xs md:text-sm mt-1 break-words">
+                      {recommendation.place}
+                    </p>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
