@@ -195,9 +195,29 @@ export default function CategoryPage() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = 200;
+      // Get the actual sticky navigation height dynamically
+      const stickyNav = document.querySelector("[data-navigation]");
+      const fixedNav = document.querySelector(".fixed.md\\:top-19");
+
+      let totalOffset = 0;
+
+      // Add fixed top navigation height if it exists
+      if (fixedNav) {
+        const fixedNavRect = fixedNav.getBoundingClientRect();
+        totalOffset += fixedNavRect.height;
+      }
+
+      // Add sticky category carousel height if it exists
+      if (stickyNav) {
+        const stickyNavRect = stickyNav.getBoundingClientRect();
+        totalOffset += stickyNavRect.height;
+      }
+
+      // Add some extra padding for better visibility
+      totalOffset += 20;
+
       const elementPosition = element.offsetTop;
-      const offsetPosition = elementPosition - navHeight;
+      const offsetPosition = elementPosition - totalOffset;
 
       window.scrollTo({
         top: offsetPosition,
@@ -236,14 +256,12 @@ export default function CategoryPage() {
   // Intersection observer for active section tracking
   useEffect(() => {
     const sections = [
-      "musicals",
-      "landmarks",
-      "day-trips",
-      "combos",
-      "cruises",
-      "plays",
       "museums",
-      "hop-on-hop-off-tours",
+      "landmarks",
+      "zoos",
+      "religious-sites",
+      "city-cards",
+      "theme-parks",
     ];
 
     const observer = new IntersectionObserver(
@@ -477,7 +495,7 @@ export default function CategoryPage() {
           <div
             ref={navigationRef}
             data-navigation
-            className={`sticky top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+            className={`sticky md:top-30 top-15 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
               isCarouselVisible ? "translate-y-0" : "-translate-y-full"
             }`}
           >
@@ -501,15 +519,15 @@ export default function CategoryPage() {
                   </div>
                 )}
                 <Button
-                  onClick={() => scrollToSection("musicals")}
+                  onClick={() => scrollToSection("museums")}
                   className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "musicals"
+                    activeSection === "museums"
                       ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                       : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
                   }`}
                 >
-                  <Music strokeWidth={1} className="md:w-5 md:h-5 w-5 h-5" />
-                  Musicals
+                  <Tv strokeWidth={1} className="md:w-5 md:h-5 w-5 h-5" />
+                  Museums
                 </Button>
                 <Button
                   onClick={() => scrollToSection("landmarks")}
@@ -523,70 +541,48 @@ export default function CategoryPage() {
                   Landmarks
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("day-trips")}
+                  onClick={() => scrollToSection("zoos")}
                   className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "day-trips"
+                    activeSection === "zoos"
                       ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                       : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
                   }`}
                 >
                   <SunMedium strokeWidth={1} />
-                  Day Trips
+                  Zoos
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("combos")}
+                  onClick={() => scrollToSection("religious-sites")}
                   className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "combos"
+                    activeSection === "religious-sites"
                       ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                       : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
                   }`}
                 >
                   <BadgePercent strokeWidth={1} />
-                  Combos
+                  Religious Sites
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("cruises")}
+                  onClick={() => scrollToSection("city-cards")}
                   className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "cruises"
+                    activeSection === "city-cards"
                       ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                       : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
                   }`}
                 >
                   <Ship strokeWidth={1} />
-                  Cruises
+                  City Cards
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("plays")}
+                  onClick={() => scrollToSection("theme-parks")}
                   className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "plays"
+                    activeSection === "theme-parks"
                       ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                       : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
                   }`}
                 >
                   <Leaf strokeWidth={1} />
-                  Plays
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("museums")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "museums"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <Tv strokeWidth={1} />
-                  Museums
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("hop-on-hop-off-tours")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "hop-on-hop-off-tours"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <BusFront strokeWidth={1} />
-                  Hop-On Hop-Off Tours London
+                  Theme Parks
                 </Button>
 
                 {showRightButton && (
@@ -618,42 +614,42 @@ export default function CategoryPage() {
           title="Top experiences in London"
           recommendations={recommendations}
         /> */}
-            <div className="mb-10">
+            <div className="mb-10" id="museums">
               <CarouselGrid
                 title="Museums"
                 variant="museums"
                 recommendations={recommendations}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-10" id="landmarks">
               <CarouselGrid
                 title="Landmarks"
                 variant="museums"
                 recommendations={recommendations}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-10" id="zoos">
               <CarouselGrid
                 title="Zoos"
                 variant="museums"
                 recommendations={recommendations}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-10" id="religious-sites">
               <CarouselGrid
                 title="Religious Sites"
                 variant="museums"
                 recommendations={recommendations}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-10" id="city-cards">
               <CarouselGrid
                 title="City Cards"
                 variant="museums"
                 recommendations={recommendations}
               />
             </div>
-            <div className="mb-10">
+            <div className="mb-10" id="theme-parks">
               <CarouselGrid
                 title="Theme Parks"
                 variant="museums"
@@ -721,8 +717,7 @@ export default function CategoryPage() {
               <Testimonials variant="things-to-do" />
             </div>
             <div className="mb-10">
-            <Stats />
-
+              <Stats />
             </div>
           </div>
         </div>
