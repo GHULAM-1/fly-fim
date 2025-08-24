@@ -139,7 +139,7 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
     return (
       <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
+          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444] flex items-center gap-2">
             Millions love flying out with us
             <img src="/images/info3.png" alt="" className="w-10" />
           </h2>
@@ -234,7 +234,7 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
     );
   }
   return (
-    <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0 bg-gradient-to-b from-white to-purple-50">
+    <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
           Millions love flying out with us

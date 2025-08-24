@@ -4,7 +4,7 @@ import { Diamond, Calendar, Clock, MapPin } from "lucide-react";
 const TravelGuide = () => {
   return (
     <div className="py-10 max-w-screen-2xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444]">
         Get inspired for your London visit
       </h2>
 

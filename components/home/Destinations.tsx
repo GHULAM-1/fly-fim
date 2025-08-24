@@ -103,7 +103,7 @@ const Destinations = () => {
 
   return (
     <div className="py-4   max-w-[1200px] mx-auto ">
-      <div className="flex px-[24px] xl:px-0 justify-between items-start">
+      <div className="flex justify-between items-start">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
           {t("destinations.title")}
         </h2>
@@ -132,7 +132,7 @@ const Destinations = () => {
         </div>
       </div>
       <div
-        className="mt-4 pl-[24px] xl:px-0 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4  sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {destinations.map((destination) => (
