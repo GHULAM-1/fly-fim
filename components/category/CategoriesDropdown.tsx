@@ -34,7 +34,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const city = params.city as string;
 
   // Categories data
-  const categories: Category[] = [
+const categories: Category[] = [
     { id: 1, name: `Top things to do in ${city}`, color: "purple", url: `/things-to-do/${city}` },
     { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
     { id: 3, name: "Tours", color: "gray", url: `/things-to-do/${city}/tours` },

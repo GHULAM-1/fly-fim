@@ -15,14 +15,18 @@ const Home = () => {
     <div>
       <Hero />
       <Info />
-      <Destinations />
+      <div className="px-[24px]">
+        <Destinations />
+      </div>
       <Recommendations />
       <Activities />
       <Testimonials />
       <MarqueeComp />
-      <BrowseThemes />
-      <Banner />
-      <Stats />
+      <div className="px-[24px]">
+        <BrowseThemes />
+        <Banner />
+        <Stats />
+      </div>
     </div>
   );
 };
