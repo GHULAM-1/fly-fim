@@ -2,7 +2,7 @@ import React from "react";
 import { Compass, LayoutGrid, User } from "lucide-react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { FaCompass, FaRegCompass, FaUser, FaRegUser } from "react-icons/fa";
 import { BsGrid, BsFillGridFill } from "react-icons/bs";
 import Link from "next/link";
@@ -10,6 +10,11 @@ import Link from "next/link";
 const Tabs = () => {
   const { user, loading } = useAuth();
   const pathname = usePathname();
+  const params = useParams();
+  
+  // Extract city from URL params if available
+  const city = params.city as string;
+  
   const profileImage =
     user?.user_metadata?.avatar_url ||
     user?.user_metadata?.picture ||
@@ -26,8 +31,11 @@ const Tabs = () => {
         )}
         <span className="text-[10px]">Explore</span>
       </Link>
-      <Link href="#" className="flex flex-col items-center gap-1">
-        {pathname === "/categories" ? (
+      <Link 
+        href={city ? `/categories/${city}` : "/categories"} 
+        className="flex flex-col items-center gap-1"
+      >
+        {pathname === "/categories" || pathname.startsWith("/categories/") ? (
           <BsFillGridFill size={20} />
         ) : (
           <BsGrid size={20} />
