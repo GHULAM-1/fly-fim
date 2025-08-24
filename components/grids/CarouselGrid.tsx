@@ -36,6 +36,7 @@ interface CarouselGridProps {
     icon: any;
     color: string;
   }>;
+  pills?: boolean;
 }
 
 const CarouselGrid = ({
@@ -43,6 +44,7 @@ const CarouselGrid = ({
   recommendations,
   variant = "default",
   navigationItems,
+  pills = true,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState("Picked for you");
@@ -72,14 +74,14 @@ const CarouselGrid = ({
   // Prevent body scrolling when dropdown is open
   useEffect(() => {
     if (showCategoriesDropdown) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     // Cleanup function to restore scrolling when component unmounts
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [showCategoriesDropdown]);
 
@@ -252,120 +254,133 @@ const CarouselGrid = ({
             {title}
           </h2>
         </div>
+        {!pills && (
+          <div className="text-sm text-[#666666] flex justify-between items-center mt-[20px]">
+            <p className="text-[15px] font-halyard-text">Worldwide</p>
+            <p className="text-[12px] font-halyard-text-light">
+              {recommendations.length} experiences
+            </p>
+          </div>
+        )}
         {/* Pills Section */}
-        <div
-          className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
-          ref={scrollContainerRef}
-        >
-          {/* Categories Dropdown Pill - Always shown first */}
-          <div className="relative" ref={categoriesDropdownRef}>
-            <div
-              onClick={handleCategoriesClick}
-              className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
-            >
-              <span className="text-sm font-halyard-text">Categories</span>
-              <ChevronDown
-                size={12}
-                className={`text-gray-500 transition-transform ${
-                  showCategoriesDropdown ? "rotate-180" : ""
-                }`}
-              />
-            </div>
+        {pills && (
+          <div
+            className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
+            ref={scrollContainerRef}
+          >
+            {/* Categories Dropdown Pill - Always shown first */}
+            <div className="relative" ref={categoriesDropdownRef}>
+              <div
+                onClick={handleCategoriesClick}
+                className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
+              >
+                <span className="text-sm font-halyard-text">Categories</span>
+                <ChevronDown
+                  size={12}
+                  className={`text-gray-500 transition-transform ${
+                    showCategoriesDropdown ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
 
-            {/* Dropdown Menu */}
-            <div
-              className={`fixed max-w-72 w-full bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 z-[99999] ${
-                showCategoriesDropdown
-                  ? "opacity-100"
-                  : "opacity-0 pointer-events-none"
-              }`}
-              style={{
-                top: categoriesDropdownRef.current
-                  ? (() => {
-                      const rect = categoriesDropdownRef.current.getBoundingClientRect();
-                      const dropdownHeight = 350; // Approximate dropdown height
-                      const spaceBelow = window.innerHeight - rect.bottom;
-                      
-                      // If not enough space below, position above with minimal gap
-                      if (spaceBelow < dropdownHeight + 10) {
-                        return rect.top - dropdownHeight - (-40);
-                      } else {
-                        return rect.bottom + 2;
-                      }
-                    })()
-                  : 0,
-                left: categoriesDropdownRef.current
-                  ? categoriesDropdownRef.current.getBoundingClientRect().left
-                  : 0,
-              }}
-            >
-              <div className="p-3">
-                <div className="space-y-2 max-h-72 overflow-y-auto scrollbar-hide">
-                  {(
-                    navigationItems || [
-                      { id: "museums", icon: "🏛️", label: "Museums" },
-                      { id: "zoos", icon: "🐘", label: "Zoos" },
-                      { id: "city-cards", icon: "🎫", label: "City Cards" },
-                      {
-                        id: "religious-sites",
-                        icon: "⛪",
-                        label: "Religious Sites",
-                      },
-                      { id: "landmarks", icon: "🏛️", label: "Landmarks" },
-                    ]
-                  ).map((item, index) => (
-                    <div
-                      key={item.id || index}
-                      className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2">
-                        {item.icon && typeof item.icon === "string" ? (
-                          <span className="text-sm">{item.icon}</span>
-                        ) : item.icon ? (
-                          <item.icon size={16} className="text-gray-600" />
-                        ) : null}
-                        <span className="text-sm text-gray-700">
-                          {item.label}
-                        </span>
-                      </div>
-                      <Checkbox
-                        checked={checkedItems.has(item.id || `item-${index}`)}
-                        onCheckedChange={() =>
-                          handleCheckboxChange(item.id || `item-${index}`)
+              {/* Dropdown Menu */}
+              <div
+                className={`fixed max-w-72 w-full bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 z-[99999] ${
+                  showCategoriesDropdown
+                    ? "opacity-100"
+                    : "opacity-0 pointer-events-none"
+                }`}
+                style={{
+                  top: categoriesDropdownRef.current
+                    ? (() => {
+                        const rect =
+                          categoriesDropdownRef.current.getBoundingClientRect();
+                        const dropdownHeight = 350; // Approximate dropdown height
+                        const spaceBelow = window.innerHeight - rect.bottom;
+
+                        // If not enough space below, position above with minimal gap
+                        if (spaceBelow < dropdownHeight + 10) {
+                          return rect.top - dropdownHeight - -40;
+                        } else {
+                          return rect.bottom + 2;
                         }
-                        className="w-4 h-4 appearance-none checked:bg-[#60c] checked:border-purple-300 border border-gray-300 rounded hover:cursor-pointer"
-                      />
-                    </div>
-                  ))}
+                      })()
+                    : 0,
+                  left: categoriesDropdownRef.current
+                    ? categoriesDropdownRef.current.getBoundingClientRect().left
+                    : 0,
+                }}
+              >
+                <div className="p-3">
+                  <div className="space-y-2 max-h-72 overflow-y-auto scrollbar-hide">
+                    {(
+                      navigationItems || [
+                        { id: "museums", icon: "🏛️", label: "Museums" },
+                        { id: "zoos", icon: "🐘", label: "Zoos" },
+                        { id: "city-cards", icon: "🎫", label: "City Cards" },
+                        {
+                          id: "religious-sites",
+                          icon: "⛪",
+                          label: "Religious Sites",
+                        },
+                        { id: "landmarks", icon: "🏛️", label: "Landmarks" },
+                      ]
+                    ).map((item, index) => (
+                      <div
+                        key={item.id || index}
+                        className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2">
+                          {item.icon && typeof item.icon === "string" ? (
+                            <span className="text-sm">{item.icon}</span>
+                          ) : item.icon ? (
+                            <item.icon size={16} className="text-gray-600" />
+                          ) : null}
+                          <span className="text-sm text-gray-700">
+                            {item.label}
+                          </span>
+                        </div>
+                        <Checkbox
+                          checked={checkedItems.has(item.id || `item-${index}`)}
+                          onCheckedChange={() =>
+                            handleCheckboxChange(item.id || `item-${index}`)
+                          }
+                          className="w-4 h-4 appearance-none checked:bg-[#60c] checked:border-purple-300 border border-gray-300 rounded hover:cursor-pointer"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Show first 4 navigation items as pills */}
-          {(
-            navigationItems || [
-              { id: "museums", icon: "🏛️", label: "Museums" },
-              { id: "zoos", icon: "🐘", label: "Zoos" },
-              { id: "city-cards", icon: "🎫", label: "City Cards" },
-              { id: "religious-sites", icon: "⛪", label: "Religious Sites" },
-            ]
-          )
-            .slice(0, 4)
-            .map((pill, index) => (
-              <div
-                key={pill.id || index}
-                className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
-              >
-                {pill.icon && typeof pill.icon === "string" ? (
-                  <span className="text-sm">{pill.icon}</span>
-                ) : pill.icon ? (
-                  <pill.icon size={16} className="text-gray-600" />
-                ) : null}
-                <span className="text-sm font-halyard-text">{pill.label}</span>
-              </div>
-            ))}
-        </div>
+            {/* Show first 4 navigation items as pills */}
+            {(
+              navigationItems || [
+                { id: "museums", icon: "🏛️", label: "Museums" },
+                { id: "zoos", icon: "🐘", label: "Zoos" },
+                { id: "city-cards", icon: "🎫", label: "City Cards" },
+                { id: "religious-sites", icon: "⛪", label: "Religious Sites" },
+              ]
+            )
+              .slice(0, 4)
+              .map((pill, index) => (
+                <div
+                  key={pill.id || index}
+                  className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
+                >
+                  {pill.icon && typeof pill.icon === "string" ? (
+                    <span className="text-sm">{pill.icon}</span>
+                  ) : pill.icon ? (
+                    <pill.icon size={16} className="text-gray-600" />
+                  ) : null}
+                  <span className="text-sm font-halyard-text">
+                    {pill.label}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
 
         {/* Original Carousel Section */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

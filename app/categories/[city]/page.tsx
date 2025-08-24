@@ -5,7 +5,6 @@ import CategoriesCards from "@/components/categories/categories";
 import {
   Ticket,
   Flag,
-  Car,
   Bus,
   Briefcase,
   Ship,
@@ -20,8 +19,8 @@ import {
 export default function Categories() {
   const params = useParams();
   
-  // Get the city from URL params if available
-  const city = params.city as string;
+  // Get the city from URL params and decode URL encoding (e.g., "New%20York" -> "New York")
+  const city = decodeURIComponent(params.city as string);
   
   // Check if we're on a city-specific route
   const isCityRoute = Boolean(city);

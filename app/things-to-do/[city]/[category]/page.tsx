@@ -62,9 +62,18 @@ import PopularThings from "@/components/category/PopularThings";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import CityCard from "@/components/cards/CityCard";
+import MobPopularThings from "@/components/category/mob-popular-things";
 import Stats from "@/components/home/Stats";
 import Testimonials from "@/components/things-to-do/Testimonials";
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { ChevronDown } from "lucide-react";
 
 export default function CategoryPage() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -72,6 +81,7 @@ export default function CategoryPage() {
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
   const [isCarouselVisible, setIsCarouselVisible] = useState(true);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
@@ -209,540 +219,1199 @@ export default function CategoryPage() {
     },
   ];
 
-  // Get the category name from URL and capitalize first letter
+  // Get the category name and city from URL and capitalize first letter
   const categoryName = params.category as string;
-  const formattedCategoryName = categoryName
-    ? categoryName
-        .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+  const city = params.city as string;
+  const isWorldwideRoute = city === "worldwide";
+  
+  // Get the last word from category and decode URL-encoded characters
+  const lastWord = categoryName ? categoryName.split("-").pop() || categoryName : "";
+  const decodedCategoryName = decodeURIComponent(lastWord);
+  
+  // Convert spaces to hyphens for config key matching
+  const configKey = decodedCategoryName.toLowerCase().replace(/\s+/g, "-");
+  
+  const formattedCategoryName = decodedCategoryName
+    ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
     : "Category";
 
-  // Comprehensive category configuration
-  const categoryConfig = {
-    tickets: {
-      style: "bordered",
-      heading: "Rome Attractions",
-      navigationItems: [
-        { id: "museums", label: "Museums", icon: Tv, color: "purple" },
-        {
-          id: "landmarks",
-          label: "Landmarks",
-          icon: Landmark,
-          color: "purple",
+
+  // Comprehensive category configuration - conditional based on worldwide vs city-specific
+  const categoryConfig = isWorldwideRoute
+    ? {
+        // WORLDWIDE CONFIGURATION
+        tickets: {
+          style: "bordered",
+          heading: "Global Attractions",
+          navigationItems: [
+            { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+            {
+              id: "landmarks",
+              label: "Landmarks",
+              icon: Landmark,
+              color: "purple",
+            },
+            { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+            {
+              id: "religious-sites",
+              label: "Religious Sites",
+              icon: BadgePercent,
+              color: "purple",
+            },
+            {
+              id: "city-cards",
+              label: "City Cards",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "theme-parks",
+              label: "Theme Parks",
+              icon: Leaf,
+              color: "purple",
+            },
+          ],
+          components: {
+            popular: false,
+            stack: false,
+            guides: null,
+            transport: null,
+            testimonials: true,
+            themes: [
+              { icon: Ticket, text: "Global Museum Tickets", href: "#" },
+              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              { icon: Landmark, text: "Landmark Tickets", href: "#" },
+              { icon: SunMedium, text: "Zoo Tickets", href: "#" },
+              { icon: Ship, text: "City Cards", href: "#" },
+              { icon: Leaf, text: "Theme Park Tickets", href: "#" },
+            ],
+          },
         },
-        { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
-        {
-          id: "religious-sites",
-          label: "Religious Sites",
-          icon: BadgePercent,
-          color: "purple",
+        tours: {
+          style: "simple",
+          heading: "Global Tours",
+          navigationItems: [
+            {
+              id: "walking-tours",
+              label: "Walking Tours",
+              icon: Footprints,
+              color: "purple",
+            },
+            {
+              id: "guided-tours",
+              label: "Guided Tours",
+              icon: User,
+              color: "purple",
+            },
+            {
+              id: "city-tours",
+              label: "City Tours",
+              icon: MapPin,
+              color: "purple",
+            },
+            {
+              id: "day-trips",
+              label: "Day Trips",
+              icon: Globe,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: {
+              title: "Global travel guides and tips",
+              variant: "tours",
+            },
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: MapPin, text: "Global City Tours", href: "#" },
+              { icon: Globe, text: "Worldwide Day Trips", href: "#" },
+              { icon: Footprints, text: "Walking Tours", href: "#" },
+            ],
+          },
         },
-        { id: "city-cards", label: "City Cards", icon: Ship, color: "purple" },
-        {
-          id: "theme-parks",
-          label: "Theme Parks",
-          icon: Leaf,
-          color: "purple",
+        transportation: {
+          style: "simple",
+          heading: "Global Transportation",
+          navigationItems: [
+            {
+              id: "public-transport",
+              label: "Public Transport",
+              icon: Bus,
+              color: "purple",
+            },
+            {
+              id: "car-rentals",
+              label: "Car Rentals",
+              icon: Car,
+              color: "purple",
+            },
+            {
+              id: "ferry-services",
+              label: "Ferry Services",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "airport-transfers",
+              label: "Airport Transfers",
+              icon: BusFront,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: {
+              title: "Global travel guides and tips",
+              variant: "transport",
+            },
+            popular: true,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: Bus, text: "Global Public Transport", href: "#" },
+              { icon: Car, text: "Worldwide Car Rentals", href: "#" },
+              { icon: Ship, text: "Ferry Services", href: "#" },
+            ],
+          },
         },
-      ],
-      components: {
-        popular: true,
-        stack: true,
-        guides: null,
-        transport: null,
-        testimonials: true,
-        themes: [
-          { icon: Ticket, text: "Museum Tickets", href: "#" },
-          { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
-          { icon: Landmark, text: "Landmark Tickets", href: "#" },
-          { icon: SunMedium, text: "Zoo Tickets", href: "#" },
-          { icon: Ship, text: "City Cards", href: "#" },
-          { icon: Leaf, text: "Theme Park Tickets", href: "#" },
-        ],
-      },
-    },
-    tours: {
-      style: "simple",
-      heading: "Rome Tours",
-      navigationItems: [
-        {
-          id: "walking-tours",
-          label: "Walking Tours",
-          icon: Footprints,
-          color: "purple",
+        "travel-services": {
+          style: "bordered",
+          heading: "Global Travel Services",
+          navigationItems: [
+            { id: "planning", label: "Travel Planning", icon: MapPin, color: "purple" }
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: true,
+          },
         },
-        {
-          id: "guided-tours",
-          label: "Guided Tours",
-          icon: User,
-          color: "purple",
+        cruises: {
+          style: "bordered",
+          heading: `Cruises in ${city}`,
+          navigationItems: [
+            {
+              id: "port-excursions",
+              label: "Port Excursions",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "shore-tours",
+              label: "Shore Tours",
+              icon: Globe,
+              color: "purple",
+            },
+            {
+              id: "cruise-packages",
+              label: "Cruise Packages",
+              icon: Package,
+              color: "purple",
+            },
+            {
+              id: "onboard-activities",
+              label: "Onboard Activities",
+              icon: Music,
+              color: "purple",
+            },
+            {
+              id: "dining-options",
+              label: "Dining Options",
+              icon: Utensils,
+              color: "purple",
+            },
+            {
+              id: "entertainment",
+              label: "Entertainment",
+              icon: Tv,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: Ship, text: "Port Excursions", href: "#" },
+              { icon: Globe, text: "Shore Tours", href: "#" },
+              { icon: Package, text: "Cruise Packages", href: "#" },
+            ],
+          },
         },
-        {
-          id: "hop-on-hop-off",
-          label: "Hop-on Hop-off Tours Rome",
-          icon: Bus,
-          color: "purple",
+        "food-drink": {
+          style: "simple",
+          heading: `Food & Drink in ${city}`,
+          navigationItems: [
+            {
+              id: "cooking-classes",
+              label: "Cooking Classes",
+              icon: ChefHat,
+              color: "purple",
+            },
+            {
+              id: "food-tours",
+              label: "Food Tours",
+              icon: Utensils,
+              color: "purple",
+            },
+            {
+              id: "wine-tastings",
+              label: "Wine Tastings",
+              icon: Wine,
+              color: "purple",
+            },
+            {
+              id: "restaurant-reservations",
+              label: "Restaurant Reservations",
+              icon: MapPin,
+              color: "purple",
+            },
+            {
+              id: "local-markets",
+              label: "Local Markets",
+              icon: ShoppingBag,
+              color: "purple",
+            },
+            {
+              id: "dietary-options",
+              label: "Dietary Options",
+              icon: Heart,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: { title: "Food & drink guides", variant: "tours" },
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: ChefHat, text: "Cooking Classes", href: "#" },
+              { icon: Utensils, text: "Food Tours", href: "#" },
+              { icon: Wine, text: "Wine Tastings", href: "#" },
+            ],
+          },
         },
-        {
-          id: "city-tours",
-          label: "City Tours",
-          icon: MapPin,
-          color: "purple",
+        entertainment: {
+          style: "bordered",
+          heading: `Entertainment shows in ${city}`,
+          navigationItems: [
+            {
+              id: "live-shows",
+              label: "Live Shows",
+              icon: Music,
+              color: "purple",
+            },
+            { id: "theater", label: "Theater", icon: Tv, color: "purple" },
+            {
+              id: "theme-parks",
+              label: "Theme Parks",
+              icon: SunMedium,
+              color: "purple",
+            },
+            {
+              id: "concerts",
+              label: "Concerts",
+              icon: Headphones,
+              color: "purple",
+            },
+            {
+              id: "comedy-clubs",
+              label: "Comedy Clubs",
+              icon: Smile,
+              color: "purple",
+            },
+            {
+              id: "nightlife",
+              label: "Nightlife",
+              icon: Moon,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: Music, text: "Live Shows", href: "#" },
+              { icon: Tv, text: "Theater", href: "#" },
+              { icon: SunMedium, text: "Theme Parks", href: "#" },
+            ],
+          },
         },
-        {
-          id: "private-tours",
-          label: "Private Tours",
-          icon: Users,
-          color: "purple",
+        adventure: {
+          style: "bordered",
+          heading: `Adventure in ${city}`,
+          navigationItems: [
+            {
+              id: "hiking",
+              label: "Hiking Trails",
+              icon: Footprints,
+              color: "purple",
+            },
+            {
+              id: "rock-climbing",
+              label: "Rock Climbing",
+              icon: Mountain,
+              color: "purple",
+            },
+            {
+              id: "off-road-tours",
+              label: "Off-road Tours",
+              icon: Car,
+              color: "purple",
+            },
+            {
+              id: "zip-lining",
+              label: "Zip Lining",
+              icon: Zap,
+              color: "purple",
+            },
+            { id: "caving", label: "Caving", icon: Mountain, color: "purple" },
+            {
+              id: "paragliding",
+              label: "Paragliding",
+              icon: Wind,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: Footprints, text: "Hiking Trails", href: "#" },
+              { icon: Mountain, text: "Rock Climbing", href: "#" },
+              { icon: Car, text: "Off-road Tours", href: "#" },
+            ],
+          },
         },
-        {
-          id: "bikes-segway",
-          label: "Bikes & Segway",
-          icon: Bike,
-          color: "purple",
+        "water-sports": {
+          style: "bordered",
+          heading: `Water Sports in ${city}`,
+          navigationItems: [
+            { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
+            {
+              id: "scuba-diving",
+              label: "Scuba Diving",
+              icon: Fish,
+              color: "purple",
+            },
+            { id: "surfing", label: "Surfing", icon: Waves, color: "purple" },
+            { id: "kayaking", label: "Kayaking", icon: Ship, color: "purple" },
+            {
+              id: "jet-skiing",
+              label: "Jet Skiing",
+              icon: Zap,
+              color: "purple",
+            },
+            {
+              id: "fishing",
+              label: "Fishing Tours",
+              icon: Fish,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: Ship, text: "Sailing", href: "#" },
+              { icon: Fish, text: "Scuba Diving", href: "#" },
+              { icon: Waves, text: "Surfing", href: "#" },
+            ],
+          },
         },
-        {
-          id: "photography-tours",
-          label: "Photography Tours",
-          icon: Camera,
-          color: "purple",
+        wellness: {
+          style: "bordered",
+          heading: `Health & Wellness in ${city}`,
+          navigationItems: [
+            {
+              id: "spa-retreats",
+              label: "Spa Retreats",
+              icon: Leaf,
+              color: "purple",
+            },
+            {
+              id: "yoga-classes",
+              label: "Yoga Classes",
+              icon: Heart,
+              color: "purple",
+            },
+            {
+              id: "meditation",
+              label: "Meditation Retreats",
+              icon: Mountain,
+              color: "purple",
+            },
+            {
+              id: "fitness-centers",
+              label: "Fitness Centers",
+              icon: Dumbbell,
+              color: "purple",
+            },
+            {
+              id: "thermal-baths",
+              label: "Thermal Baths",
+              icon: Droplets,
+              color: "purple",
+            },
+            {
+              id: "mindfulness",
+              label: "Mindfulness Workshops",
+              icon: Heart,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            testimonials: false,
+            popular: true,
+            stack: false,
+            themes: [
+              { icon: Leaf, text: "Spa Retreats", href: "#" },
+              { icon: Heart, text: "Yoga Classes", href: "#" },
+              { icon: Mountain, text: "Meditation Retreats", href: "#" },
+            ],
+          },
         },
-        { id: "day-trips", label: "Day Trips", icon: Globe, color: "purple" },
-        {
-          id: "heritage-experiences",
-          label: "Heritage Experiences",
-          icon: Landmark,
-          color: "purple",
+        specials: {
+          style: "bordered",
+          heading: `${city} Specials`,
+          navigationItems: [
+            {
+              id: "discount-deals",
+              label: "Discount Deals",
+              icon: BadgePercent,
+              color: "purple",
+            },
+            {
+              id: "vip-experiences",
+              label: "VIP Experiences",
+              icon: Star,
+              color: "purple",
+            },
+            {
+              id: "package-deals",
+              label: "Package Deals",
+              icon: Gift,
+              color: "purple",
+            },
+            {
+              id: "seasonal-offers",
+              label: "Seasonal Offers",
+              icon: Calendar,
+              color: "purple",
+            },
+            {
+              id: "last-minute",
+              label: "Last Minute Deals",
+              icon: Clock,
+              color: "purple",
+            },
+            {
+              id: "group-discounts",
+              label: "Group Discounts",
+              icon: Users,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: BadgePercent, text: "Discount Deals", href: "#" },
+              { icon: Star, text: "VIP Experiences", href: "#" },
+              { icon: Gift, text: "Package Deals", href: "#" },
+            ],
+          },
         },
-      ],
-      components: {
-        guides: { title: "Travel guides and tips", variant: "tours" },
-        transport: null,
-        popular: true,
-        stack: false,
-        testimonials: true,
-        themes: [
-          { icon: MapPin, text: "City Tours", href: "#" },
-          { icon: Globe, text: "Day Trips", href: "#" },
-          { icon: Footprints, text: "Walking Tours", href: "#" },
-          { icon: ChefHat, text: "Food Tours", href: "#" },
-        ],
-      },
-    },
-    transportation: {
-      style: "simple",
-      heading: "Transportation in Rome",
-      navigationItems: [
-        {
-          id: "public-transport",
-          label: "Public Transport",
-          icon: Bus,
-          color: "purple",
+        default: {
+          style: "bordered",
+          heading: "Global Attractions",
+          navigationItems: [
+            { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+            {
+              id: "landmarks",
+              label: "Landmarks",
+              icon: Landmark,
+              color: "purple",
+            },
+            { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: MapPin, text: "Global Tours", href: "#" },
+              { icon: Globe, text: "Worldwide Trips", href: "#" },
+            ],
+          },
         },
-        { id: "car-rentals", label: "Car Rentals", icon: Car, color: "purple" },
-        {
-          id: "ferry-services",
-          label: "Ferry Services",
-          icon: Ship,
-          color: "purple",
-        },
-        {
-          id: "airport-transfers",
-          label: "Airport Transfers",
-          icon: BusFront,
-          color: "purple",
-        },
-        {
-          id: "bike-rentals",
-          label: "Bike Rentals",
-          icon: Bike,
-          color: "purple",
-        },
-        {
-          id: "metro-services",
-          label: "Metro Services",
-          icon: Train,
-          color: "purple",
-        },
-      ],
-      components: {
-        guides: null,
-        transport: { title: "Travel guides and tips", variant: "transport" },
-        popular: true,
-        stack: false,
-        testimonials: true,
-        themes: [
-          { icon: Bus, text: "Public Transport", href: "#" },
-          { icon: Car, text: "Car Rentals", href: "#" },
-          { icon: Ship, text: "Ferry Services", href: "#" },
-          { icon: BusFront, text: "Airport Transfers", href: "#" },
-        ],
-      },
-    },
-    "travel-services": {
-      style: "bordered",
-      heading: "Travel Services in Rome",
-      navigationItems: [
-        {
-          id: "planning",
-          label: "Travel Planning",
-          icon: MapPin,
-          color: "purple",
-        },
-        {
-          id: "concierge",
-          label: "Concierge Services",
-          icon: User,
-          color: "purple",
-        },
-        {
-          id: "insurance",
-          label: "Travel Insurance",
-          icon: Shield,
-          color: "purple",
-        },
-        {
-          id: "visa-services",
-          label: "Visa Services",
-          icon: FileText,
-          color: "purple",
-        },
-        {
-          id: "currency",
-          label: "Currency Exchange",
-          icon: DollarSign,
-          color: "purple",
-        },
-        {
-          id: "translations",
-          label: "Translation Services",
-          icon: Globe,
-          color: "purple",
-        },
-      ],
-      components: {
-        guides: null,
-        popular: true,
-        stack: false,
-        transport: null,
-        testimonials: false,
-        themes: [
-          { icon: MapPin, text: "Travel Planning", href: "#" },
-          { icon: User, text: "Concierge Services", href: "#" },
-          { icon: Shield, text: "Travel Insurance", href: "#" },
-        ],
-      },
-    },
-    cruises: {
-      style: "simple",
-      heading: "Cruises in Rome",
-      navigationItems: [
-        {
-          id: "port-excursions",
-          label: "Port Excursions",
-          icon: Ship,
-          color: "purple",
-        },
-        {
-          id: "shore-tours",
-          label: "Shore Tours",
-          icon: Globe,
-          color: "purple",
-        },
-        {
-          id: "cruise-packages",
-          label: "Cruise Packages",
-          icon: Package,
-          color: "purple",
-        },
-        {
-          id: "onboard-activities",
-          label: "Onboard Activities",
-          icon: Music,
-          color: "purple",
-        },
-        {
-          id: "dining-options",
-          label: "Dining Options",
-          icon: Utensils,
-          color: "purple",
-        },
-        {
-          id: "entertainment",
-          label: "Entertainment",
-          icon: Tv,
-          color: "purple",
-        },
-      ],
-      components: {
-        guides: null,
-        popular: true,
-        stack: false,
-        transport: null,
-        testimonials: false,
-        themes: [
-          { icon: Ship, text: "Port Excursions", href: "#" },
-          { icon: Globe, text: "Shore Tours", href: "#" },
-          { icon: Package, text: "Cruise Packages", href: "#" },
-        ],
-      },
-    },
-    "food-drink": {
-      style: "simple",
-      heading: "Food & Drink in Rome",
-      navigationItems: [
-        {
-          id: "cooking-classes",
-          label: "Cooking Classes",
-          icon: ChefHat,
-          color: "purple",
-        },
-        {
-          id: "food-tours",
-          label: "Food Tours",
-          icon: Utensils,
-          color: "purple",
-        },
-        {
-          id: "wine-tastings",
-          label: "Wine Tastings",
-          icon: Wine,
-          color: "purple",
-        },
-        {
-          id: "restaurant-reservations",
-          label: "Restaurant Reservations",
-          icon: MapPin,
-          color: "purple",
-        },
-        {
-          id: "local-markets",
-          label: "Local Markets",
-          icon: ShoppingBag,
-          color: "purple",
-        },
-        {
-          id: "dietary-options",
-          label: "Dietary Options",
-          icon: Heart,
-          color: "purple",
-        },
-      ],
-      components: {
-        guides: { title: "Food & drink guides", variant: "tours" },
-        popular: true,
-        stack: false,
-        transport: null,
-        testimonials: false,
-        themes: [
-          { icon: ChefHat, text: "Cooking Classes", href: "#" },
-          { icon: Utensils, text: "Food Tours", href: "#" },
-          { icon: Wine, text: "Wine Tastings", href: "#" },
-        ],
-      },
-    },
-    entertainment: {
-      style: "simple",
-      heading: "Entertainment shows in Rome",
-      navigationItems: [
-        { id: "live-shows", label: "Live Shows", icon: Music, color: "purple" },
-        { id: "theater", label: "Theater", icon: Tv, color: "purple" },
-        {
-          id: "theme-parks",
-          label: "Theme Parks",
-          icon: SunMedium,
-          color: "purple",
-        },
-        {
-          id: "concerts",
-          label: "Concerts",
-          icon: Headphones,
-          color: "purple",
-        },
-        {
-          id: "comedy-clubs",
-          label: "Comedy Clubs",
-          icon: Smile,
-          color: "purple",
-        },
-        { id: "nightlife", label: "Nightlife", icon: Moon, color: "purple" },
-      ],
-      components: {
-        guides: null,
-        popular: false,
-        stack: false,
-        transport: null,
-        testimonials: false,
-        themes: [
-          { icon: Music, text: "Live Shows", href: "#" },
-          { icon: Tv, text: "Theater", href: "#" },
-          { icon: SunMedium, text: "Theme Parks", href: "#" },
-        ],
-      },
-    },
-    adventure: {
-      style: "simple",
-      heading: "Adventure in Rome",
-      navigationItems: [
-        {
-          id: "hiking",
-          label: "Hiking Trails",
-          icon: Footprints,
-          color: "purple",
-        },
-        {
-          id: "rock-climbing",
-          label: "Rock Climbing",
-          icon: Mountain,
-          color: "purple",
-        },
-        {
-          id: "off-road-tours",
-          label: "Off-road Tours",
-          icon: Car,
-          color: "purple",
-        },
-        { id: "zip-lining", label: "Zip Lining", icon: Zap, color: "purple" },
-        { id: "caving", label: "Caving", icon: Mountain, color: "purple" },
-        {
-          id: "paragliding",
-          label: "Paragliding",
-          icon: Wind,
-          color: "purple",
-        },
-      ],
-      components: {
-        guides: null,
-        transport: null,
-        popular: false,
-        stack: false,
-        testimonials: false,
-        themes: [
-          { icon: Footprints, text: "Hiking Trails", href: "#" },
-          { icon: Mountain, text: "Rock Climbing", href: "#" },
-          { icon: Car, text: "Off-road Tours", href: "#" },
-        ],
-      },
-    },
-    "water-sports": {
-      style: "simple",
-      heading: "Water Sports in Rome",
-      navigationItems: [
-        { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
-        { id: "scuba-diving", label: "Scuba Diving", icon: Fish, color: "purple" },
-        { id: "surfing", label: "Surfing", icon: Waves, color: "purple" },
-        { id: "kayaking", label: "Kayaking", icon: Ship, color: "purple" },
-        { id: "jet-skiing", label: "Jet Skiing", icon: Zap, color: "purple" },
-        { id: "fishing", label: "Fishing Tours", icon: Fish, color: "purple" }
-      ],
-      components: {
-        guides: null,
-        transport: null,
-        popular: false,
-        stack: false,
-        testimonials: false,
-        themes: [
-          { icon: Ship, text: "Sailing", href: "#" },
-          { icon: Fish, text: "Scuba Diving", href: "#" },
-          { icon: Waves, text: "Surfing", href: "#" }
-        ]
       }
-    },
-    wellness: {
-      style: "simple",
-      heading: "Health & Wellness in Rome",
-      navigationItems: [
-        { id: "spa-retreats", label: "Spa Retreats", icon: Leaf, color: "purple" },
-        { id: "yoga-classes", label: "Yoga Classes", icon: Heart, color: "purple" },
-        { id: "meditation", label: "Meditation Retreats", icon: Mountain, color: "purple" },
-        { id: "fitness-centers", label: "Fitness Centers", icon: Dumbbell, color: "purple" },
-        { id: "thermal-baths", label: "Thermal Baths", icon: Droplets, color: "purple" },
-        { id: "mindfulness", label: "Mindfulness Workshops", icon: Heart, color: "purple" }
-      ],
-      components: {
-        guides: null,
-        transport: null,
-        testimonials: false,
-        popular: true,
-        stack: false,
-        themes: [
-          { icon: Leaf, text: "Spa Retreats", href: "#" },
-          { icon: Heart, text: "Yoga Classes", href: "#" },
-          { icon: Mountain, text: "Meditation Retreats", href: "#" }
-        ]
-      }
-    },
-    specials: {
-      style: "simple",
-      heading: "Rome Specials",
-      navigationItems: [
-        { id: "discount-deals", label: "Discount Deals", icon: BadgePercent, color: "purple" },
-        { id: "vip-experiences", label: "VIP Experiences", icon: Star, color: "purple" },
-        { id: "package-deals", label: "Package Deals", icon: Gift, color: "purple" },
-        { id: "seasonal-offers", label: "Seasonal Offers", icon: Calendar, color: "purple" },
-        { id: "last-minute", label: "Last Minute Deals", icon: Clock, color: "purple" },
-        { id: "group-discounts", label: "Group Discounts", icon: Users, color: "purple" }
-      ],
-      components: {
-        guides: null,
-        transport: null,
-        popular: false,
-        stack: false,
-        testimonials: true,
-        themes: [
-          { icon: BadgePercent, text: "Discount Deals", href: "#" },
-          { icon: Star, text: "VIP Experiences", href: "#" },
-          { icon: Gift, text: "Package Deals", href: "#" }
-        ]
-      }
-    },
-    //     // Default fallback
-    default: {
-      style: "simple",
-      heading: "Attractions",
-      navigationItems: [
-        { id: "museums", label: "Museums", icon: Tv, color: "purple" },
-        {
-          id: "landmarks",
-          label: "Landmarks",
-          icon: Landmark,
-          color: "purple",
+    : {
+        // CITY-SPECIFIC CONFIGURATION
+        tickets: {
+          style: "bordered",
+          heading: `${city} Attractions`,
+          navigationItems: [
+            { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+            {
+              id: "landmarks",
+              label: "Landmarks",
+              icon: Landmark,
+              color: "purple",
+            },
+            { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+            {
+              id: "religious-sites",
+              label: "Religious Sites",
+              icon: BadgePercent,
+              color: "purple",
+            },
+            {
+              id: "city-cards",
+              label: "City Cards",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "theme-parks",
+              label: "Theme Parks",
+              icon: Leaf,
+              color: "purple",
+            },
+          ],
+          components: {
+            popular: true,
+            stack: true,
+            guides: null,
+            transport: null,
+            testimonials: true,
+            themes: [
+              { icon: Ticket, text: "Museum Tickets", href: "#" },
+              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              { icon: Landmark, text: "Landmark Tickets", href: "#" },
+              { icon: SunMedium, text: "Zoo Tickets", href: "#" },
+              { icon: Ship, text: "City Cards", href: "#" },
+              { icon: Leaf, text: "Theme Park Tickets", href: "#" },
+            ],
+          },
         },
-        { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
-        {
-          id: "religious-sites",
-          label: "Religious Sites",
-          icon: BadgePercent,
-          color: "purple",
+        tours: {
+          style: "simple",
+          heading: `${city} Tours`,
+          navigationItems: [
+            {
+              id: "walking-tours",
+              label: "Walking Tours",
+              icon: Footprints,
+              color: "purple",
+            },
+            {
+              id: "guided-tours",
+              label: "Guided Tours",
+              icon: User,
+              color: "purple",
+            },
+            {
+              id: "hop-on-hop-off",
+              label: `Hop-on Hop-off Tours ${city}`,
+              icon: Bus,
+              color: "purple",
+            },
+            {
+              id: "city-tours",
+              label: "City Tours",
+              icon: MapPin,
+              color: "purple",
+            },
+            {
+              id: "private-tours",
+              label: "Private Tours",
+              icon: Users,
+              color: "purple",
+            },
+            {
+              id: "bikes-segway",
+              label: "Bikes & Segway",
+              icon: Bike,
+              color: "purple",
+            },
+            {
+              id: "photography-tours",
+              label: "Photography Tours",
+              icon: Camera,
+              color: "purple",
+            },
+            {
+              id: "day-trips",
+              label: "Day Trips",
+              icon: Globe,
+              color: "purple",
+            },
+            {
+              id: "heritage-experiences",
+              label: "Heritage Experiences",
+              icon: Landmark,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: { title: "Travel guides and tips", variant: "tours" },
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: MapPin, text: "City Tours", href: "#" },
+              { icon: Globe, text: "Day Trips", href: "#" },
+              { icon: Footprints, text: "Walking Tours", href: "#" },
+              { icon: ChefHat, text: "Food Tours", href: "#" },
+            ],
+          },
         },
-        { id: "city-cards", label: "City Cards", icon: Ship, color: "purple" },
-        {
-          id: "theme-parks",
-          label: "Theme Parks",
-          icon: Leaf,
-          color: "purple",
+        transportation: {
+          style: "simple",
+          heading: `Transportation in ${city}`,
+          navigationItems: [
+            {
+              id: "public-transport",
+              label: "Public Transport",
+              icon: Bus,
+              color: "purple",
+            },
+            {
+              id: "car-rentals",
+              label: "Car Rentals",
+              icon: Car,
+              color: "purple",
+            },
+            {
+              id: "ferry-services",
+              label: "Ferry Services",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "airport-transfers",
+              label: "Airport Transfers",
+              icon: BusFront,
+              color: "purple",
+            },
+            {
+              id: "bike-rentals",
+              label: "Bike Rentals",
+              icon: Bike,
+              color: "purple",
+            },
+            {
+              id: "metro-services",
+              label: "Metro Services",
+              icon: Train,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: {
+              title: "Travel guides and tips",
+              variant: "transport",
+            },
+            popular: true,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: Bus, text: "Public Transport", href: "#" },
+              { icon: Car, text: "Car Rentals", href: "#" },
+              { icon: Ship, text: "Ferry Services", href: "#" },
+              { icon: BusFront, text: "Airport Transfers", href: "#" },
+            ],
+          },
         },
-      ],
-      components: {
-        guides: { title: "Travel guides and tips", variant: "tours" as const },
-        transport: null,
-        popular: true,
-        stack: false,
-        testimonials: false,
-        themes: [
-          { icon: MapPin, text: "City Tours", href: "#" },
-          { icon: Globe, text: "Day Trips", href: "#" },
-          { icon: ChefHat, text: "Food Tours", href: "#" },
-        ],
-      },
-    },
-  };
+        "travel-services": {
+          style: "bordered",
+          heading: `Travel Services in ${city}`,
+          navigationItems: [
+            {
+              id: "planning",
+              label: "Travel Planning",
+              icon: MapPin,
+              color: "purple",
+            },
+            {
+              id: "concierge",
+              label: "Concierge Services",
+              icon: User,
+              color: "purple",
+            },
+            {
+              id: "insurance",
+              label: "Travel Insurance",
+              icon: Shield,
+              color: "purple",
+            },
+            {
+              id: "visa-services",
+              label: "Visa Services",
+              icon: FileText,
+              color: "purple",
+            },
+            {
+              id: "currency",
+              label: "Currency Exchange",
+              icon: DollarSign,
+              color: "purple",
+            },
+            {
+              id: "translations",
+              label: "Translation Services",
+              icon: Globe,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: MapPin, text: "Travel Planning", href: "#" },
+              { icon: User, text: "Concierge Services", href: "#" },
+              { icon: Shield, text: "Travel Insurance", href: "#" },
+            ],
+          },
+        },
+        cruises: {
+          style: "simple",
+          heading: `Cruises in ${city}`,
+          navigationItems: [
+            {
+              id: "port-excursions",
+              label: "Port Excursions",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "shore-tours",
+              label: "Shore Tours",
+              icon: Globe,
+              color: "purple",
+            },
+            {
+              id: "cruise-packages",
+              label: "Cruise Packages",
+              icon: Package,
+              color: "purple",
+            },
+            {
+              id: "onboard-activities",
+              label: "Onboard Activities",
+              icon: Music,
+              color: "purple",
+            },
+            {
+              id: "dining-options",
+              label: "Dining Options",
+              icon: Utensils,
+              color: "purple",
+            },
+            {
+              id: "entertainment",
+              label: "Entertainment",
+              icon: Tv,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: Ship, text: "Port Excursions", href: "#" },
+              { icon: Globe, text: "Shore Tours", href: "#" },
+              { icon: Package, text: "Cruise Packages", href: "#" },
+            ],
+          },
+        },
+        "food-drink": {
+          style: "simple",
+          heading: `Food & Drink in ${city}`,
+          navigationItems: [
+            {
+              id: "cooking-classes",
+              label: "Cooking Classes",
+              icon: ChefHat,
+              color: "purple",
+            },
+            {
+              id: "food-tours",
+              label: "Food Tours",
+              icon: Utensils,
+              color: "purple",
+            },
+            {
+              id: "wine-tastings",
+              label: "Wine Tastings",
+              icon: Wine,
+              color: "purple",
+            },
+            {
+              id: "restaurant-reservations",
+              label: "Restaurant Reservations",
+              icon: MapPin,
+              color: "purple",
+            },
+            {
+              id: "local-markets",
+              label: "Local Markets",
+              icon: ShoppingBag,
+              color: "purple",
+            },
+            {
+              id: "dietary-options",
+              label: "Dietary Options",
+              icon: Heart,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: { title: "Food & drink guides", variant: "tours" },
+            popular: true,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: ChefHat, text: "Cooking Classes", href: "#" },
+              { icon: Utensils, text: "Food Tours", href: "#" },
+              { icon: Wine, text: "Wine Tastings", href: "#" },
+            ],
+          },
+        },
+        entertainment: {
+          style: "simple",
+          heading: `Entertainment shows in ${city}`,
+          navigationItems: [
+            {
+              id: "live-shows",
+              label: "Live Shows",
+              icon: Music,
+              color: "purple",
+            },
+            { id: "theater", label: "Theater", icon: Tv, color: "purple" },
+            {
+              id: "theme-parks",
+              label: "Theme Parks",
+              icon: SunMedium,
+              color: "purple",
+            },
+            {
+              id: "concerts",
+              label: "Concerts",
+              icon: Headphones,
+              color: "purple",
+            },
+            {
+              id: "comedy-clubs",
+              label: "Comedy Clubs",
+              icon: Smile,
+              color: "purple",
+            },
+            {
+              id: "nightlife",
+              label: "Nightlife",
+              icon: Moon,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            popular: false,
+            stack: false,
+            transport: null,
+            testimonials: false,
+            themes: [
+              { icon: Music, text: "Live Shows", href: "#" },
+              { icon: Tv, text: "Theater", href: "#" },
+              { icon: SunMedium, text: "Theme Parks", href: "#" },
+            ],
+          },
+        },
+        adventure: {
+          style: "simple",
+          heading: `Adventure in ${city}`,
+          navigationItems: [
+            {
+              id: "hiking",
+              label: "Hiking Trails",
+              icon: Footprints,
+              color: "purple",
+            },
+            {
+              id: "rock-climbing",
+              label: "Rock Climbing",
+              icon: Mountain,
+              color: "purple",
+            },
+            {
+              id: "off-road-tours",
+              label: "Off-road Tours",
+              icon: Car,
+              color: "purple",
+            },
+            {
+              id: "zip-lining",
+              label: "Zip Lining",
+              icon: Zap,
+              color: "purple",
+            },
+            { id: "caving", label: "Caving", icon: Mountain, color: "purple" },
+            {
+              id: "paragliding",
+              label: "Paragliding",
+              icon: Wind,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: false,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: Footprints, text: "Hiking Trails", href: "#" },
+              { icon: Mountain, text: "Rock Climbing", href: "#" },
+              { icon: Car, text: "Off-road Tours", href: "#" },
+            ],
+          },
+        },
+        "water-sports": {
+          style: "simple",
+          heading: `Water Sports in ${city}`,
+          navigationItems: [
+            { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
+            {
+              id: "scuba-diving",
+              label: "Scuba Diving",
+              icon: Fish,
+              color: "purple",
+            },
+            { id: "surfing", label: "Surfing", icon: Waves, color: "purple" },
+            { id: "kayaking", label: "Kayaking", icon: Ship, color: "purple" },
+            {
+              id: "jet-skiing",
+              label: "Jet Skiing",
+              icon: Zap,
+              color: "purple",
+            },
+            {
+              id: "fishing",
+              label: "Fishing Tours",
+              icon: Fish,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: false,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: Ship, text: "Sailing", href: "#" },
+              { icon: Fish, text: "Scuba Diving", href: "#" },
+              { icon: Waves, text: "Surfing", href: "#" },
+            ],
+          },
+        },
+        wellness: {
+          style: "simple",
+          heading: `Health & Wellness in ${city}`,
+          navigationItems: [
+            {
+              id: "spa-retreats",
+              label: "Spa Retreats",
+              icon: Leaf,
+              color: "purple",
+            },
+            {
+              id: "yoga-classes",
+              label: "Yoga Classes",
+              icon: Heart,
+              color: "purple",
+            },
+            {
+              id: "meditation",
+              label: "Meditation Retreats",
+              icon: Mountain,
+              color: "purple",
+            },
+            {
+              id: "fitness-centers",
+              label: "Fitness Centers",
+              icon: Dumbbell,
+              color: "purple",
+            },
+            {
+              id: "thermal-baths",
+              label: "Thermal Baths",
+              icon: Droplets,
+              color: "purple",
+            },
+            {
+              id: "mindfulness",
+              label: "Mindfulness Workshops",
+              icon: Heart,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            testimonials: false,
+            popular: true,
+            stack: false,
+            themes: [
+              { icon: Leaf, text: "Spa Retreats", href: "#" },
+              { icon: Heart, text: "Yoga Classes", href: "#" },
+              { icon: Mountain, text: "Meditation Retreats", href: "#" },
+            ],
+          },
+        },
+        specials: {
+          style: "simple",
+          heading: `${city} Specials`,
+          navigationItems: [
+            {
+              id: "discount-deals",
+              label: "Discount Deals",
+              icon: BadgePercent,
+              color: "purple",
+            },
+            {
+              id: "vip-experiences",
+              label: "VIP Experiences",
+              icon: Star,
+              color: "purple",
+            },
+            {
+              id: "package-deals",
+              label: "Package Deals",
+              icon: Gift,
+              color: "purple",
+            },
+            {
+              id: "seasonal-offers",
+              label: "Seasonal Offers",
+              icon: Calendar,
+              color: "purple",
+            },
+            {
+              id: "last-minute",
+              label: "Last Minute Deals",
+              icon: Clock,
+              color: "purple",
+            },
+            {
+              id: "group-discounts",
+              label: "Group Discounts",
+              icon: Users,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: false,
+            stack: false,
+            testimonials: true,
+            themes: [
+              { icon: BadgePercent, text: "Discount Deals", href: "#" },
+              { icon: Star, text: "VIP Experiences", href: "#" },
+              { icon: Gift, text: "Package Deals", href: "#" },
+            ],
+          },
+        },
+        default: {
+          style: "simple",
+          heading: "Attractions",
+          navigationItems: [
+            { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+            {
+              id: "landmarks",
+              label: "Landmarks",
+              icon: Landmark,
+              color: "purple",
+            },
+            { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+            {
+              id: "religious-sites",
+              label: "Religious Sites",
+              icon: BadgePercent,
+              color: "purple",
+            },
+            {
+              id: "city-cards",
+              label: "City Cards",
+              icon: Ship,
+              color: "purple",
+            },
+            {
+              id: "theme-parks",
+              label: "Theme Parks",
+              icon: Leaf,
+              color: "purple",
+            },
+          ],
+          components: {
+            guides: null,
+            transport: null,
+            popular: true,
+            stack: false,
+            testimonials: false,
+            themes: [
+              { icon: MapPin, text: "City Tours", href: "#" },
+              { icon: Globe, text: "Day Trips", href: "#" },
+              { icon: ChefHat, text: "Food Tours", href: "#" },
+            ],
+          },
+        },
+      };
 
   // Get current category configuration
   const currentCategory =
-    categoryConfig[categoryName as keyof typeof categoryConfig] ||
+    categoryConfig[configKey as keyof typeof categoryConfig] ||
     categoryConfig.default;
+
+  // Early return if no category found
+  if (!currentCategory) {
+    return <div>Category not found</div>;
+  }
 
   // Helper function to get button styles based on category
   const getButtonStyles = (item: any, isActive: boolean) => {
@@ -1085,6 +1754,24 @@ export default function CategoryPage() {
       city: "New York",
     },
   ];
+  const categories = [
+    { id: 1, name: "Tickets" },
+    { id: 2, name: "Tours" },
+    { id: 3, name: "Transportation" },
+    { id: 4, name: "Cruises" },
+    { id: 5, name: "Entertainment" },
+    { id: 6, name: "Aerial Sightseeing" },
+    { id: 7, name: "Nature & Wildlife" },
+    { id: 8, name: "Classes" },
+    { id: 9, name: "Staycations" },
+    { id: 10, name: "Travel Services" },
+    { id: 11, name: "Food & Drink" },
+    { id: 12, name: "Adventure" },
+    { id: 13, name: "Water Sports" },
+    { id: 14, name: "Wellness" },
+    { id: 15, name: "Specials" },
+    { id: 16, name: "Sports" },
+  ];
   return (
     <>
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
@@ -1105,56 +1792,139 @@ export default function CategoryPage() {
       </div>
       <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 md:mt-20 ">
         <div className="pt-[76px]">
-          <div className="mb-[34px] md:block hidden">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                    href="/"
+          {!isWorldwideRoute ? (
+            <>
+              <div className="mb-[34px] md:block hidden">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/components"
+                      >
+                        Things to do
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedCategoryName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+              <div className="md:block hidden mt-0">
+                <div className="flex items-center gap-2 mb-0">
+                  <div className="flex items-center gap-1">
+                    <svg
+                      className="w-5 h-5  text-[#e5006e] text-[17px]"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                      4.3
+                    </span>
+                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                      (151,002)
+                    </span>
+                  </div>
+                </div>
+                <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
+                  {currentCategory.heading}
+                </h1>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div className="mb-[34px]">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedCategoryName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+              <div className="flex items-center gap-2">
+                <div>
+                  <h1 className="text-[21px]">{formattedCategoryName} </h1>
+                </div>
+                <div className="flex items-center pt-[6px]">
+                  <Drawer
+                    open={isMobileDrawerOpen}
+                    onOpenChange={setIsMobileDrawerOpen}
                   >
-                    Home
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                    href="/components"
-                  >
-                    Things to do
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                    {formattedCategoryName}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="mt-0">
-            <div className="flex items-center gap-2 mb-0">
-              <div className="flex items-center gap-1">
-                <svg
-                  className="w-5 h-5  text-[#e5006e] text-[17px]"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                  4.3
-                </span>
-                <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                  (151,002)
-                </span>
+                    <DrawerTrigger asChild>
+                      <button>
+                        <ChevronDown size={26} className="text-gray-600" />
+                      </button>
+                    </DrawerTrigger>
+                  </Drawer>
+                </div>
               </div>
             </div>
-            <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
-              {currentCategory.heading}
-            </h1>
+          )}
+
+          {/* Mobile Category Drawer Trigger */}
+          <div className="md:hidden flex justify-center mb-4">
+            <Drawer
+              open={isMobileDrawerOpen}
+              onOpenChange={setIsMobileDrawerOpen}
+            >
+              <DrawerContent className="max-h-[85vh]">
+                <DrawerHeader className="text-start">
+                  <DrawerTitle className="text-[18px] border-b-[1px] pb-4 font-medium font-halyard-text text-[#444444]">
+                    Categories Worldwide
+                  </DrawerTitle>
+                </DrawerHeader>
+                <div className="px-4 pb-6">
+                  <div className="grid grid-cols-2 gap-3">
+                    {categories.map((item) => {
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            scrollToSection(item.id.toString());
+                            setIsMobileDrawerOpen(false);
+                          }}
+                          className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
+                        >
+                          <a
+                            href={`/things-to-do/${city}/${item.name.toLowerCase()}`}
+                            className="text-sm font-halyard-text-light text-[#444444] leading-tight"
+                          >
+                            {item.name}
+                          </a>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </DrawerContent>
+            </Drawer>
           </div>
 
           {/* Category Carousel - Integrated directly in the page */}
@@ -1251,16 +2021,38 @@ export default function CategoryPage() {
               )}
             </div>
           </div>
-          <div className="md:mt-10 mt-5">
-            {currentCategory.components.popular && <PopularThings />}
+          <div className="md:mt-10 mt-0">
+            {currentCategory.components.popular && !isWorldwideRoute && (
+              <PopularThings />
+            )}
+          </div>
+          <div className="">
+            {currentCategory.components.popular && isWorldwideRoute && (
+              <MobPopularThings
+                title="Popular things to do"
+                recommendations={destinations}
+              />
+            )}
           </div>
           <div>
-            <CarouselGrid
-              title="Top experiences in London"
-              variant="pills"
-              recommendations={recommendations}
-              navigationItems={currentCategory.navigationItems}
-            />
+            {isWorldwideRoute ? (
+              <div className="border-b-[1px] pb-10 mb-10">
+                <CarouselGrid
+                  title={`Top experiences`}
+                  variant="pills"
+                  pills={false}
+                  recommendations={recommendations}
+                  navigationItems={currentCategory.navigationItems}
+                />
+              </div>
+            ) : (
+              <CarouselGrid
+                title={`Top experiences in ${city}`}
+                variant="pills"
+                recommendations={recommendations}
+                navigationItems={currentCategory.navigationItems}
+              />
+            )}
             {/* <CarouselGrid
           title="Top experiences in London"
           recommendations={recommendations}
@@ -1310,21 +2102,23 @@ export default function CategoryPage() {
             <div className="mb-10">
               <BrowseThemes
                 title="Browse by themes"
-                themes={currentCategory.components.themes}
+                themes={currentCategory.components.themes || []}
               />
             </div>
-            <div className="mb-10">
-              <CarouselGrid
-                title="Nearby cities to explore"
-                variant="simple"
-                recommendations={destinations}
-              />
-            </div>
+            {!isWorldwideRoute && (
+              <div className="mb-10">
+                <CarouselGrid
+                  title="Nearby cities to explore"
+                  variant="simple"
+                  recommendations={destinations}
+                />
+              </div>
+            )}
 
             <div className="mb-10">
               <Banner />
             </div>
-            {currentCategory.components.testimonials && (
+            {currentCategory.components.testimonials && !isWorldwideRoute && (
               <div className="mb-10">
                 <Testimonials variant="things-to-do" />
               </div>
