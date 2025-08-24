@@ -59,7 +59,7 @@ const MustDo = () => {
                   {item.title}
                 </h3>
               </div>
-              <p className="text-gray-500 line-clamp-5">{item.description}</p>
+              <p className="text-[#666666] line-clamp-5">{item.description}</p>
               <button className="text-sm font-semibold text-pink-600 flex gap-2 items-center">
                 See tickets
                 <ChevronRightIcon className="w-4 h-4" />

@@ -155,7 +155,7 @@ const Footer = () => {
               <li className="text-[#444444] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 •
               </li>
-              <li className="font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
+              <li className="text-[#444444] font-halyard-text-light cursor-pointer text-[12px] hover:text-[#7f00fe]">
                 Company details
               </li>
             </ul>

@@ -63,7 +63,7 @@ const TravelGuide = () => {
         </div>
 
         {/* Middle Card - Detailed London Itineraries */}
-        <div className="w-full md:w-1/4 bg-white overflow-hidden flex flex-row md:flex-col gap-3">
+        <div className="w-full md:w-1/4 hover:translate-y-[-7px] hover:cursor-pointer transition-all duration-300 bg-white overflow-hidden flex flex-row md:flex-col gap-3">
           <img
             src="/images/d5.jpg.avif"
             alt="London street with UK flags"
@@ -81,7 +81,7 @@ const TravelGuide = () => {
         </div>
 
         {/* Right Card - Best Time To Visit London */}
-        <div className="w-full md:w-1/4 bg-white overflow-hidden flex flex-row md:flex-col gap-3">
+        <div className="w-full md:w-1/4 hover:translate-y-[-7px] hover:cursor-pointer transition-all duration-300 bg-white overflow-hidden flex flex-row md:flex-col gap-3">
           <img
             src="/images/d4.jpg.avif"
             alt="Tower Bridge at sunset"

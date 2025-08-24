@@ -36,7 +36,7 @@ const BrowseThemes = ({ title = "Browse by themes", themes }: BrowseThemesProps)
             <Link
               key={index}
               href={theme.href}
-              className="flex items-center font-halyard-text-light gap-2 text-[#444444] hover:text-[#60c] transition-colors group"
+              className="flex item-start md:items-center font-halyard-text-light gap-2 text-[#444444] hover:text-[#60c] transition-colors group"
             >
               <div className="flex-shrink-0">
                 <IconComponent
