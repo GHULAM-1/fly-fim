@@ -14,7 +14,7 @@ const Faqs = () => {
           <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             Explore by Interest
           </AccordionTrigger>
-          <AccordionContent className="font-halyard-text-light">
+          <AccordionContent className="font-halyard-text-light text-[#444444]">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus
             error id iure fugiat esse nam, voluptatum asperiores eaque sunt!
             Nemo deleniti voluptate porro eveniet omnis fuga quod accusamus nisi
@@ -56,7 +56,7 @@ const Faqs = () => {
           <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             Plan Your Visit To London
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="font-halyard-text-light text-[#444444]">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus
             error id iure fugiat esse nam, voluptatum asperiores eaque sunt!
             Nemo deleniti voluptate porro eveniet omnis fuga quod accusamus nisi
@@ -98,7 +98,7 @@ const Faqs = () => {
           <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
             London FAQs
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="font-halyard-text-light text-[#444444]">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus
             error id iure fugiat esse nam, voluptatum asperiores eaque sunt!
             Nemo deleniti voluptate porro eveniet omnis fuga quod accusamus nisi

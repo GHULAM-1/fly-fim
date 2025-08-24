@@ -27,16 +27,16 @@ import {
 import { useNavigationStore } from "@/lib/store/navigationStore";
 
 const ThingsToDo = () => {
-  const { 
-    showBanner, 
-    setShowBanner, 
-    setScroll, 
+  const {
+    showBanner,
+    setShowBanner,
+    setScroll,
     setIsSectionActive,
     setShowSectionNavigation,
     activeSection,
-    setActiveSection
+    setActiveSection,
   } = useNavigationStore();
-  
+
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -89,7 +89,7 @@ const ThingsToDo = () => {
   useEffect(() => {
     const handleGlobalScroll = () => {
       const scrollTop = window.scrollY;
-      
+
       // Calculate when navigation becomes sticky based on viewport
       const viewportHeight = window.innerHeight;
       const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
@@ -98,10 +98,10 @@ const ThingsToDo = () => {
       setScroll(scrollTop > stickyThreshold);
 
       // Check if navigation is about to go out of viewport
-      const navigationElement = document.querySelector('[data-navigation]');
+      const navigationElement = document.querySelector("[data-navigation]");
       if (navigationElement) {
         const navigationRect = navigationElement.getBoundingClientRect();
-        
+
         // Make it fixed when it's about to go out of viewport (when top is near 0)
         const shouldBeFixed = navigationRect.top <= 50; // Back to original threshold
         setIsSectionActive(shouldBeFixed);
@@ -109,7 +109,9 @@ const ThingsToDo = () => {
 
       // Check if we should hide the section navigation
       const activitiesElement = document.getElementById("activities");
-      const lastSectionElement = document.getElementById("hop-on-hop-off-tours");
+      const lastSectionElement = document.getElementById(
+        "hop-on-hop-off-tours"
+      );
 
       if (activitiesElement && lastSectionElement) {
         const activitiesRect = activitiesElement.getBoundingClientRect();
@@ -263,9 +265,9 @@ const ThingsToDo = () => {
       <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
         <Hero />
       </div>
-      
+
       {/* Category Carousel - Now integrated directly in the page */}
-      <div 
+      <div
         ref={navigationRef}
         data-navigation
         className={`hidden md:block sticky top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
@@ -402,6 +404,11 @@ const ThingsToDo = () => {
           title="Top experiences in London"
           recommendations={recommendations}
         />
+      </div>
+      <div id="activities">
+        <Activities />
+      </div>
+      <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
         <div id="musicals">
           <CarouselGrid
             title="London Musicals"
@@ -450,9 +457,6 @@ const ThingsToDo = () => {
             recommendations={recommendations}
           />
         </div>
-      </div>
-      <div id="activities">
-        <Activities />
       </div>
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />

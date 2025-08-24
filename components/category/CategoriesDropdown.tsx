@@ -7,6 +7,7 @@ interface Category {
   id: number;
   name: string;
   color: string;
+  url?: string;
 }
 
 interface TourListings {
@@ -34,16 +35,18 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
 
   // Categories data
   const categories: Category[] = [
-    { id: 1, name: "Top things to do in Rome", color: "purple" },
-    { id: 2, name: "Tickets", color: "gray" },
-    { id: 3, name: "Tours", color: "gray" },
-    { id: 4, name: "Transportation", color: "gray" },
-    { id: 5, name: "Travel Services", color: "gray" },
-    { id: 6, name: "Cruises", color: "gray" },
-    { id: 7, name: "Food & Drink", color: "gray" },
-    { id: 8, name: "Entertainment", color: "gray" },
-    { id: 9, name: "Adventure", color: "gray" },
-    { id: 10, name: "Water Sports", color: "gray" },
+    { id: 1, name: `Top things to do in ${city}`, color: "purple", url: `/things-to-do/${city}` },
+    { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
+    { id: 3, name: "Tours", color: "gray", url: `/things-to-do/${city}/tours` },
+    { id: 4, name: "Transportation", color: "gray", url: `/things-to-do/${city}/transportation` },
+    { id: 5, name: "Travel Services", color: "gray", url: `/things-to-do/${city}/travel-services` },
+    { id: 6, name: "Cruises", color: "gray", url: `/things-to-do/${city}/cruises` },
+    { id: 7, name: "Food & Drink", color: "gray", url: `/things-to-do/${city}/food-drink` },
+    { id: 8, name: "Entertainment", color: "gray", url: `/things-to-do/${city}/entertainment` },
+    { id: 9, name: "Adventure", color: "gray", url: `/things-to-do/${city}/adventure` },
+    { id: 10, name: "Water Sports", color: "gray", url: `/things-to-do/${city}/water-sports` },
+    { id: 11, name: "Wellness", color: "gray", url: `/things-to-do/${city}/wellness` },
+    { id: 12, name: "Specials", color: "gray", url: `/things-to-do/${city}/specials` },
   ];
 
   // Tour listings data for each category
@@ -127,7 +130,15 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
       "Kayaking",
       "Paddleboarding",
       "Fishing Tours"
-    ]
+    ],
+    11: [ // Wellness
+      "Spa",
+    ],
+    12: [ // Specials
+      "Combos",
+      "Valentine's Day",
+      "Digital Experience",
+    ],
   };
 
   // Custom scrollbar functionality
@@ -214,20 +225,20 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
               >
                 <div className="space-y-2">
                   {categories.map((category) => (
-                    <a 
-                      key={category.id}
-                      href={`/things-to-do/${city}/${category.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
-                      className={`text-[15px] font-halyard-text cursor-pointer py-2 flex items-center justify-between ${
-                        hoveredCategory === category.id
-                          ? 'text-[#8000ff]' 
-                          : hoveredCategory === 0 && category.color === 'purple'
-                          ? 'text-[#8000ff]' 
-                          : 'text-[#666666]'
-                      } hover:text-[#8000ff]`}
-                      onMouseEnter={() => setHoveredCategory(category.id)}
-                    >
-                      {category.name} <ChevronRight size={20} />
-                    </a>
+                                         <a 
+                       key={category.id}
+                       href={category.url || `/things-to-do/${city}`}
+                       className={`text-[15px] font-halyard-text cursor-pointer py-2 flex items-center justify-between ${
+                         hoveredCategory === category.id
+                           ? 'text-[#8000ff]' 
+                           : hoveredCategory === 0 && category.color === 'purple'
+                           ? 'text-[#8000ff]' 
+                           : 'text-[#666666]'
+                       } hover:text-[#8000ff]`}
+                       onMouseEnter={() => setHoveredCategory(category.id)}
+                     >
+                       {category.name} <ChevronRight size={20} />
+                     </a>
                   ))}
                 </div>
               </div>

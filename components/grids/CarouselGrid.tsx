@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,24 +17,88 @@ import "swiper/css/pagination";
 import PriceDisplay from "../PriceDisplay";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Checkbox } from "../ui/checkbox";
 
 interface CarouselGridProps {
   title: string;
   recommendations: any[];
-  variant?: "default" | "full" | "pills" | "museums" | "simple";
+  variant?:
+    | "default"
+    | "full"
+    | "pills"
+    | "museums"
+    | "simple"
+    | "tours"
+    | "transport";
+  navigationItems?: Array<{
+    id: string;
+    label: string;
+    icon: any;
+    color: string;
+  }>;
 }
 
 const CarouselGrid = ({
   title,
   recommendations,
   variant = "default",
+  navigationItems,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState("Picked for you");
-  const [visibleCards, setVisibleCards] = useState(4); // Initially show 4 cards
+  const [visibleCards, setVisibleCards] = useState(8); // Initially show 4 cards
   const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const categoriesDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        categoriesDropdownRef.current &&
+        !categoriesDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowCategoriesDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Prevent body scrolling when dropdown is open
+  useEffect(() => {
+    if (showCategoriesDropdown) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showCategoriesDropdown]);
+
+  const handleCheckboxChange = (itemId: string) => {
+    setCheckedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleCategoriesClick = () => {
+    const newState = !showCategoriesDropdown;
+    setShowCategoriesDropdown(newState);
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -193,21 +257,114 @@ const CarouselGrid = ({
           className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
           ref={scrollContainerRef}
         >
-          {[
-            { icon: "🏛️", label: "Museums" },
-            { icon: "🐘", label: "Zoos" },
-            { icon: "🎫", label: "City Cards" },
-            { icon: "⛪", label: "Religious Sites" },
-            { icon: "🏛️", label: "Landmarks" },
-          ].map((pill, index) => (
+          {/* Categories Dropdown Pill - Always shown first */}
+          <div className="relative" ref={categoriesDropdownRef}>
             <div
-              key={index}
+              onClick={handleCategoriesClick}
               className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
             >
-              <span className="text-sm">{pill.icon}</span>
-              <span className="text-sm font-halyard-text">{pill.label}</span>
+              <span className="text-sm font-halyard-text">Categories</span>
+              <ChevronDown
+                size={12}
+                className={`text-gray-500 transition-transform ${
+                  showCategoriesDropdown ? "rotate-180" : ""
+                }`}
+              />
             </div>
-          ))}
+
+            {/* Dropdown Menu */}
+            <div
+              className={`fixed max-w-72 w-full bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 z-[99999] ${
+                showCategoriesDropdown
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none"
+              }`}
+              style={{
+                top: categoriesDropdownRef.current
+                  ? (() => {
+                      const rect = categoriesDropdownRef.current.getBoundingClientRect();
+                      const dropdownHeight = 350; // Approximate dropdown height
+                      const spaceBelow = window.innerHeight - rect.bottom;
+                      
+                      // If not enough space below, position above with minimal gap
+                      if (spaceBelow < dropdownHeight + 10) {
+                        return rect.top - dropdownHeight - (-40);
+                      } else {
+                        return rect.bottom + 2;
+                      }
+                    })()
+                  : 0,
+                left: categoriesDropdownRef.current
+                  ? categoriesDropdownRef.current.getBoundingClientRect().left
+                  : 0,
+              }}
+            >
+              <div className="p-3">
+                <div className="space-y-2 max-h-72 overflow-y-auto scrollbar-hide">
+                  {(
+                    navigationItems || [
+                      { id: "museums", icon: "🏛️", label: "Museums" },
+                      { id: "zoos", icon: "🐘", label: "Zoos" },
+                      { id: "city-cards", icon: "🎫", label: "City Cards" },
+                      {
+                        id: "religious-sites",
+                        icon: "⛪",
+                        label: "Religious Sites",
+                      },
+                      { id: "landmarks", icon: "🏛️", label: "Landmarks" },
+                    ]
+                  ).map((item, index) => (
+                    <div
+                      key={item.id || index}
+                      className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        {item.icon && typeof item.icon === "string" ? (
+                          <span className="text-sm">{item.icon}</span>
+                        ) : item.icon ? (
+                          <item.icon size={16} className="text-gray-600" />
+                        ) : null}
+                        <span className="text-sm text-gray-700">
+                          {item.label}
+                        </span>
+                      </div>
+                      <Checkbox
+                        checked={checkedItems.has(item.id || `item-${index}`)}
+                        onCheckedChange={() =>
+                          handleCheckboxChange(item.id || `item-${index}`)
+                        }
+                        className="w-4 h-4 appearance-none checked:bg-[#60c] checked:border-purple-300 border border-gray-300 rounded hover:cursor-pointer"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Show first 4 navigation items as pills */}
+          {(
+            navigationItems || [
+              { id: "museums", icon: "🏛️", label: "Museums" },
+              { id: "zoos", icon: "🐘", label: "Zoos" },
+              { id: "city-cards", icon: "🎫", label: "City Cards" },
+              { id: "religious-sites", icon: "⛪", label: "Religious Sites" },
+            ]
+          )
+            .slice(0, 4)
+            .map((pill, index) => (
+              <div
+                key={pill.id || index}
+                className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
+              >
+                {pill.icon && typeof pill.icon === "string" ? (
+                  <span className="text-sm">{pill.icon}</span>
+                ) : pill.icon ? (
+                  <pill.icon size={16} className="text-gray-600" />
+                ) : null}
+                <span className="text-sm font-halyard-text">{pill.label}</span>
+              </div>
+            ))}
         </div>
 
         {/* Original Carousel Section */}
@@ -263,13 +420,13 @@ const CarouselGrid = ({
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-    const handleNavigate = (direction: 'prev' | 'next') => {
-      if (direction === 'prev') {
-        setCurrentMuseumIndex(prev => 
+    const handleNavigate = (direction: "prev" | "next") => {
+      if (direction === "prev") {
+        setCurrentMuseumIndex((prev) =>
           prev === 0 ? recommendations.length - 1 : prev - 1
         );
       } else {
-        setCurrentMuseumIndex(prev => 
+        setCurrentMuseumIndex((prev) =>
           prev === recommendations.length - 1 ? 0 : prev + 1
         );
       }
@@ -286,16 +443,16 @@ const CarouselGrid = ({
 
     const onTouchEnd = () => {
       if (!touchStart || !touchEnd) return;
-      
+
       const distance = touchStart - touchEnd;
       const isLeftSwipe = distance > 50;
       const isRightSwipe = distance < -50;
 
       if (isLeftSwipe) {
-        handleNavigate('next');
+        handleNavigate("next");
       }
       if (isRightSwipe) {
-        handleNavigate('prev');
+        handleNavigate("prev");
       }
     };
 
@@ -391,9 +548,9 @@ const CarouselGrid = ({
           <div className="relative overflow-hidden w-full max-w-[420px] mx-auto">
             <div
               className="flex transition-transform duration-500 ease-out"
-              style={{ 
+              style={{
                 transform: `translateX(-${currentMuseumIndex * 25}%)`,
-                width: `${recommendations.length * 25}%`
+                width: `${recommendations.length * 25}%`,
               }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -401,23 +558,24 @@ const CarouselGrid = ({
             >
               {recommendations.map((museum, index) => {
                 const active = index === currentMuseumIndex;
-                
+
                 return (
-                  <div 
-                    key={museum.id}
-                    className="w-[25%] shrink-0 px-2"
-                  >
+                  <div key={museum.id} className="w-[25%] shrink-0 px-2">
                     <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
                       {/* Browser-like top decoration - positioned above image content */}
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
-                        <div className={`w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg transition-all duration-150 ease-in-out ${
-                          active ? 'h-[12px] mb-[-6px]' : 'h-[12px] mb-0'
-                        }`}></div>
-                        <div className={`w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg transition-all duration-100 ease-in-out ${
-                          active ? 'h-[12px] mb-[-6px]' : 'h-[12px] mb-0'
-                        }`}></div>
+                        <div
+                          className={`w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg transition-all duration-150 ease-in-out ${
+                            active ? "h-[12px] mb-[-6px]" : "h-[12px] mb-0"
+                          }`}
+                        ></div>
+                        <div
+                          className={`w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg transition-all duration-100 ease-in-out ${
+                            active ? "h-[12px] mb-[-6px]" : "h-[12px] mb-0"
+                          }`}
+                        ></div>
                       </div>
-                      
+
                       <img
                         src={museum.image}
                         alt={museum.name}
@@ -450,7 +608,9 @@ const CarouselGrid = ({
                           <p className="text-sm text-gray-200 mb-2 line-clamp-2">
                             {museum.description}
                           </p>
-                          <div className="text-lg font-bold">${museum.price}</div>
+                          <div className="text-lg font-bold">
+                            ${museum.price}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -460,7 +620,6 @@ const CarouselGrid = ({
             </div>
           </div>
         </div>
-
       </div>
     );
   }
@@ -481,7 +640,7 @@ const CarouselGrid = ({
     };
 
     const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length - 3); // Show 3 cards at once
+      const maxCards = Math.max(0, recommendations.length); // Show 3 cards at once
       if (currentPage < maxCards) {
         console.log(
           "Scrolling right from card",
@@ -508,7 +667,7 @@ const CarouselGrid = ({
 
     const onTouchEnd = () => {
       if (!touchStart || !touchEnd) return;
-      
+
       const distance = touchStart - touchEnd;
       const isLeftSwipe = distance > 50;
       const isRightSwipe = distance < -50;
@@ -598,6 +757,270 @@ const CarouselGrid = ({
       </div>
     );
   }
+  if (variant === "tours") {
+    // Local state for simple variant pagination
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const simpleScrollLeft = () => {
+      if (currentPage > 0) {
+        console.log(
+          "Scrolling left from card",
+          currentPage,
+          "to",
+          currentPage - 1
+        );
+        setCurrentPage((prev) => prev - 1);
+      }
+    };
+
+    const simpleScrollRight = () => {
+      const maxCards = Math.max(0, recommendations.length); // Show 3 cards at once
+      if (currentPage < maxCards) {
+        console.log(
+          "Scrolling right from card",
+          currentPage,
+          "to",
+          currentPage + 1
+        );
+        setCurrentPage((prev) => prev + 1);
+      }
+    };
+
+    // Touch/swipe functionality for mobile
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+      if (!touchStart || !touchEnd) return;
+
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+
+      if (isLeftSwipe) {
+        simpleScrollRight(); // Swipe left = go to next card
+      }
+      if (isRightSwipe) {
+        simpleScrollLeft(); // Swipe right = go to previous card
+      }
+    };
+
+    return (
+      <div className="py-4 md:max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+          <div className="md:flex hidden items-center gap-4">
+            <div className="flex items-center gap-2">
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollLeft}
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className=" relative md:overflow-hidden">
+          <div
+            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            style={{
+              transform:
+                window.innerWidth >= 768
+                  ? `translateX(-${currentPage * 200}px)`
+                  : "none",
+              width:
+                window.innerWidth >= 768
+                  ? `${recommendations.length * 200}px`
+                  : "auto",
+            }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            {recommendations.map((recommendation, index) => (
+              <Link
+                key={recommendation.id}
+                href={`/things-to-do/${recommendation.city}`}
+                className={`flex-shrink-0 cursor-pointer group md:w-[290px] ${
+                  index === recommendations.length - 1
+                    ? "pb-0 border-b-0"
+                    : "pb-[12px] md:pb-0 md:border-0 border-b-[1px]"
+                }`}
+              >
+                <div className="flex md:flex-col flex-row gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg md:p-2">
+                  <div className="w-[70%] md:w-full">
+                    <img
+                      src={recommendation.image}
+                      alt={recommendation.description}
+                      className="rounded-lg md:rounded-xl h-[65%] w-full"
+                    />
+                  </div>
+                  <div className="w-[60%] md:w-full">
+                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-[15px] md:text-lg mb-2 break-words">
+                      {recommendation.heading}{" "}
+                    </p>
+
+                    <p className="text-[#666666] font-halyard-text-light line-clamp-3 text-xs md:text-sm mt-1 break-words">
+                      {recommendation.description}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (variant === "transport") {
+    // Local state for simple variant pagination
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const simpleScrollLeft = () => {
+      if (currentPage > 0) {
+        console.log(
+          "Scrolling left from card",
+          currentPage,
+          "to",
+          currentPage - 1
+        );
+        setCurrentPage((prev) => prev - 1);
+      }
+    };
+
+    const simpleScrollRight = () => {
+      const maxCards = Math.max(0, recommendations.length); // Allow scrolling through all cards
+      if (currentPage < maxCards) {
+        console.log(
+          "Scrolling right from card",
+          currentPage,
+          "to",
+          currentPage + 1
+        );
+        setCurrentPage((prev) => prev + 1);
+      }
+    };
+
+    // Touch/swipe functionality for mobile
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+      if (!touchStart || !touchEnd) return;
+
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+
+      if (isLeftSwipe) {
+        simpleScrollRight(); // Swipe left = go to next card
+      }
+      if (isRightSwipe) {
+        simpleScrollLeft(); // Swipe right = go to previous card
+      }
+    };
+
+    return (
+      <div className="py-4 md:max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+          <div className="md:flex hidden items-center gap-4">
+            <div className="flex items-center gap-2">
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollLeft}
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+                onClick={simpleScrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className=" relative md:overflow-hidden">
+          <div
+            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            style={{
+              transform:
+                window.innerWidth >= 768
+                  ? `translateX(-${currentPage * 400}px)`
+                  : "none",
+              width:
+                window.innerWidth >= 768
+                  ? `${recommendations.length * 400}px`
+                  : "auto",
+            }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            {recommendations.map((recommendation, index) => (
+              <Link
+                key={recommendation.id}
+                href={`/things-to-do/${recommendation.city}`}
+                className={`flex-shrink-0 cursor-pointer group md:w-[590px] ${
+                  index === recommendations.length - 1
+                    ? "pb-0 border-b-0"
+                    : "pb-[12px] md:pb-0 md:border-0 border-b-[1px]"
+                }`}
+              >
+                <div className="flex flex-row gap-2 md:gap-6 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg md:p-2">
+                  <div className="w-[70%] md:w-[47%]">
+                    <img
+                      src={recommendation.image}
+                      alt={recommendation.description}
+                      className="rounded-sm w-full"
+                    />
+                  </div>
+                  <div className="w-[60%] md:w-full">
+                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-[15px] md:text-lg mb-2 break-words">
+                      {recommendation.heading}{" "}
+                    </p>
+
+                    <p className="text-[#666666] font-halyard-text-light md:line-clamp-2 line-clamp-3 text-xs md:text-sm mt-1 break-words">
+                      {recommendation.description}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Default variant (existing layout)
   return (
@@ -615,13 +1038,13 @@ const CarouselGrid = ({
           </Link>
           <div className="hidden md:flex items-center gap-2">
             <button
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="text-sm text-gray-500 hover:cursor-pointer underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
               onClick={scrollLeft}
             >
               <ChevronLeftIcon className="w-4 h-4" />
             </button>
             <button
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="text-sm text-gray-500 hover:cursor-pointer underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
               onClick={scrollRight}
             >
               <ChevronRightIcon className="w-4 h-4" />

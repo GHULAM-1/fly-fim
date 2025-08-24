@@ -30,6 +30,32 @@ import {
   Utensils,
   Footprints,
   Car,
+  Mountain,
+  Bike,
+  Train,
+  User,
+  Shield,
+  FileText,
+  DollarSign,
+  Package,
+  Wine,
+  ShoppingBag,
+  Heart,
+  Headphones,
+  Moon,
+  Zap,
+  Wind,
+  Fish,
+  Waves,
+  Dumbbell,
+  Droplets,
+  Star,
+  Gift,
+  Calendar,
+  Clock,
+  Users,
+  Smile,
+  Camera,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/store/navigationStore";
 import PopularThings from "@/components/category/PopularThings";
@@ -192,6 +218,554 @@ export default function CategoryPage() {
         .join(" ")
     : "Category";
 
+  // Comprehensive category configuration
+  const categoryConfig = {
+    tickets: {
+      style: "bordered",
+      heading: "Rome Attractions",
+      navigationItems: [
+        { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+        {
+          id: "landmarks",
+          label: "Landmarks",
+          icon: Landmark,
+          color: "purple",
+        },
+        { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+        {
+          id: "religious-sites",
+          label: "Religious Sites",
+          icon: BadgePercent,
+          color: "purple",
+        },
+        { id: "city-cards", label: "City Cards", icon: Ship, color: "purple" },
+        {
+          id: "theme-parks",
+          label: "Theme Parks",
+          icon: Leaf,
+          color: "purple",
+        },
+      ],
+      components: {
+        popular: true,
+        stack: true,
+        guides: null,
+        transport: null,
+        testimonials: true,
+        themes: [
+          { icon: Ticket, text: "Museum Tickets", href: "#" },
+          { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+          { icon: Landmark, text: "Landmark Tickets", href: "#" },
+          { icon: SunMedium, text: "Zoo Tickets", href: "#" },
+          { icon: Ship, text: "City Cards", href: "#" },
+          { icon: Leaf, text: "Theme Park Tickets", href: "#" },
+        ],
+      },
+    },
+    tours: {
+      style: "simple",
+      heading: "Rome Tours",
+      navigationItems: [
+        {
+          id: "walking-tours",
+          label: "Walking Tours",
+          icon: Footprints,
+          color: "purple",
+        },
+        {
+          id: "guided-tours",
+          label: "Guided Tours",
+          icon: User,
+          color: "purple",
+        },
+        {
+          id: "hop-on-hop-off",
+          label: "Hop-on Hop-off Tours Rome",
+          icon: Bus,
+          color: "purple",
+        },
+        {
+          id: "city-tours",
+          label: "City Tours",
+          icon: MapPin,
+          color: "purple",
+        },
+        {
+          id: "private-tours",
+          label: "Private Tours",
+          icon: Users,
+          color: "purple",
+        },
+        {
+          id: "bikes-segway",
+          label: "Bikes & Segway",
+          icon: Bike,
+          color: "purple",
+        },
+        {
+          id: "photography-tours",
+          label: "Photography Tours",
+          icon: Camera,
+          color: "purple",
+        },
+        { id: "day-trips", label: "Day Trips", icon: Globe, color: "purple" },
+        {
+          id: "heritage-experiences",
+          label: "Heritage Experiences",
+          icon: Landmark,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: { title: "Travel guides and tips", variant: "tours" },
+        transport: null,
+        popular: true,
+        stack: false,
+        testimonials: true,
+        themes: [
+          { icon: MapPin, text: "City Tours", href: "#" },
+          { icon: Globe, text: "Day Trips", href: "#" },
+          { icon: Footprints, text: "Walking Tours", href: "#" },
+          { icon: ChefHat, text: "Food Tours", href: "#" },
+        ],
+      },
+    },
+    transportation: {
+      style: "simple",
+      heading: "Transportation in Rome",
+      navigationItems: [
+        {
+          id: "public-transport",
+          label: "Public Transport",
+          icon: Bus,
+          color: "purple",
+        },
+        { id: "car-rentals", label: "Car Rentals", icon: Car, color: "purple" },
+        {
+          id: "ferry-services",
+          label: "Ferry Services",
+          icon: Ship,
+          color: "purple",
+        },
+        {
+          id: "airport-transfers",
+          label: "Airport Transfers",
+          icon: BusFront,
+          color: "purple",
+        },
+        {
+          id: "bike-rentals",
+          label: "Bike Rentals",
+          icon: Bike,
+          color: "purple",
+        },
+        {
+          id: "metro-services",
+          label: "Metro Services",
+          icon: Train,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: null,
+        transport: { title: "Travel guides and tips", variant: "transport" },
+        popular: true,
+        stack: false,
+        testimonials: true,
+        themes: [
+          { icon: Bus, text: "Public Transport", href: "#" },
+          { icon: Car, text: "Car Rentals", href: "#" },
+          { icon: Ship, text: "Ferry Services", href: "#" },
+          { icon: BusFront, text: "Airport Transfers", href: "#" },
+        ],
+      },
+    },
+    "travel-services": {
+      style: "bordered",
+      heading: "Travel Services in Rome",
+      navigationItems: [
+        {
+          id: "planning",
+          label: "Travel Planning",
+          icon: MapPin,
+          color: "purple",
+        },
+        {
+          id: "concierge",
+          label: "Concierge Services",
+          icon: User,
+          color: "purple",
+        },
+        {
+          id: "insurance",
+          label: "Travel Insurance",
+          icon: Shield,
+          color: "purple",
+        },
+        {
+          id: "visa-services",
+          label: "Visa Services",
+          icon: FileText,
+          color: "purple",
+        },
+        {
+          id: "currency",
+          label: "Currency Exchange",
+          icon: DollarSign,
+          color: "purple",
+        },
+        {
+          id: "translations",
+          label: "Translation Services",
+          icon: Globe,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: null,
+        popular: true,
+        stack: false,
+        transport: null,
+        testimonials: false,
+        themes: [
+          { icon: MapPin, text: "Travel Planning", href: "#" },
+          { icon: User, text: "Concierge Services", href: "#" },
+          { icon: Shield, text: "Travel Insurance", href: "#" },
+        ],
+      },
+    },
+    cruises: {
+      style: "simple",
+      heading: "Cruises in Rome",
+      navigationItems: [
+        {
+          id: "port-excursions",
+          label: "Port Excursions",
+          icon: Ship,
+          color: "purple",
+        },
+        {
+          id: "shore-tours",
+          label: "Shore Tours",
+          icon: Globe,
+          color: "purple",
+        },
+        {
+          id: "cruise-packages",
+          label: "Cruise Packages",
+          icon: Package,
+          color: "purple",
+        },
+        {
+          id: "onboard-activities",
+          label: "Onboard Activities",
+          icon: Music,
+          color: "purple",
+        },
+        {
+          id: "dining-options",
+          label: "Dining Options",
+          icon: Utensils,
+          color: "purple",
+        },
+        {
+          id: "entertainment",
+          label: "Entertainment",
+          icon: Tv,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: null,
+        popular: true,
+        stack: false,
+        transport: null,
+        testimonials: false,
+        themes: [
+          { icon: Ship, text: "Port Excursions", href: "#" },
+          { icon: Globe, text: "Shore Tours", href: "#" },
+          { icon: Package, text: "Cruise Packages", href: "#" },
+        ],
+      },
+    },
+    "food-drink": {
+      style: "simple",
+      heading: "Food & Drink in Rome",
+      navigationItems: [
+        {
+          id: "cooking-classes",
+          label: "Cooking Classes",
+          icon: ChefHat,
+          color: "purple",
+        },
+        {
+          id: "food-tours",
+          label: "Food Tours",
+          icon: Utensils,
+          color: "purple",
+        },
+        {
+          id: "wine-tastings",
+          label: "Wine Tastings",
+          icon: Wine,
+          color: "purple",
+        },
+        {
+          id: "restaurant-reservations",
+          label: "Restaurant Reservations",
+          icon: MapPin,
+          color: "purple",
+        },
+        {
+          id: "local-markets",
+          label: "Local Markets",
+          icon: ShoppingBag,
+          color: "purple",
+        },
+        {
+          id: "dietary-options",
+          label: "Dietary Options",
+          icon: Heart,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: { title: "Food & drink guides", variant: "tours" },
+        popular: true,
+        stack: false,
+        transport: null,
+        testimonials: false,
+        themes: [
+          { icon: ChefHat, text: "Cooking Classes", href: "#" },
+          { icon: Utensils, text: "Food Tours", href: "#" },
+          { icon: Wine, text: "Wine Tastings", href: "#" },
+        ],
+      },
+    },
+    entertainment: {
+      style: "simple",
+      heading: "Entertainment shows in Rome",
+      navigationItems: [
+        { id: "live-shows", label: "Live Shows", icon: Music, color: "purple" },
+        { id: "theater", label: "Theater", icon: Tv, color: "purple" },
+        {
+          id: "theme-parks",
+          label: "Theme Parks",
+          icon: SunMedium,
+          color: "purple",
+        },
+        {
+          id: "concerts",
+          label: "Concerts",
+          icon: Headphones,
+          color: "purple",
+        },
+        {
+          id: "comedy-clubs",
+          label: "Comedy Clubs",
+          icon: Smile,
+          color: "purple",
+        },
+        { id: "nightlife", label: "Nightlife", icon: Moon, color: "purple" },
+      ],
+      components: {
+        guides: null,
+        popular: false,
+        stack: false,
+        transport: null,
+        testimonials: false,
+        themes: [
+          { icon: Music, text: "Live Shows", href: "#" },
+          { icon: Tv, text: "Theater", href: "#" },
+          { icon: SunMedium, text: "Theme Parks", href: "#" },
+        ],
+      },
+    },
+    adventure: {
+      style: "simple",
+      heading: "Adventure in Rome",
+      navigationItems: [
+        {
+          id: "hiking",
+          label: "Hiking Trails",
+          icon: Footprints,
+          color: "purple",
+        },
+        {
+          id: "rock-climbing",
+          label: "Rock Climbing",
+          icon: Mountain,
+          color: "purple",
+        },
+        {
+          id: "off-road-tours",
+          label: "Off-road Tours",
+          icon: Car,
+          color: "purple",
+        },
+        { id: "zip-lining", label: "Zip Lining", icon: Zap, color: "purple" },
+        { id: "caving", label: "Caving", icon: Mountain, color: "purple" },
+        {
+          id: "paragliding",
+          label: "Paragliding",
+          icon: Wind,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: null,
+        transport: null,
+        popular: false,
+        stack: false,
+        testimonials: false,
+        themes: [
+          { icon: Footprints, text: "Hiking Trails", href: "#" },
+          { icon: Mountain, text: "Rock Climbing", href: "#" },
+          { icon: Car, text: "Off-road Tours", href: "#" },
+        ],
+      },
+    },
+    "water-sports": {
+      style: "simple",
+      heading: "Water Sports in Rome",
+      navigationItems: [
+        { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
+        { id: "scuba-diving", label: "Scuba Diving", icon: Fish, color: "purple" },
+        { id: "surfing", label: "Surfing", icon: Waves, color: "purple" },
+        { id: "kayaking", label: "Kayaking", icon: Ship, color: "purple" },
+        { id: "jet-skiing", label: "Jet Skiing", icon: Zap, color: "purple" },
+        { id: "fishing", label: "Fishing Tours", icon: Fish, color: "purple" }
+      ],
+      components: {
+        guides: null,
+        transport: null,
+        popular: false,
+        stack: false,
+        testimonials: false,
+        themes: [
+          { icon: Ship, text: "Sailing", href: "#" },
+          { icon: Fish, text: "Scuba Diving", href: "#" },
+          { icon: Waves, text: "Surfing", href: "#" }
+        ]
+      }
+    },
+    wellness: {
+      style: "simple",
+      heading: "Health & Wellness in Rome",
+      navigationItems: [
+        { id: "spa-retreats", label: "Spa Retreats", icon: Leaf, color: "purple" },
+        { id: "yoga-classes", label: "Yoga Classes", icon: Heart, color: "purple" },
+        { id: "meditation", label: "Meditation Retreats", icon: Mountain, color: "purple" },
+        { id: "fitness-centers", label: "Fitness Centers", icon: Dumbbell, color: "purple" },
+        { id: "thermal-baths", label: "Thermal Baths", icon: Droplets, color: "purple" },
+        { id: "mindfulness", label: "Mindfulness Workshops", icon: Heart, color: "purple" }
+      ],
+      components: {
+        guides: null,
+        transport: null,
+        testimonials: false,
+        popular: true,
+        stack: false,
+        themes: [
+          { icon: Leaf, text: "Spa Retreats", href: "#" },
+          { icon: Heart, text: "Yoga Classes", href: "#" },
+          { icon: Mountain, text: "Meditation Retreats", href: "#" }
+        ]
+      }
+    },
+    specials: {
+      style: "simple",
+      heading: "Rome Specials",
+      navigationItems: [
+        { id: "discount-deals", label: "Discount Deals", icon: BadgePercent, color: "purple" },
+        { id: "vip-experiences", label: "VIP Experiences", icon: Star, color: "purple" },
+        { id: "package-deals", label: "Package Deals", icon: Gift, color: "purple" },
+        { id: "seasonal-offers", label: "Seasonal Offers", icon: Calendar, color: "purple" },
+        { id: "last-minute", label: "Last Minute Deals", icon: Clock, color: "purple" },
+        { id: "group-discounts", label: "Group Discounts", icon: Users, color: "purple" }
+      ],
+      components: {
+        guides: null,
+        transport: null,
+        popular: false,
+        stack: false,
+        testimonials: true,
+        themes: [
+          { icon: BadgePercent, text: "Discount Deals", href: "#" },
+          { icon: Star, text: "VIP Experiences", href: "#" },
+          { icon: Gift, text: "Package Deals", href: "#" }
+        ]
+      }
+    },
+    //     // Default fallback
+    default: {
+      style: "simple",
+      heading: "Attractions",
+      navigationItems: [
+        { id: "museums", label: "Museums", icon: Tv, color: "purple" },
+        {
+          id: "landmarks",
+          label: "Landmarks",
+          icon: Landmark,
+          color: "purple",
+        },
+        { id: "zoos", label: "Zoos", icon: SunMedium, color: "purple" },
+        {
+          id: "religious-sites",
+          label: "Religious Sites",
+          icon: BadgePercent,
+          color: "purple",
+        },
+        { id: "city-cards", label: "City Cards", icon: Ship, color: "purple" },
+        {
+          id: "theme-parks",
+          label: "Theme Parks",
+          icon: Leaf,
+          color: "purple",
+        },
+      ],
+      components: {
+        guides: { title: "Travel guides and tips", variant: "tours" as const },
+        transport: null,
+        popular: true,
+        stack: false,
+        testimonials: false,
+        themes: [
+          { icon: MapPin, text: "City Tours", href: "#" },
+          { icon: Globe, text: "Day Trips", href: "#" },
+          { icon: ChefHat, text: "Food Tours", href: "#" },
+        ],
+      },
+    },
+  };
+
+  // Get current category configuration
+  const currentCategory =
+    categoryConfig[categoryName as keyof typeof categoryConfig] ||
+    categoryConfig.default;
+
+  // Helper function to get button styles based on category
+  const getButtonStyles = (item: any, isActive: boolean) => {
+    const baseClasses =
+      "font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] whitespace-nowrap transition-all duration-200";
+
+    switch (currentCategory.style) {
+      case "bordered":
+        return `${baseClasses} border rounded-[4px] ${
+          isActive
+            ? "bg-purple-600/10 text-purple-600 border-purple-600/20 hover:bg-purple-600/10 hover:text-purple-600 hover:border-purple-600/20"
+            : "text-[#444444] border-gray-200 bg-transparent hover:bg-purple-600/10 hover:text-purple-600"
+        }`;
+
+      case "simple":
+        return `${baseClasses} relative ${
+          isActive
+            ? "bg-transparent text-purple-600 border-purple-600/20 hover:bg-transparent hover:text-purple-600 hover:border-purple-600/20"
+            : "text-[#444444] border-gray-200 bg-transparent hover:bg-transparent hover:text-purple-600"
+        }`;
+    }
+  };
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -255,14 +829,7 @@ export default function CategoryPage() {
 
   // Intersection observer for active section tracking
   useEffect(() => {
-    const sections = [
-      "museums",
-      "landmarks",
-      "zoos",
-      "religious-sites",
-      "city-cards",
-      "theme-parks",
-    ];
+    const sections = currentCategory.navigationItems.map((item) => item.id);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -418,7 +985,106 @@ export default function CategoryPage() {
       city: "Singapore",
     },
   ];
-
+  const guides = [
+    {
+      id: 1,
+      description:
+        "Vatican City is a special place. It may not be the biggest in size but what it holds within its walls is truly unrivalled in scale and significance. From the breathtaking Sistine Chapel to the vast collections of the Vatican Museums, every corner tells a story of art, history, and faith.",
+      heading: "Explore the best of Vatican with these guided tours and tips",
+      image: "/images/van.avif",
+      city: "Vatican City",
+    },
+    {
+      id: 2,
+      description:
+        "Discover the hidden gems and iconic landmarks that make Rome the eternal city. From the ancient Colosseum to the romantic Trevi Fountain, experience the perfect blend of history, culture, and modern Italian life.",
+      heading: "Uncover the secrets of Rome with expert local guides",
+      image: "/images/van.avif",
+      city: "Rome",
+    },
+    {
+      id: 3,
+      description:
+        "Experience the magic of Paris through carefully curated tours that reveal the city's artistic soul. From the Louvre's masterpieces to the charming streets of Montmartre, discover why Paris continues to captivate visitors.",
+      heading: "Experience the magic of Paris through curated tours and tips",
+      image: "/images/van.avif",
+      city: "Paris",
+    },
+    {
+      id: 4,
+      description:
+        "Immerse yourself in the rich cultural heritage of London with guided experiences that bring history to life. From the Tower of London to Buckingham Palace, explore the stories behind Britain's most iconic landmarks.",
+      heading: "Immerse yourself in London's rich cultural heritage",
+      image: "/images/van.avif",
+      city: "London",
+    },
+    {
+      id: 5,
+      description:
+        "Discover the perfect blend of tradition and innovation in Tokyo. From ancient temples to cutting-edge technology, experience the unique culture that makes Japan's capital a must-visit destination.",
+      heading: "Discover Tokyo's perfect blend of tradition and innovation",
+      image: "/images/van.avif",
+      city: "Tokyo",
+    },
+    {
+      id: 6,
+      description:
+        "Explore the vibrant energy of New York City through guided tours that showcase its diverse neighborhoods, world-class museums, and iconic skyline. Experience the city that never sleeps like a true New Yorker.",
+      heading: "Explore New York City's vibrant energy and diversity",
+      image: "/images/van.avif",
+      city: "New York",
+    },
+  ];
+  const guides2 = [
+    {
+      id: 1,
+      description:
+        "Vatican City is a special place. It may not be the biggest in size but what it holds within its walls is truly unrivalled in scale and significance. From the breathtaking Sistine Chapel to the vast collections of the Vatican Museums, every corner tells a story of art, history, and faith.",
+      heading: "Explore the best of Vatican with these guided tours and tips",
+      image: "/images/image.avif",
+      city: "Vatican City",
+    },
+    {
+      id: 2,
+      description:
+        "Discover the hidden gems and iconic landmarks that make Rome the eternal city. From the ancient Colosseum to the romantic Trevi Fountain, experience the perfect blend of history, culture, and modern Italian life.",
+      heading: "Uncover the secrets of Rome with expert local guides",
+      image: "/images/image.avif",
+      city: "Rome",
+    },
+    {
+      id: 3,
+      description:
+        "Experience the magic of Paris through carefully curated tours that reveal the city's artistic soul. From the Louvre's masterpieces to the charming streets of Montmartre, discover why Paris continues to captivate visitors.",
+      heading: "Experience the magic of Paris through curated tours and tips",
+      image: "/images/image.avif",
+      city: "Paris",
+    },
+    {
+      id: 4,
+      description:
+        "Immerse yourself in the rich cultural heritage of London with guided experiences that bring history to life. From the Tower of London to Buckingham Palace, explore the stories behind Britain's most iconic landmarks.",
+      heading: "Immerse yourself in London's rich cultural heritage",
+      image: "/images/image.avif",
+      city: "London",
+    },
+    {
+      id: 5,
+      description:
+        "Discover the perfect blend of tradition and innovation in Tokyo. From ancient temples to cutting-edge technology, experience the unique culture that makes Japan's capital a must-visit destination.",
+      heading: "Discover Tokyo's perfect blend of tradition and innovation",
+      image: "/images/image.avif",
+      city: "Tokyo",
+    },
+    {
+      id: 6,
+      description:
+        "Explore the vibrant energy of New York City through guided tours that showcase its diverse neighborhoods, world-class museums, and iconic skyline. Experience the city that never sleeps like a true New Yorker.",
+      heading: "Explore New York City's vibrant energy and diversity",
+      image: "/images/image.avif",
+      city: "New York",
+    },
+  ];
   return (
     <>
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
@@ -487,7 +1153,7 @@ export default function CategoryPage() {
               </div>
             </div>
             <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
-              {formattedCategoryName} Attractions
+              {currentCategory.heading}
             </h1>
           </div>
 
@@ -495,7 +1161,11 @@ export default function CategoryPage() {
           <div
             ref={navigationRef}
             data-navigation
-            className={`sticky md:top-30 top-15 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+            className={`${
+              currentCategory.style === "simple"
+                ? "relative"
+                : "sticky md:top-30 top-15"
+            } w-full bg-white z-30 py-4 transition-all duration-500 transform ${
               isCarouselVisible ? "translate-y-0" : "-translate-y-full"
             }`}
           >
@@ -518,72 +1188,48 @@ export default function CategoryPage() {
                     </div>
                   </div>
                 )}
-                <Button
-                  onClick={() => scrollToSection("museums")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "museums"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <Tv strokeWidth={1} className="md:w-5 md:h-5 w-5 h-5" />
-                  Museums
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("landmarks")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "landmarks"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <Landmark strokeWidth={1} />
-                  Landmarks
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("zoos")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "zoos"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <SunMedium strokeWidth={1} />
-                  Zoos
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("religious-sites")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "religious-sites"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <BadgePercent strokeWidth={1} />
-                  Religious Sites
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("city-cards")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "city-cards"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <Ship strokeWidth={1} />
-                  City Cards
-                </Button>
-                <Button
-                  onClick={() => scrollToSection("theme-parks")}
-                  className={`font-halyard-text bg-transparent hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                    activeSection === "theme-parks"
-                      ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                      : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                  }`}
-                >
-                  <Leaf strokeWidth={1} />
-                  Theme Parks
-                </Button>
+                {/* All item - only show if style is simple */}
+                {currentCategory.style === "simple" && (
+                  <div className="relative">
+                    <Button
+                      variant="default"
+                      onClick={() => scrollToSection("all")}
+                      className={getButtonStyles(
+                        { id: "all", label: "All" },
+                        activeSection === "all" || !activeSection
+                      )}
+                    >
+                      All
+                    </Button>
+                    {/* Purple underline for active tab in simple style */}
+                    {(activeSection === "all" || !activeSection) && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
+                    )}
+                  </div>
+                )}
+
+                {currentCategory.navigationItems.map((item) => {
+                  const IconComponent = item.icon;
+                  const isActive = activeSection === item.id;
+                  return (
+                    <div key={item.id} className="relative">
+                      <Button
+                        variant="default"
+                        onClick={() => scrollToSection(item.id)}
+                        className={getButtonStyles(item, isActive)}
+                      >
+                        {currentCategory.style === "simple" &&
+                        isActive ? null : (
+                          <IconComponent
+                            strokeWidth={1}
+                            className=" md:w-5 md:h-5 w-5 h-5"
+                          />
+                        )}
+                        {item.label}
+                      </Button>
+                    </div>
+                  );
+                })}
 
                 {showRightButton && (
                   <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
@@ -599,108 +1245,72 @@ export default function CategoryPage() {
                   </div>
                 )}
               </div>
+              {/* Bottom line for simple style */}
+              {currentCategory.style === "simple" && (
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+              )}
             </div>
           </div>
           <div className="md:mt-10 mt-5">
-            <PopularThings />
+            {currentCategory.components.popular && <PopularThings />}
           </div>
           <div>
             <CarouselGrid
               title="Top experiences in London"
               variant="pills"
               recommendations={recommendations}
+              navigationItems={currentCategory.navigationItems}
             />
             {/* <CarouselGrid
           title="Top experiences in London"
           recommendations={recommendations}
         /> */}
-            <div className="mb-10" id="museums">
-              <CarouselGrid
-                title="Museums"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
-            <div className="mb-10" id="landmarks">
-              <CarouselGrid
-                title="Landmarks"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
-            <div className="mb-10" id="zoos">
-              <CarouselGrid
-                title="Zoos"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
-            <div className="mb-10" id="religious-sites">
-              <CarouselGrid
-                title="Religious Sites"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
-            <div className="mb-10" id="city-cards">
-              <CarouselGrid
-                title="City Cards"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
-            <div className="mb-10" id="theme-parks">
-              <CarouselGrid
-                title="Theme Parks"
-                variant="museums"
-                recommendations={recommendations}
-              />
-            </div>
+            {/* Only map navigation items if stack is true */}
+            {currentCategory.components.stack &&
+              currentCategory.navigationItems.map((item) => (
+                <div key={item.id} className="mb-10" id={item.id}>
+                  <CarouselGrid
+                    title={item.label}
+                    variant="museums"
+                    recommendations={recommendations}
+                  />
+                </div>
+              ))}
+            {/* Dynamic Travel Guides Section - Only show if guides exist */}
+            {currentCategory?.components?.guides && (
+              <div className="mb-10">
+                <CarouselGrid
+                  title={currentCategory.components.guides.title}
+                  variant={
+                    currentCategory.components.guides.variant as
+                      | "tours"
+                      | "transport"
+                  }
+                  recommendations={guides2}
+                />
+              </div>
+            )}
+
+            {/* Conditional Transportation Section - Only show if transport exists */}
+            {currentCategory?.components?.transport && (
+              <div className="mb-10">
+                <CarouselGrid
+                  title={(currentCategory.components.transport as any).title}
+                  variant={
+                    (currentCategory.components.transport as any).variant as
+                      | "tours"
+                      | "transport"
+                  }
+                  recommendations={guides}
+                />
+              </div>
+            )}
+
+            {/* Dynamic Browse Themes Section */}
             <div className="mb-10">
               <BrowseThemes
                 title="Browse by themes"
-                themes={[
-                  {
-                    icon: MapPin,
-                    text: "Rome Tours",
-                    href: "#",
-                  },
-                  {
-                    icon: Globe,
-                    text: "Day Trips From Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: ChefHat,
-                    text: "Cooking Classes in Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: Bus,
-                    text: "Hop-on Hop-off Tours Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: Ticket,
-                    text: "Combos Tickets in Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: Utensils,
-                    text: "Food Tours in Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: Footprints,
-                    text: "Walking Tours in Rome",
-                    href: "#",
-                  },
-                  {
-                    icon: Car,
-                    text: "Transportation in Rome",
-                    href: "#",
-                  },
-                ]}
+                themes={currentCategory.components.themes}
               />
             </div>
             <div className="mb-10">
@@ -710,12 +1320,15 @@ export default function CategoryPage() {
                 recommendations={destinations}
               />
             </div>
+
             <div className="mb-10">
               <Banner />
             </div>
-            <div className="mb-10">
-              <Testimonials variant="things-to-do" />
-            </div>
+            {currentCategory.components.testimonials && (
+              <div className="mb-10">
+                <Testimonials variant="things-to-do" />
+              </div>
+            )}
             <div className="mb-10">
               <Stats />
             </div>
