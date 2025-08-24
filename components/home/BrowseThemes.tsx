@@ -302,7 +302,7 @@ const BrowseThemes = () => {
 
   return (
     <div className=" max-w-[1200px] mt-3 mx-auto ">
-      <h2 className="text-lg sm:text-2xl px-[24px] xl:px-0 tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
+      <h2 className="text-lg sm:text-2xl tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
         Browse by themes{" "}
       </h2>
       <div className="relative">
@@ -323,7 +323,7 @@ const BrowseThemes = () => {
 
           <div
             ref={scrollContainerRef}
-            className="flex items-center px-[24px] xl:px-0 gap-[24px] border-b border-gray-200 overflow-x-auto scrollbar-none pb-2 "
+            className="flex items-center gap-[24px] border-b border-gray-200 overflow-x-auto scrollbar-none pb-2 "
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {categories.map((category) => {
@@ -373,7 +373,7 @@ const BrowseThemes = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 px-[24px] xl:px-0 md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3  md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
         {combinedItems.map((item, index) => {
           const IconComponent = item.icon;
           return (
