@@ -19,6 +19,7 @@ import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 
+// --- add to props interface ---
 interface CarouselGridProps {
   title: string;
   recommendations: any[];
@@ -29,15 +30,18 @@ interface CarouselGridProps {
     | "museums"
     | "simple"
     | "tours"
-    | "transport";
+    | "transport"
+    | "subcategory";
   navigationItems?: Array<{
     id: string;
     label: string;
-    icon: any;
-    color: string;
+    icon?: any;
+    color?: string;
   }>;
   pills?: boolean;
+  initialSelectedId?: string; // NEW
 }
+
 
 const CarouselGrid = ({
   title,
@@ -45,6 +49,7 @@ const CarouselGrid = ({
   variant = "default",
   navigationItems,
   pills = true,
+  initialSelectedId,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState("Picked for you");
@@ -1036,6 +1041,126 @@ const CarouselGrid = ({
       </div>
     );
   }
+
+if (variant === "subcategory") {
+  const [selectedId, setSelectedId] = useState<string>(
+    // start with the provided initial id, falling back to first nav item
+    navigationItems?.find(n => n.id === initialSelectedId)?.id ||
+      navigationItems?.[0]?.id ||
+      ""
+  );
+  const [sortBy, setSortBy] = useState("Picked for you");
+
+  const sortOptions = [
+    "Picked for you",
+    "Most popular",
+    "Price (low to high)",
+    "Price (high to low)",
+  ];
+
+  // Filter by selected subcategory id
+  const filtered = recommendations.filter(
+    (rec) => !selectedId || rec.subcategoryId === selectedId
+  );
+
+  // Sorting
+  const sorted = [...filtered].sort((a, b) => {
+    switch (sortBy) {
+      case "Most popular":
+        // if "popularity" not present, fall back to reviews count
+        return (b.popularity ?? b.reviews ?? 0) - (a.popularity ?? a.reviews ?? 0);
+      case "Price (low to high)":
+        return (a.price ?? 0) - (b.price ?? 0);
+      case "Price (high to low)":
+        return (b.price ?? 0) - (a.price ?? 0);
+      case "Picked for you":
+      default:
+        // keep incoming order
+        return 0;
+    }
+  });
+
+return (
+  <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+    {/* Title stays on its own line */}
+    <div className="mb-2">
+      <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+        {title}
+      </h2>
+    </div>
+    
+{/* Count (left) + Sort (right) — responsive */}
+<div className="mt-3 mb-4">
+  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-5">
+    {/* left: experiences count */}
+    <p className="text-[12px] sm:text-sm text-[#666666] font-halyard-text-light">
+      {sorted.length} experiences
+    </p>
+
+    {/* right: sort */}
+    <div className="sm:ml-4 shrink-0">
+      <DropdownMenu>
+      <DropdownMenuTrigger className="flex items-center text-[11px] sm:text-xs md:text-sm text-[#666666] font-halyard-text-light gap-1 sm:gap-2 hover:text-gray-800">
+        <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4" />
+        <span className="truncate">Sort by: {sortBy}</span>
+        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
+      </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          className="w-48 rounded-md border border-gray-200 bg-white shadow-md"
+        >
+          {sortOptions.map((option) => (
+            <DropdownMenuItem
+              key={option}
+              onClick={() => setSortBy(option)}
+              className={`flex items-center justify-between px-3 py-2 sm:text-sm text-[#444444] hover:bg-gray-100 cursor-pointer ${
+                option === sortBy ? "bg-gray-100 font-medium" : ""
+              }`}
+            >
+              <span>{option}</span>
+              {option === sortBy && <Check className="w-4 h-4 text-gray-600" />}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  </div>
+</div>
+
+
+<div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  {sorted.map((rec) => (
+    <CarouselCard
+      key={rec.id}
+      image={rec.image}
+      place={rec.place}
+      rating={rec.rating}
+      reviews={rec.reviews}
+      description={rec.description}
+      price={rec.price}
+      oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
+      off={rec.off}
+      badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
+      banner={rec.banner ?? "New"}   // 👈 replaces the rating on the right in pink
+      variant="recommendation"              // 👈 exact look & feel as Recommendations, grid-safe
+    />
+  ))}
+</div>
+
+
+
+    {/* Empty state */}
+    {sorted.length === 0 && (
+      <div className="mt-6 text-sm text-gray-500">
+        No experiences match this subcategory.
+      </div>
+    )}
+  </div>
+);
+
+}
+
 
   // Default variant (existing layout)
   return (
