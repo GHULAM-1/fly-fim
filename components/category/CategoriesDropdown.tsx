@@ -265,14 +265,122 @@ const categories: Category[] = [
                   // Show simple list for hovered category (except "Tickets")
                   <div className="col-span-3">
                     <div className="space-y-3">
-                      {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => (
-                        <div 
-                          key={index} 
-                          className="text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1"
-                        >
-                          {item}
-                        </div>
-                      ))}
+                      <div className="flex flex-col space-y-3">
+                        {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => {
+                          // Get the category name for the current hovered category
+                          const categoryObj = categories.find(c => c.id === hoveredCategory);
+                          // Build the subcategory route
+                          const categoryRoute = categoryObj?.url?.split('/').pop();
+                          // Map subcategory names to proper URL slugs
+                          const getSubcategorySlug = (subcategoryName: string, categoryName: string) => {
+                            const name = subcategoryName.toLowerCase();
+                            switch (categoryName.toLowerCase()) {
+                              case "tours":
+                                if (name.includes("walking")) return "walking-tours";
+                                if (name.includes("guided")) return "guided-tours";
+                                if (name.includes("hop-on") || name.includes("hop off")) return `hop-on-hop-off-tours-${city}`;
+                                if (name.includes("city")) return "city-tours";
+                                if (name.includes("day")) return "day-trips";
+                                if (name.includes("heritage")) return "heritage-experiences";
+                                break;
+                              case "tickets":
+                                if (name.includes("museum")) return "museums";
+                                if (name.includes("landmark")) return "landmarks";
+                                if (name.includes("zoo")) return "zoos";
+                                if (name.includes("religious")) return "religious-sites";
+                                if (name.includes("city card")) return "city-cards";
+                                if (name.includes("theme park")) return "theme-parks";
+                                break;
+                              case "transportation":
+                                if (name.includes("public")) return "public-transport";
+                                if (name.includes("car rental")) return "car-rentals";
+                                if (name.includes("ferry")) return "ferry-services";
+                                if (name.includes("airport")) return "airport-transfers";
+                                if (name.includes("bike")) return "bike-rentals";
+                                if (name.includes("metro")) return "metro-services";
+                                break;
+                              case "food-drink":
+                                if (name.includes("cooking")) return "cooking-classes";
+                                if (name.includes("food tour")) return "food-tours";
+                                if (name.includes("wine")) return "wine-tastings";
+                                if (name.includes("restaurant")) return "restaurant-reservations";
+                                if (name.includes("market")) return "local-markets";
+                                if (name.includes("dietary")) return "dietary-options";
+                                break;
+                              case "entertainment":
+                                if (name.includes("live show")) return "live-shows";
+                                if (name.includes("theater")) return "theater";
+                                if (name.includes("theme park")) return "theme-parks";
+                                if (name.includes("concert")) return "concerts";
+                                if (name.includes("comedy")) return "comedy-clubs";
+                                if (name.includes("nightlife")) return "nightlife";
+                                break;
+                              case "adventure":
+                                if (name.includes("hiking")) return "hiking";
+                                if (name.includes("rock climbing")) return "rock-climbing";
+                                if (name.includes("off-road")) return "off-road-tours";
+                                if (name.includes("zip")) return "zip-lining";
+                                if (name.includes("caving")) return "caving";
+                                if (name.includes("paragliding")) return "paragliding";
+                                break;
+                              case "water-sports":
+                                if (name.includes("sailing")) return "sailing";
+                                if (name.includes("scuba")) return "scuba-diving";
+                                if (name.includes("surfing")) return "surfing";
+                                if (name.includes("kayaking")) return "kayaking";
+                                if (name.includes("jet ski")) return "jet-skiing";
+                                if (name.includes("fishing")) return "fishing";
+                                break;
+                              case "wellness":
+                                if (name.includes("spa")) return "spa-retreats";
+                                if (name.includes("yoga")) return "yoga-classes";
+                                if (name.includes("meditation")) return "meditation";
+                                if (name.includes("fitness")) return "fitness-centers";
+                                if (name.includes("thermal")) return "thermal-baths";
+                                if (name.includes("mindfulness")) return "mindfulness";
+                                break;
+                              case "specials":
+                                if (name.includes("discount")) return "discount-deals";
+                                if (name.includes("vip")) return "vip-experiences";
+                                if (name.includes("package")) return "package-deals";
+                                if (name.includes("seasonal")) return "seasonal-offers";
+                                if (name.includes("last minute")) return "last-minute";
+                                if (name.includes("group")) return "group-discounts";
+                                break;
+                              case "cruises":
+                                if (name.includes("port")) return "port-excursions";
+                                if (name.includes("shore")) return "shore-tours";
+                                if (name.includes("cruise package")) return "cruise-packages";
+                                if (name.includes("onboard")) return "onboard-activities";
+                                if (name.includes("dining")) return "dining-options";
+                                if (name.includes("entertainment")) return "entertainment";
+                                break;
+                              case "travel-services":
+                                if (name.includes("planning")) return "planning";
+                                if (name.includes("concierge")) return "concierge";
+                                if (name.includes("insurance")) return "insurance";
+                                if (name.includes("visa")) return "visa-services";
+                                if (name.includes("currency")) return "currency";
+                                if (name.includes("translation")) return "translations";
+                                break;
+                            }
+                            // Fallback to generic slug
+                            return item.replace(/\s+/g, '-').toLowerCase();
+                          };
+                          
+                          const subcategorySlug = getSubcategorySlug(item, categoryObj?.name || "");
+                          const subcategoryUrl = `/things-to-do/${city}/${categoryRoute}/${subcategorySlug}`;
+                          return (
+                            <a
+                              key={index}
+                              href={subcategoryUrl}
+                              className="block text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1"
+                            >
+                              {item}
+                            </a>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 ) : (
