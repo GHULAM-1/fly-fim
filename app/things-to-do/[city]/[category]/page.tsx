@@ -220,21 +220,32 @@ export default function CategoryPage() {
     },
   ];
 
-  // Get the category name and city from URL and capitalize first letter
-  const categoryName = params.category as string;
-  const city = params.city as string;
-  const isWorldwideRoute = city === "worldwide";
-  
-  // Get the last word from category and decode URL-encoded characters
-  const lastWord = categoryName ? categoryName.split("-").pop() || categoryName : "";
-  const decodedCategoryName = decodeURIComponent(lastWord);
-  
-  // Convert spaces to hyphens for config key matching
-  const configKey = decodedCategoryName.toLowerCase().replace(/\s+/g, "-");
-  
-  const formattedCategoryName = decodedCategoryName
-    ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
-    : "Category";
+// Get the category name and city from URL and capitalize first letter
+const categoryName = params.category as string;
+const city = params.city as string;
+const isWorldwideRoute = city === "worldwide";
+
+// Decode URL-encoded characters first, then process
+const decodedCity = decodeURIComponent(city);
+
+const decodedCategory = decodeURIComponent(categoryName);
+
+// Get the last word from category after decoding
+const lastWord = decodedCategory ? decodedCategory.split("-").pop() || decodedCategory : "";
+
+// Convert spaces to hyphens for config key matching
+const configKey = lastWord.toLowerCase().replace(/\s+/g, "-");
+
+const formattedCategoryName = lastWord
+  ? lastWord.charAt(0).toUpperCase() + lastWord.slice(1)
+  : "Category";
+
+// Format city name properly (for display)
+const formattedCityName = decodedCity
+  ? decodedCity.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ')
+  : "City";
 
 
   // Comprehensive category configuration - conditional based on worldwide vs city-specific
@@ -551,7 +562,7 @@ export default function CategoryPage() {
         },
         adventure: {
           style: "bordered",
-          heading: `Adventure in ${city}`,
+          heading: `Adventure in ${formattedCityName}`,
           navigationItems: [
             {
               id: "hiking",
@@ -822,7 +833,7 @@ export default function CategoryPage() {
         },
         tours: {
           style: "simple",
-          heading: `${city} Tours`,
+          heading: `${formattedCityName} Tours`,
           navigationItems: [
             {
               id: "walking-tours",
@@ -838,7 +849,7 @@ export default function CategoryPage() {
             },
             {
               id: "hop-on-hop-off",
-              label: `Hop-on Hop-off Tours ${city}`,
+              label: `Hop-on Hop-off Tours in ${formattedCityName}`,
               icon: Bus,
               color: "purple",
             },
@@ -895,7 +906,7 @@ export default function CategoryPage() {
         },
         transportation: {
           style: "simple",
-          heading: `Transportation in ${city}`,
+          heading: `Transportation in ${formattedCityName}`,
           navigationItems: [
             {
               id: "public-transport",
@@ -953,7 +964,7 @@ export default function CategoryPage() {
         },
         "travel-services": {
           style: "bordered",
-          heading: `Travel Services in ${city}`,
+          heading: `Travel Services in ${formattedCityName}`,
           navigationItems: [
             {
               id: "planning",
@@ -1007,7 +1018,7 @@ export default function CategoryPage() {
         },
         cruises: {
           style: "simple",
-          heading: `Cruises in ${city}`,
+          heading: `Cruises in ${formattedCityName}`,
           navigationItems: [
             {
               id: "port-excursions",
@@ -1061,7 +1072,7 @@ export default function CategoryPage() {
         },
         "food-drink": {
           style: "simple",
-          heading: `Food & Drink in ${city}`,
+          heading: `Food & Drink in ${formattedCityName}`,
           navigationItems: [
             {
               id: "cooking-classes",
@@ -1213,7 +1224,7 @@ export default function CategoryPage() {
         },
         "water-sports": {
           style: "simple",
-          heading: `Water Sports in ${city}`,
+          heading: `Water Sports in ${formattedCityName}`,
           navigationItems: [
             { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
             {
@@ -1252,7 +1263,7 @@ export default function CategoryPage() {
         },
         wellness: {
           style: "simple",
-          heading: `Health & Wellness in ${city}`,
+          heading: `Health & Wellness in ${formattedCityName}`,
           navigationItems: [
             {
               id: "spa-retreats",
@@ -1306,7 +1317,7 @@ export default function CategoryPage() {
         },
         specials: {
           style: "simple",
-          heading: `${city} Specials`,
+          heading: `${formattedCityName} Specials`,
           navigationItems: [
             {
               id: "discount-deals",
@@ -1921,7 +1932,7 @@ export default function CategoryPage() {
                           className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
                         >
                           <a
-                            href={`/things-to-do/${city}/${item.name.toLowerCase()}`}
+                            href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
                             className="text-sm font-halyard-text-light text-[#444444] leading-tight"
                           >
                             {item.name}
@@ -2055,7 +2066,7 @@ export default function CategoryPage() {
               </div>
             ) : (
               <CarouselGrid
-                title={`Top experiences in ${city}`}
+                title={`Top experiences in ${formattedCityName}`}
                 variant="pills"
                 recommendations={recommendations}
                 navigationItems={currentCategory.navigationItems}
