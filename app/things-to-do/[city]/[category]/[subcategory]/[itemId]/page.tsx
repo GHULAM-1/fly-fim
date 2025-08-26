@@ -48,6 +48,16 @@ export default function CheckoutPage() {
       decodedCategoryName.slice(1)
     : "Category";
 
+      // Decode URL-encoded characters first, then process
+  const decodedCity = decodeURIComponent(city);
+
+  // Format city name properly (for display)
+  const formattedCityName = decodedCity
+  ? decodedCity.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ')
+  : "City";
+
   // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
     subcategory ? subcategory.split("-").join(" ") : ""
@@ -116,12 +126,12 @@ export default function CheckoutPage() {
             heading: getDynamicHeading(),
             components: {
                 themes: [
-                { icon: Landmark, text: `Landmarks in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Ticket, text: `Combo Tickets in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Users, text: `Guided Tours in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Music, text: `Dance Shows in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Bus, text: `Hop-on Hop-off Tours ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: SunMedium, text: `${city.charAt(0).toUpperCase() + city.slice(1)} Attractions`, href: "#" },
+                { icon: Landmark, text: `Landmarks in ${formattedCityName}`, href: "#" },
+                { icon: Ticket, text: `Combo Tickets in ${formattedCityName}`, href: "#" },
+                { icon: Users, text: `Guided Tours in ${formattedCityName}`, href: "#" },
+                { icon: Music, text: `Dance Shows in ${formattedCityName}`, href: "#" },
+                { icon: Bus, text: `Hop-on Hop-off Tours in ${formattedCityName}`, href: "#" },
+                { icon: SunMedium, text: `${formattedCityName} Attractions`, href: "#" },
                 { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
                 ],
             },
@@ -317,7 +327,7 @@ return (
                 <span className="text-[#e5006e] md:text-[15px]">NEW</span>
               </h1>
               <h2 className="text-[18px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4">
-                {formattedItemName} in {city.charAt(0).toUpperCase() + city.slice(1)}
+                {formattedItemName} in {formattedCityName}
               </h2>
             </div>
 
@@ -377,7 +387,7 @@ return (
               <br />
               in category <span className="font-semibold">{formattedCategoryName}</span> <br />
               in subcategory <span className="font-semibold">{formattedSubcategoryName}</span> <br />
-              in <span className="font-semibold">{city.charAt(0).toUpperCase() + city.slice(1)}</span>
+              in <span className="font-semibold">{formattedCityName}</span>
             </p>
             {/* Add checkout form and payment details here */}
           </div>
