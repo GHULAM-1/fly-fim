@@ -42,10 +42,21 @@ export default function SubcategoryPage() {
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
+  // Decode URL-encoded characters first, then process
+  const decodedCity = decodeURIComponent(city);
+
+
   const formattedCategoryName = decodedCategoryName
     ? decodedCategoryName.charAt(0).toUpperCase() +
       decodedCategoryName.slice(1)
     : "Category";
+
+  // Format city name properly (for display)
+  const formattedCityName = decodedCity
+  ? decodedCity.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ')
+  : "City";  
 
   // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
@@ -61,8 +72,8 @@ export default function SubcategoryPage() {
 
   // Dynamic heading logic based on subcategory
   const getDynamicHeading = (): string => {
-    const cityFormatted = city.charAt(0).toUpperCase() + city.slice(1);
-    
+    const cityFormatted = formattedCityName;
+
     if (subcategory) {
       // If we have a subcategory, format it as "Subcategory in City"
       return `${formattedSubcategoryName} in ${cityFormatted}`;
@@ -120,12 +131,12 @@ export default function SubcategoryPage() {
             heading: getDynamicHeading(),
             components: {
                 themes: [
-                { icon: Landmark, text: `Landmarks in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Ticket, text: `Combo Tickets in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Users, text: `Guided Tours in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Music, text: `Dance Shows in ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: Bus, text: `Hop-on Hop-off Tours ${city.charAt(0).toUpperCase() + city.slice(1)}`, href: "#" },
-                { icon: SunMedium, text: `${city.charAt(0).toUpperCase() + city.slice(1)} Attractions`, href: "#" },
+                { icon: Landmark, text: `Landmarks in ${formattedCityName}`, href: "#" },
+                { icon: Ticket, text: `Combo Tickets in ${formattedCityName}`, href: "#" },
+                { icon: Users, text: `Guided Tours in ${formattedCityName}`, href: "#" },
+                { icon: Music, text: `Dance Shows in ${formattedCityName}`, href: "#" },
+                { icon: Bus, text: `Hop-on Hop-off Tours in ${formattedCityName}`, href: "#" },
+                { icon: SunMedium, text: `${formattedCityName} Attractions`, href: "#" },
                 { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
                 ],
             },
@@ -488,7 +499,7 @@ export default function SubcategoryPage() {
         <div className="md:mt-10 mt-0">
           <div className="md:mt-10 mt-0">
               <CarouselGrid
-                title={`Top experiences in ${city.charAt(0).toUpperCase() + city.slice(1)}`}
+                title={`Top experiences in ${formattedCityName}`}
                 variant="subcategory"
                 navigationItems={navItems}
                 recommendations={experiences}
