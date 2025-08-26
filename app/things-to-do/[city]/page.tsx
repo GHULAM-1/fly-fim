@@ -400,63 +400,51 @@ const ThingsToDo = () => {
       </div>
 
       <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
-        <CarouselGrid
-          title="Top experiences in London"
-          recommendations={recommendations}
-        />
-      </div>
-      <div id="activities">
-        <Activities />
-      </div>
-      <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
-        <div id="musicals">
-          <CarouselGrid
-            title="London Musicals"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="landmarks">
-          <CarouselGrid
-            title="Landmarks in London"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="day-trips">
-          <CarouselGrid
-            title="Day Trips From London"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="combos">
-          <CarouselGrid
-            title="Combos Tickets in London"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="cruises">
-          <CarouselGrid
-            title="Thames River Cruise"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="plays">
-          <CarouselGrid
-            title="Plays in London"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="museums">
-          <CarouselGrid
-            title="Museums in London"
-            recommendations={recommendations}
-          />
-        </div>
-        <div id="hop-on-hop-off-tours">
-          <CarouselGrid
-            title="Hop-on Hop-off Tours London"
-            recommendations={recommendations}
-          />
-        </div>
+      <CarouselGrid
+        title="Top experiences in London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="London Musicals"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Landmarks in London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Day Trips From London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Combos Tickets in London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Thames River Cruise"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Plays in London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Museums in London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />
+      <CarouselGrid
+        title="Hop-on Hop-off Tours London"
+        recommendations={recommendations}
+        variant="subcategory"
+      />     
       </div>
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />

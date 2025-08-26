@@ -1112,9 +1112,9 @@ return (
     <div className="sm:ml-4 shrink-0">
       <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center text-[11px] sm:text-xs md:text-sm text-[#666666] font-halyard-text-light gap-1 sm:gap-2 hover:text-gray-800">
-        <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4" />
+        <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4" strokeWidth={1.5} />
         <span className="truncate">Sort by: {sortBy}</span>
-        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
+        {/* <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" /> */}
       </DropdownMenuTrigger>
 
         <DropdownMenuContent
