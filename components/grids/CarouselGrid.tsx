@@ -16,6 +16,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import PriceDisplay from "../PriceDisplay";
 import Link from "next/link";
+import { useParams } from "next/navigation"; 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 
@@ -52,6 +53,12 @@ const CarouselGrid = ({
   initialSelectedId,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
+    const { city, category, subcategory } = useParams();  // Get params using useParams()
+  
+  // Ensure params are strings, not arrays (or fallback to an empty string)
+  const cityStr = city ? (Array.isArray(city) ? city[0] : city) : "";
+  const categoryStr = category ? (Array.isArray(category) ? category[0] : category) : "";
+  const subcategoryStr = subcategory ? (Array.isArray(subcategory) ? subcategory[0] : subcategory) : "";
   const [sortBy, setSortBy] = useState("Picked for you");
   const [visibleCards, setVisibleCards] = useState(8); // Initially show 4 cards
   const [isLoading, setIsLoading] = useState(false);
@@ -400,6 +407,10 @@ const CarouselGrid = ({
               price={recommendation.price}
               off={recommendation.off}
               badge={recommendation.cancellation}
+              city={cityStr}
+              category={categoryStr}
+              subcategory={subcategoryStr}
+              itemId={recommendation.id}
               variant="full"
             />
           ))}
@@ -1142,7 +1153,11 @@ return (
       oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
       off={rec.off}
       badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
-      banner={rec.banner ?? "New"}   // 👈 replaces the rating on the right in pink
+      banner={rec.banner ?? "New"} 
+      city={cityStr}
+      category={categoryStr}
+      subcategory={subcategoryStr}
+      itemId={rec.id}  // 👈 replaces the rating on the right in pink
       variant="recommendation"              // 👈 exact look & feel as Recommendations, grid-safe
     />
   ))}
@@ -1205,6 +1220,10 @@ return (
             reviews={recommendation.reviews}
             description={recommendation.description}
             price={recommendation.price}
+            city={cityStr}
+            category={categoryStr}
+            subcategory={subcategoryStr}
+            itemId={recommendation.id}
           />
         ))}
       </div>
