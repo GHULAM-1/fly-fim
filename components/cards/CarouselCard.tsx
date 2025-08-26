@@ -92,7 +92,7 @@ const CarouselCard = ({
           <div className="flex justify-between items-center -mt-2">
             <span className="text-[#666666] text-xs">{place}</span>
             {banner ? (
-              <span className="text-[#e5006e] text-xs font-semibold">{banner}</span>
+              <span className="text-[#e5006e] text-xs font-halyard-text">{banner}</span>
             ) : null}
           </div>
           <p className="font-halyard-text-regular text-lg text-[#444444] mt-0">{description}</p>

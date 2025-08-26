@@ -410,7 +410,7 @@ export default function SubcategoryPage() {
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>
-              <div className="md:block hidden mt-0">
+              <div className="block mt-0">
                 <div className="flex items-center gap-2 mb-0">
                   <div className="flex items-center gap-1">
                     <svg
@@ -434,7 +434,7 @@ export default function SubcategoryPage() {
               </div>
               
               {/* Subcategory Navigation Component */}
-              <div className="md:block hidden mt-6">
+              <div className="block mt-5">
                 <SubcategoryNavigation 
                   categoryName={formattedCategoryName}
                   currentSubcategory={subcategory}
