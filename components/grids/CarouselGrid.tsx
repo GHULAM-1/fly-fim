@@ -873,11 +873,11 @@ const CarouselGrid = ({
             className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
             style={{
               transform:
-                window.innerWidth >= 768
+                typeof window !== "undefined" && window.innerWidth >= 768
                   ? `translateX(-${currentPage * 200}px)`
                   : "none",
               width:
-                window.innerWidth >= 768
+                typeof window !== "undefined" && window.innerWidth >= 768
                   ? `${recommendations.length * 200}px`
                   : "auto",
             }}
@@ -1153,7 +1153,7 @@ return (
       oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
       off={rec.off}
       badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
-      banner={rec.banner ?? "New"} 
+      banner={rec.banner ?? "NEW"} 
       city={cityStr}
       category={categoryStr}
       subcategory={subcategoryStr}
