@@ -33,9 +33,18 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   // Get the city from URL params
   const city = params.city as string;
 
+  const decodedCity = decodeURIComponent(city);
+
+  // Format city name properly (for display)
+  const formattedCityName = decodedCity
+  ? decodedCity.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ')
+  : "City";
+
   // Categories data
 const categories: Category[] = [
-    { id: 1, name: `Top things to do in ${city}`, color: "purple", url: `/things-to-do/${city}` },
+    { id: 1, name: `Top things to do in ${formattedCityName}`, color: "purple", url: `/things-to-do/${city}` },
     { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
     { id: 3, name: "Tours", color: "gray", url: `/things-to-do/${city}/tours` },
     { id: 4, name: "Transportation", color: "gray", url: `/things-to-do/${city}/transportation` },
