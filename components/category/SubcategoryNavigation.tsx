@@ -44,116 +44,116 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
     const baseUrl = `/things-to-do/${city}/${category}`;
     
     switch (categoryName.toLowerCase()) {
-      case "tours":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "walking-tours", label: "Walking Tours", url: `${baseUrl}/walking-tours`, icon: Footprints },
-          { id: "guided-tours", label: "Guided Tours", url: `${baseUrl}/guided-tours`, icon: User },
-          { id: "city-tours", label: "City Tours", url: `${baseUrl}/city-tours`, icon: MapPin },
-          { id: `hop-on-hop-off-tours`, label: `Hop-on Hop-off Tours`, url: `${baseUrl}/hop-on-hop-off-tours`, icon: Bus },
-          { id: "day-trips", label: "Day Trips", url: `${baseUrl}/day-trips`, icon: Globe },
-          { id: "heritage-experiences", label: "Heritage Experiences", url: `${baseUrl}/heritage-experiences`, icon: Landmark },
-        ];
-      case "tickets":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "museums", label: "Museums", url: `${baseUrl}/museums` },
-          { id: "landmarks", label: "Landmarks", url: `${baseUrl}/landmarks` },
-          { id: "zoos", label: "Zoos", url: `${baseUrl}/zoos` },
-          { id: "religious-sites", label: "Religious Sites", url: `${baseUrl}/religious-sites` },
-          { id: "city-cards", label: "City Cards", url: `${baseUrl}/city-cards` },
-          { id: "theme-parks", label: "Theme Parks", url: `${baseUrl}/theme-parks` },
-        ];
-      case "transportation":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "public-transport", label: "Public Transport", url: `${baseUrl}/public-transport` },
-          { id: "car-rentals", label: "Car Rentals", url: `${baseUrl}/car-rentals` },
-          { id: "ferry-services", label: "Ferry Services", url: `${baseUrl}/ferry-services` },
-          { id: "airport-transfers", label: "Airport Transfers", url: `${baseUrl}/airport-transfers` },
-          { id: "bike-rentals", label: "Bike Rentals", url: `${baseUrl}/bike-rentals` },
-          { id: "metro-services", label: "Metro Services", url: `${baseUrl}/metro-services` },
-        ];
-      case "food-drink":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "cooking-classes", label: "Cooking Classes", url: `${baseUrl}/cooking-classes` },
-          { id: "food-tours", label: "Food Tours", url: `${baseUrl}/food-tours` },
-          { id: "wine-tastings", label: "Wine Tastings", url: `${baseUrl}/wine-tastings` },
-          { id: "restaurant-reservations", label: "Restaurant Reservations", url: `${baseUrl}/restaurant-reservations` },
-          { id: "local-markets", label: "Local Markets", url: `${baseUrl}/local-markets` },
-          { id: "dietary-options", label: "Dietary Options", url: `${baseUrl}/dietary-options` },
-        ];
-      case "entertainment":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "live-shows", label: "Live Shows", url: `${baseUrl}/live-shows` },
-          { id: "theater", label: "Theater", url: `${baseUrl}/theater` },
-          { id: "theme-parks", label: "Theme Parks", url: `${baseUrl}/theme-parks` },
-          { id: "concerts", label: "Concerts", url: `${baseUrl}/concerts` },
-          { id: "comedy-clubs", label: "Comedy Clubs", url: `${baseUrl}/comedy-clubs` },
-          { id: "nightlife", label: "Nightlife", url: `${baseUrl}/nightlife` },
-        ];
-      case "adventure":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "hiking", label: "Hiking Trails", url: `${baseUrl}/hiking` },
-          { id: "rock-climbing", label: "Rock Climbing", url: `${baseUrl}/rock-climbing` },
-          { id: "off-road-tours", label: "Off-Road Tours", url: `${baseUrl}/off-road-tours` },
-          { id: "skydiving", label: "Skydiving", url: `${baseUrl}/skydiving` },
-          { id: "bungee-jumping", label: "Bungee Jumping", url: `${baseUrl}/bungee-jumping` },
-          { id: "ziplining", label: "Ziplining", url: `${baseUrl}/ziplining` },
-        ];
-      case "water-sports":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "kayaking", label: "Kayaking", url: `${baseUrl}/kayaking` },
-          { id: "surfing", label: "Surfing", url: `${baseUrl}/surfing` },
-          { id: "snorkeling", label: "Snorkeling", url: `${baseUrl}/snorkeling` },
-          { id: "scuba-diving", label: "Scuba Diving", url: `${baseUrl}/scuba-diving` },
-          { id: "jet-skiing", label: "Jet Skiing", url: `${baseUrl}/jet-skiing` },
-          { id: "sailing", label: "Sailing", url: `${baseUrl}/sailing` },
-        ];
-      case "wellness":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "spa-retreats", label: "Spa Retreats", url: `${baseUrl}/spa-retreats` },
-          { id: "yoga-classes", label: "Yoga Classes", url: `${baseUrl}/yoga-classes` },
-          { id: "meditation", label: "Meditation Retreats", url: `${baseUrl}/meditation` },
-          { id: "fitness-centers", label: "Fitness Centers", url: `${baseUrl}/fitness-centers` },
-          { id: "thermal-baths", label: "Thermal Baths", url: `${baseUrl}/thermal-baths` },
-          { id: "mindfulness", label: "Mindfulness Workshops", url: `${baseUrl}/mindfulness` },
-        ];
-      case "specials":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "discount-deals", label: "Discount Deals", url: `${baseUrl}/discount-deals` },
-          { id: "vip-experiences", label: "VIP Experiences", url: `${baseUrl}/vip-experiences` },
-          { id: "package-deals", label: "Package Deals", url: `${baseUrl}/package-deals` },
-          { id: "seasonal-offers", label: "Seasonal Offers", url: `${baseUrl}/seasonal-offers` },
-          { id: "last-minute", label: "Last Minute Deals", url: `${baseUrl}/last-minute` },
-          { id: "group-discounts", label: "Group Discounts", url: `${baseUrl}/group-discounts` },
-        ];
-      case "cruises":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "port-excursions", label: "Port Excursions", url: `${baseUrl}/port-excursions` },
-          { id: "shore-tours", label: "Shore Tours", url: `${baseUrl}/shore-tours` },
-          { id: "cruise-packages", label: "Cruise Packages", url: `${baseUrl}/cruise-packages` },
-          { id: "onboard-activities", label: "Onboard Activities", url: `${baseUrl}/onboard-activities` },
-          { id: "dining-options", label: "Dining Options", url: `${baseUrl}/dining-options` },
-          { id: "entertainment", label: "Entertainment", url: `${baseUrl}/entertainment` },
-        ];
-      case "travel-services":
-        return [
-          { id: "all", label: "All", url: baseUrl },
-          { id: "planning", label: "Travel Planning", url: `${baseUrl}/planning` },
-          { id: "concierge", label: "Concierge Services", url: `${baseUrl}/concierge` },
-          { id: "insurance", label: "Travel Insurance", url: `${baseUrl}/insurance` },
-          { id: "visa-services", label: "Visa Services", url: `${baseUrl}/visa-services` },
-          { id: "currency", label: "Currency Exchange", url: `${baseUrl}/currency` },
-          { id: "translations", label: "Translation Services", url: `${baseUrl}/translations` },
-        ];
+case "tours":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "walking-tours", label: "Rome Walking Tour", url: `${baseUrl}/walking-tours`, icon: Footprints },
+        { id: "guided-tours", label: "Vatican City Tour", url: `${baseUrl}/guided-tours`, icon: User },
+        { id: "city-tours", label: "Historical Rome Tour", url: `${baseUrl}/city-tours`, icon: MapPin },
+        { id: "hop-on-hop-off-tours", label: "Hop-on Hop-off Tours", url: `${baseUrl}/hop-on-hop-off-tours`, icon: Bus },
+        { id: "day-trips", label: "Rome To Pompeii Tours", url: `${baseUrl}/day-trips`, icon: Globe },
+        { id: "heritage-experiences", label: "Colosseum Guided Tour", url: `${baseUrl}/heritage-experiences`, icon: Landmark },
+      ];
+    case "tickets":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "museums", label: "Vatican Museums Pass", url: `${baseUrl}/museums` },
+        { id: "landmarks", label: "Colosseum Tickets", url: `${baseUrl}/landmarks` },
+        { id: "zoos", label: "Zoos", url: `${baseUrl}/zoos` },
+        { id: "religious-sites", label: "St. Peter's Basilica", url: `${baseUrl}/religious-sites` },
+        { id: "city-cards", label: "City Cards", url: `${baseUrl}/city-cards` },
+        { id: "theme-parks", label: "Pantheon Entry", url: `${baseUrl}/theme-parks` },
+      ];
+    case "transportation":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "public-transport", label: "Public Transport", url: `${baseUrl}/public-transport` },
+        { id: "car-rentals", label: "Car Rentals", url: `${baseUrl}/car-rentals` },
+        { id: "ferry-services", label: "Ferry Services", url: `${baseUrl}/ferry-services` },
+        { id: "airport-transfers", label: "Airport Transfers", url: `${baseUrl}/airport-transfers` },
+        { id: "bike-rentals", label: "Bike Rentals", url: `${baseUrl}/bike-rentals` },
+        { id: "metro-services", label: "Train Tickets", url: `${baseUrl}/metro-services` },
+      ];
+    case "food-drink":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "cooking-classes", label: "Cooking Classes", url: `${baseUrl}/cooking-classes` },
+        { id: "food-tours", label: "Food Markets", url: `${baseUrl}/food-tours` },
+        { id: "wine-tastings", label: "Wine Tasting", url: `${baseUrl}/wine-tastings` },
+        { id: "restaurant-reservations", label: "Restaurant Tours", url: `${baseUrl}/restaurant-reservations` },
+        { id: "local-markets", label: "Street Food Tours", url: `${baseUrl}/local-markets` },
+        { id: "dietary-options", label: "Dietary Options", url: `${baseUrl}/dietary-options` },
+      ];
+    case "entertainment":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "live-shows", label: "Theater Shows", url: `${baseUrl}/live-shows` },
+        { id: "theater", label: "Opera Tickets", url: `${baseUrl}/theater` },
+        { id: "theme-parks", label: "Theme Parks", url: `${baseUrl}/theme-parks` },
+        { id: "concerts", label: "Concerts", url: `${baseUrl}/concerts` },
+        { id: "comedy-clubs", label: "Comedy Shows", url: `${baseUrl}/comedy-clubs` },
+        { id: "nightlife", label: "Live Music", url: `${baseUrl}/nightlife` },
+      ];
+    case "adventure":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "hiking", label: "Hiking Tours", url: `${baseUrl}/hiking` },
+        { id: "rock-climbing", label: "Rock Climbing", url: `${baseUrl}/rock-climbing` },
+        { id: "off-road-tours", label: "Off-Road Tours", url: `${baseUrl}/off-road-tours` },
+        { id: "skydiving", label: "Skydiving", url: `${baseUrl}/skydiving` },
+        { id: "bungee-jumping", label: "Bungee Jumping", url: `${baseUrl}/bungee-jumping` },
+        { id: "ziplining", label: "Zip Lining", url: `${baseUrl}/ziplining` },
+      ];
+    case "water-sports":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "kayaking", label: "Kayaking", url: `${baseUrl}/kayaking` },
+        { id: "surfing", label: "Surfing", url: `${baseUrl}/surfing` },
+        { id: "snorkeling", label: "Snorkeling", url: `${baseUrl}/snorkeling` },
+        { id: "scuba-diving", label: "Scuba Diving", url: `${baseUrl}/scuba-diving` },
+        { id: "jet-skiing", label: "Jet Skiing", url: `${baseUrl}/jet-skiing` },
+        { id: "sailing", label: "Sailing", url: `${baseUrl}/sailing` },
+      ];
+    case "wellness":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "spa-retreats", label: "Spa", url: `${baseUrl}/spa-retreats` },
+        { id: "yoga-classes", label: "Yoga Classes", url: `${baseUrl}/yoga-classes` },
+        { id: "meditation", label: "Meditation Retreats", url: `${baseUrl}/meditation` },
+        { id: "fitness-centers", label: "Fitness Centers", url: `${baseUrl}/fitness-centers` },
+        { id: "thermal-baths", label: "Thermal Baths", url: `${baseUrl}/thermal-baths` },
+        { id: "mindfulness", label: "Mindfulness Workshops", url: `${baseUrl}/mindfulness` },
+      ];
+    case "specials":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "discount-deals", label: "Discount Deals", url: `${baseUrl}/discount-deals` },
+        { id: "vip-experiences", label: "VIP Experiences", url: `${baseUrl}/vip-experiences` },
+        { id: "package-deals", label: "Package Deals", url: `${baseUrl}/package-deals` },
+        { id: "seasonal-offers", label: "Seasonal Offers", url: `${baseUrl}/seasonal-offers` },
+        { id: "last-minute", label: "Last Minute Deals", url: `${baseUrl}/last-minute` },
+        { id: "group-discounts", label: "Group Discounts", url: `${baseUrl}/group-discounts` },
+      ];
+    case "cruises":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "port-excursions", label: "Port Excursions", url: `${baseUrl}/port-excursions` },
+        { id: "shore-tours", label: "Shore Tours", url: `${baseUrl}/shore-tours` },
+        { id: "cruise-packages", label: "Cruise Packages", url: `${baseUrl}/cruise-packages` },
+        { id: "onboard-activities", label: "Onboard Activities", url: `${baseUrl}/onboard-activities` },
+        { id: "dining-options", label: "Dinner Cruises", url: `${baseUrl}/dining-options` },
+        { id: "entertainment", label: "Entertainment", url: `${baseUrl}/entertainment` },
+      ];
+    case "travel-services":
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        { id: "planning", label: "Travel Planning", url: `${baseUrl}/planning` },
+        { id: "concierge", label: "Concierge Services", url: `${baseUrl}/concierge` },
+        { id: "insurance", label: "Travel Insurance", url: `${baseUrl}/insurance` },
+        { id: "visa-services", label: "Visa Services", url: `${baseUrl}/visa-services` },
+        { id: "currency", label: "Currency Exchange", url: `${baseUrl}/currency` },
+        { id: "translations", label: "Translation Services", url: `${baseUrl}/translations` },
+      ];
       default:
         return [
           { id: "all", label: "All", url: baseUrl },
@@ -221,13 +221,13 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
   }, []);
 
   // Button styles (mimic main category menu)
-  const getButtonStyles = (item: SubcategoryItem, isActive: boolean) => {
-    return `font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] rounded-[4px] whitespace-nowrap transition-all duration-200 mb-0 ${
-      isActive
-        ? "text-purple-600 font-semibold"
-        : "text-[#444444] hover:text-purple-600"
-    }`;
-  };
+    const getButtonStyles = (item: SubcategoryItem, isActive: boolean) => {
+      return `font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] rounded-[4px] whitespace-nowrap transition-all duration-200 mb-0 ${
+        isActive
+          ? "text-purple-600"
+          : "text-[#444444] hover:text-purple-600"
+      }`;
+    };
 
   return (
     <div className="relative">
