@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
+import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
 import Banner from "@/components/home/Banner";
 import {
   BreadcrumbList,
@@ -1845,6 +1846,13 @@ export default function CategoryPage() {
                   {currentCategory.heading}
                 </h1>
               </div>
+              
+              {/* Subcategory Navigation Component - only show for city-specific routes
+              <div className="md:block hidden mt-6">
+                <SubcategoryNavigation 
+                  categoryName={formattedCategoryName}
+                />
+              </div> */}
             </>
           ) : (
             <div>
