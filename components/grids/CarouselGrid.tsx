@@ -1015,22 +1015,22 @@ const CarouselGrid = ({
           </div>
         </div>
         <div className=" relative md:overflow-hidden">
-<div
-  className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
-  style={{
-    transform:
-      isClient && window.innerWidth >= 768
-        ? `translateX(-${currentPage * 400}px)`
-        : "none",
-    width:
-      isClient && window.innerWidth >= 768
-        ? `${recommendations.length * 400}px`
-        : "auto",
-  }}
-  onTouchStart={onTouchStart}
-  onTouchMove={onTouchMove}
-  onTouchEnd={onTouchEnd}
->
+            <div
+              className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+              style={{
+                transform:
+                  isClient && window.innerWidth >= 768
+                    ? `translateX(-${currentPage * 400}px)`
+                    : "none",
+                width:
+                  isClient && window.innerWidth >= 768
+                    ? `${recommendations.length * 400}px`
+                    : "auto",
+              }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
             {recommendations.map((recommendation, index) => (
               <Link
                 key={recommendation.id}

@@ -4,6 +4,12 @@ import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import ImageGallery from "@/components/checkout/gallery"; 
 import Banner from "@/components/home/Banner";
+import Activities from "@/components/checkout/top-things-to-do";
+import Recommendations from "@/components/checkout/similar-experiences";
+import FeaturesSection from "@/components/checkout/features";
+import FaqSection from "@/components/checkout/faqs";
+import CheckAvailability from "@/components/checkout/check-availability";
+import CheckoutNav from "@/components/checkout/CheckoutNav";
 import {
   BreadcrumbList,
   BreadcrumbSeparator,
@@ -26,8 +32,9 @@ import {
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
+import WhyHeadout from "@/components/checkout/WhyHeadout";
 
-export default function CheckoutPage() {
+const CheckoutPage: React.FC = () =>  {
   const params = useParams();
   const city = params.city as string;
   const categoryName = params.category as string;
@@ -48,15 +55,15 @@ export default function CheckoutPage() {
       decodedCategoryName.slice(1)
     : "Category";
 
-      // Decode URL-encoded characters first, then process
+  // Decode URL-encoded characters first, then process
   const decodedCity = decodeURIComponent(city);
 
   // Format city name properly (for display)
   const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  : "City";
+    ? decodedCity.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ')
+    : "City";
 
   // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
@@ -241,7 +248,7 @@ export default function CheckoutPage() {
     "/images/tickets-included-03.avif",
     "/images/tickets-included-04.avif",
     "/images/tickets-included-05.avif",
-    "/images/tickets-included-06.avif",
+    "/images/tickets-included-07.avif"
   ];
 
   // Build navigation items from current subcategory config
@@ -259,168 +266,197 @@ export default function CheckoutPage() {
       };
     }) || [];
 
-return (
-  <>
-    <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 md:mt-5 ">
-      <div className="pt-[76px]">
-        {!isWorldwideRoute ? (
-          <>
-            {/* Breadcrumb Section */}
-            <div className="mb-[14px] md:block hidden">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href="/"
-                    >
-                      Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href="/things-to-do"
-                    >
-                      Things to do
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href={`/things-to-do/${city}/${categoryName}`}
-                    >
-                      {formattedCategoryName}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href={`/things-to-do/${city}/${categoryName}/${subcategory}`}
-                    >
-                      {formattedSubcategoryName}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                      {formattedItemName}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-
-            {/* Subcategory and Item Name Section */}
-            <div className="md:block hidden mt-0">
-              <div className="flex items-center gap-2 mb-0">
-                <div className="flex items-center gap-1">
-                  {/* Optional SVG or icons */}
-                </div>
+  return (
+    <>
+  <CheckoutNav />
+  <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
+        <div className="pt-16 md:pt-[76px]">
+          {!isWorldwideRoute ? (
+            <>
+              {/* Breadcrumb Section - Hidden on mobile */}
+              <div className="mb-[14px] hidden md:block">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/things-to-do"
+                      >
+                        Things to do
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/${city}/${categoryName}`}
+                      >
+                        {formattedCategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/${city}/${categoryName}/${subcategory}`}
+                      >
+                        {formattedSubcategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedItemName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
               </div>
-              <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
-                <span className="text-[#666666]">{formattedSubcategoryName}</span>
-                <span className="text-[#9F9F9F] mx-1 rounded-full"> • </span>
-                <span className="text-[#e5006e] md:text-[15px]">NEW</span>
-              </h1>
-              <h2 className="text-[18px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4">
-                {formattedItemName} in {formattedCityName}
-              </h2>
-            </div>
 
-            {/* Image Gallery for Item */}
-            <ImageGallery images={images} itemName={formattedItemName} city={city} />
-          </>
-        ) : (
-          <div>
-            {/* Only Breadcrumb for Worldwide Routes */}
-            <div className="mb-[34px]">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href="/"
-                    >
-                      Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href={`/things-to-do/worldwide/${categoryName}`}
-                    >
-                      {formattedCategoryName}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink
-                      className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                      href={`/things-to-do/worldwide/${categoryName}/${subcategory}`}
-                    >
-                      {formattedSubcategoryName}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                      {formattedItemName}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </div>
-        )}
+              {/* Mobile Back Button */}
+              <div className="md:hidden mb-4">
+                <button className="flex items-center text-gray-600 text-sm">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-2">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Back
+                </button>
+              </div>
 
-        {/* Checkout Section */}
-        <div className="md:mt-10 mt-0">
-          <div className="p-8 border rounded-lg shadow mb-10">
-            <h2 className="text-xl font-bold mb-4">Checkout Details</h2>
-            <p className="text-lg">
-              You're now at the checkout page of <span className="font-semibold">{formattedItemName}</span>{" "}
-              <br />
-              in category <span className="font-semibold">{formattedCategoryName}</span> <br />
-              in subcategory <span className="font-semibold">{formattedSubcategoryName}</span> <br />
-              in <span className="font-semibold">{formattedCityName}</span>
-            </p>
-            {/* Add checkout form and payment details here */}
-          </div>
+              {/* Subcategory and Item Name Section */}
+              <div className="block mt-0">
+                <div className="flex items-center gap-2 mb-0">
+                  <div className="flex items-center gap-1">
+                    {/* Optional SVG or icons */}
+                  </div>
+                </div>
+                <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
+                  <span className="text-[#666666]">{formattedSubcategoryName}</span>
+                  <span className="text-[#9F9F9F] mx-1 rounded-full"> • </span>
+                  <span className="text-[#e5006e] md:text-[15px]">NEW</span>
+                </h1>
+                <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
+                  {formattedItemName} in {formattedCityName}
+                </h2>
+              </div>
 
-          {/* Browse Themes Section */}
-          <div className="mb-10 mt-10 ">
-            <BrowseThemes
-              title="Browse by themes"
-              themes={currentSubCategory.components.themes || []}
-            />
-          </div>
-
-          {/* Nearby Cities and Stats */}
-          {!isWorldwideRoute && (
-            <div className="mb-10">
-              <CarouselGrid
-                title="Nearby cities to explore"
-                variant="simple"
-                recommendations={destinations}
-              />
+              {/* Image Gallery for Item */}
+              <ImageGallery images={images} itemName={formattedItemName} city={city} />
+            </>
+          ) : (
+            <div>
+              {/* Only Breadcrumb for Worldwide Routes */}
+              <div className="mb-[34px] hidden md:block">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/worldwide/${categoryName}`}
+                      >
+                        {formattedCategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/worldwide/${categoryName}/${subcategory}`}
+                      >
+                        {formattedSubcategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedItemName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
             </div>
           )}
 
-          <div className="mb-10">
+        <div className="md:mt-10 mt-6" id="checkout-section">
+          {/* Checkout Section - Features, FAQs, and Sticky Right Section */}
+          <div className="flex flex-wrap md:flex-nowrap">
+            <div className="w-full md:w-3/4">
+              {/* Features Section */}
+              <FeaturesSection />
+
+              {/* FAQ Section */}
+              <FaqSection />
+            </div>
+
+            {/* Sticky Right Section */}
+            <div className="w-full md:w-1/4 flex flex-col gap-6 md:sticky md:top-24 h-fit">
+              <CheckAvailability />
+              <WhyHeadout />
+            </div>
+          </div>
+
+        {/* Additional Content Section */}
+        <div>
+            {/* Similar Experiences Section */}
+            <div className="mb-6 md:mb-10 mt-6 md:mt-10">
+            <Recommendations />
+            </div>
+
+            {/* Things to do in city */}
+            <div className="mb-6 md:mb-10 mt-6 md:mt-10">
+            <Activities title={`Top Things to do in ${formattedCityName}`} />
+            </div>
+
+            {/* Browse Themes Section */}
+            <div className="mb-6 md:mb-10 mt-6 md:mt-10">
+            <BrowseThemes
+                title="Browse by themes"
+                themes={currentSubCategory.components.themes || []}
+            />
+            </div>
+
+            {/* Nearby Cities and Stats */}
+            {!isWorldwideRoute && (
+            <div className="mb-6 md:mb-10">
+                <CarouselGrid
+                title="Nearby cities to explore"
+                variant="simple"
+                recommendations={destinations}
+                />
+            </div>
+            )}
+
+            <div className="mb-6 md:mb-10">
             <Banner />
-          </div>
-          <div className="mb-10">
+            </div>
+            <div className="mb-6 md:mb-10">
             <Stats />
-          </div>
+            </div>
+        </div>
+        </div>
         </div>
       </div>
-    </div>
-  </>
-);
-
+    </>
+  );
 }
+
+export default CheckoutPage;
