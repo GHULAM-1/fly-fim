@@ -42,7 +42,6 @@ export default function SubcategoryPage() {
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
-  // Decode URL-encoded characters first, then process
   const decodedCity = decodeURIComponent(city);
 
 
