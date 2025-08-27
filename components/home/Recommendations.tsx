@@ -37,6 +37,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "dubai",
+      category: "adventure",
+      subcategory: "skydiving",
+      itemId: "skydive-dubai",
     },
     {
       id: 2,
@@ -46,6 +50,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "athens",
+      category: "culture",
+      subcategory: "historical-sites",
+      itemId: "acropolis-tickets",
     },
     {
       id: 3,
@@ -57,6 +65,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "rome",
+      category: "tours",
+      subcategory: "day-trips",
+      itemId: "pompeii-amalfi-tour",
     },
     {
       id: 4,
@@ -67,6 +79,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio",
     },
     {
       id: 5,
@@ -77,6 +93,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-2",
     },
     {
       id: 6,
@@ -87,6 +107,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-3",
     },
     {
       id: 7,
@@ -97,6 +121,10 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-4",
     },
     {
       id: 8,
@@ -107,15 +135,19 @@ const Recommendations = () => {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-5",
     },
   ];
 
   return (
-    <div className="py-4 sm:py-10  max-w-[1200px] mx-auto 2xl:px-0">
+    <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
       <div className="flex justify-between items-center px-[24px] xl:px-0">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
-        Travelers' favorite choices
-                </h2>
+          Travelers' favorite choices
+        </h2>
         <div className="hidden md:flex items-center gap-2">
           <button
             className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
@@ -132,20 +164,26 @@ const Recommendations = () => {
         </div>
       </div>
       <div
-        className="mt-4 pl-[24px] xl:px-0 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (
-          <CarouselCard
-            key={recommendation.id}
-            image={recommendation.image}
-            place={recommendation.place}
-            rating={recommendation.rating}
-            reviews={recommendation.reviews}
-            description={recommendation.description}
-            price={recommendation.price}
-            badge={recommendation.badge}
-          />
+          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px]">
+            <CarouselCard
+              variant="recommendation"
+              image={recommendation.image}
+              place={recommendation.place}
+              rating={recommendation.rating}
+              reviews={recommendation.reviews}
+              description={recommendation.description}
+              price={recommendation.price}
+              badge={recommendation.badge}
+              city={recommendation.city}
+              category={recommendation.category}
+              subcategory={recommendation.subcategory}
+              itemId={recommendation.itemId}
+            />
+          </div>
         ))}
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import CarouselCard from "../cards/CarouselCard";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ArrowUpDown, Check } from "lucide-react";
+import { ChevronDown, ArrowUpDown, Check, X } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { StarIcon } from "lucide-react";
@@ -19,6 +19,16 @@ import Link from "next/link";
 import { useParams } from "next/navigation"; 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
+import {   
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
+
 
 // --- add to props interface ---
 interface CarouselGridProps {
@@ -164,7 +174,7 @@ const CarouselGrid = ({
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors">
               <ArrowUpDown size={16} />
-              <span className="text-sm">Sort by: {sortBy}</span>
+                <span className="text-sm px-8 py-3 hover:bg-gray-200 rounded">{`Sort by: ${sortBy}`}</span>
               <ChevronDown size={16} />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -1091,91 +1101,128 @@ if (variant === "subcategory") {
     }
   });
 
-return (
-  <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-    {/* Title stays on its own line */}
-    <div className="mb-2">
-      <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-        {title}
-      </h2>
-    </div>
-    
-{/* Count (left) + Sort (right) — responsive */}
-<div className="mt-3 mb-4">
-  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-5">
-    {/* left: experiences count */}
-    <p className="text-[12px] sm:text-sm text-[#666666] font-halyard-text-light">
-      {sorted.length} experiences
-    </p>
-
-    {/* right: sort */}
-    <div className="sm:ml-4 shrink-0">
-      <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center text-[11px] sm:text-xs md:text-sm text-[#666666] font-halyard-text-light gap-1 sm:gap-2 hover:text-gray-800">
-        <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4" strokeWidth={1.5} />
-        <span className="truncate">Sort by: {sortBy}</span>
-        {/* <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" /> */}
-      </DropdownMenuTrigger>
-
-        <DropdownMenuContent
-          align="end"
-          className="w-48 rounded-md border border-gray-200 bg-white shadow-md"
-        >
-          {sortOptions.map((option) => (
-            <DropdownMenuItem
-              key={option}
-              onClick={() => setSortBy(option)}
-              className={`flex items-center justify-between px-3 py-2 sm:text-sm text-[#444444] hover:bg-gray-100 cursor-pointer ${
-                option === sortBy ? "bg-gray-100 font-medium" : ""
-              }`}
-            >
-              <span>{option}</span>
-              {option === sortBy && <Check className="w-4 h-4 text-gray-600" />}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  </div>
-</div>
-
-
-<div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-  {sorted.map((rec) => (
-    <CarouselCard
-      key={rec.id}
-      image={rec.image}
-      place={rec.place}
-      rating={rec.rating}
-      reviews={rec.reviews}
-      description={rec.description}
-      price={rec.price}
-      oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
-      off={rec.off}
-      badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
-      banner={rec.banner ?? "NEW"} 
-      city={cityStr}
-      category={categoryStr}
-      subcategory={subcategoryStr}
-      itemId={rec.id}  // 👈 replaces the rating on the right in pink
-      variant="recommendation"              // 👈 exact look & feel as Recommendations, grid-safe
-    />
-  ))}
-</div>
-
-
-
-    {/* Empty state */}
-    {sorted.length === 0 && (
-      <div className="mt-6 text-sm text-gray-500">
-        No experiences match this subcategory.
+  return (
+    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+      {/* Title stays on its own line */}
+      <div className="mb-2">
+        <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+          {title}
+        </h2>
       </div>
-    )}
-  </div>
-);
+      
+      {/* Count (left) + Sort (right) — responsive with drawer for small screens */}
+      <div className="mt-3 mb-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-5">
+          {/* left: experiences count */}
+          <p className="text-[12px] sm:text-sm text-[#666666] font-halyard-text-light">
+            {sorted.length} experiences
+          </p>
 
+          {/* right: sort — uses drawer on small screens */}
+          <div className="sm:ml-4 shrink-0">
+            {/* Mobile: DrawerTrigger moved up, static position, full width, centered */}
+            <Drawer shouldScaleBackground={true}>
+              <DrawerTrigger className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[50vw] max-w-[100px] flex items-center justify-center text-[11px] sm:hidden z-50 bg-white py-1 font-halyard-text gap-2 border border-gray-300 rounded-lg">
+                <div className="flex items-center px-3 py-1 hover:bg-gray-100 rounded"> 
+                  <span className="text-sm mr-2">{`Sort by`}</span>
+                  <ArrowUpDown className="w-3 h-3" strokeWidth={1.5} />
+                </div>
+              </DrawerTrigger>
+              <DrawerContent className="sm:hidden fixed inset-0 h-screen max-h-screen overflow-y-auto bg-white z-[100]">
+                <DrawerHeader className="flex items-center justify-between px-4 pt-1 pb-1">
+                  <DrawerTitle className="text-left font-semibold font-halyard-text-light" style={{ fontSize: "18px" }}>Sort by</DrawerTitle>
+                  <DrawerClose asChild>
+                    <button className="p-2 text-gray-500 hover:text-gray-700 rounded-full">
+                      <X className="w-5 h-5" />
+                    </button>
+                  </DrawerClose>
+                </DrawerHeader>
+                <div className="border-b border-gray-200 mx-4" />
+                <div className="px-4 pb-1 pt-1">
+                  <div className="flex flex-col gap-2 mt-1">
+                    {sortOptions.map((option) => (
+                      <DrawerClose asChild key={option}>
+                        <button
+                          onClick={() => setSortBy(option)}
+                          className={`flex items-center justify-between pl-0 pr-4 py-0 text-[#444444] hover:bg-gray-100 cursor-pointer rounded font-medium`}
+                          style={{ fontSize: "15px" }}
+                        >
+                          <span className="text-left pl-0">{option}</span>
+                          {option === sortBy && (
+                            <span className="w-4 h-4 flex items-center justify-center">
+                              <span className="block w-3 h-3 rounded-full border-2 border-purple-600 bg-white" />
+                            </span>
+                          )}
+                        </button>
+                      </DrawerClose>
+                    ))}
+                  </div>
+                </div>
+                {/* Removed DrawerFooter close button, now using X icon above */}
+              </DrawerContent>
+            </Drawer>
+            {/* Desktop: Dropdown remains, hidden on mobile */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center text-[11px] sm:text-xs md:text-sm text-[#666666] font-halyard-text-light gap-1 sm:gap-2 hover:bg-gray-100 hidden sm:block">
+                <div className="flex items-center px-5 py-2 hover:bg-gray-100 rounded">
+                  <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4 mr-2" strokeWidth={1.5} />
+                  <span className="text-sm">{`Sort by: ${sortBy}`}</span>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="min-w-[250px] rounded-md border border-gray-200 bg-white shadow-md"
+              >
+                {sortOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option}
+                    onClick={() => setSortBy(option)}
+                    className={`flex items-center justify-between px-5 py-2 text-sm text-[#666666] hover:bg-gray-100 cursor-pointer rounded ${
+                      option === sortBy ? "bg-gray-100 font-medium" : ""
+                    }`}
+                  >
+                    <span>{option}</span>
+                    {option === sortBy && <Check className="w-4 h-4 text-gray-600" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {sorted.map((rec) => (
+          <CarouselCard
+            key={rec.id}
+            image={rec.image}
+            place={rec.place}
+            rating={rec.rating}
+            reviews={rec.reviews}
+            description={rec.description}
+            price={rec.price}
+            oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
+            off={rec.off}
+            badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
+            banner={rec.banner ?? "NEW"} 
+            city={cityStr}
+            category={categoryStr}
+            subcategory={subcategoryStr}
+            itemId={rec.id}  // 👈 replaces the rating on the right in pink
+            variant="recommendation"              // 👈 exact look & feel as Recommendations, grid-safe
+          />
+        ))}
+      </div>
+
+      {/* Empty state */}
+      {sorted.length === 0 && (
+        <div className="mt-6 text-sm text-gray-500">
+          No experiences match this subcategory.
+        </div>
+      )}
+    </div>
+  );
 }
-
 
   // Default variant (existing layout)
   return (
