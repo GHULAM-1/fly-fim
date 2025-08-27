@@ -222,11 +222,18 @@ case "tours":
 
   // Button styles (mimic main category menu)
     const getButtonStyles = (item: SubcategoryItem, isActive: boolean) => {
-      return `font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] rounded-[4px] whitespace-nowrap transition-all duration-200 mb-0 ${
+      const hasIcon = item.icon !== undefined;
+      let base = `font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base ${hasIcon ? 'gap-2' : ''} py-[11px] rounded-[4px] whitespace-nowrap transition-all duration-200 mb-0 ${
         isActive
           ? "text-purple-600"
-          : "text-[#444444] hover:text-purple-600"
-      }`;
+          : "text-[#444444] hover:text-purple-600"}`;
+      // If 'All' and no icon, remove left padding for all screen sizes
+      if (item.label === 'All' && !hasIcon) {
+        base += ' pl-0 pr-[15px]';
+      } else {
+        base += ' px-[15px]';
+      }
+      return base;
     };
 
   return (

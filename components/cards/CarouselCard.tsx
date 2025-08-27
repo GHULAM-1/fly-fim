@@ -58,12 +58,14 @@ const CarouselCard = ({
       <Link href={`/things-to-do/${city}/${category}/${subcategory}/${itemId}`}>
         <div className="w-full pt-2 hover:-translate-y-2 transition-all duration-300 group cursor-pointer">
           <div className="relative pointer-events-none md:pointer-events-auto">
+            {/* Vignette effect overlay */}
+            <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_-15px_30px_rgba(0,0,0,0.7)] transition-shadow duration-300 pointer-events-none rounded-[4px]" />
             {badge && (
               <span className="absolute top-2 left-2 z-10 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
                 {badge}
               </span>
             )}
-            <div className="relative w-full aspect-[282/176] rounded-[4px] overflow-hidden mb-4">
+            <div className="relative w-full aspect-[16/10] rounded-[4px] overflow-hidden mb-4">
               <Swiper
                 loop
                 allowTouchMove={false}
