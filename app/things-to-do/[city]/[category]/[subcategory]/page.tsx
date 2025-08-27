@@ -326,7 +326,6 @@ export default function SubcategoryPage() {
       price: 22,
       subcategoryId: navItems[2]?.id ?? "guided-tours",
     },
-    // more items to showcase sorting:
     {
       id: "ex-7",
       image: "/images/d2.jpg.avif",
@@ -348,7 +347,56 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
     },
   ];
-
+  const guides = [
+    {
+      id: 1,
+      description:
+        "Vatican City is a special place. It may not be the biggest in size but what it holds within its walls is truly unrivalled in scale and significance. From the breathtaking Sistine Chapel to the vast collections of the Vatican Museums, every corner tells a story of art, history, and faith.",
+      heading: "Explore the best of Vatican with these guided tours and tips",
+      image: "/images/van.avif",
+      city: "Vatican City",
+    },
+    {
+      id: 2,
+      description:
+        "Discover the hidden gems and iconic landmarks that make Rome the eternal city. From the ancient Colosseum to the romantic Trevi Fountain, experience the perfect blend of history, culture, and modern Italian life.",
+      heading: "Uncover the secrets of Rome with expert local guides",
+      image: "/images/van.avif",
+      city: "Rome",
+    },
+    {
+      id: 3,
+      description:
+        "Experience the magic of Paris through carefully curated tours that reveal the city's artistic soul. From the Louvre's masterpieces to the charming streets of Montmartre, discover why Paris continues to captivate visitors.",
+      heading: "Experience the magic of Paris through curated tours and tips",
+      image: "/images/van.avif",
+      city: "Paris",
+    },
+    {
+      id: 4,
+      description:
+        "Immerse yourself in the rich cultural heritage of London with guided experiences that bring history to life. From the Tower of London to Buckingham Palace, explore the stories behind Britain's most iconic landmarks.",
+      heading: "Immerse yourself in London's rich cultural heritage",
+      image: "/images/van.avif",
+      city: "London",
+    },
+    {
+      id: 5,
+      description:
+        "Discover the perfect blend of tradition and innovation in Tokyo. From ancient temples to cutting-edge technology, experience the unique culture that makes Japan's capital a must-visit destination.",
+      heading: "Discover Tokyo's perfect blend of tradition and innovation",
+      image: "/images/van.avif",
+      city: "Tokyo",
+    },
+    {
+      id: 6,
+      description:
+        "Explore the vibrant energy of New York City through guided tours that showcase its diverse neighborhoods, world-class museums, and iconic skyline. Experience the city that never sleeps like a true New Yorker.",
+      heading: "Explore New York City's vibrant energy and diversity",
+      image: "/images/van.avif",
+      city: "New York",
+    },
+  ];
 
   return (
     <>
@@ -503,10 +551,18 @@ export default function SubcategoryPage() {
                 variant="subcategory"
                 navigationItems={navItems}
                 recommendations={experiences}
-                initialSelectedId={configKey} // make the URL subcategory pre-selected
+                initialSelectedId={configKey}
               />
             </div>
 
+            {/* Tours CarouselGrid Section */}
+            <div className="mb-10 mt-10">
+              <CarouselGrid
+                title={`Travel Guide and Tips for ${formattedCityName}`}
+                variant="transport"
+                recommendations={guides}
+              />
+            </div>
             {/* Dynamic Browse Themes Section */}
             <div className="mb-10 mt-10 ">
               <BrowseThemes
