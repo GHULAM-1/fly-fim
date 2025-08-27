@@ -6,7 +6,7 @@ import ImageGallery from "@/components/checkout/gallery";
 import Banner from "@/components/home/Banner";
 import Activities from "@/components/checkout/top-things-to-do";
 import Recommendations from "@/components/checkout/similar-experiences";
-import FeaturesSection from "@/components/checkout/features";
+import ExperienceDetails from "@/components/checkout/features";
 import FaqSection from "@/components/checkout/faqs";
 import CheckAvailability from "@/components/checkout/check-availability";
 import CheckoutNav from "@/components/checkout/CheckoutNav";
@@ -398,19 +398,26 @@ const CheckoutPage: React.FC = () =>  {
 
         <div className="md:mt-10 mt-6" id="checkout-section">
           {/* Checkout Section - Features, FAQs, and Sticky Right Section */}
-          <div className="flex flex-wrap md:flex-nowrap">
-            <div className="w-full md:w-3/4">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Left Content - Features and FAQs */}
+            <div className="w-full lg:w-2/3">
               {/* Features Section */}
-              <FeaturesSection />
+              <div className="mb-8">
+                <ExperienceDetails />
+              </div>
 
               {/* FAQ Section */}
-              <FaqSection />
+              <div className="bg-white rounded-lg">
+                <FaqSection />
+              </div>
             </div>
 
             {/* Sticky Right Section */}
-            <div className="w-full md:w-1/4 flex flex-col gap-6 md:sticky md:top-24 h-fit">
-              <CheckAvailability />
-              <WhyHeadout />
+            <div className="w-full lg:w-1/3">
+              <div className="lg:sticky lg:top-24 space-y-6">
+                <CheckAvailability />
+                <WhyHeadout />
+              </div>
             </div>
           </div>
 
