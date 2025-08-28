@@ -6,7 +6,7 @@ const Banner = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="max-w-[1200px] mx-auto  xl:px-0">
+    <div className="max-w-[1200px] mx-auto mt-8 xl:px-0">
       <div className="relative">
         <img
           src="/images/banner-new.png"

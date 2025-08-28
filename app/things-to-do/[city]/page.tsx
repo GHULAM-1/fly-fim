@@ -25,8 +25,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/store/navigationStore";
+import { format } from "path";
+import { useParams } from "next/navigation";
 
-const ThingsToDo = () => {
+const ThingsToDo= () => {
   const {
     showBanner,
     setShowBanner,
@@ -41,22 +43,27 @@ const ThingsToDo = () => {
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
   const [isCarouselVisible, setIsCarouselVisible] = useState(true);
+  const params = useParams();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
+  const city = params.city as string;
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const navHeight = 200;
-      const elementPosition = element.offsetTop;
-      const offsetPosition = elementPosition - navHeight;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
-  };
+const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    // Get the actual height of the navigation element
+    const navigationElement = navigationRef.current;
+    const navHeight = navigationElement ? navigationElement.offsetHeight : 200;
+    const elementPosition = element.offsetTop;
+    const offsetPosition = elementPosition - navHeight;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+};
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -85,64 +92,76 @@ const ThingsToDo = () => {
     }
   };
 
-  // Global scroll handler to coordinate all navigation state
-  useEffect(() => {
-    const handleGlobalScroll = () => {
-      const scrollTop = window.scrollY;
+// Update the global scroll handler to adjust the sticking behavior
+useEffect(() => {
+  const handleGlobalScroll = () => {
+    const scrollTop = window.scrollY;
 
-      // Calculate when navigation becomes sticky based on viewport
-      const viewportHeight = window.innerHeight;
-      const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
-      const stickyThreshold = heroHeight - 200; // Show shadow earlier
+    // Calculate when navigation becomes sticky based on viewport
+    const viewportHeight = window.innerHeight;
+    const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
+    
+    // Different threshold for mobile vs desktop
+    const isMobile = window.innerWidth < 768;
+    const stickyThreshold = isMobile 
+      ? heroHeight - 100 // Lower threshold for mobile
+      : heroHeight - 200; // Original threshold for desktop
 
-      setScroll(scrollTop > stickyThreshold);
+    setScroll(scrollTop > stickyThreshold);
 
-      // Check if navigation is about to go out of viewport
-      const navigationElement = document.querySelector("[data-navigation]");
-      if (navigationElement) {
-        const navigationRect = navigationElement.getBoundingClientRect();
+    // Check if navigation is about to go out of viewport
+    const navigationElement = document.querySelector("[data-navigation]");
+    if (navigationElement) {
+      const navigationRect = navigationElement.getBoundingClientRect();
 
-        // Make it fixed when it's about to go out of viewport (when top is near 0)
-        const shouldBeFixed = navigationRect.top <= 50; // Back to original threshold
-        setIsSectionActive(shouldBeFixed);
+      // Different threshold for mobile vs desktop
+      const shouldBeFixed = isMobile 
+        ? navigationRect.top <= 30 // Stick closer to top on mobile
+        : navigationRect.top <= 50; // Original threshold for desktop
+        
+      setIsSectionActive(shouldBeFixed);
+    }
+
+    // Check if we should hide the section navigation
+    const activitiesElement = document.getElementById("activities");
+    const lastSectionElement = document.getElementById(
+      "hop-on-hop-off-tours"
+    );
+
+    if (activitiesElement && lastSectionElement) {
+      const activitiesRect = activitiesElement.getBoundingClientRect();
+      const lastSectionRect = lastSectionElement.getBoundingClientRect();
+
+      // Hide nav if we're completely past the last section
+      if (lastSectionRect.bottom < 0) {
+        setShowSectionNavigation(false);
+        setIsCarouselVisible(false);
+      } else {
+        setShowSectionNavigation(true);
+        setIsCarouselVisible(true);
       }
+    }
+  };
 
-      // Check if we should hide the section navigation
-      const activitiesElement = document.getElementById("activities");
-      const lastSectionElement = document.getElementById(
-        "hop-on-hop-off-tours"
-      );
+  // Use throttled scroll handler
+  let ticking = false;
+  const throttledHandleScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        handleGlobalScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
 
-      if (activitiesElement && lastSectionElement) {
-        const activitiesRect = activitiesElement.getBoundingClientRect();
-        const lastSectionRect = lastSectionElement.getBoundingClientRect();
-
-        // Hide nav if we're completely past the last section
-        if (lastSectionRect.bottom < 0) {
-          setShowSectionNavigation(false);
-          setIsCarouselVisible(false);
-        } else {
-          setShowSectionNavigation(true);
-          setIsCarouselVisible(true);
-        }
-      }
-    };
-
-    // Use throttled scroll handler
-    let ticking = false;
-    const throttledHandleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleGlobalScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", throttledHandleScroll);
-    return () => window.removeEventListener("scroll", throttledHandleScroll);
-  }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
+  window.addEventListener("scroll", throttledHandleScroll);
+  window.addEventListener("resize", throttledHandleScroll); // Add resize listener
+  return () => {
+    window.removeEventListener("scroll", throttledHandleScroll);
+    window.removeEventListener("resize", throttledHandleScroll);
+  };
+}, [setScroll, setIsSectionActive, setShowSectionNavigation]);
 
   // Intersection observer for active section tracking
   useEffect(() => {
@@ -259,20 +278,20 @@ const ThingsToDo = () => {
             showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
           }`}
         >
-          <Banner />
+          {<Banner />}
         </div>
       </div>
       <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
-        <Hero />
+        <Hero city={city} />
       </div>
 
       {/* Category Carousel - Now integrated directly in the page */}
       <div
         ref={navigationRef}
         data-navigation
-        className={`hidden md:block sticky top-30 w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+        className={`block sticky w-full bg-white z-30 py-4 transition-all duration-500 transform ${
           isCarouselVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
+        } md:top-30 top-16`}
       >
         <div className="relative">
           <div
@@ -280,8 +299,9 @@ const ThingsToDo = () => {
             className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
+            {/* Remove the md:flex hidden classes from the scroll buttons to show on all screens */}
             {showLeftButton && (
-              <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center md:flex hidden">
+              <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center flex">
                 <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
                   <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
                     <ChevronLeft
@@ -405,46 +425,63 @@ const ThingsToDo = () => {
         recommendations={recommendations}
         variant="subcategory"
       />
-      <CarouselGrid
-        title="London Musicals"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Landmarks in London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Day Trips From London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Combos Tickets in London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Thames River Cruise"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Plays in London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Museums in London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <CarouselGrid
-        title="Hop-on Hop-off Tours London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />     
+      <div id="musicals">
+        <CarouselGrid
+          title="London Musicals"
+          recommendations={recommendations}
+          variant="subcategory"
+        />
+      </div>
+        <div id="landmarks">
+          <CarouselGrid
+            title="Landmarks in London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
+      <div id="day-trips">
+        <CarouselGrid
+          title="Day Trips From London"
+          recommendations={recommendations}
+          variant="subcategory"
+        />
+      </div>
+      <div id="combos">
+        <CarouselGrid
+          title="Combos Tickets in London"
+          recommendations={recommendations}
+          variant="subcategory"
+        />
+      </div>
+        <div id="cruises">
+          <CarouselGrid
+            title="Thames River Cruise"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
+        <div id="plays">
+          <CarouselGrid
+            title="Plays in London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
+        <div id="museums">
+          <CarouselGrid
+            title="Museums in London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
+        <div id="hop-on-hop-off-tours">
+          <CarouselGrid
+            title="Hop-on Hop-off Tours London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div> 
+           
       </div>
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />
