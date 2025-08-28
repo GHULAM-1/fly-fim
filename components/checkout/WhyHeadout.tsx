@@ -1,36 +1,48 @@
-import React from 'react';
-import { Check } from 'lucide-react';
+"use client";
+import React from "react";
+import { Check } from "lucide-react";
 
-const WhyHeadout: React.FC = () => (
-  <div className="bg-white rounded-2xl border border-gray-200 mt-4 p-0 shadow-sm w-full">
-    <div className="px-6 pt-6 pb-0">
-      <h3 className="font-semibold text-lg mb-4">Why Headout?</h3>
-    </div>
-    <div className="border-t border-gray-200 px-6 pt-4 pb-4">
-      <ul className="space-y-3 text-[15px] text-gray-800">
-        <li className="flex items-start gap-2">
-          <Check className="text-green-500 w-5 h-5 mt-1" />
-          Trusted platform used by <span className="font-semibold">100K+ people</span>, each month
+const WhyHeadout: React.FC = () => {
+  return (
+    <div className="bg-white rounded-lg p-4 border border-gray-200">
+      <h2 className="text-[18px] font-halyard-text font-medium text-gray-900 mb-2">
+        Why Fly Film?
+      </h2>
+      <hr className="border-gray-200 mb-3 -mx-4" style={{ width: 'calc(100% + 2rem)' }} />
+      <ul className="space-y-2">
+        <li className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-halyard-text font-halyard-text-light text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            Trusted platform used by 100K+ people, each month
+          </span>
         </li>
-        <li className="flex items-start gap-2">
-          <Check className="text-green-500 w-5 h-5 mt-1" />
-          Get the lowest prices and last minute availability
+        <li className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-halyard-text font-halyard-text-light text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            Get the lowest prices and last minute availability
+          </span>
         </li>
-        <li className="flex items-start gap-2">
-          <Check className="text-green-500 w-5 h-5 mt-1" />
-          Discover and connect with <span className="font-semibold">10,000+ experiences</span>
+        <li className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-halyard-text font-halyard-text-light text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            Discover and connect with 10,000+ experiences
+          </span>
         </li>
-        <li className="flex items-start gap-2">
-          <Check className="text-green-500 w-5 h-5 mt-1" />
-          Browse verified reviews and professional photographs
+        <li className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-halyard-text font-halyard-text-light text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            Browse verified reviews and professional photographs
+          </span>
         </li>
-        <li className="flex items-start gap-2">
-          <Check className="text-green-500 w-5 h-5 mt-1" />
-          Have a question? Live chat with our experts 24/7
+        <li className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-halyard-text font-halyard-text-light text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
+            Have a question? Live chat with our experts 24/7
+          </span>
         </li>
       </ul>
     </div>
-  </div>
-);
+  );
+};
 
 export default WhyHeadout;
