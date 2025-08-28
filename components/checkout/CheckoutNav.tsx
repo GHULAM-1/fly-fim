@@ -5,6 +5,7 @@ const CheckoutNav: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activeFaq, setActiveFaq] = useState<string>("highlights");
   const [barPosition, setBarPosition] = useState({ left: 0, width: 0 });
+  const [navTop, setNavTop] = useState("72px");
   const navRef = useRef<HTMLDivElement>(null);
 
   // Define all FAQ sections in order
@@ -88,6 +89,19 @@ const CheckoutNav: React.FC = () => {
     return () => window.removeEventListener("resize", updateBar);
   }, [activeFaq]);
 
+  useEffect(() => {
+    const updateNavTop = () => {
+      if (window.innerWidth <= 640) {
+        setNavTop("64px");
+      } else {
+        setNavTop("72px");
+      }
+    };
+    updateNavTop();
+    window.addEventListener("resize", updateNavTop);
+    return () => window.removeEventListener("resize", updateNavTop);
+  }, []);
+
   const scrollToFaq = (faqId: string) => {
     const element = document.getElementById(faqId);
     if (element) {
@@ -116,10 +130,8 @@ const CheckoutNav: React.FC = () => {
           ? "bg-white shadow-md transform translate-y-0"
           : "bg-transparent pointer-events-none transform -translate-y-full"
       }`}
-       // Adjust this value to match your main header height
-       style={{
-        top: typeof window !== "undefined" && window.innerWidth <= 640 ? "64px" : "72px",
-       }}
+      // Adjust this value to match your main header height
+      style={{ top: navTop }}
     >
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-center h-14 relative">
