@@ -10,6 +10,7 @@ import ExperienceDetails from "@/components/checkout/features";
 import FaqSection from "@/components/checkout/faqs";
 import CheckAvailability from "@/components/checkout/check-availability";
 import CheckoutNav from "@/components/checkout/CheckoutNav";
+import PhotoGalleryDrawer from "@/components/ui/photo-gallery-drawer";
 import {
   BreadcrumbList,
   BreadcrumbSeparator,
@@ -44,6 +45,8 @@ const CheckoutPage: React.FC = () =>  {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   const isWorldwideRoute = city === "worldwide";
 
@@ -268,17 +271,27 @@ const CheckoutPage: React.FC = () =>  {
     }) || [];
 
   useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-  }, 3000);
+    setIsClient(true);
+  }, []);
 
-  return () => clearInterval(interval);
-}, [images.length]);
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [images.length, isClient]);
+
+  const handleImageClick = () => {
+    setIsGalleryOpen(true);
+  };
 
   return (
     <>
-  <CheckoutNav />
-  <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
+      <CheckoutNav />
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
         <div className="pt-16 md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
@@ -344,89 +357,102 @@ const CheckoutPage: React.FC = () =>  {
                 </button>
               </div>
 
-{/* Mobile Layout - Image Background with Overlay Content */}
-<div className="md:hidden relative px-0 -mx-4">
-  {/* Background Image Carousel */}
-  <div className="relative" style={{ height: '33vh' }}>
-    {/* Auto-rotating background images */}
-    <div className="absolute inset-0">
-      {images.map((image, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <img
-            src={image}
-            alt={`${formattedItemName} ${index + 1}`}
-            className="w-full h-full object-contain"
-            style={{ maxHeight: '100%', maxWidth: '100%' }}
-          />
-        </div>
-      ))}
-    </div>
+              {/* Mobile Layout - Image Background with Overlay Content */}
+              <div className="md:hidden relative px-0 -mx-4">
+                {/* Background Image Carousel */}
+                <div 
+                  className="relative cursor-pointer" 
+                  style={{ height: '33vh' }}
+                  onClick={handleImageClick}
+                >
+                  {/* Auto-rotating background images */}
+                  <div className="absolute inset-0">
+                    {images.map((image, index) => (
+                      <div
+                        key={index}
+                        className={`absolute inset-0 transition-opacity duration-1000 ${
+                          isClient && index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        style={{ 
+                          opacity: !isClient && index === 0 ? 1 : undefined 
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`${formattedItemName} ${index + 1}`}
+                          className="w-full h-full object-contain"
+                          style={{ maxHeight: '100%', maxWidth: '100%' }}
+                        />
+                      </div>
+                    ))}
+                  </div>
 
-    {/* Gradient overlay that blends into the solid navy section */}
-<div
-  className="
-    pointer-events-none absolute inset-0
-    bg-gradient-to-b
-    from-transparent from-[35%]
-    via-[#0a174e]/55 via-[75%]
-    to-[#0a174e] to-100%
-  "
-/>
-{/* Animated progress indicator dots/bars */}
-<div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
-  {images.map((_, index) => (
-    <div
-      key={index}
-      className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
-        index === currentImageIndex
-          ? 'bg-white w-6'
-          : index < currentImageIndex
-            ? 'bg-white w-1.5'
-            : 'bg-white/30 w-1.5'
-      }`}
-    >
-      <div
-        className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
-          index === currentImageIndex ? 'w-full' : 'w-0'
-        }`}
-        style={{
-          transition: index === currentImageIndex ? 'width 5s linear' : 'none',
-        }}
-      />
-    </div>
-  ))}
-</div>
+                  {/* Gradient overlay that blends into the solid navy section */}
+                  <div
+                    className="
+                      pointer-events-none absolute inset-0
+                      bg-gradient-to-b
+                      from-transparent from-[35%]
+                      via-[#0a174e]/55 via-[75%]
+                      to-[#0a174e] to-100%
+                    "
+                  />
+                  
+                  {/* Animated progress indicator dots/bars */}
+                  <div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
+                    {images.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
+                          isClient && index === currentImageIndex
+                            ? 'bg-white w-6'
+                            : isClient && index < currentImageIndex
+                              ? 'bg-white w-1.5'
+                              : 'bg-white/30 w-1.5'
+                        }`}
+                        style={{
+                          backgroundColor: !isClient && index === 0 ? 'white' : undefined,
+                          width: !isClient && index === 0 ? '24px' : undefined
+                        }}
+                      >
+                        <div
+                          className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
+                            isClient && index === currentImageIndex ? 'w-full' : 'w-0'
+                          }`}
+                          style={{
+                            transition: isClient && index === currentImageIndex ? 'width 5s linear' : 'none',
+                            width: !isClient && index === 0 ? '100%' : undefined
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
 
-    {/* Bottom Content Overlay - This sits on top of the gradient */}
-<div
-  className="
-    absolute bottom-0 left-0 right-0 px-5 py-3 text-white
-    bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
-  "
->
-  {/* Subcategory and NEW badge - spaced apart */}
-  <div className="flex justify-between items-center mb-0 font-halyard-text">
-    <span className="text-[14px] text-white/90 font-medium">{formattedSubcategoryName}</span>
-    <span className="text-[14px] bg-transparent text-pink-500 px-2 py-1 rounded font-medium">
-      NEW
-    </span>
-  </div>
+                  {/* Bottom Content Overlay - This sits on top of the gradient */}
+                  <div
+                    className="
+                      absolute bottom-0 left-0 right-0 px-5 py-3 text-white
+                      bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
+                    "
+                  >
+                    {/* Subcategory and NEW badge - spaced apart */}
+                    <div className="flex justify-between items-center mb-0 font-halyard-text">
+                      <span className="text-[14px] text-white/90 font-medium">{formattedSubcategoryName}</span>
+                      <span className="text-[14px] bg-transparent text-pink-500 px-2 py-1 rounded font-medium">
+                        NEW
+                      </span>
+                    </div>
 
-  {/* Thin separator line */}
-  <div className="w-full h-px bg-white/20 mb-1" />
+                    {/* Thin separator line */}
+                    <div className="w-full h-px bg-white/20 mb-1" />
 
-  {/* Main title */}
-  <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
-    {formattedItemName} in {formattedCityName}
-  </h2>
-</div>
-  </div>
-</div>
+                    {/* Main title */}
+                    <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
+                      {formattedItemName} in {formattedCityName}
+                    </h2>
+                  </div>
+                </div>
+              </div>
 
               {/* Desktop Layout - Original Structure */}
               <div className="hidden md:block">
@@ -453,12 +479,6 @@ const CheckoutPage: React.FC = () =>  {
 
               {/* Tablet Layout - You can customize this for intermediate screen sizes */}
               <div className="hidden sm:block md:hidden">
-                {/* For tablet sizes (640px-767px), you can choose either mobile or desktop layout */}
-                {/* Option 1: Use mobile layout for tablets */}
-                {/* <div className="relative">
-                  ... (same mobile layout code as above)
-                </div> */}
-                
                 {/* Option 2: Use desktop layout for tablets but with adjusted styling */}
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
@@ -524,28 +544,29 @@ const CheckoutPage: React.FC = () =>  {
 
         <div className="md:mt-10 mt-6" id="checkout-section">
           {/* Checkout Section - Features, FAQs, and Sticky Right Section */}
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left Content - Features and FAQs */}
-            <div className="w-full lg:w-2/3">
-              {/* Features Section */}
-              <div className="mb-8">
-                <ExperienceDetails />
+            {/* Desktop/Tablet Only: Features, FAQs, and Sticky Right Section */}
+            <div className="md:flex flex-col lg:flex-row gap-8">
+              {/* Left Content - Features and FAQs */}
+              <div className="w-full lg:w-2/3">
+                {/* Features Section */}
+                <div className="mb-8">
+                  <ExperienceDetails />
+                </div>
+
+                {/* FAQ Section */}
+                <div className="bg-white rounded-lg">
+                  <FaqSection />
+                </div>
               </div>
 
-              {/* FAQ Section */}
-              <div className="bg-white rounded-lg">
-                <FaqSection />
+              {/* Sticky Right Section */}
+              <div className="hidden md:block w-full lg:w-1/3">
+                <div className="lg:sticky lg:top-[160px] space-y-6">
+                  <CheckAvailability />
+                  <WhyHeadout />
+                </div>
               </div>
             </div>
-
-            {/* Sticky Right Section */}
-            <div className="w-full lg:w-1/3">
-              <div className="lg:sticky lg:top-[160px] space-y-6">
-                <CheckAvailability />
-                <WhyHeadout />
-              </div>
-            </div>
-          </div>
 
         {/* Additional Content Section */}
         <div>
@@ -588,6 +609,33 @@ const CheckoutPage: React.FC = () =>  {
         </div>
         </div>
       </div>
+
+      {/* Mobile Sticky Bottom Bar - Hidden on desktop */}
+      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-50 bg-white border-t border-gray-200  px-7 py-3">
+        <div className="flex items-center justify-between gap-3">
+          {/* Price section */}
+          <div className="flex flex-col">
+        <span className="line-through text-gray-500 text-sm font-halyard-text">€55</span>
+        <span className="text-xl font-halyard-text font-bold text-green-600">€49.50</span>
+          </div>
+          {/* Check availability button */}
+            <button 
+            className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200"
+            >
+            Check availability
+            </button>
+        </div>
+      </div>
+
+      {/* Photo Gallery Drawer */}
+      <PhotoGalleryDrawer
+        images={images}
+        itemName={formattedItemName}
+        city={formattedCityName}
+        initialIndex={currentImageIndex}
+        isOpen={isGalleryOpen}
+        onOpenChange={setIsGalleryOpen}
+      />
     </>
   );
 }
