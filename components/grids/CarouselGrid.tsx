@@ -77,6 +77,10 @@ const CarouselGrid = ({
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -752,7 +756,7 @@ const CarouselGrid = ({
         </div>
         <div className="mt-6 relative overflow-hidden">
           <div
-            className="flex gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            className="flex gap-3 md:gap-3 transition-transform duration-700 ease-in-out"
             style={{
               transform: `translateX(-${currentPage * 200}px)`,
               width: `${recommendations.length * 200}px`,
@@ -1011,22 +1015,22 @@ const CarouselGrid = ({
           </div>
         </div>
         <div className=" relative md:overflow-hidden">
-          <div
-            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
-            style={{
-              transform:
-                window.innerWidth >= 768
-                  ? `translateX(-${currentPage * 400}px)`
-                  : "none",
-              width:
-                window.innerWidth >= 768
-                  ? `${recommendations.length * 400}px`
-                  : "auto",
-            }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
+            <div
+              className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+              style={{
+                transform:
+                  isClient && window.innerWidth >= 768
+                    ? `translateX(-${currentPage * 400}px)`
+                    : "none",
+                width:
+                  isClient && window.innerWidth >= 768
+                    ? `${recommendations.length * 400}px`
+                    : "auto",
+              }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
             {recommendations.map((recommendation, index) => (
               <Link
                 key={recommendation.id}
@@ -1080,9 +1084,8 @@ if (variant === "subcategory") {
   ];
 
   // Filter by selected subcategory id
-  const filtered = recommendations.filter(
-    (rec) => !selectedId || rec.subcategoryId === selectedId
-  );
+  // Filter logic preserved, but always returns all experiences
+  const filtered = recommendations;
 
   // Sorting
   const sorted = [...filtered].sort((a, b) => {

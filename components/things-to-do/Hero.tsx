@@ -9,7 +9,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "../ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 
-const Hero = () => {
+  interface HeroProps {
+  city?: string;
+  }
+
+const Hero: React.FC<HeroProps> = ({ city }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -26,6 +30,12 @@ const Hero = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
+  const decodedCity = decodeURIComponent(city ?? "");
+  const formattedCityName = decodedCity
+    ? decodedCity.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ')
+    : "London";
 
   // Handle hydration only
   useEffect(() => {
@@ -375,74 +385,94 @@ const Hero = () => {
         }
       `}</style>
 
-      <div className="relative pt-20 md:pt-36 pb-4 mx-auto ">
-        {/* Dark overlay when search is open */}
-        {isSearchOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-[9998]"
-            onClick={() => {
-              setIsSearchOpen(false);
-              setIsInputFocused(false);
-            }}
-          />
-        )}
-        <Swiper
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          modules={[Autoplay, Navigation, Pagination]}
-          navigation={{
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          }}
-          pagination={{
-            clickable: true,
-            dynamicBullets: false,
-            renderBullet: function (index, className) {
-              return '<span class="' + className + ' custom-bullet"></span>';
-            },
-          }}
-          className="mySwiper w-full rounded-t-2xl md:rounded-2xl overflow-hidden "
-          onSlideChange={handleSlideChange}
-        >
-          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
-            <img
-              src="https://cdn-imgix.headout.com/media/images/8515c147e2627c8da9f48f62c9bf254a-Harry%20Potter-Dweb.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
-            />
-          </SwiperSlide>
-          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
-            <img
-              src="https://cdn-imgix.headout.com/media/images/d8700da23f2d351a6f107c1f67da371b-Mean%20Girls%20London%20promo%20banner%20desktop.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
-            />
-          </SwiperSlide>
-          <SwiperSlide className="rounded-t-2xl md:rounded-2xl">
-            <img
-              src="https://cdn-imgix.headout.com/media/images/0a8f6ede9e1b32f3277c4e49bb6aba93-MocoMuseum-Desktop%20Banner-min.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-              className="w-full h-[50vh] md:h-auto object-cover rounded-t-2xl md:rounded-2xl"
-            />
-          </SwiperSlide>
-          <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
-          <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
-        </Swiper>
+      <div className="relative pt-20 md:pt-36 pb-4 mx-auto">
+<div className="relative mx-auto">
+  {/* Text Overlay - positioned absolutely over the image */}
+  <div className="absolute top-6 left-6 md:top-12 md:left-12 z-10 text-left max-w-md md:max-w-2xl">
+    <h1 className="text-2xl md:text-5xl font-bold text-white font-halyard-text drop-shadow-lg leading-tight md:leading-normal">
+      Best things to do in {formattedCityName}
+    </h1>
+  </div>
 
-        {/* Mobile Search Trigger */}
-        <div className="flex justify-center">
-          <button
-            className=" pl-2  z-10 w-full mt-[-10px] flex md:hidden items-center bg-white gap-2 rounded-md p-1 shadow text-sm cursor-pointer"
-            onClick={() => setIsCustomDrawerOpen(true)}
-          >
-            <div className="flex-1 relative">
-              <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer text-[13px] pointer-events-none" />
-              <AnimatedPlaceholder />
-            </div>
-            <div className="bg-[#8000FF] rounded p-2">
-              <Search strokeWidth={1} className="text-white" />
-            </div>
-          </button>
-        </div>
+  {/* Dark overlay when search is open */}
+  {isSearchOpen && (
+    <div
+      className="fixed inset-0 bg-black/50 z-[9998]"
+      onClick={() => {
+        setIsSearchOpen(false);
+        setIsInputFocused(false);
+      }}
+    />
+  )}
+
+  <Swiper
+    autoplay={{
+      delay: 5000,
+      disableOnInteraction: false,
+    }}
+    modules={[Autoplay, Navigation, Pagination]}
+    navigation={{
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    }}
+    pagination={{
+      clickable: true,
+      dynamicBullets: false,
+      renderBullet: function (index, className) {
+        return '<span class="' + className + ' custom-bullet"></span>';
+      },
+    }}
+    className="mySwiper w-full rounded-2xl overflow-hidden"
+    onSlideChange={handleSlideChange}
+  >
+    <SwiperSlide className="rounded-2xl">
+      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
+        <img
+          src="https://cdn-imgix.headout.com/media/images/8515c147e2627c8da9f48f62c9bf254a-Harry%20Potter-Dweb.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
+          className="w-full h-full object-cover rounded-2xl"
+          alt="Hero slide 1"
+        />
+      </div>
+    </SwiperSlide>
+    <SwiperSlide className="rounded-2xl">
+      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
+        <img
+          src="https://cdn-imgix.headout.com/media/images/d8700da23f2d351a6f107c1f67da371b-Mean%20Girls%20London%20promo%20banner%20desktop.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
+          className="w-full h-full object-cover rounded-2xl"
+          alt="Hero slide 2"
+        />
+      </div>
+    </SwiperSlide>
+    <SwiperSlide className="rounded-2xl">
+      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
+        <img
+          src="https://cdn-imgix.headout.com/media/images/0a8f6ede9e1b32f3277c4e49bb6aba93-MocoMuseum-Desktop%20Banner-min.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
+          className="w-full h-full object-cover rounded-2xl"
+          alt="Hero slide 3"
+        />
+      </div>
+    </SwiperSlide>
+    <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
+    <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
+  </Swiper>
+
+  {/* Mobile Search Trigger - positioned over the image */}
+  <div className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 w-[90%] md:hidden z-10">
+    <button
+      className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
+      onClick={() => setIsCustomDrawerOpen(true)}
+    >
+      <div className="flex-1 relative">
+        <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer text-[13px] pointer-events-none" />
+        <AnimatedPlaceholder />
+      </div>
+      <div className="bg-[#8000FF] rounded p-2">
+        <Search strokeWidth={1} className="text-white" />
+      </div>
+    </button>
+  </div>
+</div>
+
 
         {/* Custom Mobile Drawer */}
         <AnimatePresence>
@@ -515,40 +545,9 @@ const Hero = () => {
                 >
                   {!searchQuery ? (
                     <>
-                      {/* Top destinations near you */}
-                      <div className="mb-4">
-                        <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
-                          Top destinations near you
-                        </h3>
-                        <div className="space-y-0 max-h-48 overflow-y-auto">
-                          {topDestinations.map((dest) => (
-                            <div
-                              key={dest.id}
-                              className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
-                            >
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={dest.image}
-                                  alt={dest.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <div className="font-semibold text-[#444444] text-sm">
-                                  {dest.name}
-                                </div>
-                                <div className="text-[#666666] text-xs">
-                                  {dest.country}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
                       {/* Top things to do worldwide */}
                       <div className="mb-4">
-                        <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
+                        <h3 className="text-xs font-halyard-text font-medium text-[#444444] mb-2">
                           Top things to do worldwide
                         </h3>
                         <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -563,21 +562,21 @@ const Hero = () => {
                                   <img
                                     src={activity.image}
                                     alt={activity.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                 </div>
                                 <div className="absolute -left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform -rotate-4 opacity-50">
                                   <img
                                     src={activity.image}
                                     alt={activity.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                 </div>
                                 <div className="absolute -left-[0px] -top-[3px] w-10 h-10 rounded overflow-hidden transform opacity-30">
                                   <img
                                     src={activity.image}
                                     alt={activity.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                   <div className="absolute inset-0 bg-gray-500 bg-blend-overlay"></div>
                                 </div>
@@ -586,7 +585,7 @@ const Hero = () => {
                                   <img
                                     src={activity.image}
                                     alt={activity.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                 </div>
                               </div>
@@ -602,13 +601,44 @@ const Hero = () => {
                           ))}
                         </div>
                       </div>
+
+                      {/* Top destinations near you */}
+                      <div className="mb-4">
+                        <h3 className="text-xs font-medium text-[#444444] mb-2">
+                          Top destinations near you
+                        </h3>
+                        <div className="space-y-0 max-h-48 overflow-y-auto">
+                          {topDestinations.map((dest) => (
+                            <div
+                              key={dest.id}
+                              className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                              <div className="w-10 h-10 rounded overflow-hidden">
+                                <img
+                                  src={dest.image}
+                                  alt={dest.name}
+                                  className="w-full h-full object-cover rounded"
+                                />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-[#444444] text-sm">
+                                  {dest.name}
+                                </div>
+                                <div className="text-[#666666] text-xs">
+                                  {dest.country}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </>
                   ) : (
                     <>
                       {/* Search Results */}
                       {filteredDestinations.length > 0 && (
                         <div className="mb-4">
-                          <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
+                          <h3 className="text-xs font-medium text-[#444444] mb-2">
                             Destinations ({filteredDestinations.length})
                           </h3>
                           <div className="space-y-0 max-h-48 overflow-y-auto">
@@ -621,7 +651,7 @@ const Hero = () => {
                                   <img
                                     src={dest.image}
                                     alt={dest.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                 </div>
                                 <div>
@@ -640,7 +670,7 @@ const Hero = () => {
 
                       {filteredActivities.length > 0 && (
                         <div className="mb-4">
-                          <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
+                          <h3 className="text-xs font-medium text-[#444444] mb-2">
                             Activities ({filteredActivities.length})
                           </h3>
                           <div className="space-y-0 max-h-64 overflow-y-auto">
@@ -653,7 +683,7 @@ const Hero = () => {
                                   <img
                                     src={activity.image}
                                     alt={activity.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded"
                                   />
                                 </div>
                                 <div>
@@ -687,7 +717,5 @@ const Hero = () => {
         </AnimatePresence>
       </div>
     </>
-  );
-};
-
+  )}
 export default Hero;

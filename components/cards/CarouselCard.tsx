@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import { StarIcon } from "lucide-react";
 import PriceDisplay from "../PriceDisplay";
 import { useTranslation } from "react-i18next";
-import Link from "next/link";  // Importing Next.js Link component
+import Link from "next/link"; 
 
 interface CarouselCardProps {
   image: string;
@@ -122,7 +122,7 @@ const CarouselCard = ({
       return (
     <div className="w-full hover:-translate-y-2 transition-all duration-300 group cursor-pointer">
     <div className="relative pointer-events-none md:pointer-events-auto">
-      <div className="absolute top-0 left-0 w-[99%] h-full z-10 group-hover:shadow-[inset_0_-15px_30px_rgba(0,0,0,0.7)] transition-shadow duration-300 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-full z-10 group-hover:shadow-[inset_0_-15px_30px_rgba(0,0,0,0.7)] transition-shadow duration-300 pointer-events-none rounded-[4px]" />
       {badge && (
         <span className="absolute top-2 left-2 z-10 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
           {badge}
