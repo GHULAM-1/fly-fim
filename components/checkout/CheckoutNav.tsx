@@ -116,7 +116,10 @@ const CheckoutNav: React.FC = () => {
           ? "bg-white shadow-md transform translate-y-0"
           : "bg-transparent pointer-events-none transform -translate-y-full"
       }`}
-      style={{ top: "72px" }} // Adjust this value to match your main header height
+       // Adjust this value to match your main header height
+       style={{
+        top: typeof window !== "undefined" && window.innerWidth <= 640 ? "64px" : "72px",
+       }}
     >
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-center h-14 relative">

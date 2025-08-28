@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import ImageGallery from "@/components/checkout/gallery"; 
@@ -43,7 +43,8 @@ const CheckoutPage: React.FC = () =>  {
 
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
   const isWorldwideRoute = city === "worldwide";
 
   // Decode and format category
@@ -266,6 +267,14 @@ const CheckoutPage: React.FC = () =>  {
       };
     }) || [];
 
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, [images.length]);
+
   return (
     <>
   <CheckoutNav />
@@ -314,16 +323,19 @@ const CheckoutPage: React.FC = () =>  {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/${city}/${categoryName}/${subcategory}/${itemId}`}
+                      >
                         {formattedItemName}
-                      </BreadcrumbPage>
+                      </BreadcrumbLink>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>
 
               {/* Mobile Back Button */}
-              <div className="md:hidden mb-4">
+              <div className="hidden sm:block md:hidden mb-4">
                 <button className="flex items-center text-gray-600 text-sm">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-2">
                     <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -332,25 +344,139 @@ const CheckoutPage: React.FC = () =>  {
                 </button>
               </div>
 
-              {/* Subcategory and Item Name Section */}
-              <div className="block mt-0">
-                <div className="flex items-center gap-2 mb-0">
-                  <div className="flex items-center gap-1">
-                    {/* Optional SVG or icons */}
+{/* Mobile Layout - Image Background with Overlay Content */}
+<div className="md:hidden relative px-0 -mx-4">
+  {/* Background Image Carousel */}
+  <div className="relative" style={{ height: '33vh' }}>
+    {/* Auto-rotating background images */}
+    <div className="absolute inset-0">
+      {images.map((image, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <img
+            src={image}
+            alt={`${formattedItemName} ${index + 1}`}
+            className="w-full h-full object-contain"
+            style={{ maxHeight: '100%', maxWidth: '100%' }}
+          />
+        </div>
+      ))}
+    </div>
+
+    {/* Gradient overlay that blends into the solid navy section */}
+<div
+  className="
+    pointer-events-none absolute inset-0
+    bg-gradient-to-b
+    from-transparent from-[35%]
+    via-[#0a174e]/55 via-[75%]
+    to-[#0a174e] to-100%
+  "
+/>
+{/* Animated progress indicator dots/bars */}
+<div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
+  {images.map((_, index) => (
+    <div
+      key={index}
+      className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
+        index === currentImageIndex
+          ? 'bg-white w-6'
+          : index < currentImageIndex
+            ? 'bg-white w-1.5'
+            : 'bg-white/30 w-1.5'
+      }`}
+    >
+      <div
+        className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
+          index === currentImageIndex ? 'w-full' : 'w-0'
+        }`}
+        style={{
+          transition: index === currentImageIndex ? 'width 5s linear' : 'none',
+        }}
+      />
+    </div>
+  ))}
+</div>
+
+    {/* Bottom Content Overlay - This sits on top of the gradient */}
+<div
+  className="
+    absolute bottom-0 left-0 right-0 px-5 py-3 text-white
+    bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
+  "
+>
+  {/* Subcategory and NEW badge - spaced apart */}
+  <div className="flex justify-between items-center mb-0 font-halyard-text">
+    <span className="text-[14px] text-white/90 font-medium">{formattedSubcategoryName}</span>
+    <span className="text-[14px] bg-transparent text-pink-500 px-2 py-1 rounded font-medium">
+      NEW
+    </span>
+  </div>
+
+  {/* Thin separator line */}
+  <div className="w-full h-px bg-white/20 mb-1" />
+
+  {/* Main title */}
+  <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
+    {formattedItemName} in {formattedCityName}
+  </h2>
+</div>
+  </div>
+</div>
+
+              {/* Desktop Layout - Original Structure */}
+              <div className="hidden md:block">
+                {/* Subcategory and Item Name Section */}
+                <div className="block mt-0">
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                      {/* Optional SVG or icons */}
+                    </div>
                   </div>
+                  <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
+                    <span className="text-[#666666]">{formattedSubcategoryName}</span>
+                    <span className="text-[#9F9F9F] mx-1 rounded-full"> • </span>
+                    <span className="text-[#e5006e] md:text-[15px]">NEW</span>
+                  </h1>
+                  <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
+                    {formattedItemName} in {formattedCityName}
+                  </h2>
                 </div>
-                <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
-                  <span className="text-[#666666]">{formattedSubcategoryName}</span>
-                  <span className="text-[#9F9F9F] mx-1 rounded-full"> • </span>
-                  <span className="text-[#e5006e] md:text-[15px]">NEW</span>
-                </h1>
-                <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                  {formattedItemName} in {formattedCityName}
-                </h2>
+
+                {/* Image Gallery for Item - Desktop only */}
+                <ImageGallery images={images} itemName={formattedItemName} city={city} />
               </div>
 
-              {/* Image Gallery for Item */}
-              <ImageGallery images={images} itemName={formattedItemName} city={city} />
+              {/* Tablet Layout - You can customize this for intermediate screen sizes */}
+              <div className="hidden sm:block md:hidden">
+                {/* For tablet sizes (640px-767px), you can choose either mobile or desktop layout */}
+                {/* Option 1: Use mobile layout for tablets */}
+                {/* <div className="relative">
+                  ... (same mobile layout code as above)
+                </div> */}
+                
+                {/* Option 2: Use desktop layout for tablets but with adjusted styling */}
+                <div className="block mt-0">
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                      {/* Optional SVG or icons */}
+                    </div>
+                  </div>
+                  <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
+                    <span className="text-[#666666]">{formattedSubcategoryName}</span>
+                    <span className="text-[#9F9F9F] mx-1 rounded-full"> • </span>
+                    <span className="text-[#e5006e]">NEW</span>
+                  </h1>
+                  <h2 className="text-[24px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
+                    {formattedItemName} in {formattedCityName}
+                  </h2>
+                </div>
+                <ImageGallery images={images} itemName={formattedItemName} city={city} />
+              </div>
             </>
           ) : (
             <div>
