@@ -6,7 +6,7 @@ const WhyHeadout: React.FC = () => {
   return (
     <div className="bg-white rounded-lg p-4 border border-gray-200">
       <h2 className="text-[18px] font-halyard-text font-medium text-gray-900 mb-2">
-        Why Fly Film?
+        Why Fly Fim?
       </h2>
       <hr className="border-gray-200 mb-3 -mx-4" style={{ width: 'calc(100% + 2rem)' }} />
       <ul className="space-y-2">

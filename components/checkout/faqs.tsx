@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, Clock, Info, Ticket, Users, Shield, FileText, Navigation, Check, X } from 'lucide-react';
+import OperatingHoursCard from './operating-hours';
 
 interface FaqItemProps {
   title: string;
@@ -79,7 +80,7 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
 
 const FaqSection: React.FC = () => {
   return (
-    <div className="faq-section max-w-4xl">
+    <div className="faq-section max-w-4xl font-halyard-text">
       {/* Highlights */}
       <FaqItem 
         title="Highlights" 
@@ -88,19 +89,19 @@ const FaqSection: React.FC = () => {
       >
         <ul className="space-y-3">
           <li className="flex items-start gap-3">
-            <div className="w-2 h-2 bg-black rounded-full mt-2 flex-shrink-0"></div>
-            <span className="leading-relaxed">No queues, just pure discovery—step into the magic of the Alcázar in a small group for an intimate, more insightful experience.</span>
+            <div className="w-1.5 h-1.5 bg-black rounded-full mt-3 flex-shrink-0"></div>
+            <span className="leading-relaxed">No queues, just pure discovery step into the magic of the Alcázar in a small group for an intimate, more insightful experience.</span>
           </li>
           <li className="flex items-start gap-3">
-            <div className="w-2 h-2 bg-black rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-1.5 h-1.5 bg-black rounded-full mt-3 flex-shrink-0"></div>
             <span className="leading-relaxed">Explore some of the key highlights of the Alcazar, including the different sites that backdrop the dreamy Kingdom of Dorne in HBO's Game of Thrones.</span>
           </li>
           <li className="flex items-start gap-3">
-            <div className="w-2 h-2 bg-black rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-1.5 h-1.5 bg-black rounded-full mt-3 flex-shrink-0"></div>
             <span className="leading-relaxed">Your expert English-speaking guide will offer fascinating insights into the Alcazar's rich history and details about its architectural evolution.</span>
           </li>
           <li className="flex items-start gap-3">
-            <div className="w-2 h-2 bg-black rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-1.5 h-1.5 bg-black rounded-full mt-3 flex-shrink-0"></div>
             <span className="leading-relaxed">Stroll through seven hectares of lush gardens with peacocks, fountains, and unforgettable gems like the Garden of the Poets and the Fountain of Fame.</span>
           </li>
         </ul>
@@ -111,7 +112,7 @@ const FaqSection: React.FC = () => {
         title="Inclusions" 
         id="inclusions"
       >
-        <ul className="space-y-3">
+        <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
             <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
             <span>Entry to the Alcázar of Seville</span>
@@ -136,7 +137,7 @@ const FaqSection: React.FC = () => {
         title="Exclusions" 
         id="exclusions"
       >
-        <ul className="space-y-3">
+        <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
             <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
             <span>Hotel transfers & transportation</span>
@@ -153,7 +154,7 @@ const FaqSection: React.FC = () => {
         title="Cancellation Policy" 
         id="cancellation-policy"
       >
-        <p className="mb-3">You can cancel these tickets up to 7 days before the experience begins and get a full refund.</p>
+        <p className="mb-3 font-halyard-text">You can cancel these tickets up to 7 days before the experience begins and get a full refund.</p>
       </FaqItem>
 
       {/* Your Experience */}
@@ -161,7 +162,7 @@ const FaqSection: React.FC = () => {
         title="Your Experience" 
         id="your-experience"
       >
-        <div className="space-y-4">
+        <div className="space-y-4 font-halyard-text">
           <p className="font-semibold text-gray-900">Skip the lines and step back in time on a small-group guided tour of the Royal Alcázar of Seville, one of Europe's oldest royal palaces still in use. Explore its many highlights with an expert English-speaking guide leading the way.</p>
           
           <div className="space-y-4">
@@ -201,59 +202,48 @@ const FaqSection: React.FC = () => {
         </div>
       </FaqItem>
 
-      {/* Operating Hours */}
-      <FaqItem 
-        title="Operating Hours" 
-        id="operating-hours"
-      >
-        <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">Alcazar of Seville</h4>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="text-sm font-medium text-gray-900 mb-2">1st Apr - 30th Sep</div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <tbody>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Monday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Tuesday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Wednesday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Thursday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Friday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr className="border-b border-gray-200">
-                    <td className="py-2 font-medium">Saturday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 font-medium">Sunday</td>
-                    <td className="py-2">09:30am - 07:00pm</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </FaqItem>
+{/* Operating Hours */}
+<FaqItem 
+  title="Operating Hours" 
+  id="operating-hours"
+>
+  <OperatingHoursCard
+    title="Alcazar of Seville"
+    operatingHours={[
+      {
+        period: "1st Apr - 30th Sep",
+        hours: [
+          { day: "Monday", time: "09:30am - 07:00pm" },
+          { day: "Tuesday", time: "09:30am - 07:00pm" },
+          { day: "Wednesday", time: "09:30am - 07:00pm" },
+          { day: "Thursday", time: "09:30am - 07:00pm" },
+          { day: "Friday", time: "09:30am - 07:00pm" },
+          { day: "Saturday", time: "09:30am - 07:00pm" },
+          { day: "Sunday", time: "09:30am - 07:00pm" }
+        ]
+      },
+      {
+        period: "1st Oct - 31st Mar",
+        hours: [
+          { day: "Monday", time: "09:30am - 05:00pm" },
+          { day: "Tuesday", time: "09:30am - 05:00pm" },
+          { day: "Wednesday", time: "09:30am - 05:00pm" },
+          { day: "Thursday", time: "09:30am - 05:00pm" },
+          { day: "Friday", time: "09:30am - 05:00pm" },
+          { day: "Saturday", time: "09:30am - 05:00pm" },
+          { day: "Sunday", time: "09:30am - 05:00pm" }
+        ]
+      }
+    ]}
+  />
+</FaqItem>
 
       {/* Know Before You Go */}
       <FaqItem 
         title="Know Before You Go" 
         id="know-before-you-go"
       >
-        <div className="space-y-6">
+        <div className="space-y-6 font-halyard-text">
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">What to bring</h4>
             <ul className="space-y-2">
@@ -353,7 +343,7 @@ const FaqSection: React.FC = () => {
         title="My Tickets" 
         id="my-tickets"
       >
-        <div className="space-y-4">
+        <div className="space-y-4 font-halyard-text">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
@@ -376,10 +366,43 @@ const FaqSection: React.FC = () => {
         title="Where" 
         id="where"
       >
-        <div className="space-y-4">
+        <div className="space-y-4 font-halyard-text">
+          {/* Meeting Point */}
+          <div>
+            <p 
+              className="text-[#444444] mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-150"
+              style={{ 
+                fontFamily: 'halyard-text',
+                fontSize: '1.0625rem',
+                fontWeight: 300,
+                lineHeight: '1.75rem',
+                marginBottom: 0,
+                listStyle: 'none',
+                boxSizing: 'border-box',
+                border: '0 solid',
+                textDecoration: 'none'
+              }}
+              onMouseEnter={() => {
+                const iframe = document.querySelector('iframe');
+                if (iframe) {
+                  iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d792.5831348826104!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus";
+                }
+              }}
+              onMouseLeave={() => {
+                const iframe = document.querySelector('iframe');
+                if (iframe) {
+                  iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.3325395304414!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus";
+                }
+              }}
+            >
+              Plaza del Triunfo, Big statue, Seville
+            </p>
+          </div>
+
+
           {/* Map Integration */}
           <div className="mt-4">
-            <div className=" rounded-lg p-4">
+            <div className="rounded-lg p-4">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.3325395304414!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus"
                 width="100%"
