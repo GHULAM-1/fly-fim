@@ -164,7 +164,7 @@ const Recommendations = () => {
         </div>
       </div>
       <div
-        className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+        className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (

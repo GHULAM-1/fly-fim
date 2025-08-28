@@ -756,7 +756,7 @@ const CarouselGrid = ({
         </div>
         <div className="mt-6 relative overflow-hidden">
           <div
-            className="flex gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            className="flex gap-3 md:gap-3 transition-transform duration-700 ease-in-out"
             style={{
               transform: `translateX(-${currentPage * 200}px)`,
               width: `${recommendations.length * 200}px`,

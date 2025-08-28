@@ -414,7 +414,7 @@ const CheckoutPage: React.FC = () =>  {
 
             {/* Sticky Right Section */}
             <div className="w-full lg:w-1/3">
-              <div className="lg:sticky lg:top-24 space-y-6">
+              <div className="lg:sticky lg:top-[160px] space-y-6">
                 <CheckAvailability />
                 <WhyHeadout />
               </div>
