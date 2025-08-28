@@ -112,7 +112,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, itemName, city }) =
   return (
     <>
       {/* Mobile Grid Layout */}
-      <div className="md:hidden">
+      <div className="md:hidden hidden">
         <div className="grid grid-cols-2 gap-1 mb-6">
           {images.slice(0, 4).map((image, index) => (
             <div 
