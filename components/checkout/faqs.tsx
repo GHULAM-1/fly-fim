@@ -79,12 +79,15 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
 };
 
 const FaqSection: React.FC = () => {
+  // Set first four FAQ sections open by default, rest closed
+  const defaultOpenFaqs = ["highlights", "inclusions", "exclusions", "cancellation-policy"];
+
   return (
     <div className="faq-section max-w-4xl font-halyard-text">
       {/* Highlights */}
       <FaqItem 
         title="Highlights" 
-        isOpenByDefault={true}
+        isOpenByDefault={defaultOpenFaqs.includes("highlights")}
         id="highlights"
       >
         <ul className="space-y-3">
@@ -111,6 +114,7 @@ const FaqSection: React.FC = () => {
       <FaqItem 
         title="Inclusions" 
         id="inclusions"
+        isOpenByDefault={defaultOpenFaqs.includes("inclusions")}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
@@ -136,6 +140,7 @@ const FaqSection: React.FC = () => {
       <FaqItem 
         title="Exclusions" 
         id="exclusions"
+        isOpenByDefault={defaultOpenFaqs.includes("exclusions")}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
@@ -153,6 +158,7 @@ const FaqSection: React.FC = () => {
       <FaqItem 
         title="Cancellation Policy" 
         id="cancellation-policy"
+        isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
       >
         <p className="mb-3 font-halyard-text">You can cancel these tickets up to 7 days before the experience begins and get a full refund.</p>
       </FaqItem>
