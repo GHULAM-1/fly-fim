@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
+import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,8 @@ interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof Drawe
   bgClass?: string;
   showTopLine?: boolean;
   children?: React.ReactNode;
+  fullScreen?: boolean;
+  showCloseButton?: boolean;
 }
 
 const DrawerContent = React.forwardRef<
@@ -46,7 +49,15 @@ const DrawerContent = React.forwardRef<
   DrawerContentProps
 >(
   (
-    { className, bgClass = "bg-background", showTopLine = true, children, ...props },
+    { 
+      className, 
+      bgClass = "bg-background", 
+      showTopLine = true, 
+      children, 
+      fullScreen = false,
+      showCloseButton = false,
+      ...props 
+    },
     ref
   ) => (
     <DrawerPortal>
@@ -54,14 +65,25 @@ const DrawerContent = React.forwardRef<
       <DrawerPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border",
-          bgClass,
+          fullScreen
+            ? "fixed inset-x-0 bottom-0 z-50 flex h-[67vh] w-full flex-col bg-black rounded-t-[10px]"
+            : "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border",
+          fullScreen ? "bg-black" : bgClass,
           className
         )}
         {...props}
       >
-        {showTopLine && (
+        {!fullScreen && showTopLine && (
           <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
+        )}
+        {fullScreen && showCloseButton && (
+          <DrawerClose className="absolute top-4 right-4 z-10 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
+            <X size={20} />
+          </DrawerClose>
+        )}
+        {/* Add hidden title for accessibility */}
+        {fullScreen && (
+          <DrawerTitle className="sr-only">Photo Gallery</DrawerTitle>
         )}
         {children}
       </DrawerPrimitive.Content>
