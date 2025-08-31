@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -155,17 +157,14 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  const handleDateSelectionAndRedirect = (date: Date) => {
+  const handleDateSelectionAndNavigate = (date: Date) => {
     onDateSelect(date);
     onClose();
 
     if (itemName && city) {
-      const price = date.getDay() === 5 || date.getDay() === 0 ? 51.17 : 39.2;
       const bookingUrl = `/booking?itemName=${encodeURIComponent(
         itemName
-      )}&city=${encodeURIComponent(
-        city
-      )}&date=${date.toISOString()}&price=${price}`;
+      )}&city=${encodeURIComponent(city)}&date=${date.toISOString()}`;
       router.push(bookingUrl);
     }
   };
@@ -224,7 +223,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
               month={currentMonth}
               selectedDate={selectedDate}
               today={today}
-              onDateSelect={handleDateSelectionAndRedirect}
+              onDateSelect={handleDateSelectionAndNavigate}
             />
             <CalendarGrid
               month={
@@ -236,7 +235,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
               }
               selectedDate={selectedDate}
               today={today}
-              onDateSelect={handleDateSelectionAndRedirect}
+              onDateSelect={handleDateSelectionAndNavigate}
             />
           </div>
         </div>

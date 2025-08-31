@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CalendarModal from "@/components/booking/CalendarModal";
 
 interface AvailabilityCheckerProps {
@@ -15,9 +15,9 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const handleDateSelectForDisplay = (date: Date) => {
-    setSelectedDate(date);
-  };
+  useEffect(() => {
+    setSelectedDate(null);
+  }, []);
 
   const formatDate = (date: Date | null) => {
     if (!date) return "Select a date";
@@ -85,7 +85,7 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
         isOpen={isCalendarOpen}
         onClose={() => setIsCalendarOpen(false)}
         selectedDate={selectedDate}
-        onDateSelect={handleDateSelectForDisplay}
+        onDateSelect={setSelectedDate}
         itemName={itemName}
         city={city}
       />
