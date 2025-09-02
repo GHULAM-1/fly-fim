@@ -4,25 +4,24 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-// Define the structure for a city object from the backend API
+
 interface CityFromAPI {
   _id: string;
   cityName: string;
   countryName: string;
 }
 
-// Define the structure needed by our local component
+
 interface Destination {
   id: string;
   description: string;
   place: string;
   image: string;
-  city: string; // This will be the formatted city name for display
-  slug: string; // This will be the URL-friendly city name
+  city: string; 
+  slug: string; 
 }
 
-// A map to associate cities with specific images to maintain visual consistency
-// We use lowercase keys to match the data from the database
+
 const cityImageMap: { [key: string]: string } = {
   paris: "/images/d2.jpg.avif",
   london: "/images/d5.jpg.avif",
@@ -50,31 +49,25 @@ const Destinations = () => {
         const result = await response.json();
 
         if (result.success && Array.isArray(result.data)) {
-          // Process and deduplicate cities from the backend
-          const uniqueCities = new Map<string, Destination>();
-          result.data.forEach((city: CityFromAPI) => {
+          
+          const allDestinationEntries = result.data.map((city: CityFromAPI) => {
             const cityNameLower = city.cityName.toLowerCase();
-            if (!uniqueCities.has(cityNameLower)) {
-              uniqueCities.set(cityNameLower, {
-                id: city._id,
-                description: `Things to do in ${city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1)}`,
-                place: city.countryName,
-                // Use a mapped image or a default fallback
-                image: cityImageMap[cityNameLower] || "/images/d1.jpg.avif",
-                city:
-                  city.cityName.charAt(0).toUpperCase() +
-                  city.cityName.slice(1),
-                slug: city.cityName.replace(/\s+/g, "-").toLowerCase(),
-              });
-            }
+            return {
+              id: city._id,
+              description: `Things to do in ${city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1)}`,
+              place: city.countryName,
+              image: cityImageMap[cityNameLower] || "/images/d1.jpg.avif",
+              city:
+                city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1),
+              slug: city.cityName.replace(/\s+/g, "-").toLowerCase(),
+            };
           });
-          setDestinations(Array.from(uniqueCities.values()));
+          setDestinations(allDestinationEntries);
         } else {
           throw new Error("Invalid data format from API");
         }
       } catch (error) {
         console.error("Error fetching destinations:", error);
-        // You could set an error state here to display a message to the user
       } finally {
         setLoading(false);
       }
@@ -101,7 +94,6 @@ const Destinations = () => {
     }
   };
 
-  // Don't render anything if loading or no destinations
   if (loading || destinations.length === 0) {
     return (
       <div className="py-4 max-w-[1200px] mx-auto">

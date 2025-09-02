@@ -5,10 +5,17 @@ interface CityCardProps {
   image: string;
   description: string;
   place: string;
-  city: string;
+  city: string; 
+  displayName: string; 
 }
 
-const CityCard = ({ image, description, place, city }: CityCardProps) => {
+const CityCard = ({
+  image,
+  description,
+  place,
+  city,
+  displayName,
+}: CityCardProps) => {
   return (
     <Link
       href={`/things-to-do/${city}`}
@@ -16,19 +23,22 @@ const CityCard = ({ image, description, place, city }: CityCardProps) => {
     >
       <div className="flex flex-row md:flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg p-2">
         <div>
-          <img src={image} alt={description} className="rounded md:w-full w-[41px]" />
+          <img
+            src={image}
+            alt={description}
+            className="rounded md:w-full w-[41px]"
+          />
         </div>
         <div>
           <p className="font-text text-[#444444] md:mt-2 leading-tight md:max-w-32">
-            {description} {" "}
-            <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight md:max-w-32">
-            {city}
-          </span>
+            {description}{" "}
+            <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight break-words">
+              {displayName}
+            </span>
           </p>
           <p className="font-text md:block hidden text-[#444444] md:mt-2 leading-tight md:max-w-32">
-            {city}
+            {displayName}
           </p>
-
           <p className="text-[#666666] font-halyard-text-light text-sm mt-1">
             {place}
           </p>
