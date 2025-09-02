@@ -916,7 +916,7 @@ const ConfirmAndPayPage = () => {
                   <img
                     src="/images/r1.jpg.avif"
                     alt={itemName}
-                    className="w-full h-40 object-cover rounded-t-lg"
+                    className="w-full h-15 object-cover rounded-t-lg"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-white font-semibold text-lg break-words">
