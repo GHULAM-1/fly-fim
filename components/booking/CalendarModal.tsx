@@ -1,8 +1,8 @@
-"use client";
-
 import React, { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 
 const getMonthName = (monthIndex: number) => {
   const monthNames = [
@@ -89,7 +89,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 }
                 ${
                   isSelected
-                    ? "bg-purple-600 text-white hover:bg-purple-700"
+                    ? "bg-purple-100 text-purple-700 border border-purple-300"
                     : ""
                 }
               `}
@@ -98,7 +98,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               {!isPastDate && (
                 <span
                   className={`text-xs mt-1 ${
-                    isSelected ? "text-white/90" : "text-green-600"
+                    isSelected ? "text-purple-700" : "text-green-600"
                   }`}
                 >
                   ${price.toFixed(2)}
@@ -119,6 +119,7 @@ interface CalendarModalProps {
   onDateSelect: (date: Date) => void;
   itemName?: string;
   city?: string;
+  position?: "center" | "top";
 }
 
 const CalendarModal: React.FC<CalendarModalProps> = ({
@@ -128,6 +129,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   onDateSelect,
   itemName,
   city,
+  position = "center",
 }) => {
   const router = useRouter();
   const today = new Date();
@@ -136,26 +138,15 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1)
   );
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    };
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
       document.body.style.overflow = "hidden";
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   const handleDateSelectionAndNavigate = (date: Date) => {
     onDateSelect(date);
@@ -184,95 +175,81 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in p-4">
+    <div
+      className="fixed inset-0 h-full bg-black/70 z-[9999] animate-fade-in"
+      onClick={onClose}
+    >
       <div
-        ref={modalRef}
-        className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-slide-up max-h-[90vh] flex flex-col"
+        className={cn(
+          "w-full h-screen flex justify-center p-4",
+          position === "center" && "items-center",
+          position === "top" && "items-start pt-28"
+        )}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white z-10">
-          <h2 className="text-xl font-heading text-gray-800">Select a date</h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100"
-          >
-            <X size={20} className="text-gray-600" />
-          </button>
-        </div>
-
-        <div className="overflow-y-auto p-6">
-          <div className="flex items-center justify-between mb-4 px-2">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-fade-in duration-300 max-h-[90vh] flex flex-col"
+        >
+          <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white z-10">
+            <h2 className="text-xl font-heading text-gray-800">
+              Select a date
+            </h2>
             <button
-              onClick={prevMonth}
-              disabled={
-                currentMonth <=
-                new Date(today.getFullYear(), today.getMonth(), 1)
-              }
-              className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={nextMonth}
+              onClick={onClose}
               className="p-2 rounded-full hover:bg-gray-100"
             >
-              <ChevronRight size={20} />
+              <X size={20} className="text-gray-600" />
             </button>
           </div>
-          <div className="grid md:grid-cols-2 gap-x-8">
-            <CalendarGrid
-              month={currentMonth}
-              selectedDate={selectedDate}
-              today={today}
-              onDateSelect={handleDateSelectionAndNavigate}
-            />
-            <CalendarGrid
-              month={
-                new Date(
-                  currentMonth.getFullYear(),
-                  currentMonth.getMonth() + 1,
-                  1
-                )
-              }
-              selectedDate={selectedDate}
-              today={today}
-              onDateSelect={handleDateSelectionAndNavigate}
-            />
+
+          <div className="overflow-y-auto p-6">
+            <div className="flex items-center justify-between mb-4 px-2">
+              <button
+                onClick={prevMonth}
+                disabled={
+                  currentMonth <=
+                  new Date(today.getFullYear(), today.getMonth(), 1)
+                }
+                className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={nextMonth}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+            <div className="grid md:grid-cols-2 gap-x-8">
+              <CalendarGrid
+                month={currentMonth}
+                selectedDate={selectedDate}
+                today={today}
+                onDateSelect={handleDateSelectionAndNavigate}
+              />
+              <CalendarGrid
+                month={
+                  new Date(
+                    currentMonth.getFullYear(),
+                    currentMonth.getMonth() + 1,
+                    1
+                  )
+                }
+                selectedDate={selectedDate}
+                today={today}
+                onDateSelect={handleDateSelectionAndNavigate}
+              />
+            </div>
+          </div>
+
+          <div className="mt-auto p-4 border-t sticky bottom-0 bg-white z-10">
+            <p className="text-xs text-gray-500 text-center">
+              All prices are in USD ($)
+            </p>
           </div>
         </div>
-
-        <div className="mt-auto p-4 border-t sticky bottom-0 bg-white z-10">
-          <p className="text-xs text-gray-500 text-center">
-            All prices are in USD ($)
-          </p>
-        </div>
       </div>
-
-      <style jsx>{`
-        .animate-fade-in {
-          animation: fadeIn 0.2s ease-out;
-        }
-        .animate-slide-up {
-          animation: slideUp 0.3s ease-out;
-        }
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes slideUp {
-          from {
-            transform: translateY(20px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import ImageGallery from "@/components/checkout/gallery";
 import Banner from "@/components/home/Banner";
@@ -9,8 +9,8 @@ import Recommendations from "@/components/checkout/similar-experiences";
 import ExperienceDetails from "@/components/checkout/features";
 import FaqSection from "@/components/checkout/faqs";
 import CheckAvailability from "@/components/checkout/checkAvailability";
-import CheckoutNav from "@/components/checkout/CheckoutNav";
 import PhotoGalleryDrawer from "@/components/ui/photo-gallery-drawer";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 import {
   BreadcrumbList,
   BreadcrumbSeparator,
@@ -35,12 +35,99 @@ import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 import WhyHeadout from "@/components/checkout/WhyHeadout";
 
+const experiences = [
+  {
+    id: "ex-1",
+    image: "/images/d1.jpg.avif",
+    place: "Seville Cathedral",
+    rating: 4.7,
+    reviews: 8123,
+    description: "Skip-the-line entry with optional guided tour",
+    price: 24,
+    off: 10,
+    oldPrice: 64.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "ex-2",
+    image: "/images/d2.jpg.avif",
+    place: "Real Alcázar",
+    rating: 4.8,
+    reviews: 15234,
+    description: "Priority entrance + audio guide",
+    price: 29,
+    off: 10,
+    oldPrice: 32.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "ex-3",
+    image: "/images/d3.jpg.avif",
+    place: "Guadalquivir Cruise",
+    rating: 4.5,
+    reviews: 5210,
+    description: "1‑hour scenic river cruise",
+    price: 18,
+  },
+  {
+    id: "ex-4",
+    image: "/images/d4.jpg.avif",
+    place: "Flamenco Show",
+    rating: 4.6,
+    reviews: 6632,
+    description: "Authentic tablao experience",
+    price: 25,
+  },
+  {
+    id: "ex-5",
+    image: "/images/d5.jpg.avif",
+    place: "City Card",
+    rating: 4.3,
+    reviews: 2101,
+    description: "Multi‑attraction pass for 48h",
+    price: 49,
+  },
+  {
+    id: "ex-6",
+    image: "/images/d6.jpeg.avif",
+    place: "Guided Walking Tour",
+    rating: 4.7,
+    reviews: 3889,
+    description: "Old Town & Jewish Quarter",
+    price: 22,
+  },
+  {
+    id: "ex-7",
+    image: "/images/d2.jpg.avif",
+    place: "Museum of Fine Arts",
+    rating: 4.4,
+    reviews: 980,
+    description: "Entry ticket",
+    price: 12,
+  },
+  {
+    id: "ex-8",
+    image: "/images/d3.jpg.avif",
+    place: "Hop-on Hop-off Bus",
+    rating: 4.2,
+    reviews: 4312,
+    description: "24‑hour ticket with audio guide",
+    price: 30,
+  },
+];
+
 const CheckoutPage: React.FC = () => {
   const params = useParams();
+  const router = useRouter();
   const city = params.city as string;
   const categoryName = params.category as string;
   const subcategory = params.subcategory as string;
   const itemId = params.itemId as string;
+  const { isModalOpen } = useNavigationStore();
+
+  const currentExperience = experiences.find((exp) => exp.id === itemId);
 
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
@@ -50,7 +137,6 @@ const CheckoutPage: React.FC = () => {
 
   const isWorldwideRoute = city === "worldwide";
 
-  // Decode and format category
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
@@ -58,10 +144,8 @@ const CheckoutPage: React.FC = () => {
     ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
     : "Category";
 
-  // Decode URL-encoded characters first, then process
   const decodedCity = decodeURIComponent(city);
 
-  // Format city name properly (for display)
   const formattedCityName = decodedCity
     ? decodedCity
         .split("-")
@@ -69,7 +153,6 @@ const CheckoutPage: React.FC = () => {
         .join(" ")
     : "City";
 
-  // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
     subcategory ? subcategory.split("-").join(" ") : ""
   );
@@ -78,40 +161,51 @@ const CheckoutPage: React.FC = () => {
       decodedSubcategoryName.slice(1)
     : "Subcategory";
 
-  // Decode and format item
-  const decodedItemName = decodeURIComponent(
-    itemId ? itemId.split("-").join(" ") : ""
-  );
-  const formattedItemName = decodedItemName
-    ? decodedItemName.charAt(0).toUpperCase() + decodedItemName.slice(1)
-    : "Item";
+  const formattedItemName =
+    currentExperience?.description ||
+    decodeURIComponent(itemId ? itemId.split("-").join(" ") : "Item");
 
-  // Convert to lowercase hyphenated for config key
+  const itemCity = currentExperience?.place || formattedCityName;
+
   const configKey = decodedSubcategoryName.toLowerCase().replace(/\s+/g, "-");
 
-  // Dynamic heading logic based on subcategory
+  const handleMobileCheckAvailability = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateString = tomorrow.toISOString();
+
+    const bookingUrl = `/booking?itemName=${encodeURIComponent(
+      formattedItemName
+    )}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(
+      categoryName
+    )}&subcategory=${encodeURIComponent(
+      subcategory
+    )}&itemId=${encodeURIComponent(itemId)}&date=${dateString}`;
+    router.push(bookingUrl);
+  };
+
   const getDynamicHeading = (): string => {
     const cityFormatted = city.charAt(0).toUpperCase() + city.slice(1);
 
     if (subcategory) {
-      // If we have a subcategory, format it as "Subcategory in City"
       return `${formattedSubcategoryName} in ${cityFormatted}`;
     } else {
-      // If no subcategory (shouldn't happen on this page, but fallback)
       return `${formattedCategoryName} in ${cityFormatted}`;
     }
   };
 
-  // Comprehensive subcategory configuration - conditional based on worldwide vs city-specific
   const subCategoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: "Global Museums",
           components: {
             themes: [
               { icon: Ticket, text: "Global Museum Tickets", href: "#" },
-              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              {
+                icon: BadgePercent,
+                text: "Religious Site Tickets",
+                href: "#",
+              },
               { icon: Landmark, text: "Landmark Tickets", href: "#" },
               { icon: SunMedium, text: "Zoo Tickets", href: "#" },
               { icon: Ship, text: "City Cards", href: "#" },
@@ -119,7 +213,7 @@ const CheckoutPage: React.FC = () => {
             ],
           },
         },
-        // Add more as needed, default for others
+
         default: {
           heading: `Global ${formattedSubcategoryName}`,
           components: {
@@ -131,7 +225,6 @@ const CheckoutPage: React.FC = () => {
         },
       }
     : {
-        // Add more as needed, default for others
         default: {
           heading: getDynamicHeading(),
           components: {
@@ -172,12 +265,10 @@ const CheckoutPage: React.FC = () => {
         },
       };
 
-  // Get current subcategory configuration
   const currentSubCategory =
     subCategoryConfig[configKey as keyof typeof subCategoryConfig] ||
     subCategoryConfig.default;
 
-  // Early return if no subcategory found
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
@@ -278,7 +369,6 @@ const CheckoutPage: React.FC = () => {
     "/images/tickets-included-07.avif",
   ];
 
-  // Build navigation items from current subcategory config
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
       const id = (t.text || "")
@@ -312,7 +402,6 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <>
-      <CheckoutNav />
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
         <div className="pt-16 md:pt-[76px]">
           {!isWorldwideRoute ? (
@@ -358,12 +447,9 @@ const CheckoutPage: React.FC = () => {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbLink
-                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href={`/things-to-do/${city}/${categoryName}/${subcategory}/${itemId}`}
-                      >
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
                         {formattedItemName}
-                      </BreadcrumbLink>
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -493,7 +579,7 @@ const CheckoutPage: React.FC = () => {
 
                     {/* Main title */}
                     <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
-                      {formattedItemName} in {formattedCityName}
+                      {formattedItemName} in {itemCity}
                     </h2>
                   </div>
                 </div>
@@ -519,7 +605,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e] md:text-[15px]">NEW</span>
                   </h1>
                   <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {formattedCityName}
+                    {formattedItemName} in {itemCity}
                   </h2>
                 </div>
 
@@ -551,7 +637,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e]">NEW</span>
                   </h1>
                   <h2 className="text-[24px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {formattedCityName}
+                    {formattedItemName} in {itemCity}
                   </h2>
                 </div>
                 <ImageGallery
@@ -627,7 +713,7 @@ const CheckoutPage: React.FC = () => {
                 <div className="lg:sticky lg:top-[160px] space-y-6">
                   <CheckAvailability
                     itemName={formattedItemName}
-                    city={formattedCityName}
+                    city={itemCity}
                   />
                   <WhyHeadout />
                 </div>
@@ -643,9 +729,7 @@ const CheckoutPage: React.FC = () => {
 
               {/* Things to do in city */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <Activities
-                  title={`Top Things to do in ${formattedCityName}`}
-                />
+                <Activities title={`Top Things to do in ${itemCity}`} />
               </div>
 
               {/* Browse Themes Section */}
@@ -678,30 +762,35 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Bar - Hidden on desktop */}
-      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-50 bg-white border-t border-gray-200  px-7 py-3">
-        <div className="flex items-center justify-between gap-3">
-          {/* Price section */}
-          <div className="flex flex-col">
-            <span className="line-through text-gray-500 text-sm font-halyard-text">
-              €55
-            </span>
-            <span className="text-xl font-halyard-text font-bold text-green-600">
-              €49.50
-            </span>
+      {/* Mobile Sticky Bottom Bar - Conditionally Rendered */}
+      {!isModalOpen && (
+        <div className="lg:hidden fixed bottom-14 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-7 py-3">
+          <div className="flex items-center justify-between gap-3">
+            {/* Price section */}
+            <div className="flex flex-col">
+              <span className="line-through text-gray-500 text-sm font-halyard-text">
+                €55
+              </span>
+              <span className="text-xl font-halyard-text font-bold text-green-600">
+                €49.50
+              </span>
+            </div>
+            {/* Check availability button */}
+            <button
+              onClick={handleMobileCheckAvailability}
+              className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200"
+            >
+              Check availability
+            </button>
           </div>
-          {/* Check availability button */}
-          <button className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200">
-            Check availability
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Photo Gallery Drawer */}
       <PhotoGalleryDrawer
         images={images}
         itemName={formattedItemName}
-        city={formattedCityName}
+        city={itemCity}
         initialIndex={currentImageIndex}
         isOpen={isGalleryOpen}
         onOpenChange={setIsGalleryOpen}

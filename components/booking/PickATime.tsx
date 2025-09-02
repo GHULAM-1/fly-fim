@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 interface PickATimeProps {
   type: "timed" | "flex";
   selectedOptionTitle: string | null;
+  selectedDate: Date | null;
   formattedDate: string;
 }
 
@@ -24,7 +25,7 @@ const timeSlots = [
 ];
 
 const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
-  ({ type, selectedOptionTitle, formattedDate }, ref) => {
+  ({ type, selectedOptionTitle, selectedDate, formattedDate }, ref) => {
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
     const [isOpen, setIsOpen] = useState(true);
@@ -71,7 +72,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
         const query = new URLSearchParams({
           itemName,
           city,
-          date: formattedDate,
+          date: selectedDate ? selectedDate.toISOString() : new Date().toISOString(),
           optionTitle: selectedOptionTitle || "",
           time: selectedTime || "Anytime",
           price: `$${(selectedPrice || 0).toFixed(2)}`,
@@ -83,7 +84,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
 
     if (type === "flex") {
       return (
-        <div ref={ref} className="pt-10 max-w-[855px] mx-auto">
+        <div ref={ref} className="pt-10 max-w-[855px] ">
           <div className="bg-orange-50 text-orange-900 p-4 font-halyard-text-light rounded-lg flex flex-row text-sm mb-6">
             <Clock size={16} className="mr-2" />
             Enter anytime within operating hours: 9:00am - 9:00pm
@@ -111,7 +112,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
     }
 
     return (
-      <div ref={ref} className="pt-10 max-w-[855px] mx-auto">
+      <div ref={ref} className="pt-10 max-w-[855px] ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 items-center">
           <h2 className="text-2xl font-heading text-gray-800 mb-4 md:mb-0">
             Pick a time

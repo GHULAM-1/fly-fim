@@ -9,12 +9,14 @@ import { AuthDialog } from "./auth/AuthDialog";
 import { UserDropdown } from "./UserDropdown";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { usePathname } from "next/navigation";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
-  const [isCustomSearchDrawerOpen, setIsCustomSearchDrawerOpen] = useState(false);
+  const [isCustomSearchDrawerOpen, setIsCustomSearchDrawerOpen] =
+    useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
@@ -28,6 +30,7 @@ const Navbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
+  const { isModalOpen } = useNavigationStore();
 
   const placeholderOptions = [
     "experiences and cities",
@@ -44,11 +47,11 @@ const Navbar = () => {
       // Get the actual viewport height
       const vh = window.innerHeight * 0.01;
       setViewportHeight(vh);
-      
+
       // Get safe area bottom for devices with home indicator
       const safeAreaBottomValue = parseInt(
-        getComputedStyle(document.documentElement)
-          .getPropertyValue('--sat') || '0'
+        getComputedStyle(document.documentElement).getPropertyValue("--sat") ||
+          "0"
       );
       setSafeAreaBottom(safeAreaBottomValue);
     };
@@ -56,19 +59,19 @@ const Navbar = () => {
     // Set CSS custom property for viewport height
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
     updateViewportHeight();
     setVH();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       updateViewportHeight();
       setVH();
     });
 
     // Handle iOS Safari viewport changes
-    window.addEventListener('orientationchange', () => {
+    window.addEventListener("orientationchange", () => {
       setTimeout(() => {
         updateViewportHeight();
         setVH();
@@ -76,8 +79,8 @@ const Navbar = () => {
     });
 
     return () => {
-      window.removeEventListener('resize', updateViewportHeight);
-      window.removeEventListener('orientationchange', updateViewportHeight);
+      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("orientationchange", updateViewportHeight);
     };
   }, []);
 
@@ -264,6 +267,9 @@ const Navbar = () => {
   const filteredDestinations = filterResults(topDestinations, searchQuery);
   const filteredActivities = filterResults(topActivities, searchQuery);
 
+  const isNavSolid = scrolled || pathname !== "/";
+  const navTextColorClass = isNavSolid ? "text-black" : "text-white";
+
   return (
     <>
       {/* Add the CSS animations and viewport fixes as a style tag */}
@@ -306,8 +312,8 @@ const Navbar = () => {
 
       {/* Focus overlay - covers entire viewport except search dropdown */}
       {isInputFocused && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-[9998] transition-opacity duration-300"
+        <div
+          className="fixed inset-0 bg-black/50 z-30 transition-opacity duration-300"
           onClick={() => {
             setIsSearchOpen(false);
             setIsInputFocused(false);
@@ -316,18 +322,14 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-[9999] py-2 ${
-          scrolled || pathname !== "/"
-            ? `bg-white ${
-                pathname === "/" || scrolled ? "border-b border-gray-200" : ""
-              } text-black`
-            : "text-white"
-        }`}
+        className={`fixed top-0 left-0 w-full z-40 py-2 transition-colors duration-300 ${
+          isNavSolid ? "bg-white border-b border-gray-200" : "bg-transparent"
+        } ${navTextColorClass}`}
       >
         <div className="max-w-[1200px] mx-auto xl:px-[0px] px-[24px]">
           <div className="flex justify-between items-center">
             <Link href="/">
-              {scrolled || pathname !== "/" ? (
+              {isNavSolid ? (
                 <img
                   src="/images/new-purple-logo.png"
                   alt="logo"
@@ -344,7 +346,7 @@ const Navbar = () => {
             {(scrolled || pathname !== "/") && (
               <div
                 ref={searchRef}
-                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-[10000] ${
+                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-50 ${
                   isInputFocused
                     ? "min-w-sm xl:min-w-md"
                     : "min-w-xs xl:min-w-sm"
@@ -374,7 +376,9 @@ const Navbar = () => {
                   {/* Custom animated placeholder */}
                   {!isSearchOpen && (
                     <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
-                      <span className="mr-1 font-halyard-text-light">Search for</span>
+                      <span className="mr-1 font-halyard-text-light">
+                        Search for
+                      </span>
                       <div className="relative overflow-hidden h-5 flex items-center w-40">
                         {/* Previous text - fading out upward */}
                         {isTransitioning && previousPlaceholderIndex >= 0 && (
@@ -406,9 +410,9 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-                <Search  strokeWidth={1} />
+                <Search strokeWidth={1} />
                 {isSearchOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[10001] max-h-80 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[51] max-h-80 overflow-y-auto">
                     {/* Top destinations */}
                     <div className="p-4">
                       <h3 className="text-sm font-medium text-[#444444] mb-3">
@@ -457,15 +461,17 @@ const Navbar = () => {
               </div>
             )}
             <div className="hidden md:flex items-center gap-6">
-              <LanguageCurrencyDropdown
-                scrolled={scrolled || pathname !== "/"}
-              />
+              <LanguageCurrencyDropdown scrolled={isNavSolid} />
               <Link
                 href="/help"
                 className="text-sm font-semibold flex items-center gap-1"
               >
                 <CircleHelp strokeWidth={1} size={16} />
-                <span className={`hidden font-extralight md:block ${scrolled || pathname !== "/" ? "text-[#444444]" : "text-white"}`}>Help</span>
+                <span
+                  className={`hidden font-extralight md:block ${navTextColorClass}`}
+                >
+                  Help
+                </span>
               </Link>
 
               {loading ? (
@@ -473,16 +479,15 @@ const Navbar = () => {
                 <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
               ) : user ? (
                 // Authenticated state - show user dropdown
-                <UserDropdown
-                  user={user}
-                  scrolled={scrolled || pathname !== "/"}
-                />
+                <UserDropdown user={user} scrolled={isNavSolid} />
               ) : (
                 // Unauthenticated state - show sign in button
                 <button
                   onClick={() => setAuthDialogOpen(true)}
-                  className={`border text-[#444444] ${
-                    scrolled || pathname !== "/" ? "text-[#444444] " : "border-white text-white"
+                  className={`border ${
+                    isNavSolid
+                      ? "text-[#444444] border-gray-400"
+                      : "border-white text-white"
                   } rounded-md cursor-pointer font-extralight py-1.5 px-3 text-sm`}
                 >
                   Sign in
@@ -491,18 +496,17 @@ const Navbar = () => {
             </div>
             <div className="md:hidden flex items-center gap-4">
               {/* Mobile Search Trigger */}
-              <button 
+              <button
                 onClick={() => setIsCustomSearchDrawerOpen(true)}
                 className="p-2 font-halyard-text-light"
               >
-                <Search size={16} className={`font-halyard-text-light ${
-                  scrolled || pathname !== "/" ? "text-[#444444]" : "text-white"
-                }`} />
+                <Search
+                  size={16}
+                  className={`font-halyard-text-light ${navTextColorClass}`}
+                />
               </button>
 
-              <LanguageCurrencyDropdown
-                scrolled={scrolled || pathname !== "/"}
-              />
+              <LanguageCurrencyDropdown scrolled={isNavSolid} />
             </div>
           </div>
         </div>
@@ -518,20 +522,20 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-[9998]"
+              className="fixed inset-0 bg-black/50 z-50"
               onClick={() => setIsCustomSearchDrawerOpen(false)}
             />
-            
+
             {/* Drawer Content */}
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ 
-                type: "spring", 
-                damping: 30, 
+              transition={{
+                type: "spring",
+                damping: 30,
                 stiffness: 400,
-                mass: 0.8
+                mass: 0.8,
               }}
               drag="y"
               dragConstraints={{ top: 0, bottom: 0 }}
@@ -541,14 +545,9 @@ const Navbar = () => {
                   setIsCustomSearchDrawerOpen(false);
                 }
               }}
-              onTouchStart={() => {
-                if (mobileInputRef.current) {
-                  mobileInputRef.current.blur();
-                }
-              }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] drawer-container flex flex-col"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 drawer-container flex flex-col"
               style={{
-                paddingBottom: `max(1rem, ${safeAreaBottom}px)`
+                paddingBottom: `max(1rem, ${safeAreaBottom}px)`,
               }}
             >
               {/* Handle */}
@@ -559,7 +558,7 @@ const Navbar = () => {
               {/* Header with search input */}
               <div className="bg-white px-4 pb-4 border-gray-200 flex-shrink-0">
                 <div className="flex items-center border border-gray-300 rounded-md">
-                  <button 
+                  <button
                     className="p-2 flex-shrink-0"
                     onClick={() => setIsCustomSearchDrawerOpen(false)}
                   >
@@ -578,7 +577,10 @@ const Navbar = () => {
               </div>
 
               {/* Scrollable content */}
-              <div className="flex-1 min-h-0 px-4 pb-4" style={{ minHeight: 'calc(var(--vh, 1vh) * 85 - 120px)' }}>
+              <div
+                className="flex-1 min-h-0 px-4 pb-4"
+                style={{ minHeight: "calc(var(--vh, 1vh) * 85 - 120px)" }}
+              >
                 {!searchQuery ? (
                   <>
                     {/* Top destinations near you */}
@@ -588,7 +590,10 @@ const Navbar = () => {
                       </h3>
                       <div className="space-y-0 max-h-48 overflow-y-auto">
                         {topDestinations.map((dest) => (
-                          <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                          <div
+                            key={dest.id}
+                            className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                          >
                             <div className="w-10 h-10 rounded overflow-hidden">
                               <img
                                 src={dest.image}
@@ -616,7 +621,10 @@ const Navbar = () => {
                       </h3>
                       <div className="space-y-0 max-h-64 overflow-y-auto">
                         {topActivities.map((activity) => (
-                          <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                          <div
+                            key={activity.id}
+                            className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                          >
                             <div className="relative w-10 h-10">
                               {/* Stacked background images */}
                               <div className="absolute left-[2px] -top-[1px] w-10 h-10 rounded overflow-hidden transform rotate-2 opacity-40">
@@ -673,7 +681,10 @@ const Navbar = () => {
                         </h3>
                         <div className="space-y-0 max-h-48 overflow-y-auto">
                           {filteredDestinations.map((dest) => (
-                            <div key={dest.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                            <div
+                              key={dest.id}
+                              className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                            >
                               <div className="w-10 h-10 rounded overflow-hidden">
                                 <img
                                   src={dest.image}
@@ -702,7 +713,10 @@ const Navbar = () => {
                         </h3>
                         <div className="space-y-0 max-h-64 overflow-y-auto">
                           {filteredActivities.map((activity) => (
-                            <div key={activity.id} className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
+                            <div
+                              key={activity.id}
+                              className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                            >
                               <div className="w-10 h-10 rounded overflow-hidden">
                                 <img
                                   src={activity.image}
