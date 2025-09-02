@@ -19,10 +19,20 @@ const countries = [
   { name: "Australia", code: "AU", dial_code: "+61" },
 ];
 
-const CountryCodeSelector: React.FC = () => {
+interface CountryCodeSelectorProps {
+  value: string;
+  onValueChange: (value: string) => void;
+}
+
+const CountryCodeSelector: React.FC<CountryCodeSelectorProps> = ({
+  value,
+  onValueChange,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedCountry =
+    countries.find((country) => country.dial_code === value) || countries[0];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,7 +71,7 @@ const CountryCodeSelector: React.FC = () => {
               <li
                 key={country.code}
                 onClick={() => {
-                  setSelectedCountry(country);
+                  onValueChange(country.dial_code);
                   setIsOpen(false);
                 }}
                 className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
