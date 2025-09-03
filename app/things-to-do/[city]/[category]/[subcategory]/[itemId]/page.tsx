@@ -529,8 +529,8 @@ const CheckoutPage: React.FC = () => {
                           isClient && index === currentImageIndex
                             ? "bg-white w-6"
                             : isClient && index < currentImageIndex
-                            ? "bg-white w-1.5"
-                            : "bg-white/30 w-1.5"
+                              ? "bg-white w-1.5"
+                              : "bg-white/30 w-1.5"
                         }`}
                         style={{
                           backgroundColor:
@@ -744,7 +744,7 @@ const CheckoutPage: React.FC = () => {
               {!isWorldwideRoute && (
                 <div className="mb-6 md:mb-10">
                   <CarouselGrid
-                    title="Nearby cities to explore"
+                    title="Explore world's top destinations"
                     variant="simple"
                     recommendations={destinations}
                   />

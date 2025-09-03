@@ -168,7 +168,7 @@ const Recommendations = () => {
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (
-          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px]">
+          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px] pl-[24px] xl:pl-0">
             <CarouselCard
               variant="full"
               image={recommendation.image}

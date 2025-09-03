@@ -338,7 +338,7 @@ const Hero = () => {
         <div className="w-full h-full xl:px-0 px-[24px] max-w-[1200px] py-10 md:py-20 flex flex-col justify-end gap-10 mx-auto relative">
           <h1
             id="scroll-target"
-            className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl !font-heading max-w-2xl leading-tight relative"
+            className="text-white text-2xl font-halyard-text sm:text-3xl md:text-4xl lg:text-5xl  max-w-2xl leading-tight relative"
           >
             {t("hero.title")}
           </h1>

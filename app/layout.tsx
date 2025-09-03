@@ -13,6 +13,7 @@ import { Toaster } from "sonner";
 import { ToastContainerComponent } from "@/components/toast";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 
+// --- FONT DEFINITIONS (No changes here) ---
 const heading = localFont({
   src: "../fonts/heading.otf",
   variable: "--font-heading",
@@ -103,7 +104,11 @@ export default function RootLayout({
           Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
         </title>
       </head>
-      <body>
+      {/* --- THIS IS THE CRITICAL CHANGE --- */}
+      {/* We apply all the font variables to the body tag */}
+      <body
+        className={`${heading.variable} ${text.variable} ${regular.variable} ${halyardText.variable} ${halyardTextRegular.variable} ${halyardTextLight.variable} ${lightText.variable} ${displayLight.variable}`}
+      >
         <I18nextProvider i18n={i18n}>
           <Toaster position="top-center" />
           <ToastContainerComponent />

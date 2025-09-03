@@ -109,14 +109,18 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`text-sm cursor-pointer font-extralight flex items-center gap-1 hover:opacity-80 transition-opacity ${
+              className={`text-sm cursor-pointer font-medium flex items-center gap-1 hover:opacity-80 transition-opacity ${
                 scrolled ? "text-[#444444]" : "text-white"
               }`}
             >
               {getCurrentLanguageName()} / {formatCurrencyDisplay(currency)}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-[20px] mt-2 z-[9999]" align="end" side="bottom">
+          <DropdownMenuContent
+            className="p-[20px] mt-2 z-[9999]"
+            align="end"
+            side="bottom"
+          >
             <div className="flex">
               {/* Language Section */}
               <div className="w-[180px] border-r border-gray-200 pr-[24px]">
@@ -160,7 +164,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       }}
                       className={`text-left text-sm hover:opacity-80 transition-opacity ${
                         curr.code === currency.code
-                         ? "text-[#8000ff] bg-[#F8F6FF] rounded-[4px] p-[6.4px] font-medium"
+                          ? "text-[#8000ff] bg-[#F8F6FF] rounded-[4px] p-[6.4px] font-medium"
                           : "text-[#666666] p-[6.4px]"
                       }`}
                     >
@@ -194,7 +198,9 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       <span className="font-semibold">
                         {curr.code} {curr.symbol}
                       </span>
-                      <span className="ml-1 font-halyard-text-light">• {curr.name}</span>
+                      <span className="ml-1 font-halyard-text-light">
+                        • {curr.name}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -212,20 +218,25 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           onOpenChange={setIsLanguageDrawerOpen}
         >
           <DrawerTrigger asChild>
-            <button className={`text-sm font-halyard-text-light flex items-center gap-1 ${
-              scrolled ? "text-[#444444]" : "text-white"
-            }`}>
-              <Globe size={12} className={`font-halyard-text-light ${
+            <button
+              className={`text-sm font-halyard-text-light flex items-center gap-1 ${
                 scrolled ? "text-[#444444]" : "text-white"
-              }`} />
+              }`}
+            >
+              <Globe
+                size={12}
+                className={`font-halyard-text-light ${
+                  scrolled ? "text-[#444444]" : "text-white"
+                }`}
+              />
               {getCurrentLanguageCode()}
             </button>
           </DrawerTrigger>
-          <DrawerContent 
+          <DrawerContent
             className="h-full"
             style={{
               height: "calc(var(--vh, 1vh) * 85)",
-              maxHeight: "calc(var(--vh, 1vh) * 85)"
+              maxHeight: "calc(var(--vh, 1vh) * 85)",
             }}
           >
             <DrawerHeader className="flex items-center justify-between p-4">
@@ -248,10 +259,14 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
                     >
                       <div className="flex items-center justify-between w-full gap-3">
-                        <span className={`text-sm ${language.code === activeLanguage ? "text-[#8000ff]" : "text-[#444444]"}`}>
+                        <span
+                          className={`text-sm ${language.code === activeLanguage ? "text-[#8000ff]" : "text-[#444444]"}`}
+                        >
                           {language.name}
                         </span>
-                        <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${language.code === activeLanguage ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
+                        <div
+                          className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${language.code === activeLanguage ? "bg-[#8000ff] border-none" : "border-gray-300"}`}
+                        >
                           {language.code === activeLanguage && (
                             <div className="w-2 h-2 bg-white  rounded-full"></div>
                           )}
@@ -276,17 +291,19 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
           }}
         >
           <DrawerTrigger asChild>
-            <button className={`text-sm font-halyard-text-light flex items-center gap-1 ${
-              scrolled ? "text-[#444444]" : "text-white"
-            }`}>
+            <button
+              className={`text-sm font-halyard-text-light flex items-center gap-1 ${
+                scrolled ? "text-[#444444]" : "text-white"
+              }`}
+            >
               {formatCurrencyDisplay(currency)}
             </button>
           </DrawerTrigger>
-          <DrawerContent 
+          <DrawerContent
             className="h-full"
             style={{
               height: "calc(var(--vh, 1vh) * 85)",
-              maxHeight: "calc(var(--vh, 1vh) * 85)"
+              maxHeight: "calc(var(--vh, 1vh) * 85)",
             }}
             onTouchStart={() => {
               if (searchInputRef.current) {
@@ -319,7 +336,7 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-12 shadow-none placeholder:text-[#444444]"
                   style={{
-                    fontFamily: 'var(--font-halyard-text-light)'
+                    fontFamily: "var(--font-halyard-text-light)",
                   }}
                 />
               </div>
@@ -339,16 +356,25 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       >
                         <div className="flex items-center justify-between w-full gap-3">
                           <div className="text-[15px]">
-                            <span className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}>
+                            <span
+                              className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}
+                            >
                               {curr.code} {curr.symbol}
                             </span>
-                            <span className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}> • {curr.name}</span>
+                            <span
+                              className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}
+                            >
+                              {" "}
+                              • {curr.name}
+                            </span>
                           </div>
-                          <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
-                          {curr.code === currency.code && (
-                            <div className="w-2 h-2 bg-white  rounded-full"></div>
-                          )}
-                        </div>
+                          <div
+                            className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}
+                          >
+                            {curr.code === currency.code && (
+                              <div className="w-2 h-2 bg-white  rounded-full"></div>
+                            )}
+                          </div>
                         </div>
                       </button>
                     ))}
@@ -371,16 +397,25 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
                       >
                         <div className="flex items-center justify-between w-full gap-3">
                           <div className="text-sm">
-                            <span className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}>
+                            <span
+                              className={`${curr.code === currency.code ? "text-[#8000ff]" : "text-[#444444]"}`}
+                            >
                               {curr.code} {curr.symbol}
                             </span>
-                            <span className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}> • {curr.name}</span>
+                            <span
+                              className={`font-halyard-text-light ${curr.code === currency.code ? "text-[#8000ff]" : "text-[#666666]"}`}
+                            >
+                              {" "}
+                              • {curr.name}
+                            </span>
                           </div>
-                          <div className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}>
-                          {curr.code === currency.code && (
-                            <div className="w-2 h-2 bg-white  rounded-full"></div>
-                          )}
-                        </div>
+                          <div
+                            className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${curr.code === currency.code ? "bg-[#8000ff] border-none" : "border-gray-300"}`}
+                          >
+                            {curr.code === currency.code && (
+                              <div className="w-2 h-2 bg-white  rounded-full"></div>
+                            )}
+                          </div>
                         </div>
                       </button>
                     ))}
