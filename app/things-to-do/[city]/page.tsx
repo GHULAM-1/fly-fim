@@ -28,7 +28,7 @@ import { useNavigationStore } from "@/lib/store/navigationStore";
 import { format } from "path";
 import { useParams } from "next/navigation";
 
-const ThingsToDo= () => {
+const ThingsToDo = () => {
   const {
     showBanner,
     setShowBanner,
@@ -48,22 +48,22 @@ const ThingsToDo= () => {
   const navigationRef = useRef<HTMLDivElement>(null);
   const city = params.city as string;
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navigationElement = navigationRef.current;
+      const navHeight = navigationElement
+        ? navigationElement.offsetHeight
+        : 200;
+      const elementPosition = element.offsetTop;
+      const offsetPosition = elementPosition - navHeight;
 
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    // Get the actual height of the navigation element
-    const navigationElement = navigationRef.current;
-    const navHeight = navigationElement ? navigationElement.offsetHeight : 200;
-    const elementPosition = element.offsetTop;
-    const offsetPosition = elementPosition - navHeight;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
-  }
-};
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -92,78 +92,69 @@ const scrollToSection = (sectionId: string) => {
     }
   };
 
-// Update the global scroll handler to adjust the sticking behavior
-useEffect(() => {
-  const handleGlobalScroll = () => {
-    const scrollTop = window.scrollY;
+  useEffect(() => {
+    const handleGlobalScroll = () => {
+      const scrollTop = window.scrollY;
 
-    // Calculate when navigation becomes sticky based on viewport
-    const viewportHeight = window.innerHeight;
-    const heroHeight = viewportHeight * 0.6; // Hero takes 60% of viewport
-    
-    // Different threshold for mobile vs desktop
-    const isMobile = window.innerWidth < 768;
-    const stickyThreshold = isMobile 
-      ? heroHeight - 100 // Lower threshold for mobile
-      : heroHeight - 200; // Original threshold for desktop
+      const viewportHeight = window.innerHeight;
+      const heroHeight = viewportHeight * 0.6;
 
-    setScroll(scrollTop > stickyThreshold);
+      const isMobile = window.innerWidth < 768;
+      const stickyThreshold = isMobile
+        ? heroHeight - 100
+        : heroHeight - 200;
 
-    // Check if navigation is about to go out of viewport
-    const navigationElement = document.querySelector("[data-navigation]");
-    if (navigationElement) {
-      const navigationRect = navigationElement.getBoundingClientRect();
+      setScroll(scrollTop > stickyThreshold);
 
-      // Different threshold for mobile vs desktop
-      const shouldBeFixed = isMobile 
-        ? navigationRect.top <= 30 // Stick closer to top on mobile
-        : navigationRect.top <= 50; // Original threshold for desktop
-        
-      setIsSectionActive(shouldBeFixed);
-    }
+      const navigationElement = document.querySelector("[data-navigation]");
+      if (navigationElement) {
+        const navigationRect = navigationElement.getBoundingClientRect();
 
-    // Check if we should hide the section navigation
-    const activitiesElement = document.getElementById("activities");
-    const lastSectionElement = document.getElementById(
-      "hop-on-hop-off-tours"
-    );
+        const shouldBeFixed = isMobile
+          ? navigationRect.top <= 30
+          : navigationRect.top <= 50;
 
-    if (activitiesElement && lastSectionElement) {
-      const activitiesRect = activitiesElement.getBoundingClientRect();
-      const lastSectionRect = lastSectionElement.getBoundingClientRect();
-
-      // Hide nav if we're completely past the last section
-      if (lastSectionRect.bottom < 0) {
-        setShowSectionNavigation(false);
-        setIsCarouselVisible(false);
-      } else {
-        setShowSectionNavigation(true);
-        setIsCarouselVisible(true);
+        setIsSectionActive(shouldBeFixed);
       }
-    }
-  };
 
-  // Use throttled scroll handler
-  let ticking = false;
-  const throttledHandleScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        handleGlobalScroll();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  };
+      const activitiesElement = document.getElementById("activities");
+      const lastSectionElement = document.getElementById(
+        "hop-on-hop-off-tours"
+      );
 
-  window.addEventListener("scroll", throttledHandleScroll);
-  window.addEventListener("resize", throttledHandleScroll); // Add resize listener
-  return () => {
-    window.removeEventListener("scroll", throttledHandleScroll);
-    window.removeEventListener("resize", throttledHandleScroll);
-  };
-}, [setScroll, setIsSectionActive, setShowSectionNavigation]);
+      if (activitiesElement && lastSectionElement) {
+        const activitiesRect = activitiesElement.getBoundingClientRect();
+        const lastSectionRect = lastSectionElement.getBoundingClientRect();
 
-  // Intersection observer for active section tracking
+        if (lastSectionRect.bottom < 0) {
+          setShowSectionNavigation(false);
+          setIsCarouselVisible(false);
+        } else {
+          setShowSectionNavigation(true);
+          setIsCarouselVisible(true);
+        }
+      }
+    };
+
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleGlobalScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledHandleScroll);
+    window.addEventListener("resize", throttledHandleScroll);
+    return () => {
+      window.removeEventListener("scroll", throttledHandleScroll);
+      window.removeEventListener("resize", throttledHandleScroll);
+    };
+  }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
+
   useEffect(() => {
     const sections = [
       "musicals",
@@ -202,7 +193,6 @@ useEffect(() => {
     return () => observer.disconnect();
   }, [setActiveSection]);
 
-  // Scroll button handlers
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
     window.addEventListener("resize", handleResize);
@@ -225,41 +215,43 @@ useEffect(() => {
   const recommendations = [
     {
       id: 1,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
+      description: "Edge Observation Deck Tickets: Timed Entry",
+      place: "Edge NYC",
       image: "/images/r4.jpg.avif",
-      price: 100,
+      price: 39.2,
       rating: 4.5,
-      reviews: 100,
+      reviews: 5897,
+      badge: "Free cancellation",
     },
     {
       id: 2,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
       image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
+      price: 30,
+      off: 3,
+      rating: 4.4,
+      reviews: 4489,
     },
     {
       id: 3,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
       image: "/images/r2.jpg.avif",
-      price: 100,
+      price: 259,
       rating: 4.5,
-      reviews: 100,
+      reviews: 7792,
+      badge: "Free cancellation",
     },
     {
       id: 4,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
       image: "/images/r1.jpg.avif",
-      price: 100,
+      price: 89,
       rating: 4.5,
-      reviews: 100,
+      reviews: 2110,
+      badge: "Free cancellation",
     },
   ];
 
@@ -285,7 +277,6 @@ useEffect(() => {
         <Hero city={city} />
       </div>
 
-      {/* Category Carousel - Now integrated directly in the page */}
       <div
         ref={navigationRef}
         data-navigation
@@ -299,7 +290,6 @@ useEffect(() => {
             className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {/* Remove the md:flex hidden classes from the scroll buttons to show on all screens */}
             {showLeftButton && (
               <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center flex">
                 <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
@@ -420,18 +410,18 @@ useEffect(() => {
       </div>
 
       <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
-      <CarouselGrid
-        title="Top experiences in London"
-        recommendations={recommendations}
-        variant="subcategory"
-      />
-      <div id="musicals">
         <CarouselGrid
-          title="London Musicals"
+          title="Top experiences in London"
           recommendations={recommendations}
           variant="subcategory"
         />
-      </div>
+        <div id="musicals">
+          <CarouselGrid
+            title="London Musicals"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
         <div id="landmarks">
           <CarouselGrid
             title="Landmarks in London"
@@ -439,20 +429,20 @@ useEffect(() => {
             variant="subcategory"
           />
         </div>
-      <div id="day-trips">
-        <CarouselGrid
-          title="Day Trips From London"
-          recommendations={recommendations}
-          variant="subcategory"
-        />
-      </div>
-      <div id="combos">
-        <CarouselGrid
-          title="Combos Tickets in London"
-          recommendations={recommendations}
-          variant="subcategory"
-        />
-      </div>
+        <div id="day-trips">
+          <CarouselGrid
+            title="Day Trips From London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
+        <div id="combos">
+          <CarouselGrid
+            title="Combos Tickets in London"
+            recommendations={recommendations}
+            variant="subcategory"
+          />
+        </div>
         <div id="cruises">
           <CarouselGrid
             title="Thames River Cruise"
@@ -480,8 +470,7 @@ useEffect(() => {
             recommendations={recommendations}
             variant="subcategory"
           />
-        </div> 
-           
+        </div>
       </div>
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />

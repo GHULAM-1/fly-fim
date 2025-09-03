@@ -1857,7 +1857,7 @@ const formattedCityName = decodedCity
                   {currentCategory.heading}
                 </h1>
               </div>
-              
+
               {/* Subcategory Navigation Component - only show for city-specific routes
               <div className="md:block hidden mt-6">
                 <SubcategoryNavigation 
@@ -2127,7 +2127,7 @@ const formattedCityName = decodedCity
             {!isWorldwideRoute && (
               <div className="mb-10">
                 <CarouselGrid
-                  title="Nearby cities to explore"
+                  title="Explore world's top destinations"
                   variant="simple"
                   recommendations={destinations}
                 />

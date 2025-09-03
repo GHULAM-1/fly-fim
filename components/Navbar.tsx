@@ -460,16 +460,14 @@ const Navbar = () => {
                 )}
               </div>
             )}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-6 ">
               <LanguageCurrencyDropdown scrolled={isNavSolid} />
               <Link
                 href="/help"
-                className="text-sm font-semibold flex items-center gap-1"
+                className="text-sm font-medium flex items-center gap-1"
               >
                 <CircleHelp strokeWidth={1} size={16} />
-                <span
-                  className={`hidden font-extralight md:block ${navTextColorClass}`}
-                >
+                <span className={`hidden  md:block ${navTextColorClass}`}>
                   Help
                 </span>
               </Link>
@@ -488,7 +486,7 @@ const Navbar = () => {
                     isNavSolid
                       ? "text-[#444444] border-gray-400"
                       : "border-white text-white"
-                  } rounded-md cursor-pointer font-extralight py-1.5 px-3 text-sm`}
+                  } rounded-md cursor-pointer font-medium py-1.5 px-3 text-sm`}
                 >
                   Sign in
                 </button>
