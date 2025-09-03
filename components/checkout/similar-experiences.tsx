@@ -5,7 +5,23 @@ import CarouselCard from "../cards/CarouselCard";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
-const Recommendations = () => {
+interface Experience {
+  _id: string;
+  title: string;
+  price: string;
+  images: string[];
+  mainImage: string;
+  tagOnCards?: string;
+  // ... other fields if needed
+}
+
+interface RecommendationsProps {
+  recommendations: Experience[];
+}
+
+const Recommendations: React.FC<RecommendationsProps> = ({
+  recommendations,
+}) => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -27,120 +43,9 @@ const Recommendations = () => {
     }
   };
 
-  const recommendations = [
-    {
-      id: 1,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      badge: "Selling out fast",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "dubai",
-      category: "adventure",
-      subcategory: "skydiving",
-      itemId: "skydive-dubai",
-    },
-    {
-      id: 2,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "athens",
-      category: "culture",
-      subcategory: "historical-sites",
-      itemId: "acropolis-tickets",
-    },
-    {
-      id: 3,
-      badge: "Free cancellation",
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "rome",
-      category: "tours",
-      subcategory: "day-trips",
-      itemId: "pompeii-amalfi-tour",
-    },
-    {
-      id: 4,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio",
-    },
-    {
-      id: 5,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-2",
-    },
-    {
-      id: 6,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-3",
-    },
-    {
-      id: 7,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-4",
-    },
-    {
-      id: 8,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-5",
-    },
-  ];
+  if (!recommendations || recommendations.length === 0) {
+    return null; // Don't render the section if there are no recommendations
+  }
 
   return (
     <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
@@ -167,21 +72,26 @@ const Recommendations = () => {
         className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
-        {recommendations.map((recommendation) => (
-          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px]">
+        {recommendations.map((rec) => (
+          <div key={rec._id} className="snap-start flex-shrink-0 w-[282px]">
             <CarouselCard
               variant="full"
-              image={recommendation.image}
-              place={recommendation.place}
-              rating={recommendation.rating}
-              reviews={recommendation.reviews}
-              description={recommendation.description}
-              price={recommendation.price}
-              badge={recommendation.badge}
-              city={recommendation.city}
-              category={recommendation.category}
-              subcategory={recommendation.subcategory}
-              itemId={recommendation.itemId}
+              image={
+                rec.mainImage
+                  ? `https://sincere-roadrunner-227.convex.cloud/api/storage/${rec.mainImage}`
+                  : "/images/r1.jpg.avif"
+              }
+              place={"Recommendation"} // Placeholder
+              rating={4.5} // Placeholder
+              reviews={100} // Placeholder
+              description={rec.title}
+              price={parseFloat(rec.price) || 0}
+              badge={rec.tagOnCards}
+              // These need a strategy, as a recommendation might be in a different city/category
+              city="london"
+              category="tours"
+              subcategory="general"
+              itemId={rec._id}
             />
           </div>
         ))}

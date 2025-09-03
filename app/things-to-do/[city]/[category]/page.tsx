@@ -76,6 +76,14 @@ import {
 } from "@/components/ui/drawer";
 import { ChevronDown } from "lucide-react";
 
+interface Experience {
+  _id: string;
+  title: string;
+  price: string;
+  images: string[];
+  mainImage: string;
+}
+
 export default function CategoryPage() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
@@ -86,172 +94,100 @@ export default function CategoryPage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const params = useParams();
   const { activeSection, setActiveSection } = useNavigationStore();
 
-  const recommendations = [
-    {
-      id: 1,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      off: 10,
-    },
-    {
-      id: 2,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 3,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 4,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 5,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      off: 10,
-    },
-    {
-      id: 6,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      cancellation: "Free cancellation",
-    },
-    {
-      id: 7,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 8,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 9,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 10,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      off: 10,
-    },
-    {
-      id: 11,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 12,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-    {
-      id: 13,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-    },
-  ];
+  const categoryName = params.category as string;
+  const city = params.city as string;
+  const isWorldwideRoute = city === "worldwide";
 
-// Get the category name and city from URL and capitalize first letter
-const categoryName = params.category as string;
-const city = params.city as string;
-const isWorldwideRoute = city === "worldwide";
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      if (!city || !categoryName || isWorldwideRoute) {
+        setLoading(false);
+        return;
+      }
 
-// Decode URL-encoded characters first, then process
-const decodedCity = decodeURIComponent(city);
+      try {
+        setLoading(true);
+        setError(null);
 
-const decodedCategory = decodeURIComponent(categoryName);
+        const citiesRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
+        );
+        if (!citiesRes.ok) throw new Error("Failed to fetch city data.");
+        const citiesResult = await citiesRes.json();
+        if (!citiesResult.success) throw new Error(citiesResult.message);
 
-// Get the last word from category after decoding
-const lastWord = decodedCategory ? decodedCategory.split("-").pop() || decodedCategory : "";
+        const currentCity = citiesResult.data.find(
+          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
+        );
 
-// Convert spaces to hyphens for config key matching
-const configKey = lastWord.toLowerCase().replace(/\s+/g, "-");
+        if (!currentCity) throw new Error(`City '${city}' not found.`);
+        const cityId = currentCity._id;
 
-const formattedCategoryName = lastWord
-  ? lastWord.charAt(0).toUpperCase() + lastWord.slice(1)
-  : "Category";
+        const expRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category/${cityId}/${categoryName}`
+        );
+        if (!expRes.ok) throw new Error("Failed to fetch experiences.");
+        const expResult = await expRes.json();
 
-// Format city name properly (for display)
-const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  : "City";
+        if (expResult.success) {
+          const formattedExperiences = expResult.data.map((exp: any) => ({
+            id: exp._id,
+            image: exp.mainImage
+              ? `https://sincere-roadrunner-227.convex.cloud/api/storage/${exp.mainImage}`
+              : "/images/r1.jpg.avif",
+            place: currentCity.cityName,
+            rating: 4.5,
+            reviews: 100,
+            description: exp.title,
+            price: parseFloat(exp.price) || 0,
+            cancellation: exp.cancellationPolicy,
+          }));
+          setExperiences(formattedExperiences);
+        } else {
+          throw new Error(expResult.message);
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchExperiences();
+  }, [city, categoryName, isWorldwideRoute]);
 
-  // Comprehensive category configuration - conditional based on worldwide vs city-specific
+  const decodedCity = decodeURIComponent(city);
+
+  const decodedCategory = decodeURIComponent(categoryName);
+
+  const lastWord = decodedCategory
+    ? decodedCategory.split("-").pop() || decodedCategory
+    : "";
+
+  const configKey = lastWord.toLowerCase().replace(/\s+/g, "-");
+
+  const formattedCategoryName = lastWord
+    ? lastWord.charAt(0).toUpperCase() + lastWord.slice(1)
+    : "Category";
+
+  const formattedCityName = decodedCity
+    ? decodedCity
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "City";
+
   const categoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION
         tickets: {
           style: "bordered",
           heading: "Global Attractions",
@@ -393,7 +329,12 @@ const formattedCityName = decodedCity
           style: "bordered",
           heading: "Global Travel Services",
           navigationItems: [
-            { id: "planning", label: "Travel Planning", icon: MapPin, color: "purple" }
+            {
+              id: "planning",
+              label: "Travel Planning",
+              icon: MapPin,
+              color: "purple",
+            },
           ],
           components: {
             guides: null,
@@ -783,7 +724,6 @@ const formattedCityName = decodedCity
         },
       }
     : {
-        // CITY-SPECIFIC CONFIGURATION
         tickets: {
           style: "bordered",
           heading: `${city} Attractions`,
@@ -1415,17 +1355,22 @@ const formattedCityName = decodedCity
         },
       };
 
-  // Get current category configuration
   const currentCategory =
     categoryConfig[configKey as keyof typeof categoryConfig] ||
     categoryConfig.default;
 
-  // Early return if no category found
   if (!currentCategory) {
     return <div>Category not found</div>;
   }
 
-  // Helper function to get button styles based on category
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const getButtonStyles = (item: any, isActive: boolean) => {
     const baseClasses =
       "font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] whitespace-nowrap transition-all duration-200";
@@ -1450,25 +1395,21 @@ const formattedCityName = decodedCity
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      // Get the actual sticky navigation height dynamically
       const stickyNav = document.querySelector("[data-navigation]");
       const fixedNav = document.querySelector(".fixed.md\\:top-19");
 
       let totalOffset = 0;
 
-      // Add fixed top navigation height if it exists
       if (fixedNav) {
         const fixedNavRect = fixedNav.getBoundingClientRect();
         totalOffset += fixedNavRect.height;
       }
 
-      // Add sticky category carousel height if it exists
       if (stickyNav) {
         const stickyNavRect = stickyNav.getBoundingClientRect();
         totalOffset += stickyNavRect.height;
       }
 
-      // Add some extra padding for better visibility
       totalOffset += 20;
 
       const elementPosition = element.offsetTop;
@@ -1508,7 +1449,6 @@ const formattedCityName = decodedCity
     }
   };
 
-  // Intersection observer for active section tracking
   useEffect(() => {
     const sections = currentCategory.navigationItems.map((item) => item.id);
 
@@ -1538,7 +1478,6 @@ const formattedCityName = decodedCity
     return () => observer.disconnect();
   }, [setActiveSection]);
 
-  // Scroll button handlers
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
     window.addEventListener("resize", handleResize);
@@ -1558,7 +1497,6 @@ const formattedCityName = decodedCity
     checkScrollButtons();
   }, []);
 
-  // Hide/show carousel logic
   useEffect(() => {
     const handleScroll = () => {
       const lastSectionElement = document.getElementById(
@@ -1907,7 +1845,6 @@ const formattedCityName = decodedCity
             </div>
           )}
 
-          {/* Mobile Category Drawer Trigger */}
           <div className="md:hidden flex justify-center mb-4">
             <Drawer
               open={isMobileDrawerOpen}
@@ -1946,7 +1883,6 @@ const formattedCityName = decodedCity
             </Drawer>
           </div>
 
-          {/* Category Carousel - Integrated directly in the page */}
           <div
             ref={navigationRef}
             data-navigation
@@ -1977,7 +1913,6 @@ const formattedCityName = decodedCity
                     </div>
                   </div>
                 )}
-                {/* All item - only show if style is simple */}
                 {currentCategory.style === "simple" && (
                   <div className="relative">
                     <Button
@@ -1990,7 +1925,6 @@ const formattedCityName = decodedCity
                     >
                       All
                     </Button>
-                    {/* Purple underline for active tab in simple style */}
                     {(activeSection === "all" || !activeSection) && (
                       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
                     )}
@@ -2034,7 +1968,6 @@ const formattedCityName = decodedCity
                   </div>
                 )}
               </div>
-              {/* Bottom line for simple style */}
               {currentCategory.style === "simple" && (
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
               )}
@@ -2060,7 +1993,7 @@ const formattedCityName = decodedCity
                   title={`Top experiences`}
                   variant="pills"
                   pills={false}
-                  recommendations={recommendations}
+                  recommendations={experiences}
                   navigationItems={currentCategory.navigationItems}
                 />
               </div>
@@ -2068,7 +2001,7 @@ const formattedCityName = decodedCity
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="pills"
-                recommendations={recommendations}
+                recommendations={experiences}
                 navigationItems={currentCategory.navigationItems}
               />
             )}
@@ -2076,18 +2009,16 @@ const formattedCityName = decodedCity
           title="Top experiences in London"
           recommendations={recommendations}
         /> */}
-            {/* Only map navigation items if stack is true */}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
                 <div key={item.id} className="mb-10" id={item.id}>
                   <CarouselGrid
                     title={item.label}
                     variant="museums"
-                    recommendations={recommendations}
+                    recommendations={experiences}
                   />
                 </div>
               ))}
-            {/* Dynamic Travel Guides Section - Only show if guides exist */}
             {currentCategory?.components?.guides && (
               <div className="mb-10">
                 <CarouselGrid
@@ -2102,7 +2033,6 @@ const formattedCityName = decodedCity
               </div>
             )}
 
-            {/* Conditional Transportation Section - Only show if transport exists */}
             {currentCategory?.components?.transport && (
               <div className="mb-10">
                 <CarouselGrid
@@ -2117,7 +2047,6 @@ const formattedCityName = decodedCity
               </div>
             )}
 
-            {/* Dynamic Browse Themes Section */}
             <div className="mb-10">
               <BrowseThemes
                 title="Browse by themes"

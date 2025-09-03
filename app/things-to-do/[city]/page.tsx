@@ -39,6 +39,10 @@ const ThingsToDo = () => {
     setActiveSection,
   } = useNavigationStore();
 
+  const [carouselData, setCarouselData] = useState<Record<string, any[]>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -47,6 +51,79 @@ const ThingsToDo = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
   const city = params.city as string;
+
+  const sections = [
+    { id: "musicals", category: "entertainment", subcategory: "musicals" },
+    { id: "landmarks", category: "tickets", subcategory: "landmarks" },
+    { id: "day-trips", category: "tours", subcategory: "day-trips" },
+    { id: "combos", category: "specials", subcategory: "combos" },
+    { id: "cruises", category: "cruises", subcategory: "river-cruises" },
+    { id: "plays", category: "entertainment", subcategory: "theater" },
+    { id: "museums", category: "tickets", subcategory: "museums" },
+    {
+      id: "hop-on-hop-off-tours",
+      category: "tours",
+      subcategory: "hop-on-hop-off-tours",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchAllCarouselData = async () => {
+      if (!city) return;
+      try {
+        setLoading(true);
+        const citiesRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
+        );
+        if (!citiesRes.ok) throw new Error("Failed to fetch cities.");
+        const citiesResult = await citiesRes.json();
+        const cityData = citiesResult.data.find(
+          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
+        );
+        if (!cityData) throw new Error(`City '${city}' not found.`);
+        const cityId = cityData._id;
+
+        const promises = sections.map((section) =>
+          fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category-subcategory/${cityId}/${section.category}/${section.id}`
+          ).then((res) => res.json())
+        );
+
+        const results = await Promise.all(promises);
+
+        const newCarouselData: Record<string, any[]> = {};
+        results.forEach((result, index) => {
+          if (result.success) {
+            const formattedData = result.data.map((exp: any) => ({
+              id: exp._id,
+              image: exp.mainImage
+                ? `https://sincere-roadrunner-227.convex.cloud/api/storage/${exp.mainImage}`
+                : "/images/r1.jpg.avif",
+              place: cityData.cityName,
+              rating: 4.5,
+              reviews: 100,
+              description: exp.title,
+              price: parseFloat(exp.price) || 0,
+              badge: exp.tagOnCards || "Free cancellation",
+            }));
+            newCarouselData[sections[index].id] = formattedData;
+          } else {
+            newCarouselData[sections[index].id] = [];
+          }
+        });
+
+        setCarouselData(newCarouselData);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllCarouselData();
+  }, [city]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -100,9 +177,7 @@ const ThingsToDo = () => {
       const heroHeight = viewportHeight * 0.6;
 
       const isMobile = window.innerWidth < 768;
-      const stickyThreshold = isMobile
-        ? heroHeight - 100
-        : heroHeight - 200;
+      const stickyThreshold = isMobile ? heroHeight - 100 : heroHeight - 200;
 
       setScroll(scrollTop > stickyThreshold);
 
@@ -156,22 +231,13 @@ const ThingsToDo = () => {
   }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
 
   useEffect(() => {
-    const sections = [
-      "musicals",
-      "landmarks",
-      "day-trips",
-      "combos",
-      "cruises",
-      "plays",
-      "museums",
-      "hop-on-hop-off-tours",
-    ];
+    const sectionIds = sections.map((s) => s.id);
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (sections.includes(entry.target.id)) {
+            if (sectionIds.includes(entry.target.id)) {
               setActiveSection(entry.target.id);
             }
           }
@@ -183,7 +249,7 @@ const ThingsToDo = () => {
       }
     );
 
-    sections.forEach((sectionId) => {
+    sectionIds.forEach((sectionId) => {
       const element = document.getElementById(sectionId);
       if (element) {
         observer.observe(element);
@@ -212,48 +278,12 @@ const ThingsToDo = () => {
     checkScrollButtons();
   }, []);
 
-  const recommendations = [
-    {
-      id: 1,
-      description: "Edge Observation Deck Tickets: Timed Entry",
-      place: "Edge NYC",
-      image: "/images/r4.jpg.avif",
-      price: 39.2,
-      rating: 4.5,
-      reviews: 5897,
-      badge: "Free cancellation",
-    },
-    {
-      id: 2,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 3,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 4,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-  ];
+  if (loading) {
+    return <div>Loading activities...</div>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -412,62 +442,62 @@ const ThingsToDo = () => {
       <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
         <CarouselGrid
           title="Top experiences in London"
-          recommendations={recommendations}
+          recommendations={carouselData["landmarks"] || []}
           variant="subcategory"
         />
         <div id="musicals">
           <CarouselGrid
             title="London Musicals"
-            recommendations={recommendations}
+            recommendations={carouselData["musicals"] || []}
             variant="subcategory"
           />
         </div>
         <div id="landmarks">
           <CarouselGrid
             title="Landmarks in London"
-            recommendations={recommendations}
+            recommendations={carouselData["landmarks"] || []}
             variant="subcategory"
           />
         </div>
         <div id="day-trips">
           <CarouselGrid
             title="Day Trips From London"
-            recommendations={recommendations}
+            recommendations={carouselData["day-trips"] || []}
             variant="subcategory"
           />
         </div>
         <div id="combos">
           <CarouselGrid
             title="Combos Tickets in London"
-            recommendations={recommendations}
+            recommendations={carouselData["combos"] || []}
             variant="subcategory"
           />
         </div>
         <div id="cruises">
           <CarouselGrid
             title="Thames River Cruise"
-            recommendations={recommendations}
+            recommendations={carouselData["cruises"] || []}
             variant="subcategory"
           />
         </div>
         <div id="plays">
           <CarouselGrid
             title="Plays in London"
-            recommendations={recommendations}
+            recommendations={carouselData["plays"] || []}
             variant="subcategory"
           />
         </div>
         <div id="museums">
           <CarouselGrid
             title="Museums in London"
-            recommendations={recommendations}
+            recommendations={carouselData["museums"] || []}
             variant="subcategory"
           />
         </div>
         <div id="hop-on-hop-off-tours">
           <CarouselGrid
             title="Hop-on Hop-off Tours London"
-            recommendations={recommendations}
+            recommendations={carouselData["hop-on-hop-off-tours"] || []}
             variant="subcategory"
           />
         </div>

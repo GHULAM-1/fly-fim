@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
@@ -21,11 +21,25 @@ import {
   Leaf,
   Users,
   Music,
-  Bus
+  Bus,
 } from "lucide-react";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
+
+interface Experience {
+  _id: string;
+  title: string;
+  price: string;
+  images: string[];
+  mainImage: string;
+}
+
+interface City {
+  _id: string;
+  cityName: string;
+  slug: string;
+}
 
 export default function SubcategoryPage() {
   const params = useParams();
@@ -33,31 +47,94 @@ export default function SubcategoryPage() {
   const categoryName = params.category as string;
   const subcategory = params.subcategory as string;
 
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
 
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      if (!city || !categoryName || !subcategory) return;
+
+      try {
+        setLoading(true);
+
+        const citiesRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
+        );
+        if (!citiesRes.ok) throw new Error("Failed to fetch cities.");
+        const citiesResult = await citiesRes.json();
+
+        if (!citiesResult.success || !Array.isArray(citiesResult.data)) {
+          throw new Error("Invalid city data format.");
+        }
+
+        const cityData = citiesResult.data.find(
+          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
+        );
+
+        if (!cityData) {
+          throw new Error(`City '${city}' not found.`);
+        }
+        const cityId = cityData._id;
+
+        const expRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category-subcategory/${cityId}/${categoryName}/${subcategory}`
+        );
+        if (!expRes.ok)
+          throw new Error("Failed to fetch experiences for this subcategory.");
+
+        const expResult = await expRes.json();
+        if (expResult.success) {
+          const formattedExperiences = expResult.data.map((exp: any) => ({
+            id: exp._id,
+            image: exp.mainImage
+              ? `/api/images/${exp.mainImage}`
+              : "/images/d1.jpg.avif",
+            place: cityData.cityName,
+            rating: 4.5,
+            reviews: 100,
+            description: exp.title,
+            price: parseFloat(exp.price) || 0,
+            badge: exp.tagOnCards,
+            cancellation: exp.cancellationPolicy,
+          }));
+          setExperiences(formattedExperiences);
+        } else {
+          throw new Error(expResult.message || "Could not fetch experiences.");
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperiences();
+  }, [city, categoryName, subcategory]);
+
   const isWorldwideRoute = city === "worldwide";
 
-  // Decode and format category
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
   const decodedCity = decodeURIComponent(city);
 
-
   const formattedCategoryName = decodedCategoryName
-    ? decodedCategoryName.charAt(0).toUpperCase() +
-      decodedCategoryName.slice(1)
+    ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
     : "Category";
 
-  // Format city name properly (for display)
   const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  : "City";  
+    ? decodedCity
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "City";
 
-  // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
     subcategory ? subcategory.split("-").join(" ") : ""
   );
@@ -66,26 +143,20 @@ export default function SubcategoryPage() {
       decodedSubcategoryName.slice(1)
     : "Subcategory";
 
-  // Convert to lowercase hyphenated for config key
   const configKey = decodedSubcategoryName.toLowerCase().replace(/\s+/g, "-");
 
-  // Dynamic heading logic based on subcategory
   const getDynamicHeading = (): string => {
     const cityFormatted = formattedCityName;
 
     if (subcategory) {
-      // If we have a subcategory, format it as "Subcategory in City"
       return `${formattedSubcategoryName} in ${cityFormatted}`;
     } else {
-      // If no subcategory (shouldn't happen on this page, but fallback)
       return `${formattedCategoryName} in ${cityFormatted}`;
     }
   };
 
-  // Comprehensive subcategory configuration - conditional based on worldwide vs city-specific
   const subCategoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: "Global Museums",
           components: {
@@ -99,7 +170,6 @@ export default function SubcategoryPage() {
             ],
           },
         },
-        // Add more as needed, default for others
         default: {
           heading: `Global ${formattedSubcategoryName}`,
           components: {
@@ -111,7 +181,6 @@ export default function SubcategoryPage() {
         },
       }
     : {
-        // CITY-SPECIFIC CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: `Museums in ${city.charAt(0).toUpperCase() + city.slice(1)}`,
           components: {
@@ -125,29 +194,50 @@ export default function SubcategoryPage() {
             ],
           },
         },
-        // Add more as needed, default for others
         default: {
-            heading: getDynamicHeading(),
-            components: {
-                themes: [
-                { icon: Landmark, text: `Landmarks in ${formattedCityName}`, href: "#" },
-                { icon: Ticket, text: `Combo Tickets in ${formattedCityName}`, href: "#" },
-                { icon: Users, text: `Guided Tours in ${formattedCityName}`, href: "#" },
-                { icon: Music, text: `Dance Shows in ${formattedCityName}`, href: "#" },
-                { icon: Bus, text: `Hop-on Hop-off Tours in ${formattedCityName}`, href: "#" },
-                { icon: SunMedium, text: `${formattedCityName} Attractions`, href: "#" },
-                { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
-                ],
-            },
+          heading: getDynamicHeading(),
+          components: {
+            themes: [
+              {
+                icon: Landmark,
+                text: `Landmarks in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Ticket,
+                text: `Combo Tickets in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Users,
+                text: `Guided Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Music,
+                text: `Dance Shows in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Bus,
+                text: `Hop-on Hop-off Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: SunMedium,
+                text: `${formattedCityName} Attractions`,
+                href: "#",
+              },
+              { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
+            ],
+          },
         },
       };
 
-  // Get current subcategory configuration
   const currentSubCategory =
     subCategoryConfig[configKey as keyof typeof subCategoryConfig] ||
     subCategoryConfig.default;
 
-  // Early return if no subcategory found
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
@@ -238,16 +328,13 @@ export default function SubcategoryPage() {
       city: "Singapore",
     },
   ];
-  // inside SubcategoryPage component, right before the return (...), add dummy data + helpers:
 
-  // Build navigation items from current subcategory config
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
-      const id =
-        (t.text || "")
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9\-]/g, "");
+      const id = (t.text || "")
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9\-]/g, "");
       return {
         id,
         label: t.text,
@@ -255,97 +342,6 @@ export default function SubcategoryPage() {
       };
     }) || [];
 
-  // Dummy experiences. Each item includes subcategoryId to enable filtering.
-  const experiences = [
-    {
-      id: "ex-1",
-      image: "/images/d1.jpg.avif",
-      place: "Seville Cathedral",
-      rating: 4.7,
-      reviews: 8123,
-      description: "Skip-the-line entry with optional guided tour",
-      price: 24,
-      off: 10,                  
-      oldPrice: 64.18,          
-      badge: "Free cancellation", 
-      cancellation: "Free cancellation",
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "ex-2",
-      image: "/images/d2.jpg.avif",
-      place: "Real Alcázar",
-      rating: 4.8,
-      reviews: 15234,
-      description: "Priority entrance + audio guide",
-      price: 29,
-      off: 10,
-      oldPrice: 32.18,
-      badge: "Free cancellation",
-      cancellation: "Free cancellation",
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "ex-3",
-      image: "/images/d3.jpg.avif",
-      place: "Guadalquivir Cruise",
-      rating: 4.5,
-      reviews: 5210,
-      description: "1‑hour scenic river cruise",
-      price: 18,
-      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
-    },
-    {
-      id: "ex-4",
-      image: "/images/d4.jpg.avif",
-      place: "Flamenco Show",
-      rating: 4.6,
-      reviews: 6632,
-      description: "Authentic tablao experience",
-      price: 25,
-      subcategoryId: navItems[2]?.id ?? "dance-shows",
-    },
-    {
-      id: "ex-5",
-      image: "/images/d5.jpg.avif",
-      place: "City Card",
-      rating: 4.3,
-      reviews: 2101,
-      description: "Multi‑attraction pass for 48h",
-      price: 49,
-      subcategoryId: navItems[1]?.id ?? "combo-tickets",
-    },
-    {
-      id: "ex-6",
-      image: "/images/d6.jpeg.avif",
-      place: "Guided Walking Tour",
-      rating: 4.7,
-      reviews: 3889,
-      description: "Old Town & Jewish Quarter",
-      price: 22,
-      subcategoryId: navItems[2]?.id ?? "guided-tours",
-    },
-    {
-      id: "ex-7",
-      image: "/images/d2.jpg.avif",
-      place: "Museum of Fine Arts",
-      rating: 4.4,
-      reviews: 980,
-      description: "Entry ticket",
-      price: 12,
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "ex-8",
-      image: "/images/d3.jpg.avif",
-      place: "Hop-on Hop-off Bus",
-      rating: 4.2,
-      reviews: 4312,
-      description: "24‑hour ticket with audio guide",
-      price: 30,
-      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
-    },
-  ];
   const guides = [
     {
       id: 1,
@@ -396,6 +392,13 @@ export default function SubcategoryPage() {
       city: "New York",
     },
   ];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
@@ -479,10 +482,9 @@ export default function SubcategoryPage() {
                   {getDynamicHeading()}
                 </h1>
               </div>
-              
-              {/* Subcategory Navigation Component */}
+
               <div className="block mt-5">
-                <SubcategoryNavigation 
+                <SubcategoryNavigation
                   categoryName={formattedCategoryName}
                   currentSubcategory={subcategory}
                 />
@@ -543,8 +545,8 @@ export default function SubcategoryPage() {
               </div>
             </div>
           )}
-        <div className="md:mt-10 mt-0">
           <div className="md:mt-10 mt-0">
+            <div className="md:mt-10 mt-0">
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="subcategory"
@@ -554,7 +556,6 @@ export default function SubcategoryPage() {
               />
             </div>
 
-            {/* Tours CarouselGrid Section */}
             <div className="mb-10 mt-10">
               <CarouselGrid
                 title={`Travel Guide and Tips for ${formattedCityName}`}
@@ -562,7 +563,6 @@ export default function SubcategoryPage() {
                 recommendations={guides}
               />
             </div>
-            {/* Dynamic Browse Themes Section */}
             <div className="mb-10 mt-10 ">
               <BrowseThemes
                 title="Browse by themes"
