@@ -1795,13 +1795,6 @@ export default function CategoryPage() {
                   {currentCategory.heading}
                 </h1>
               </div>
-
-              {/* Subcategory Navigation Component - only show for city-specific routes
-              <div className="md:block hidden mt-6">
-                <SubcategoryNavigation 
-                  categoryName={formattedCategoryName}
-                />
-              </div> */}
             </>
           ) : (
             <div>
@@ -2005,10 +1998,7 @@ export default function CategoryPage() {
                 navigationItems={currentCategory.navigationItems}
               />
             )}
-            {/* <CarouselGrid
-          title="Top experiences in London"
-          recommendations={recommendations}
-        /> */}
+         
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
                 <div key={item.id} className="mb-10" id={item.id}>
