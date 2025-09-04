@@ -125,16 +125,15 @@ const ConfirmAndPayPage = () => {
     childCount * childPrice;
   const payTodayAmount = paymentTime === "payNow" ? totalPayable : 0;
 
-  const itemName =
-    searchParams.get("itemName") || "Edge Observation Deck Ticket";
+  const itemName = searchParams.get("itemName") || "Your Selected Experience";
   const city = searchParams.get("city") || "london";
   const category = searchParams.get("category") || "entertainment";
   const subcategory = searchParams.get("subcategory") || "studio-tours";
   const item = searchParams.get("itemId") || "default-item";
-  const date = searchParams.get("date") || "2025-10-06";
-  const time = searchParams.get("time") || "9:00am-10:00pm";
-  const optionTitle =
-    searchParams.get("optionTitle") || "General Admission: Timed Entry";
+  const date = searchParams.get("date") || new Date().toISOString();
+  const time = searchParams.get("time") || "Anytime";
+  const optionTitle = searchParams.get("optionTitle") || "General Admission";
+  const image = searchParams.get("image") || "/images/r1.jpg.avif";
 
   const dateObj = new Date(date);
   const formattedMonth = dateObj.toLocaleString("en-US", { month: "short" });
@@ -319,9 +318,7 @@ const ConfirmAndPayPage = () => {
 
       <main className="pt-24 md:pt-28 pb-40 lg:pb-32 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-7">
-            {/* DYNAMIC DATE HERE */}
             <div className="bg-gray-100 p-4 rounded-lg font-halyard-text-light text-sm">
               You can cancel for free until 9:00am local time on{" "}
               {formattedCancellationDate}.
@@ -342,7 +339,6 @@ const ConfirmAndPayPage = () => {
                 </span>
               </div>
               <div className="space-y-4">
-                {/* Guest Counters */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div className="mb-2 sm:mb-0">
                     <p className="font-medium text-gray-800 text-lg">Adult</p>
@@ -469,7 +465,6 @@ const ConfirmAndPayPage = () => {
               </div>
             </div>
 
-            {/* Guest Details Form */}
             <div className="pt-12">
               <h2 className="text-2xl font-halyard-text font-semibold text-gray-700 mb-1">
                 Guest details
@@ -614,7 +609,6 @@ const ConfirmAndPayPage = () => {
                       )}
                     />
 
-                    {/* FIX 3: Replace FormField with a manually controlled component setup */}
                     <FormField
                       control={form.control}
                       name="phone"
@@ -636,7 +630,7 @@ const ConfirmAndPayPage = () => {
                           >
                             <CountryCodeSelector
                               value={countryCode}
-                              onValueChange={setCountryCode} // Assuming your component has this prop
+                              onValueChange={setCountryCode}
                             />
                             <div className="relative w-full">
                               <Input
@@ -667,7 +661,6 @@ const ConfirmAndPayPage = () => {
               </Form>
             </div>
 
-            {/* Promo Code */}
             <div className="pt-4 md:w-1/2">
               <button
                 onClick={() => setShowPromo(true)}
@@ -696,7 +689,6 @@ const ConfirmAndPayPage = () => {
               )}
             </div>
 
-            {/* Payment Options */}
             <div className="pt-6">
               <h2 className="text-2xl font-heading text-gray-800 mb-4">
                 Select when to pay
@@ -784,7 +776,8 @@ const ConfirmAndPayPage = () => {
                       {" "}
                       We'll charge your card ${totalPayable.toFixed(2)} on{" "}
                       {formattedPaymentChargeDate}, 9:00pm. You can cancel for
-                      free until {formattedCancellationDate}, 9:00am local time.{" "}
+                      free until {formattedCancellationDate}, 9:00am local
+                      time.{" "}
                     </p>{" "}
                   </div>{" "}
                 </label>
@@ -841,10 +834,8 @@ const ConfirmAndPayPage = () => {
                       />
                       <span className="ml-3 font-heading text-xl text-gray-800 flex items-center gap-2">
                         {" "}
-                        PayPal <FaPaypal
-                          size={20}
-                          className="text-[#00457C]"
-                        />{" "}
+                        PayPal{" "}
+                        <FaPaypal size={20} className="text-[#00457C]" />{" "}
                       </span>
                     </label>
                     <label className="custom-radio-label cursor-pointer">
@@ -872,7 +863,6 @@ const ConfirmAndPayPage = () => {
               )}
             </div>
 
-            {/* Final Confirmation - Hidden on mobile, shown on desktop */}
             <div className="pt-3 space-y-4 hidden lg:block">
               {paymentTime === "payLater" ? (
                 <div className="flex flex-row gap-2 font-medium font-heading text-2xl">
@@ -908,13 +898,12 @@ const ConfirmAndPayPage = () => {
             </div>
           </div>
 
-          {/* Sticky Summary Card - Desktop */}
           <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-28 space-y-6">
               <div className="bg-white rounded-lg border">
                 <div className="relative">
                   <img
-                    src="/images/r1.jpg.avif"
+                    src={image}
                     alt={itemName}
                     className="w-full h-15 object-cover rounded-t-lg"
                   />
@@ -1065,12 +1054,11 @@ const ConfirmAndPayPage = () => {
             </div>
           </div>
 
-          {/* Summary Card - Mobile (non-sticky, at the end) */}
           <div className="lg:hidden mt-8">
             <div className="bg-white rounded-lg border">
               <div className="relative">
                 <img
-                  src="/images/r1.jpg.avif"
+                  src={image}
                   alt={itemName}
                   className="w-full h-40 object-cover rounded-t-lg"
                 />
@@ -1160,9 +1148,8 @@ const ConfirmAndPayPage = () => {
                       </span>{" "}
                     </div>
                   )}
-                    <div className="border-t  border-gray-300"></div>
+                  <div className="border-t  border-gray-300"></div>
                   <div className="flex justify-between font-heading text-lg">
-
                     <span>Total payable</span>
                     <span>${totalPayable.toFixed(2)}</span>
                   </div>
@@ -1192,7 +1179,6 @@ const ConfirmAndPayPage = () => {
         </div>
       </main>
 
-      {/* Mobile Sticky Footer */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="max-w-[1200px] mx-auto px-4">
           <div className="flex justify-between items-center h-20">

@@ -68,14 +68,18 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
 
         const itemName = searchParams.get("itemName") || "Your Experience";
         const city = searchParams.get("city") || "Your City";
+        const image = searchParams.get("image") || "/images/r1.jpg.avif";
 
         const query = new URLSearchParams({
           itemName,
           city,
-          date: selectedDate ? selectedDate.toISOString() : new Date().toISOString(),
+          date: selectedDate
+            ? selectedDate.toISOString()
+            : new Date().toISOString(),
           optionTitle: selectedOptionTitle || "",
           time: selectedTime || "Anytime",
           price: `$${(selectedPrice || 0).toFixed(2)}`,
+          image: image,
         });
 
         router.push(`/booking/confirm?${query.toString()}`);
@@ -141,7 +145,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
                     key={slot.time}
                     onClick={() => {
                       setSelectedTime(slot.time);
-                      setSelectedPrice(slot.price); 
+                      setSelectedPrice(slot.price);
                       setShowError(false);
                       setIsOpen(false);
                     }}

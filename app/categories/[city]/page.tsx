@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams } from "next/navigation";
 import CategoriesCards from "@/components/categories/categories";
 import {
@@ -16,70 +16,111 @@ import {
   Star,
 } from "lucide-react";
 
-interface Destination {
-  id: string;
-  description: string;
-  place: string;
-  price: string;
-  image: string;
-  city: string;
-  slug: string;
-}
-
-const cityImageMap: { [key: string]: string } = {
-  paris: "/images/d2.jpg.avif",
-  london: "/images/d5.jpg.avif",
-  "new york": "/images/d6.jpeg.avif",
-  rome: "/images/d3.jpg.avif",
-  dubai: "/images/d4.jpg.avif",
-  singapore: "/images/d1.jpg.avif",
-};
-
 export default function Categories() {
   const params = useParams();
-  const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  
   const city = decodeURIComponent(params.city as string);
-
+  
   const isCityRoute = Boolean(city);
-
-  useEffect(() => {
-    const fetchDestinations = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!response.ok) throw new Error("Failed to fetch destinations");
-        const result = await response.json();
-
-        if (result.success && Array.isArray(result.data)) {
-          const formattedDests = result.data.map((city: any) => ({
-            id: city._id,
-            description: `Things to do in ${city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1)}`,
-            place: city.countryName,
-            price: "from $10.0",
-            image:
-              cityImageMap[city.cityName.toLowerCase()] ||
-              "/images/d1.jpg.avif",
-            city:
-              city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1),
-            slug: city.cityName.replace(/\s+/g, "-").toLowerCase(),
-          }));
-          setDestinations(formattedDests);
-        } else {
-          throw new Error("Invalid data format from API");
-        }
-      } catch (error) {
-        console.error("Error fetching destinations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDestinations();
-  }, []);
-
+  
+  const destinations = [
+    {
+      id: 1,
+      description: "Things to do in",
+      place: "United States",
+      price: "from $10.0",
+      image: "/images/d6.jpeg.avif",
+      city: "New York",
+    },
+    {
+      id: 2,
+      description: "Things to do in",
+      place: "United Kingdom",
+      price: "from $10.0",
+      image: "/images/d5.jpg.avif",
+      city: "London",
+    },
+    {
+      id: 3,
+      description: "Things to do in",
+      place: "United Arab Emirates",
+      price: "from $10.0",
+      image: "/images/d4.jpg.avif",
+      city: "Dubai",
+    },
+    {
+      id: 4,
+      description: "Things to do in",
+      place: "Italy",
+      price: "from $10.0",
+      image: "/images/d3.jpg.avif",
+      city: "Rome",
+    },
+    {
+      id: 5,
+      description: "Things to do in",
+      place: "France",
+      price: "from $10.0",
+      image: "/images/d2.jpg.avif",
+      city: "Paris",
+    },
+    {
+      id: 6,
+      description: "Things to do in",
+      place: "Singapore",
+      price: "from $10.0",
+      image: "/images/d1.jpg.avif",
+      city: "Singapore",
+    },
+    {
+      id: 7,
+      description: "Things to do in York",
+      place: "United States",
+      price: "from $10.0",
+      image: "/images/d6.jpeg.avif",
+      city: "New York",
+    },
+    {
+      id: 8,
+      description: "Things to do in",
+      place: "United Kingdom",
+      price: "from $10.0",
+      image: "/images/d5.jpg.avif",
+      city: "London",
+    },
+    {
+      id: 9,
+      description: "Things to do in",
+      place: "United Arab Emirates",
+      price: "from $10.0",
+      image: "/images/d4.jpg.avif",
+      city: "Dubai",
+    },
+    {
+      id: 10,
+      description: "Things to do in",
+      place: "Italy",
+      price: "from $10.0",
+      image: "/images/d3.jpg.avif",
+      city: "Rome",
+    },
+    {
+      id: 11,
+      description: "Things to do in",
+      place: "France",
+      price: "from $10.0",
+      image: "/images/d2.jpg.avif",
+      city: "Paris",
+    },
+    {
+      id: 12,
+      description: "Things to do in",
+      place: "Singapore",
+      price: "from $10.0",
+      image: "/images/d1.jpg.avif",
+      city: "Singapore",
+    },
+  ];
   const categories = [
     {
       id: 2,
@@ -88,10 +129,10 @@ export default function Categories() {
       url: `/things-to-do/${city}/tickets`,
       icon: Ticket,
     },
-    {
-      id: 3,
-      name: "Tours",
-      color: "gray",
+    { 
+      id: 3, 
+      name: "Tours", 
+      color: "gray", 
       url: `/things-to-do/${city}/tours`,
       icon: Flag,
     },
@@ -159,29 +200,18 @@ export default function Categories() {
       icon: Star,
     },
   ];
-
   return (
     <div className="px-4">
-      <div className="mt-18">
-        {loading ? (
-          <div>Loading destinations...</div>
-        ) : (
-          <CategoriesCards
-            title={
-              isCityRoute
-                ? `Things to do in ${city.charAt(0).toUpperCase() + city.slice(1).replace(/-/g, " ")}`
-                : "Things to do worldwide"
-            }
-            recommendations={destinations}
-          />
-        )}
-      </div>
-      <div className="mt-10">
-        <h1 className="text-[19px] font-halyard-text text-[#444444]">
-          {isCityRoute
-            ? `Categories in ${city.charAt(0).toUpperCase() + city.slice(1).replace(/-/g, " ")}`
-            : "Categories"}
-        </h1>
+             <div className="mt-18">
+         <CategoriesCards
+           title={isCityRoute ? `Things to do in ${city}` : "Things to do worldwide"}
+           recommendations={destinations}
+         />
+       </div>
+       <div className="mt-10">
+         <h1 className="text-[19px] font-halyard-text text-[#444444]">
+           {isCityRoute ? `Categories in ${city}` : "Categories"}
+         </h1>
         <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((category) => {
             const IconComponent = category.icon;
@@ -190,26 +220,24 @@ export default function Categories() {
                 key={category.id}
                 href={category.url}
                 className={`flex flex-row items-center justify-start gap-2 py-[14px] px-[12px] bg-white rounded-[4px] border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer ${
-                  category.color === "purple"
-                    ? "border-purple-200 bg-purple-50"
+                  category.color === "purple" 
+                    ? "border-purple-200 bg-purple-50" 
                     : "hover:bg-gray-50"
                 }`}
               >
-                <IconComponent
-                  size={16}
+                <IconComponent 
+                  size={16} 
                   className={`font-halyard-text-light text-[#444444] ${
-                    category.color === "purple"
-                      ? "text-purple-600"
+                    category.color === "purple" 
+                      ? "text-purple-600" 
                       : "text-gray-600"
                   }`}
                 />
-                <span
-                  className={`text-sm text-wrap font-halyard-text-light text-[#444444] ${
-                    category.color === "purple"
-                      ? "text-purple-700"
-                      : "text-gray-700"
-                  }`}
-                >
+                <span className={`text-sm text-wrap font-halyard-text-light text-[#444444] ${
+                  category.color === "purple" 
+                    ? "text-purple-700" 
+                    : "text-gray-700"
+                }`}>
                   {category.name}
                 </span>
               </a>
@@ -227,32 +255,27 @@ export default function Categories() {
             return (
               <a
                 key={category.id}
-                href={category.url.replace(`/${city}/`, "/worldwide/")}
+                href={category.url}
                 className={`flex flex-row items-center justify-start gap-2 py-[14px] px-[12px] bg-white rounded-[4px] border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer ${
-                  category.color === "purple"
-                    ? "border-purple-200 bg-purple-50"
+                  category.color === "purple" 
+                    ? "border-purple-200 bg-purple-50" 
                     : "hover:bg-gray-50"
                 }`}
               >
-                <IconComponent
-                  size={16}
+                <IconComponent 
+                  size={16} 
                   className={`font-halyard-text-light text-[#444444] ${
-                    category.color === "purple"
-                      ? "text-purple-600"
+                    category.color === "purple" 
+                      ? "text-purple-600" 
                       : "text-gray-600"
                   }`}
                 />
-                <span
-                  className={`text-sm text-wrap font-halyard-text-light text-[#444444] ${
-                    category.color === "purple"
-                      ? "text-purple-700"
-                      : "text-gray-700"
-                  }`}
-                >
-                  {category.name.replace(
-                    ` in ${city.charAt(0).toUpperCase() + city.slice(1).replace(/-/g, " ")}`,
-                    ""
-                  )}
+                <span className={`text-sm text-wrap font-halyard-text-light text-[#444444] ${
+                  category.color === "purple" 
+                    ? "text-purple-700" 
+                    : "text-gray-700"
+                }`}>
+                  {category.name}
                 </span>
               </a>
             );

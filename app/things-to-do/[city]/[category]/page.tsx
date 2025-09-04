@@ -76,14 +76,6 @@ import {
 } from "@/components/ui/drawer";
 import { ChevronDown } from "lucide-react";
 
-interface Experience {
-  _id: string;
-  title: string;
-  price: string;
-  images: string[];
-  mainImage: string;
-}
-
 export default function CategoryPage() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
@@ -94,76 +86,195 @@ export default function CategoryPage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
-  const [experiences, setExperiences] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const params = useParams();
   const { activeSection, setActiveSection } = useNavigationStore();
+
+  const recommendations = [
+    {
+      id: 1,
+      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      place: "Dubai",
+      image: "/images/r4.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      off: 10,
+      city: "dubai",
+      category: "adventure",
+      subcategory: "skydiving",
+      itemId: "skydive-dubai-palm",
+    },
+    {
+      id: 2,
+      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+      place: "Athens",
+      image: "/images/r3.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "athens",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "acropolis-parthenon-tickets",
+    },
+    {
+      id: 3,
+      description:
+        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+      place: "Italy",
+      image: "/images/r2.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "rome",
+      category: "tours",
+      subcategory: "day-trips",
+      itemId: "pompeii-amalfi-day-trip",
+    },
+    {
+      id: 4,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-tour",
+    },
+    {
+      id: 5,
+      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      place: "Dubai",
+      image: "/images/r4.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      off: 10,
+      city: "dubai",
+      category: "adventure",
+      subcategory: "skydiving",
+      itemId: "skydive-dubai-palm-2",
+    },
+    {
+      id: 6,
+      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+      place: "Athens",
+      image: "/images/r3.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      cancellation: "Free cancellation",
+      city: "athens",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "acropolis-parthenon-tickets-2",
+    },
+    {
+      id: 7,
+      description:
+        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+      place: "Italy",
+      image: "/images/r2.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "rome",
+      category: "tours",
+      subcategory: "day-trips",
+      itemId: "pompeii-amalfi-day-trip-2",
+    },
+    {
+      id: 8,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-tour-2",
+    },
+    {
+      id: 9,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-tour-3",
+    },
+    {
+      id: 10,
+      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      place: "Dubai",
+      image: "/images/r4.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      off: 10,
+      city: "dubai",
+      category: "adventure",
+      subcategory: "skydiving",
+      itemId: "skydive-dubai-palm-3",
+    },
+    {
+      id: 11,
+      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+      place: "Athens",
+      image: "/images/r3.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "athens",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "acropolis-parthenon-tickets-3",
+    },
+    {
+      id: 12,
+      description:
+        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+      place: "Italy",
+      image: "/images/r2.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "rome",
+      category: "tours",
+      subcategory: "day-trips",
+      itemId: "pompeii-amalfi-day-trip-3",
+    },
+    {
+      id: 13,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-tour-4",
+    },
+  ];
 
   const categoryName = params.category as string;
   const city = params.city as string;
   const isWorldwideRoute = city === "worldwide";
-
-  useEffect(() => {
-    const fetchExperiences = async () => {
-      if (!city || !categoryName || isWorldwideRoute) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const citiesRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!citiesRes.ok) throw new Error("Failed to fetch city data.");
-        const citiesResult = await citiesRes.json();
-        if (!citiesResult.success) throw new Error(citiesResult.message);
-
-        const currentCity = citiesResult.data.find(
-          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
-        );
-
-        if (!currentCity) throw new Error(`City '${city}' not found.`);
-        const cityId = currentCity._id;
-
-        const expRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category/${cityId}/${categoryName}`
-        );
-        if (!expRes.ok) throw new Error("Failed to fetch experiences.");
-        const expResult = await expRes.json();
-
-        if (expResult.success) {
-          const formattedExperiences = expResult.data.map((exp: any) => ({
-            id: exp._id,
-            image: exp.mainImage
-              ? `https://sincere-roadrunner-227.convex.cloud/api/storage/${exp.mainImage}`
-              : "/images/r1.jpg.avif",
-            place: currentCity.cityName,
-            rating: 4.5,
-            reviews: 100,
-            description: exp.title,
-            price: parseFloat(exp.price) || 0,
-            cancellation: exp.cancellationPolicy,
-          }));
-          setExperiences(formattedExperiences);
-        } else {
-          throw new Error(expResult.message);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExperiences();
-  }, [city, categoryName, isWorldwideRoute]);
 
   const decodedCity = decodeURIComponent(city);
 
@@ -1363,14 +1474,6 @@ export default function CategoryPage() {
     return <div>Category not found</div>;
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const getButtonStyles = (item: any, isActive: boolean) => {
     const baseClasses =
       "font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] whitespace-nowrap transition-all duration-200";
@@ -1795,6 +1898,13 @@ export default function CategoryPage() {
                   {currentCategory.heading}
                 </h1>
               </div>
+
+              {/* Subcategory Navigation Component - only show for city-specific routes
+              <div className="md:block hidden mt-6">
+                <SubcategoryNavigation 
+                  categoryName={formattedCategoryName}
+                />
+              </div> */}
             </>
           ) : (
             <div>
@@ -1986,7 +2096,7 @@ export default function CategoryPage() {
                   title={`Top experiences`}
                   variant="pills"
                   pills={false}
-                  recommendations={experiences}
+                  recommendations={recommendations}
                   navigationItems={currentCategory.navigationItems}
                 />
               </div>
@@ -1994,18 +2104,21 @@ export default function CategoryPage() {
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="pills"
-                recommendations={experiences}
+                recommendations={recommendations}
                 navigationItems={currentCategory.navigationItems}
               />
             )}
-         
+            {/* <CarouselGrid
+          title="Top experiences in London"
+          recommendations={recommendations}
+        /> */}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
                 <div key={item.id} className="mb-10" id={item.id}>
                   <CarouselGrid
                     title={item.label}
                     variant="museums"
-                    recommendations={experiences}
+                    recommendations={recommendations}
                   />
                 </div>
               ))}
@@ -2046,7 +2159,7 @@ export default function CategoryPage() {
             {!isWorldwideRoute && (
               <div className="mb-10">
                 <CarouselGrid
-                  title="Explore world's top destinations"
+                  title="Nearby cities to explore"
                   variant="simple"
                   recommendations={destinations}
                 />

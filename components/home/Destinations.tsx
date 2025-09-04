@@ -4,20 +4,23 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
+
 interface CityFromAPI {
   _id: string;
   cityName: string;
   countryName: string;
 }
 
+
 interface Destination {
   id: string;
   description: string;
   place: string;
   image: string;
-  city: string;
-  slug: string;
+  city: string; 
+  slug: string; 
 }
+
 
 const cityImageMap: { [key: string]: string } = {
   paris: "/images/d2.jpg.avif",
@@ -46,6 +49,7 @@ const Destinations = () => {
         const result = await response.json();
 
         if (result.success && Array.isArray(result.data)) {
+          
           const allDestinationEntries = result.data.map((city: CityFromAPI) => {
             const cityNameLower = city.cityName.toLowerCase();
             return {
@@ -149,7 +153,7 @@ const Destinations = () => {
               className="rounded"
             />
             <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight max-w-32">
-              {destination.city}
+              {destination.description}
             </p>
             <p className="text-sm font-lightText text-[#666666] mt-1">
               {destination.place}

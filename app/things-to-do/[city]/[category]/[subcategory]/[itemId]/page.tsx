@@ -34,40 +34,89 @@ import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 import WhyHeadout from "@/components/checkout/WhyHeadout";
-import ReviewsSection from "@/components/detail/ReviewsSection";
 
-interface Experience {
-  _id: string;
-  title: string;
-  price: string;
-  sale: string;
-  images: string[];
-  mainImage: string;
-  highlights: string;
-  inclusions: string;
-  exclusions: string;
-  cancellationPolicy: string;
-  knowBeforeYouGo: string;
-  myTickets: string;
-  operatingHours: any[];
-  whereTo: { address: string; lat: number; lng: number };
-  tagOnCards: string;
-}
-
-interface Faq {
-  _id: string;
-  question: string;
-  answer: string;
-}
-
-interface Review {
-  _id: string;
-  userId: string;
-  stars: number;
-  text: string;
-  images: string[];
-  _creationTime: number;
-}
+const experiences = [
+  {
+    id: "ex-1",
+    image: "/images/d1.jpg.avif",
+    place: "Seville Cathedral",
+    rating: 4.7,
+    reviews: 8123,
+    description: "Skip-the-line entry with optional guided tour",
+    price: 24,
+    off: 10,
+    oldPrice: 64.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "ex-2",
+    image: "/images/d2.jpg.avif",
+    place: "Real Alcázar",
+    rating: 4.8,
+    reviews: 15234,
+    description: "Priority entrance + audio guide",
+    price: 29,
+    off: 10,
+    oldPrice: 32.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "ex-3",
+    image: "/images/d3.jpg.avif",
+    place: "Guadalquivir Cruise",
+    rating: 4.5,
+    reviews: 5210,
+    description: "1‑hour scenic river cruise",
+    price: 18,
+  },
+  {
+    id: "ex-4",
+    image: "/images/d4.jpg.avif",
+    place: "Flamenco Show",
+    rating: 4.6,
+    reviews: 6632,
+    description: "Authentic tablao experience",
+    price: 25,
+  },
+  {
+    id: "ex-5",
+    image: "/images/d5.jpg.avif",
+    place: "City Card",
+    rating: 4.3,
+    reviews: 2101,
+    description: "Multi‑attraction pass for 48h",
+    price: 49,
+  },
+  {
+    id: "ex-6",
+    image: "/images/d6.jpeg.avif",
+    place: "Guided Walking Tour",
+    rating: 4.7,
+    reviews: 3889,
+    description: "Old Town & Jewish Quarter",
+    price: 22,
+  },
+  {
+    id: "ex-7",
+    image: "/images/d2.jpg.avif",
+    place: "Museum of Fine Arts",
+    rating: 4.4,
+    reviews: 980,
+    description: "Entry ticket",
+    price: 12,
+  },
+  {
+    id: "ex-8",
+    image: "/images/d3.jpg.avif",
+    place: "Hop-on Hop-off Bus",
+    rating: 4.2,
+    reviews: 4312,
+    description: "24‑hour ticket with audio guide",
+    price: 30,
+  },
+];
 
 const CheckoutPage: React.FC = () => {
   const params = useParams();
@@ -78,100 +127,13 @@ const CheckoutPage: React.FC = () => {
   const itemId = params.itemId as string;
   const { isModalOpen } = useNavigationStore();
 
-  const [currentExperience, setCurrentExperience] = useState<Experience | null>(
-    null
-  );
-  const [faqs, setFaqs] = useState<Faq[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [recommendations, setRecommendations] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const currentExperience = experiences.find((exp) => exp.id === itemId);
 
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    if (itemId) {
-      const fetchAllData = async () => {
-        try {
-          setLoading(true);
-
-          const [expResponse, faqResponse, reviewResponse] = await Promise.all([
-            fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/${itemId}`
-            ),
-            fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/faqs/experience/${itemId}`
-            ),
-            fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/reviews/experience/${itemId}`
-            ),
-          ]);
-
-          if (!expResponse.ok)
-            throw new Error("Failed to fetch experience data.");
-
-          const expResult = await expResponse.json();
-          if (expResult.success) {
-            setCurrentExperience(expResult.data);
-          } else {
-            throw new Error(expResult.message || "Could not find experience.");
-          }
-
-          const faqResult = await faqResponse.json();
-          if (faqResult.success) setFaqs(faqResult.data);
-
-          const reviewResult = await reviewResponse.json();
-          if (reviewResult.success) setReviews(reviewResult.data);
-        } catch (err) {
-          setError(
-            err instanceof Error ? err.message : "An unknown error occurred"
-          );
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchAllData();
-    }
-  }, [itemId]);
-
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (!city || !categoryName || !subcategory) return;
-
-      try {
-        const citiesRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        const citiesResult = await citiesRes.json();
-        const cityData = citiesResult.data.find(
-          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
-        );
-        if (!cityData) return;
-
-        const recRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category-subcategory/${cityData._id}/${categoryName}/${subcategory}?limit=5`
-        );
-        const recResult = await recRes.json();
-
-        if (recResult.success) {
-          const filteredRecs = recResult.data.filter(
-            (exp: Experience) => exp._id !== itemId
-          );
-          setRecommendations(filteredRecs);
-        }
-      } catch (e) {
-        console.error("Failed to fetch recommendations:", e);
-      }
-    };
-
-    if (currentExperience) {
-      fetchRecommendations();
-    }
-  }, [currentExperience, city, categoryName, subcategory, itemId]);
 
   const isWorldwideRoute = city === "worldwide";
 
@@ -200,68 +162,515 @@ const CheckoutPage: React.FC = () => {
     : "Subcategory";
 
   const formattedItemName =
-    currentExperience?.title ||
+    currentExperience?.description ||
     decodeURIComponent(itemId ? itemId.split("-").join(" ") : "Item");
 
-  const itemCity = formattedCityName;
+  const itemCity = currentExperience?.place || formattedCityName;
 
   const configKey = decodedSubcategoryName.toLowerCase().replace(/\s+/g, "-");
 
   const handleMobileCheckAvailability = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateString = tomorrow.toISOString();
+
+    const bookingUrl = `/booking?itemName=${encodeURIComponent(
+      formattedItemName
+    )}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(
+      categoryName
+    )}&subcategory=${encodeURIComponent(
+      subcategory
+    )}&itemId=${encodeURIComponent(itemId)}&date=${dateString}`;
+    router.push(bookingUrl);
   };
 
   const getDynamicHeading = (): string => {
-    return "Experience Details";
+    const cityFormatted = city.charAt(0).toUpperCase() + city.slice(1);
+
+    if (subcategory) {
+      return `${formattedSubcategoryName} in ${cityFormatted}`;
+    } else {
+      return `${formattedCategoryName} in ${cityFormatted}`;
+    }
   };
 
-  const subCategoryConfig = {
-    default: {
-      name: "Default Subcategory",
-      description: "Description for the default subcategory.",
+  const subCategoryConfig = isWorldwideRoute
+    ? {
+        museums: {
+          heading: "Global Museums",
+          components: {
+            themes: [
+              { icon: Ticket, text: "Global Museum Tickets", href: "#" },
+              {
+                icon: BadgePercent,
+                text: "Religious Site Tickets",
+                href: "#",
+              },
+              { icon: Landmark, text: "Landmark Tickets", href: "#" },
+              { icon: SunMedium, text: "Zoo Tickets", href: "#" },
+              { icon: Ship, text: "City Cards", href: "#" },
+              { icon: Leaf, text: "Theme Park Tickets", href: "#" },
+            ],
+          },
+        },
+
+        default: {
+          heading: `Global ${formattedSubcategoryName}`,
+          components: {
+            themes: [
+              { icon: Ticket, text: "Global Tickets", href: "#" },
+              { icon: Landmark, text: "Global Landmarks", href: "#" },
+            ],
+          },
+        },
+      }
+    : {
+        default: {
+          heading: getDynamicHeading(),
+          components: {
+            themes: [
+              {
+                icon: Landmark,
+                text: `Landmarks in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Ticket,
+                text: `Combo Tickets in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Users,
+                text: `Guided Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Music,
+                text: `Dance Shows in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Bus,
+                text: `Hop-on Hop-off Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: SunMedium,
+                text: `${formattedCityName} Attractions`,
+                href: "#",
+              },
+              { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
+            ],
+          },
+        },
+      };
+
+  const currentSubCategory =
+    subCategoryConfig[configKey as keyof typeof subCategoryConfig] ||
+    subCategoryConfig.default;
+
+  if (!currentSubCategory) {
+    return <div>Subcategory not found</div>;
+  }
+
+  const destinations = [
+    {
+      id: 1,
+      description: "Things to do in",
+      place: "United States",
+      image: "/images/d6.jpeg.avif",
+      city: "New York",
     },
-  };
-  const currentSubCategory = subCategoryConfig.default;
+    {
+      id: 2,
+      description: "Things to do in",
+      place: "United Kingdom",
+      image: "/images/d5.jpg.avif",
+      city: "London",
+    },
+    {
+      id: 3,
+      description: "Things to do in",
+      place: "United Arab Emirates",
+      image: "/images/d4.jpg.avif",
+      city: "Dubai",
+    },
+    {
+      id: 4,
+      description: "Things to do in",
+      place: "Italy",
+      image: "/images/d3.jpg.avif",
+      city: "Rome",
+    },
+    {
+      id: 5,
+      description: "Things to do in",
+      place: "France",
+      image: "/images/d2.jpg.avif",
+      city: "Paris",
+    },
+    {
+      id: 6,
+      description: "Things to do in",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+      city: "Singapore",
+    },
+    {
+      id: 7,
+      description: "Things to do in York",
+      place: "United States",
+      image: "/images/d6.jpeg.avif",
+      city: "New York",
+    },
+    {
+      id: 8,
+      description: "Things to do in",
+      place: "United Kingdom",
+      image: "/images/d5.jpg.avif",
+      city: "London",
+    },
+    {
+      id: 9,
+      description: "Things to do in",
+      place: "United Arab Emirates",
+      image: "/images/d4.jpg.avif",
+      city: "Dubai",
+    },
+    {
+      id: 10,
+      description: "Things to do in",
+      place: "Italy",
+      image: "/images/d3.jpg.avif",
+      city: "Rome",
+    },
+    {
+      id: 11,
+      description: "Things to do in",
+      place: "France",
+      image: "/images/d2.jpg.avif",
+      city: "Paris",
+    },
+    {
+      id: 12,
+      description: "Things to do in",
+      place: "Singapore",
+      image: "/images/d1.jpg.avif",
+      city: "Singapore",
+    },
+  ];
+
+  const images = [
+    "/images/tickets-included-01.avif",
+    "/images/tickets-included-02.avif",
+    "/images/tickets-included-03.avif",
+    "/images/tickets-included-04.avif",
+    "/images/tickets-included-05.avif",
+    "/images/tickets-included-07.avif",
+  ];
+
+  const navItems =
+    (currentSubCategory.components.themes || []).map((t: any) => {
+      const id = (t.text || "")
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9\-]/g, "");
+      return {
+        id,
+        label: t.text,
+        icon: t.icon,
+      };
+    }) || [];
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const experienceImages = currentExperience?.images?.length
-    ? currentExperience.images.map(
-        (id) => `https://sincere-roadrunner-227.convex.cloud/api/storage/${id}`
-      )
-    : ["/images/tickets-included-01.avif"];
-
   useEffect(() => {
     if (!isClient) return;
+
     const interval = setInterval(() => {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % experienceImages.length
-      );
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000);
+
     return () => clearInterval(interval);
-  }, [experienceImages.length, isClient]);
+  }, [images.length, isClient]);
 
   const handleImageClick = () => {
     setIsGalleryOpen(true);
   };
 
-  if (loading)
-    return <div className="pt-40 text-center">Loading Experience...</div>;
-  if (error)
-    return <div className="pt-40 text-center text-red-500">Error: {error}</div>;
-  if (!currentExperience)
-    return <div className="pt-40 text-center">Experience not found.</div>;
-
   return (
     <>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
         <div className="pt-16 md:pt-[76px]">
-          <ImageGallery
-            images={experienceImages}
-            itemName={formattedItemName}
-            city={city}
-          />
+          {!isWorldwideRoute ? (
+            <>
+              <div className="mb-[14px] hidden md:block">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/things-to-do"
+                      >
+                        Things to do
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/${city}/${categoryName}`}
+                      >
+                        {formattedCategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/${city}/${categoryName}/${subcategory}`}
+                      >
+                        {formattedSubcategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedItemName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+
+              <div className="hidden sm:block md:hidden mb-4">
+                <button className="flex items-center text-gray-600 text-sm">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    className="mr-2"
+                  >
+                    <path
+                      d="M10 12L6 8L10 4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Back
+                </button>
+              </div>
+
+              <div className="md:hidden relative px-0 -mx-4">
+                <div
+                  className="relative cursor-pointer"
+                  style={{ height: "33vh" }}
+                  onClick={handleImageClick}
+                >
+                  <div className="absolute inset-0">
+                    {images.map((image, index) => (
+                      <div
+                        key={index}
+                        className={`absolute inset-0 transition-opacity duration-1000 ${
+                          isClient && index === currentImageIndex
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
+                        style={{
+                          opacity: !isClient && index === 0 ? 1 : undefined,
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`${formattedItemName} ${index + 1}`}
+                          className="w-full h-full object-contain"
+                          style={{ maxHeight: "100%", maxWidth: "100%" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    className="
+                      pointer-events-none absolute inset-0
+                      bg-gradient-to-b
+                      from-transparent from-[35%]
+                      via-[#0a174e]/55 via-[75%]
+                      to-[#0a174e] to-100%
+                    "
+                  />
+
+                  <div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
+                    {images.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
+                          isClient && index === currentImageIndex
+                            ? "bg-white w-6"
+                            : isClient && index < currentImageIndex
+                            ? "bg-white w-1.5"
+                            : "bg-white/30 w-1.5"
+                        }`}
+                        style={{
+                          backgroundColor:
+                            !isClient && index === 0 ? "white" : undefined,
+                          width: !isClient && index === 0 ? "24px" : undefined,
+                        }}
+                      >
+                        <div
+                          className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
+                            isClient && index === currentImageIndex
+                              ? "w-full"
+                              : "w-0"
+                          }`}
+                          style={{
+                            transition:
+                              isClient && index === currentImageIndex
+                                ? "width 5s linear"
+                                : "none",
+                            width:
+                              !isClient && index === 0 ? "100%" : undefined,
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    className="
+                      absolute bottom-0 left-0 right-0 px-5 py-3 text-white
+                      bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
+                    "
+                  >
+                    <div className="flex justify-between items-center mb-0 font-halyard-text">
+                      <span className="text-[14px] text-white/90 font-medium">
+                        {formattedSubcategoryName}
+                      </span>
+                      <span className="text-[14px] bg-transparent text-pink-500 px-2 py-1 rounded font-medium">
+                        NEW
+                      </span>
+                    </div>
+
+                    <div className="w-full h-px bg-white/20 mb-1" />
+
+                    <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
+                      {formattedItemName} in {itemCity}
+                    </h2>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hidden md:block">
+                <div className="block mt-0">
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                    </div>
+                  </div>
+                  <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
+                    <span className="text-[#666666]">
+                      {formattedSubcategoryName}
+                    </span>
+                    <span className="text-[#9F9F9F] mx-1 rounded-full">
+                      {" "}
+                      •{" "}
+                    </span>
+                    <span className="text-[#e5006e] md:text-[15px]">NEW</span>
+                  </h1>
+                  <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
+                    {formattedItemName} in {itemCity}
+                  </h2>
+                </div>
+
+                <ImageGallery
+                  images={images}
+                  itemName={formattedItemName}
+                  city={city}
+                />
+              </div>
+
+              <div className="hidden sm:block md:hidden">
+                <div className="block mt-0">
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                    </div>
+                  </div>
+                  <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
+                    <span className="text-[#666666]">
+                      {formattedSubcategoryName}
+                    </span>
+                    <span className="text-[#9F9F9F] mx-1 rounded-full">
+                      {" "}
+                      •{" "}
+                    </span>
+                    <span className="text-[#e5006e]">NEW</span>
+                  </h1>
+                  <h2 className="text-[24px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
+                    {formattedItemName} in {itemCity}
+                  </h2>
+                </div>
+                <ImageGallery
+                  images={images}
+                  itemName={formattedItemName}
+                  city={city}
+                />
+              </div>
+            </>
+          ) : (
+            <div>
+              <div className="mb-[34px] hidden md:block">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href="/"
+                      >
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/worldwide/${categoryName}`}
+                      >
+                        {formattedCategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                        href={`/things-to-do/worldwide/${categoryName}/${subcategory}`}
+                      >
+                        {formattedSubcategoryName}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                        {formattedItemName}
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+            </div>
+          )}
 
           <div className="md:mt-10 mt-6" id="checkout-section">
             <div className="md:flex flex-col lg:flex-row gap-8">
@@ -269,8 +678,9 @@ const CheckoutPage: React.FC = () => {
                 <div className="mb-8">
                   <ExperienceDetails />
                 </div>
+
                 <div className="bg-white rounded-lg">
-                  <FaqSection experience={currentExperience} faqs={faqs} />
+                  <FaqSection />
                 </div>
               </div>
 
@@ -287,14 +697,30 @@ const CheckoutPage: React.FC = () => {
 
             <div>
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <ReviewsSection reviews={reviews} />
+                <Recommendations />
               </div>
-              <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <Recommendations recommendations={recommendations} />
-              </div>
+
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <Activities title={`Top Things to do in ${itemCity}`} />
               </div>
+
+              <div className="mb-6 md:mb-10 mt-6 md:mt-10">
+                <BrowseThemes
+                  title="Browse by themes"
+                  themes={currentSubCategory.components.themes || []}
+                />
+              </div>
+
+              {!isWorldwideRoute && (
+                <div className="mb-6 md:mb-10">
+                  <CarouselGrid
+                    title="Nearby cities to explore"
+                    variant="simple"
+                    recommendations={destinations}
+                  />
+                </div>
+              )}
+
               <div className="mb-6 md:mb-10">
                 <Banner />
               </div>
@@ -306,8 +732,29 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
+      {!isModalOpen && (
+        <div className="lg:hidden fixed bottom-14 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-7 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col">
+              <span className="line-through text-gray-500 text-sm font-halyard-text">
+                €55
+              </span>
+              <span className="text-xl font-halyard-text font-bold text-green-600">
+                €49.50
+              </span>
+            </div>
+            <button
+              onClick={handleMobileCheckAvailability}
+              className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200"
+            >
+              Check availability
+            </button>
+          </div>
+        </div>
+      )}
+
       <PhotoGalleryDrawer
-        images={experienceImages}
+        images={images}
         itemName={formattedItemName}
         city={itemCity}
         initialIndex={currentImageIndex}

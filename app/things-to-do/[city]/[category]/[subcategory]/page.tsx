@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
@@ -27,95 +27,14 @@ import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 
-interface Experience {
-  _id: string;
-  title: string;
-  price: string;
-  images: string[];
-  mainImage: string;
-}
-
-interface City {
-  _id: string;
-  cityName: string;
-  slug: string;
-}
-
 export default function SubcategoryPage() {
   const params = useParams();
   const city = params.city as string;
   const categoryName = params.category as string;
   const subcategory = params.subcategory as string;
 
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-
-  useEffect(() => {
-    const fetchExperiences = async () => {
-      if (!city || !categoryName || !subcategory) return;
-
-      try {
-        setLoading(true);
-
-        const citiesRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!citiesRes.ok) throw new Error("Failed to fetch cities.");
-        const citiesResult = await citiesRes.json();
-
-        if (!citiesResult.success || !Array.isArray(citiesResult.data)) {
-          throw new Error("Invalid city data format.");
-        }
-
-        const cityData = citiesResult.data.find(
-          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
-        );
-
-        if (!cityData) {
-          throw new Error(`City '${city}' not found.`);
-        }
-        const cityId = cityData._id;
-
-        const expRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category-subcategory/${cityId}/${categoryName}/${subcategory}`
-        );
-        if (!expRes.ok)
-          throw new Error("Failed to fetch experiences for this subcategory.");
-
-        const expResult = await expRes.json();
-        if (expResult.success) {
-          const formattedExperiences = expResult.data.map((exp: any) => ({
-            id: exp._id,
-            image: exp.mainImage
-              ? `/api/images/${exp.mainImage}`
-              : "/images/d1.jpg.avif",
-            place: cityData.cityName,
-            rating: 4.5,
-            reviews: 100,
-            description: exp.title,
-            price: parseFloat(exp.price) || 0,
-            badge: exp.tagOnCards,
-            cancellation: exp.cancellationPolicy,
-          }));
-          setExperiences(formattedExperiences);
-        } else {
-          throw new Error(expResult.message || "Could not fetch experiences.");
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExperiences();
-  }, [city, categoryName, subcategory]);
 
   const isWorldwideRoute = city === "worldwide";
 
@@ -162,7 +81,11 @@ export default function SubcategoryPage() {
           components: {
             themes: [
               { icon: Ticket, text: "Global Museum Tickets", href: "#" },
-              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              {
+                icon: BadgePercent,
+                text: "Religious Site Tickets",
+                href: "#",
+              },
               { icon: Landmark, text: "Landmark Tickets", href: "#" },
               { icon: SunMedium, text: "Zoo Tickets", href: "#" },
               { icon: Ship, text: "City Cards", href: "#" },
@@ -186,7 +109,11 @@ export default function SubcategoryPage() {
           components: {
             themes: [
               { icon: Ticket, text: "Museum Tickets", href: "#" },
-              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              {
+                icon: BadgePercent,
+                text: "Religious Site Tickets",
+                href: "#",
+              },
               { icon: Landmark, text: "Landmark Tickets", href: "#" },
               { icon: SunMedium, text: "Zoo Tickets", href: "#" },
               { icon: Ship, text: "City Cards", href: "#" },
@@ -342,6 +269,129 @@ export default function SubcategoryPage() {
       };
     }) || [];
 
+  const experiences = [
+    {
+      id: "ex-1",
+      image: "/images/d1.jpg.avif",
+      place: "Seville Cathedral",
+      rating: 4.7,
+      reviews: 8123,
+      description: "Skip-the-line entry with optional guided tour",
+      price: 24,
+      off: 10,
+      oldPrice: 64.18,
+      badge: "Free cancellation",
+      cancellation: "Free cancellation",
+      subcategoryId: navItems[0]?.id ?? "landmarks",
+      city: "seville",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "seville-cathedral-skip-the-line",
+    },
+    {
+      id: "ex-2",
+      image: "/images/d2.jpg.avif",
+      place: "Real Alcázar",
+      rating: 4.8,
+      reviews: 15234,
+      description: "Priority entrance + audio guide",
+      price: 29,
+      off: 10,
+      oldPrice: 32.18,
+      badge: "Free cancellation",
+      cancellation: "Free cancellation",
+      subcategoryId: navItems[0]?.id ?? "landmarks",
+      city: "seville",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "real-alcazar-priority-entrance",
+    },
+    {
+      id: "ex-3",
+      image: "/images/d3.jpg.avif",
+      place: "Guadalquivir Cruise",
+      rating: 4.5,
+      reviews: 5210,
+      description: "1‑hour scenic river cruise",
+      price: 18,
+      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
+      city: "seville",
+      category: "tours",
+      subcategory: "cruises",
+      itemId: "guadalquivir-river-cruise",
+    },
+    {
+      id: "ex-4",
+      image: "/images/d4.jpg.avif",
+      place: "Flamenco Show",
+      rating: 4.6,
+      reviews: 6632,
+      description: "Authentic tablao experience",
+      price: 25,
+      subcategoryId: navItems[2]?.id ?? "dance-shows",
+      city: "seville",
+      category: "entertainment",
+      subcategory: "dance-shows",
+      itemId: "flamenco-show-tablao",
+    },
+    {
+      id: "ex-5",
+      image: "/images/d5.jpg.avif",
+      place: "City Card",
+      rating: 4.3,
+      reviews: 2101,
+      description: "Multi‑attraction pass for 48h",
+      price: 49,
+      subcategoryId: navItems[1]?.id ?? "combo-tickets",
+      city: "seville",
+      category: "tickets",
+      subcategory: "city-cards",
+      itemId: "seville-city-card",
+    },
+    {
+      id: "ex-6",
+      image: "/images/d6.jpeg.avif",
+      place: "Guided Walking Tour",
+      rating: 4.7,
+      reviews: 3889,
+      description: "Old Town & Jewish Quarter",
+      price: 22,
+      subcategoryId: navItems[2]?.id ?? "guided-tours",
+      city: "seville",
+      category: "tours",
+      subcategory: "walking-tours",
+      itemId: "old-town-jewish-quarter-tour",
+    },
+    {
+      id: "ex-7",
+      image: "/images/d2.jpg.avif",
+      place: "Museum of Fine Arts",
+      rating: 4.4,
+      reviews: 980,
+      description: "Entry ticket",
+      price: 12,
+      subcategoryId: navItems[0]?.id ?? "landmarks",
+      city: "seville",
+      category: "tickets",
+      subcategory: "museums",
+      itemId: "museum-of-fine-arts-ticket",
+    },
+    {
+      id: "ex-8",
+      image: "/images/d3.jpg.avif",
+      place: "Hop-on Hop-off Bus",
+      rating: 4.2,
+      reviews: 4312,
+      description: "24‑hour ticket with audio guide",
+      price: 30,
+      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
+      city: "seville",
+      category: "tours",
+      subcategory: "hop-on-hop-off-tours",
+      itemId: "hop-on-hop-off-bus-24h",
+    },
+  ];
+
   const guides = [
     {
       id: 1,
@@ -392,13 +442,6 @@ export default function SubcategoryPage() {
       city: "New York",
     },
   ];
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <>

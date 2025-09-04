@@ -39,10 +39,6 @@ const ThingsToDo = () => {
     setActiveSection,
   } = useNavigationStore();
 
-  const [carouselData, setCarouselData] = useState<Record<string, any[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -51,79 +47,6 @@ const ThingsToDo = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
   const city = params.city as string;
-
-  const sections = [
-    { id: "musicals", category: "entertainment", subcategory: "musicals" },
-    { id: "landmarks", category: "tickets", subcategory: "landmarks" },
-    { id: "day-trips", category: "tours", subcategory: "day-trips" },
-    { id: "combos", category: "specials", subcategory: "combos" },
-    { id: "cruises", category: "cruises", subcategory: "river-cruises" },
-    { id: "plays", category: "entertainment", subcategory: "theater" },
-    { id: "museums", category: "tickets", subcategory: "museums" },
-    {
-      id: "hop-on-hop-off-tours",
-      category: "tours",
-      subcategory: "hop-on-hop-off-tours",
-    },
-  ];
-
-  useEffect(() => {
-    const fetchAllCarouselData = async () => {
-      if (!city) return;
-      try {
-        setLoading(true);
-        const citiesRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!citiesRes.ok) throw new Error("Failed to fetch cities.");
-        const citiesResult = await citiesRes.json();
-        const cityData = citiesResult.data.find(
-          (c: any) => c.cityName.replace(/\s+/g, "-").toLowerCase() === city
-        );
-        if (!cityData) throw new Error(`City '${city}' not found.`);
-        const cityId = cityData._id;
-
-        const promises = sections.map((section) =>
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/by-city-category-subcategory/${cityId}/${section.category}/${section.id}`
-          ).then((res) => res.json())
-        );
-
-        const results = await Promise.all(promises);
-
-        const newCarouselData: Record<string, any[]> = {};
-        results.forEach((result, index) => {
-          if (result.success) {
-            const formattedData = result.data.map((exp: any) => ({
-              id: exp._id,
-              image: exp.mainImage
-                ? `https://sincere-roadrunner-227.convex.cloud/api/storage/${exp.mainImage}`
-                : "/images/r1.jpg.avif",
-              place: cityData.cityName,
-              rating: 4.5,
-              reviews: 100,
-              description: exp.title,
-              price: parseFloat(exp.price) || 0,
-              badge: exp.tagOnCards || "Free cancellation",
-            }));
-            newCarouselData[sections[index].id] = formattedData;
-          } else {
-            newCarouselData[sections[index].id] = [];
-          }
-        });
-
-        setCarouselData(newCarouselData);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllCarouselData();
-  }, [city]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -177,7 +100,9 @@ const ThingsToDo = () => {
       const heroHeight = viewportHeight * 0.6;
 
       const isMobile = window.innerWidth < 768;
-      const stickyThreshold = isMobile ? heroHeight - 100 : heroHeight - 200;
+      const stickyThreshold = isMobile
+        ? heroHeight - 100
+        : heroHeight - 200;
 
       setScroll(scrollTop > stickyThreshold);
 
@@ -231,13 +156,22 @@ const ThingsToDo = () => {
   }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
 
   useEffect(() => {
-    const sectionIds = sections.map((s) => s.id);
+    const sections = [
+      "musicals",
+      "landmarks",
+      "day-trips",
+      "combos",
+      "cruises",
+      "plays",
+      "museums",
+      "hop-on-hop-off-tours",
+    ];
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            if (sectionIds.includes(entry.target.id)) {
+            if (sections.includes(entry.target.id)) {
               setActiveSection(entry.target.id);
             }
           }
@@ -249,7 +183,7 @@ const ThingsToDo = () => {
       }
     );
 
-    sectionIds.forEach((sectionId) => {
+    sections.forEach((sectionId) => {
       const element = document.getElementById(sectionId);
       if (element) {
         observer.observe(element);
@@ -278,12 +212,62 @@ const ThingsToDo = () => {
     checkScrollButtons();
   }, []);
 
-  if (loading) {
-    return <div>Loading activities...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const recommendations = [
+    {
+      id: 1,
+      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      place: "Dubai",
+      image: "/images/r4.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "dubai",
+      category: "adventure",
+      subcategory: "skydiving",
+      itemId: "skydive-dubai-palm",
+    },
+    {
+      id: 2,
+      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+      place: "Athens",
+      image: "/images/r3.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "athens",
+      category: "tickets",
+      subcategory: "landmarks",
+      itemId: "acropolis-parthenon-tickets",
+    },
+    {
+      id: 3,
+      description:
+        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+      place: "Italy",
+      image: "/images/r2.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "rome",
+      category: "tours",
+      subcategory: "day-trips",
+      itemId: "pompeii-amalfi-day-trip",
+    },
+    {
+      id: 4,
+      description:
+        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+      place: "London",
+      image: "/images/r1.jpg.avif",
+      price: 100,
+      rating: 4.5,
+      reviews: 100,
+      city: "london",
+      category: "entertainment",
+      subcategory: "studio-tours",
+      itemId: "harry-potter-studio-tour",
+    },
+  ];
 
   return (
     <div className="relative min-h-screen">
@@ -442,62 +426,62 @@ const ThingsToDo = () => {
       <div className="max-w-[1200px] mx-auto pb-10 px-[24px] xl:px-0">
         <CarouselGrid
           title="Top experiences in London"
-          recommendations={carouselData["landmarks"] || []}
+          recommendations={recommendations}
           variant="subcategory"
         />
         <div id="musicals">
           <CarouselGrid
             title="London Musicals"
-            recommendations={carouselData["musicals"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="landmarks">
           <CarouselGrid
             title="Landmarks in London"
-            recommendations={carouselData["landmarks"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="day-trips">
           <CarouselGrid
             title="Day Trips From London"
-            recommendations={carouselData["day-trips"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="combos">
           <CarouselGrid
             title="Combos Tickets in London"
-            recommendations={carouselData["combos"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="cruises">
           <CarouselGrid
             title="Thames River Cruise"
-            recommendations={carouselData["cruises"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="plays">
           <CarouselGrid
             title="Plays in London"
-            recommendations={carouselData["plays"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="museums">
           <CarouselGrid
             title="Museums in London"
-            recommendations={carouselData["museums"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
         <div id="hop-on-hop-off-tours">
           <CarouselGrid
             title="Hop-on Hop-off Tours London"
-            recommendations={carouselData["hop-on-hop-off-tours"] || []}
+            recommendations={recommendations}
             variant="subcategory"
           />
         </div>
