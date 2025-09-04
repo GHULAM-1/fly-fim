@@ -2159,7 +2159,7 @@ export default function CategoryPage() {
             {!isWorldwideRoute && (
               <div className="mb-10">
                 <CarouselGrid
-                  title="Nearby cities to explore"
+                  title="Explore world's top destinations"
                   variant="simple"
                   recommendations={destinations}
                 />

@@ -522,8 +522,8 @@ const CheckoutPage: React.FC = () => {
                           isClient && index === currentImageIndex
                             ? "bg-white w-6"
                             : isClient && index < currentImageIndex
-                            ? "bg-white w-1.5"
-                            : "bg-white/30 w-1.5"
+                              ? "bg-white w-1.5"
+                              : "bg-white/30 w-1.5"
                         }`}
                         style={{
                           backgroundColor:
@@ -577,8 +577,7 @@ const CheckoutPage: React.FC = () => {
               <div className="hidden md:block">
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
-                    <div className="flex items-center gap-1">
-                    </div>
+                    <div className="flex items-center gap-1"></div>
                   </div>
                   <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
                     <span className="text-[#666666]">
@@ -605,8 +604,7 @@ const CheckoutPage: React.FC = () => {
               <div className="hidden sm:block md:hidden">
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
-                    <div className="flex items-center gap-1">
-                    </div>
+                    <div className="flex items-center gap-1"></div>
                   </div>
                   <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
                     <span className="text-[#666666]">
@@ -714,7 +712,7 @@ const CheckoutPage: React.FC = () => {
               {!isWorldwideRoute && (
                 <div className="mb-6 md:mb-10">
                   <CarouselGrid
-                    title="Nearby cities to explore"
+                    title="Explore world's top destinations"
                     variant="simple"
                     recommendations={destinations}
                   />
