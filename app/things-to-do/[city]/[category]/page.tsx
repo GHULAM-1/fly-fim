@@ -220,38 +220,33 @@ export default function CategoryPage() {
     },
   ];
 
-// Get the category name and city from URL and capitalize first letter
-const categoryName = params.category as string;
-const city = params.city as string;
-const isWorldwideRoute = city === "worldwide";
+  const categoryName = params.category as string;
+  const city = params.city as string;
+  const isWorldwideRoute = city === "worldwide";
 
-// Decode URL-encoded characters first, then process
-const decodedCity = decodeURIComponent(city);
+  const decodedCity = decodeURIComponent(city);
 
-const decodedCategory = decodeURIComponent(categoryName);
+  const decodedCategory = decodeURIComponent(categoryName);
 
-// Get the last word from category after decoding
-const lastWord = decodedCategory ? decodedCategory.split("-").pop() || decodedCategory : "";
+  const lastWord = decodedCategory
+    ? decodedCategory.split("-").pop() || decodedCategory
+    : "";
 
-// Convert spaces to hyphens for config key matching
-const configKey = lastWord.toLowerCase().replace(/\s+/g, "-");
+  const configKey = lastWord.toLowerCase().replace(/\s+/g, "-");
 
-const formattedCategoryName = lastWord
-  ? lastWord.charAt(0).toUpperCase() + lastWord.slice(1)
-  : "Category";
+  const formattedCategoryName = lastWord
+    ? lastWord.charAt(0).toUpperCase() + lastWord.slice(1)
+    : "Category";
 
-// Format city name properly (for display)
-const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  : "City";
+  const formattedCityName = decodedCity
+    ? decodedCity
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "City";
 
-
-  // Comprehensive category configuration - conditional based on worldwide vs city-specific
   const categoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION
         tickets: {
           style: "bordered",
           heading: "Global Attractions",
@@ -393,7 +388,12 @@ const formattedCityName = decodedCity
           style: "bordered",
           heading: "Global Travel Services",
           navigationItems: [
-            { id: "planning", label: "Travel Planning", icon: MapPin, color: "purple" }
+            {
+              id: "planning",
+              label: "Travel Planning",
+              icon: MapPin,
+              color: "purple",
+            },
           ],
           components: {
             guides: null,
@@ -783,7 +783,6 @@ const formattedCityName = decodedCity
         },
       }
     : {
-        // CITY-SPECIFIC CONFIGURATION
         tickets: {
           style: "bordered",
           heading: `${city} Attractions`,
@@ -1415,17 +1414,14 @@ const formattedCityName = decodedCity
         },
       };
 
-  // Get current category configuration
   const currentCategory =
     categoryConfig[configKey as keyof typeof categoryConfig] ||
     categoryConfig.default;
 
-  // Early return if no category found
   if (!currentCategory) {
     return <div>Category not found</div>;
   }
 
-  // Helper function to get button styles based on category
   const getButtonStyles = (item: any, isActive: boolean) => {
     const baseClasses =
       "font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] whitespace-nowrap transition-all duration-200";
@@ -1450,25 +1446,21 @@ const formattedCityName = decodedCity
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      // Get the actual sticky navigation height dynamically
       const stickyNav = document.querySelector("[data-navigation]");
       const fixedNav = document.querySelector(".fixed.md\\:top-19");
 
       let totalOffset = 0;
 
-      // Add fixed top navigation height if it exists
       if (fixedNav) {
         const fixedNavRect = fixedNav.getBoundingClientRect();
         totalOffset += fixedNavRect.height;
       }
 
-      // Add sticky category carousel height if it exists
       if (stickyNav) {
         const stickyNavRect = stickyNav.getBoundingClientRect();
         totalOffset += stickyNavRect.height;
       }
 
-      // Add some extra padding for better visibility
       totalOffset += 20;
 
       const elementPosition = element.offsetTop;
@@ -1508,7 +1500,6 @@ const formattedCityName = decodedCity
     }
   };
 
-  // Intersection observer for active section tracking
   useEffect(() => {
     const sections = currentCategory.navigationItems.map((item) => item.id);
 
@@ -1538,7 +1529,6 @@ const formattedCityName = decodedCity
     return () => observer.disconnect();
   }, [setActiveSection]);
 
-  // Scroll button handlers
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
     window.addEventListener("resize", handleResize);
@@ -1558,7 +1548,6 @@ const formattedCityName = decodedCity
     checkScrollButtons();
   }, []);
 
-  // Hide/show carousel logic
   useEffect(() => {
     const handleScroll = () => {
       const lastSectionElement = document.getElementById(
@@ -1821,9 +1810,9 @@ const formattedCityName = decodedCity
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/components"
+                        href={`/things-to-do/${city}`}
                       >
-                        Things to do
+                        {formattedCityName}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
@@ -1907,7 +1896,6 @@ const formattedCityName = decodedCity
             </div>
           )}
 
-          {/* Mobile Category Drawer Trigger */}
           <div className="md:hidden flex justify-center mb-4">
             <Drawer
               open={isMobileDrawerOpen}
@@ -1946,7 +1934,6 @@ const formattedCityName = decodedCity
             </Drawer>
           </div>
 
-          {/* Category Carousel - Integrated directly in the page */}
           <div
             ref={navigationRef}
             data-navigation
@@ -1977,7 +1964,6 @@ const formattedCityName = decodedCity
                     </div>
                   </div>
                 )}
-                {/* All item - only show if style is simple */}
                 {currentCategory.style === "simple" && (
                   <div className="relative">
                     <Button
@@ -1990,7 +1976,6 @@ const formattedCityName = decodedCity
                     >
                       All
                     </Button>
-                    {/* Purple underline for active tab in simple style */}
                     {(activeSection === "all" || !activeSection) && (
                       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
                     )}
@@ -2034,7 +2019,6 @@ const formattedCityName = decodedCity
                   </div>
                 )}
               </div>
-              {/* Bottom line for simple style */}
               {currentCategory.style === "simple" && (
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
               )}
@@ -2076,7 +2060,6 @@ const formattedCityName = decodedCity
           title="Top experiences in London"
           recommendations={recommendations}
         /> */}
-            {/* Only map navigation items if stack is true */}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
                 <div key={item.id} className="mb-10" id={item.id}>
@@ -2087,7 +2070,6 @@ const formattedCityName = decodedCity
                   />
                 </div>
               ))}
-            {/* Dynamic Travel Guides Section - Only show if guides exist */}
             {currentCategory?.components?.guides && (
               <div className="mb-10">
                 <CarouselGrid
@@ -2102,7 +2084,6 @@ const formattedCityName = decodedCity
               </div>
             )}
 
-            {/* Conditional Transportation Section - Only show if transport exists */}
             {currentCategory?.components?.transport && (
               <div className="mb-10">
                 <CarouselGrid
@@ -2117,7 +2098,6 @@ const formattedCityName = decodedCity
               </div>
             )}
 
-            {/* Dynamic Browse Themes Section */}
             <div className="mb-10">
               <BrowseThemes
                 title="Browse by themes"
@@ -2127,7 +2107,7 @@ const formattedCityName = decodedCity
             {!isWorldwideRoute && (
               <div className="mb-10">
                 <CarouselGrid
-                  title="Explore world's top destinations"
+                  title="Nearby cities to explore"
                   variant="simple"
                   recommendations={destinations}
                 />
