@@ -1,80 +1,71 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-
-interface CityFromAPI {
-  _id: string;
-  cityName: string;
-  countryName: string;
-}
-
-
-interface Destination {
-  id: string;
-  description: string;
-  place: string;
-  image: string;
-  city: string; 
-  slug: string; 
-}
-
-
-const cityImageMap: { [key: string]: string } = {
-  paris: "/images/d2.jpg.avif",
-  london: "/images/d5.jpg.avif",
-  "new york": "/images/d6.jpeg.avif",
-  rome: "/images/d3.jpg.avif",
-  dubai: "/images/d4.jpg.avif",
-  singapore: "/images/d1.jpg.avif",
-};
+const destinations = [
+  {
+    id: "1",
+    description: "Things to do in New York",
+    place: "United States",
+    image: "/images/d6.jpeg.avif",
+    city: "New York",
+    slug: "new-york",
+  },
+  {
+    id: "2",
+    description: "Things to do in London",
+    place: "United Kingdom",
+    image: "/images/d5.jpg.avif",
+    city: "London",
+    slug: "london",
+  },
+  {
+    id: "3",
+    description: "Things to do in Dubai",
+    place: "United Arab Emirates",
+    image: "/images/d4.jpg.avif",
+    city: "Dubai",
+    slug: "dubai",
+  },
+  {
+    id: "4",
+    description: "Things to do in Rome",
+    place: "Italy",
+    image: "/images/d3.jpg.avif",
+    city: "Rome",
+    slug: "rome",
+  },
+  {
+    id: "5",
+    description: "Things to do in Paris",
+    place: "France",
+    image: "/images/d2.jpg.avif",
+    city: "Paris",
+    slug: "paris",
+  },
+  {
+    id: "6",
+    description: "Things to do in Singapore",
+    place: "Singapore",
+    image: "/images/d1.jpg.avif",
+    city: "Singapore",
+    slug: "singapore",
+  },
+  {
+    id: "7",
+    description: "Things to do in Las Vegas",
+    place: "United States",
+    image: "/images/d6.jpeg.avif",
+    city: "Las Vegas",
+    slug: "las-vegas",
+  },
+];
 
 const Destinations = () => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDestinations = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch destinations");
-        }
-        const result = await response.json();
-
-        if (result.success && Array.isArray(result.data)) {
-          
-          const allDestinationEntries = result.data.map((city: CityFromAPI) => {
-            const cityNameLower = city.cityName.toLowerCase();
-            return {
-              id: city._id,
-              description: `Things to do in ${city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1)}`,
-              place: city.countryName,
-              image: cityImageMap[cityNameLower] || "/images/d1.jpg.avif",
-              city:
-                city.cityName.charAt(0).toUpperCase() + city.cityName.slice(1),
-              slug: city.cityName.replace(/\s+/g, "-").toLowerCase(),
-            };
-          });
-          setDestinations(allDestinationEntries);
-        } else {
-          throw new Error("Invalid data format from API");
-        }
-      } catch (error) {
-        console.error("Error fetching destinations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDestinations();
-  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -93,19 +84,6 @@ const Destinations = () => {
       });
     }
   };
-
-  if (loading || destinations.length === 0) {
-    return (
-      <div className="py-4 max-w-[1200px] mx-auto">
-        <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
-          {t("destinations.title")}
-        </h2>
-        <div className="mt-4 text-center text-gray-500">
-          {loading ? "Loading destinations..." : "No destinations to show."}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="py-4 max-w-[1200px] mx-auto ">

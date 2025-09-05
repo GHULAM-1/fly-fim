@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import CarouselCard from "../cards/CarouselCard";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ArrowUpDown, Check, X } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { StarIcon } from "lucide-react";
@@ -21,13 +21,47 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import {
   Drawer,
-  DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  DrawerFooter,
-  DrawerClose,
 } from "@/components/ui/drawer";
+
+const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M6 2L6 14"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M6 14L2 10"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M10 14L10 2"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M9.99999 2L14 6"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+  </svg>
+);
+
 
 interface CarouselGridProps {
   title: string;
@@ -175,17 +209,16 @@ const CarouselGrid = ({
             {recommendations.length} experiences
           </p>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <ArrowUpDown size={16} />
-              <span className="text-sm px-8 py-3 hover:bg-gray-200 rounded">{`Sort by: ${sortBy}`}</span>
-              <ChevronDown size={16} />
+            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors bg-gray-50 px-3 py-2 md:py-3 md:py-3 cursor-pointer">
+              <SortIcon />
+              <span className="text-sm">{`Sort by: ${sortBy}`}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               {sortOptions.map((option) => (
                 <DropdownMenuItem
                   key={option}
                   onClick={() => handleSortChange(option)}
-                  className="flex items-center justify-between cursor-pointer"
+                  className="flex items-center justify-between cursor-pointer "
                 >
                   <span>{option}</span>
                   {sortBy === option && <Check size={16} />}
@@ -274,19 +307,35 @@ const CarouselGrid = ({
   if (variant === "pills") {
     return (
       <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-            {title}
-          </h2>
-        </div>
-        {!pills && (
-          <div className="text-sm text-[#666666] flex justify-between items-center mt-[20px]">
-            <p className="text-[15px] font-halyard-text">Worldwide</p>
-            <p className="text-[12px] font-halyard-text-light">
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444] mb-2">
+              {title}
+            </h2>
+            <p className="text-gray-600 text-sm">
               {recommendations.length} experiences
             </p>
           </div>
-        )}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center font-halyard-text-light gap-2 text-gray-600 hover:text-gray-900 transition-colors  bg-gray-50 px-3 py-3 cursor-pointer ">
+              <SortIcon />
+              <span className="text-sm ">{`Sort by: ${sortBy}`}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {sortOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option}
+                  onClick={() => handleSortChange(option)}
+                  className="flex items-center justify-between cursor-pointer"
+                >
+                  <span>{option}</span>
+                  {sortBy === option && <Check size={16} />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {pills && (
           <div
             className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"

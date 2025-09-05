@@ -37,7 +37,7 @@ import WhyHeadout from "@/components/checkout/WhyHeadout";
 
 const experiences = [
   {
-    id: "ex-1",
+    id: "seville-cathedral-skip-the-line",
     image: "/images/d1.jpg.avif",
     place: "Seville Cathedral",
     rating: 4.7,
@@ -50,7 +50,7 @@ const experiences = [
     cancellation: "Free cancellation",
   },
   {
-    id: "ex-2",
+    id: "real-alcazar-priority-entrance",
     image: "/images/d2.jpg.avif",
     place: "Real Alcázar",
     rating: 4.8,
@@ -63,7 +63,7 @@ const experiences = [
     cancellation: "Free cancellation",
   },
   {
-    id: "ex-3",
+    id: "guadalquivir-cruise",
     image: "/images/d3.jpg.avif",
     place: "Guadalquivir Cruise",
     rating: 4.5,
@@ -72,7 +72,7 @@ const experiences = [
     price: 18,
   },
   {
-    id: "ex-4",
+    id: "flamenco-show-tablao",
     image: "/images/d4.jpg.avif",
     place: "Flamenco Show",
     rating: 4.6,
@@ -81,7 +81,7 @@ const experiences = [
     price: 25,
   },
   {
-    id: "ex-5",
+    id: "city-card-seville",
     image: "/images/d5.jpg.avif",
     place: "City Card",
     rating: 4.3,
@@ -90,7 +90,7 @@ const experiences = [
     price: 49,
   },
   {
-    id: "ex-6",
+    id: "guided-walking-tour-seville",
     image: "/images/d6.jpeg.avif",
     place: "Guided Walking Tour",
     rating: 4.7,
@@ -99,7 +99,7 @@ const experiences = [
     price: 22,
   },
   {
-    id: "ex-7",
+    id: "museum-fine-arts-seville",
     image: "/images/d2.jpg.avif",
     place: "Museum of Fine Arts",
     rating: 4.4,
@@ -108,13 +108,53 @@ const experiences = [
     price: 12,
   },
   {
-    id: "ex-8",
+    id: "hop-on-hop-off-bus-seville",
     image: "/images/d3.jpg.avif",
     place: "Hop-on Hop-off Bus",
     rating: 4.2,
     reviews: 4312,
     description: "24‑hour ticket with audio guide",
     price: 30,
+  },
+  {
+    id: "skydive-dubai",
+    description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+    badge: "Selling out fast",
+    place: "Dubai",
+    image: "/images/r4.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "acropolis-tickets",
+    description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+    place: "Athens",
+    image: "/images/r3.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "pompeii-amalfi-tour",
+    badge: "Free cancellation",
+    description:
+      "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+    place: "Italy",
+    image: "/images/r2.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "harry-potter-studio",
+    description:
+      "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+    place: "London",
+    image: "/images/r1.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
   },
 ];
 
@@ -406,7 +446,6 @@ const CheckoutPage: React.FC = () => {
         <div className="pt-16 md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
-              {/* Breadcrumb Section - Hidden on mobile */}
               <div className="mb-[14px] hidden md:block">
                 <Breadcrumb>
                   <BreadcrumbList>
@@ -422,9 +461,9 @@ const CheckoutPage: React.FC = () => {
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/things-to-do"
+                        href={`/things-to-do/${city}`}
                       >
-                        Things to do
+                        {formattedCityName}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
@@ -455,7 +494,6 @@ const CheckoutPage: React.FC = () => {
                 </Breadcrumb>
               </div>
 
-              {/* Mobile Back Button */}
               <div className="hidden sm:block md:hidden mb-4">
                 <button className="flex items-center text-gray-600 text-sm">
                   <svg
@@ -477,15 +515,12 @@ const CheckoutPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Mobile Layout - Image Background with Overlay Content */}
               <div className="md:hidden relative px-0 -mx-4">
-                {/* Background Image Carousel */}
                 <div
                   className="relative cursor-pointer"
                   style={{ height: "33vh" }}
                   onClick={handleImageClick}
                 >
-                  {/* Auto-rotating background images */}
                   <div className="absolute inset-0">
                     {images.map((image, index) => (
                       <div
@@ -509,7 +544,6 @@ const CheckoutPage: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Gradient overlay that blends into the solid navy section */}
                   <div
                     className="
                       pointer-events-none absolute inset-0
@@ -520,7 +554,6 @@ const CheckoutPage: React.FC = () => {
                     "
                   />
 
-                  {/* Animated progress indicator dots/bars */}
                   <div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
                     {images.map((_, index) => (
                       <div
@@ -557,14 +590,12 @@ const CheckoutPage: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Bottom Content Overlay - This sits on top of the gradient */}
                   <div
                     className="
                       absolute bottom-0 left-0 right-0 px-5 py-3 text-white
                       bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
                     "
                   >
-                    {/* Subcategory and NEW badge - spaced apart */}
                     <div className="flex justify-between items-center mb-0 font-halyard-text">
                       <span className="text-[14px] text-white/90 font-medium">
                         {formattedSubcategoryName}
@@ -574,10 +605,8 @@ const CheckoutPage: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Thin separator line */}
                     <div className="w-full h-px bg-white/20 mb-1" />
 
-                    {/* Main title */}
                     <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
                       {formattedItemName} in {itemCity}
                     </h2>
@@ -585,13 +614,10 @@ const CheckoutPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Desktop Layout - Original Structure */}
               <div className="hidden md:block">
-                {/* Subcategory and Item Name Section */}
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
                     <div className="flex items-center gap-1">
-                      {/* Optional SVG or icons */}
                     </div>
                   </div>
                   <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
@@ -609,7 +635,6 @@ const CheckoutPage: React.FC = () => {
                   </h2>
                 </div>
 
-                {/* Image Gallery for Item - Desktop only */}
                 <ImageGallery
                   images={images}
                   itemName={formattedItemName}
@@ -617,13 +642,10 @@ const CheckoutPage: React.FC = () => {
                 />
               </div>
 
-              {/* Tablet Layout - You can customize this for intermediate screen sizes */}
               <div className="hidden sm:block md:hidden">
-                {/* Option 2: Use desktop layout for tablets but with adjusted styling */}
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
                     <div className="flex items-center gap-1">
-                      {/* Optional SVG or icons */}
                     </div>
                   </div>
                   <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
@@ -649,7 +671,6 @@ const CheckoutPage: React.FC = () => {
             </>
           ) : (
             <div>
-              {/* Only Breadcrumb for Worldwide Routes */}
               <div className="mb-[34px] hidden md:block">
                 <Breadcrumb>
                   <BreadcrumbList>
@@ -692,23 +713,17 @@ const CheckoutPage: React.FC = () => {
           )}
 
           <div className="md:mt-10 mt-6" id="checkout-section">
-            {/* Checkout Section - Features, FAQs, and Sticky Right Section */}
-            {/* Desktop/Tablet Only: Features, FAQs, and Sticky Right Section */}
             <div className="md:flex flex-col lg:flex-row gap-8">
-              {/* Left Content - Features and FAQs */}
               <div className="w-full lg:w-2/3">
-                {/* Features Section */}
                 <div className="mb-8">
                   <ExperienceDetails />
                 </div>
 
-                {/* FAQ Section */}
                 <div className="bg-white rounded-lg">
                   <FaqSection />
                 </div>
               </div>
 
-              {/* Sticky Right Section */}
               <div className="hidden md:block w-full lg:w-1/3">
                 <div className="lg:sticky lg:top-[160px] space-y-6">
                   <CheckAvailability
@@ -720,19 +735,15 @@ const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Additional Content Section */}
             <div>
-              {/* Similar Experiences Section */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <Recommendations />
               </div>
 
-              {/* Things to do in city */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <Activities title={`Top Things to do in ${itemCity}`} />
               </div>
 
-              {/* Browse Themes Section */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <BrowseThemes
                   title="Browse by themes"
@@ -740,7 +751,6 @@ const CheckoutPage: React.FC = () => {
                 />
               </div>
 
-              {/* Nearby Cities and Stats */}
               {!isWorldwideRoute && (
                 <div className="mb-6 md:mb-10">
                   <CarouselGrid
@@ -762,11 +772,9 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Bar - Conditionally Rendered */}
       {!isModalOpen && (
         <div className="lg:hidden fixed bottom-14 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-7 py-3">
           <div className="flex items-center justify-between gap-3">
-            {/* Price section */}
             <div className="flex flex-col">
               <span className="line-through text-gray-500 text-sm font-halyard-text">
                 €55
@@ -775,7 +783,6 @@ const CheckoutPage: React.FC = () => {
                 €49.50
               </span>
             </div>
-            {/* Check availability button */}
             <button
               onClick={handleMobileCheckAvailability}
               className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200"
@@ -786,7 +793,6 @@ const CheckoutPage: React.FC = () => {
         </div>
       )}
 
-      {/* Photo Gallery Drawer */}
       <PhotoGalleryDrawer
         images={images}
         itemName={formattedItemName}

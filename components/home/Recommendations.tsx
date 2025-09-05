@@ -29,7 +29,7 @@ const Recommendations = () => {
 
   const recommendations = [
     {
-      id: 1,
+      id: "skydive-dubai",
       description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
       badge: "Selling out fast",
       place: "Dubai",
@@ -43,7 +43,7 @@ const Recommendations = () => {
       itemId: "skydive-dubai",
     },
     {
-      id: 2,
+      id: "acropolis-tickets",
       description: "Acropolis Parthenon Tickets with Optional Audio Guide",
       place: "Athens",
       image: "/images/r3.jpg.avif",
@@ -56,7 +56,7 @@ const Recommendations = () => {
       itemId: "acropolis-tickets",
     },
     {
-      id: 3,
+      id: "pompeii-amalfi-tour",
       badge: "Free cancellation",
       description:
         "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
@@ -71,7 +71,7 @@ const Recommendations = () => {
       itemId: "pompeii-amalfi-tour",
     },
     {
-      id: 4,
+      id: "harry-potter-studio",
       description:
         "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
       place: "London",
@@ -85,7 +85,7 @@ const Recommendations = () => {
       itemId: "harry-potter-studio",
     },
     {
-      id: 5,
+      id: "harry-potter-studio-2",
       description:
         "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
       place: "London",
@@ -99,7 +99,7 @@ const Recommendations = () => {
       itemId: "harry-potter-studio-2",
     },
     {
-      id: 6,
+      id: "harry-potter-studio-3",
       description:
         "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
       place: "London",
@@ -113,7 +113,7 @@ const Recommendations = () => {
       itemId: "harry-potter-studio-3",
     },
     {
-      id: 7,
+      id: "harry-potter-studio-4",
       description:
         "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
       place: "London",
@@ -127,7 +127,7 @@ const Recommendations = () => {
       itemId: "harry-potter-studio-4",
     },
     {
-      id: 8,
+      id: "harry-potter-studio-5",
       description:
         "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
       place: "London",
@@ -168,7 +168,10 @@ const Recommendations = () => {
         ref={scrollContainerRef}
       >
         {recommendations.map((recommendation) => (
-          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px] pl-[24px] xl:pl-0">
+          <div
+            key={recommendation.id}
+            className="snap-start flex-shrink-0 w-[282px] pl-[24px] xl:pl-0"
+          >
             <CarouselCard
               variant="full"
               image={recommendation.image}
