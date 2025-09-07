@@ -209,7 +209,7 @@ const CarouselGrid = ({
             {recommendations.length} experiences
           </p>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors bg-gray-50 px-3 py-2 md:py-3 md:py-3 cursor-pointer">
+            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
               <SortIcon />
               <span className="text-sm">{`Sort by: ${sortBy}`}</span>
             </DropdownMenuTrigger>
