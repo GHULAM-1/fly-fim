@@ -49,9 +49,76 @@ const CarouselCard = ({
   const discountedPrice = off ? price * (1 - off / 100) : price;
 
   const generateLink = () => {
-    return `/things-to-do/${city}/${category}/${subcategory}/${itemId}`;
+    
+    const slugify = (text: string) =>
+      text
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "");
+
+    const citySlug = slugify(city);
+    const categorySlug = slugify(category);
+    const subcategorySlug = slugify(subcategory);
+    const itemSlug = slugify(description); 
+
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemSlug}-${itemId}`;
   };
 
+  if (variant === "full") {
+    return (
+      <Link href={generateLink()} passHref>
+        <div className="w-full group cursor-pointer p-2">
+          <div className="relative mb-2">
+            <img
+              src={image}
+              alt={description}
+              className="w-full h-40 object-cover rounded-lg"
+            />
+            {badge && (
+              <span className="absolute top-2 left-2 z-10 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
+                {badge}
+              </span>
+            )}
+          </div>
+          <div>
+            <div className="flex justify-between items-center text-xs text-gray-500">
+              <span>{place}</span>
+              <div className="flex items-center gap-1">
+                <StarIcon className="text-pink-500 fill-current" size={14} />
+                <span className="font-semibold text-pink-500">{rating}</span>
+                <span className="text-gray-500">({reviews})</span>
+              </div>
+            </div>
+            <h3 className="font-semibold text-gray-800 mt-1 line-clamp-2 h-10">
+              {description}
+            </h3>
+            <div className="mt-2">
+              <span className="text-xs text-gray-500">from</span>
+              <div className="flex items-baseline gap-2">
+                <PriceDisplay
+                  amount={price}
+                  className="font-bold text-lg text-gray-800"
+                />
+                {oldPrice && (
+                  <PriceDisplay
+                    amount={oldPrice}
+                    className="text-sm line-through text-gray-400"
+                  />
+                )}
+                {off && (
+                  <span className="bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded-md">
+                    {off}% off
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  
   if (variant === "recommendation") {
     return (
       <Link href={generateLink()}>
@@ -130,54 +197,7 @@ const CarouselCard = ({
       </Link>
     );
   }
-  if (variant === "full") {
-    return (
-      <Link href={generateLink()} passHref>
-        <div className="w-full group cursor-pointer">
-          <div className="relative mb-3">
-            <img
-              src={image}
-              alt={description}
-              className="w-full rounded-lg object-cover"
-            />
-          </div>
-          <div>
-            <div className="flex justify-between items-center text-xs text-gray-500">
-              <span>{place}</span>
-              <div className="flex items-center gap-1">
-                <StarIcon className="text-pink-500 fill-current" size={14} />
-                <span className="font-semibold">{rating}</span>
-                <span>({reviews})</span>
-              </div>
-            </div>
-            <h3 className="font-semibold text-gray-800 mt-1 line-clamp-2">
-              {description}
-            </h3>
-            <div className="mt-2">
-              <span className="text-xs text-gray-500">from</span>
-              <div className="flex items-baseline gap-2">
-                <PriceDisplay
-                  amount={discountedPrice}
-                  className="font-bold text-lg"
-                />
-                {off && (
-                  <PriceDisplay
-                    amount={price}
-                    className="text-sm line-through text-gray-400"
-                  />
-                )}
-                {off && (
-                  <span className="bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded-md">
-                    {off}% off
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
-    );
-  }
+
   return (
     <Link href={generateLink()} passHref>
       <div className="w-full hover:-translate-y-2 transition-all duration-300 group cursor-pointer">
