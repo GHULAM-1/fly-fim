@@ -48,6 +48,7 @@ const displayLight = localFont({
 });
 
 const RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Load saved language from localStorage
@@ -75,15 +76,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const pathname = usePathname();
 
-  // Check if current path is dashboard route
-  const isDashboard = pathname?.startsWith('/dashboard');
+  // Check for specific routes to hide default layout components
+  const isDashboard = pathname?.startsWith("/dashboard");
+  const isBookingPage = pathname?.startsWith("/booking");
 
   return (
     <>
-      {!isDashboard && <Navbar />}
+      {!isDashboard && !isBookingPage && <Navbar />}
       {children}
-      {!isDashboard && pathname !== "/account" && <Footer />}
-      {!isDashboard && <Tabs />}
+      {!isDashboard && !isBookingPage && pathname !== "/account" && <Footer />}
+      {!isDashboard && !isBookingPage && <Tabs />}
     </>
   );
 }
@@ -100,10 +102,12 @@ export default function RootLayout({
           Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
         </title>
       </head>
-      <body className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} ${displayLight.variable} ${halyardText.variable} ${halyardTextLight.variable} ${halyardTextRegular.variable} antialiased`}>
+      <body
+        className={`${heading.variable} ${text.variable} ${regular.variable} ${lightText.variable} ${displayLight.variable} ${halyardText.variable} ${halyardTextLight.variable} ${halyardTextRegular.variable} antialiased`}
+      >
         <I18nextProvider i18n={i18n}>
-        <Toaster position="top-center"/>
-        <ToastContainerComponent />
+          <Toaster position="top-center" />
+          <ToastContainerComponent />
           <CurrencyProvider>
             <LayoutContent>{children}</LayoutContent>
           </CurrencyProvider>
