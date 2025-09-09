@@ -456,21 +456,6 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
     <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
   </Swiper>
 
-  {/* Mobile Search Trigger - positioned over the image */}
-  <div className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 w-[90%] md:hidden z-10">
-    <button
-      className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
-      onClick={() => setIsCustomDrawerOpen(true)}
-    >
-      <div className="flex-1 relative">
-        <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer text-[13px] pointer-events-none" />
-        <AnimatedPlaceholder />
-      </div>
-      <div className="bg-[#8000FF] rounded p-2">
-        <Search strokeWidth={1} className="text-white" />
-      </div>
-    </button>
-  </div>
 </div>
 
 

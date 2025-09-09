@@ -84,7 +84,7 @@ const Recommendations = () => {
             Travelers' favorite choices
           </h2>{" "}
         </div>
-        <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
+        <div className="mt-4 ml-[24px] xl:ml-0 sm:mt-4 flex gap-5 overflow-hidden">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="snap-start flex-shrink-0 w-[282px] p-2">
               <div className="w-full h-40 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
@@ -104,7 +104,7 @@ const Recommendations = () => {
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
           Travelers' favorite choices
         </h2>
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2  ">
           <button
             className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
             onClick={scrollLeft}
@@ -120,7 +120,7 @@ const Recommendations = () => {
         </div>
       </div>
       <div
-        className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+        className="mt-4 ml-[24px] xl:ml-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
         {recommendations.map((rec, index) => (

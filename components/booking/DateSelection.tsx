@@ -59,7 +59,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
     <>
       <section className="mb-10">
         <div>
-          <h2 className="text-xl font-heading   text-gray-800 mb-1">
+          <h2 className="text-xl font-heading text-gray-700 mb-1">
             Select a date
           </h2>
           <p className="text-[12px] text-gray-500 font-halyard-text">
@@ -78,7 +78,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                 <button
                   key={d.date}
                   onClick={() => onDateSelect(d.fullDate)}
-                  className={`flex flex-col items-center justify-center p-3 w-22 h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
+                  className={`flex flex-col  items-center justify-center  md:p-3 w-15 md:w-22 h-17 md:h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
                     isSelected
                       ? "border-purple-600 bg-purple-100 rounded-lg border text-purple-800"
                       : "border border-transparent hover:border-gray-400 hover:bg-gray-50 rounded-lg"

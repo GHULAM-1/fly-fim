@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React from "react";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -62,7 +62,7 @@ const BookingPage = () => {
       setTimeout(() => {
         const elementTop =
           timeSelectionRef.current?.getBoundingClientRect().top ?? 0;
-        // Adjust header offset for mobile vs desktop
+
         const headerOffset = window.innerWidth < 768 ? 80 : 120;
         const scrollPosition = window.scrollY + elementTop - headerOffset;
 
@@ -78,7 +78,7 @@ const BookingPage = () => {
     <div className="min-h-screen bg-white">
       <header className="fixed top-0 left-0 w-full bg-white z-50 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6">
-          <div className="flex justify-between items-center max-w-[1200px] mx-auto h-16 md:h-20">
+          <div className="flex justify-between items-center max-w-[1200px] mx-auto  h-16 md:h-20">
             <div className="flex flex-row gap-4 md:gap-10 items-center overflow-hidden">
               <Link href="/">
                 <img
@@ -125,7 +125,7 @@ const BookingPage = () => {
         </div>
       </header>
 
-      <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-[24px] xl:px-0 py-4">
         <DateSelection
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
@@ -154,4 +154,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage 
+export default BookingPage;

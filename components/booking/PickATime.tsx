@@ -101,7 +101,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
             </div>
             <Button
               onClick={handleNextClick}
-              className="cursor-pointer bg-[#6A00D5] hover:bg-[#5A00B5] px-12 py-3 h-auto text-base rounded-lg"
+              className="cursor-pointer bg-[#8000FF] hover:bg-[#5A00B5] px-12 py-3 h-auto text-base rounded-lg"
             >
               Next
             </Button>

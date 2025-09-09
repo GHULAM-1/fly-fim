@@ -140,8 +140,8 @@ const PopularThings: React.FC<PopularThingsProps> = ({
   return (
     <div className="max-w-[1200px] mx-auto md:px-[24px] xl:px-0 mb-16">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="md:text-[24px] text-[18px] font-halyard-text  text-[#444444]">
+      <div className="flex items-center justify-between mb-8  md:px-0 px-[24px]">
+        <h2 className="md:text-[24px] text-[18px] font-heading  text-[#444444]">
           {title}
         </h2>
         <div className="hidden md:flex items-center gap-2">
@@ -310,65 +310,53 @@ const PopularThings: React.FC<PopularThingsProps> = ({
          </div>
        </div>
 
-      {/* ===== MOBILE: full-width slides + slide-up text ===== */}
+      {/* ===== MOBILE: Converted to native horizontal scroll ===== */}
       <div className="md:hidden">
-        <div className="relative overflow-hidden w-full max-w-[370px] mx-auto">
-          <div
-            ref={mobileWrapRef}
-            className="flex transition-transform duration-500 ease-out"
-            style={{ 
-              transform: `translateX(-${currentIndex * 80}%)`
-            }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {attractions.map((card, i) => {
-              const active = i === currentIndex;
-              return (
-                <div key={card.id} className="w-[85%] shrink-0 px-2">
-                  <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
-                    <img
-                      src={card.image}
-                      alt={card.title}
-                      className="w-full h-full object-cover"
-                    />
+        <div
+          ref={mobileWrapRef}
+          className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          {attractions.map((card, i) => {
+            return (
+              <div
+                key={card.id}
+                className="w-[85%] shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px]"
+              >
+                <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
 
-                    {/* Dark overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  {/* Dark overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                    {/* Bottom gradient pad */}
-                    <div
-                      className="absolute bottom-0 left-0 right-0 pointer-events-none transition-all duration-500"
-                      style={{
-                        height: "50%",
-                        background:
-                          "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
-                      }}
-                    />
+                  {/* Bottom gradient pad */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 pointer-events-none"
+                    style={{
+                      height: "50%",
+                      background:
+                        "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
+                    }}
+                  />
 
-                    {/* Text: slide-up + fade for active */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                      <div
-                        className={`transform transition-all duration-500 ${
-                          active
-                            ? "translate-y-0 opacity-100"
-                            : "translate-y-4 opacity-0"
-                        }`}
-                      >
-                        <h3 className="text-lg mb-1">{card.title}</h3>
-                        <p className="text-sm text-gray-200 mb-2 line-clamp-2">
-                          {card.description}
-                        </p>
-                        <div className="text-lg font-bold">{card.price}</div>
-                      </div>
-                    </div>
+                  {/* Text */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="text-lg mb-1">{card.title}</h3>
+                    <p className="text-sm text-gray-200 mb-2 line-clamp-2">
+                      {card.description}
+                    </p>
+                    <div className="text-lg font-bold">{card.price}</div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
