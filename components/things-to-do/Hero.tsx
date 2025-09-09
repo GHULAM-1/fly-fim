@@ -388,7 +388,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
       <div className="relative pt-20 md:pt-36 pb-4 mx-auto">
 <div className="relative mx-auto">
   {/* Text Overlay - positioned absolutely over the image */}
-  <div className="absolute top-6 left-6 md:top-12 md:left-12 z-10 text-left max-w-md md:max-w-2xl">
+  <div className="absolute top-6 left-6 md:top-12 md:left-12 z-0 sm:z-10 text-left max-w-md md:max-w-2xl">
     <h1 className="text-2xl md:text-5xl font-bold text-white font-halyard-text drop-shadow-lg leading-tight md:leading-normal">
       Best things to do in {formattedCityName}
     </h1>
@@ -397,7 +397,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
   {/* Dark overlay when search is open */}
   {isSearchOpen && (
     <div
-      className="fixed inset-0 bg-black/50 z-[9998]"
+      className="fixed inset-0 bg-black/50 z-0 sm:z-[9998]"
       onClick={() => {
         setIsSearchOpen(false);
         setIsInputFocused(false);
@@ -456,21 +456,6 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
     <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
   </Swiper>
 
-  {/* Mobile Search Trigger - positioned over the image */}
-  <div className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 w-[90%] md:hidden z-10">
-    <button
-      className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
-      onClick={() => setIsCustomDrawerOpen(true)}
-    >
-      <div className="flex-1 relative">
-        <Input className="bg-transparent border-none focus-visible:ring-0 shadow-none cursor-pointer text-[13px] pointer-events-none" />
-        <AnimatedPlaceholder />
-      </div>
-      <div className="bg-[#8000FF] rounded p-2">
-        <Search strokeWidth={1} className="text-white" />
-      </div>
-    </button>
-  </div>
 </div>
 
 
@@ -484,7 +469,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed inset-0 bg-black/50 z-[9998]"
+                className="fixed inset-0 bg-black/50 z-0 sm:z-[9998]"
                 onClick={() => setIsCustomDrawerOpen(false)}
               />
 
@@ -507,7 +492,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
                     setIsCustomDrawerOpen(false);
                   }
                 }}
-                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-[9999] drawer-container flex flex-col"
+                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-0 sm:z-[9999] drawer-container flex flex-col"
                 style={{
                   paddingBottom: `max(1rem, ${safeAreaBottom}px)`,
                 }}

@@ -43,7 +43,7 @@ const TravelGuides = () => {
   return (
     <div className="py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#444444]">
           Travel guides and tips
         </h2>
         <div className="hidden sm:flex items-center gap-2">

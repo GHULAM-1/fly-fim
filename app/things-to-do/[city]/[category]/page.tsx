@@ -99,6 +99,7 @@ export default function CategoryPage() {
       rating: 4.5,
       reviews: 100,
       off: 10,
+      type: "adventure",
     },
     {
       id: 2,
@@ -108,6 +109,7 @@ export default function CategoryPage() {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "landmarks",
     },
     {
       id: 3,
@@ -118,6 +120,7 @@ export default function CategoryPage() {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "day-trips",
     },
     {
       id: 4,
@@ -128,6 +131,7 @@ export default function CategoryPage() {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "museums",
     },
     {
       id: 5,
@@ -138,6 +142,7 @@ export default function CategoryPage() {
       rating: 4.5,
       reviews: 100,
       off: 10,
+      type: "adventure",
     },
     {
       id: 6,
@@ -148,6 +153,7 @@ export default function CategoryPage() {
       rating: 4.5,
       reviews: 100,
       cancellation: "Free cancellation",
+      type: "landmarks",
     },
     {
       id: 7,
@@ -158,6 +164,7 @@ export default function CategoryPage() {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "day-trips",
     },
     {
       id: 8,
@@ -168,55 +175,61 @@ export default function CategoryPage() {
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "museums",
     },
     {
       id: 9,
       description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+        "A Zoo experience in London",
       place: "London",
       image: "/images/r1.jpg.avif",
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "zoos",
     },
     {
       id: 10,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+      description: "A City Card for Dubai",
       place: "Dubai",
       image: "/images/r4.jpg.avif",
       price: 100,
       rating: 4.5,
       reviews: 100,
       off: 10,
+      type: "city-cards",
     },
     {
       id: 11,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+      description: "A Religious Site in Athens",
       place: "Athens",
       image: "/images/r3.jpg.avif",
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "religious-sites",
     },
     {
       id: 12,
       description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+        "From Rome: A wonderful Day Trip",
       place: "Italy",
       image: "/images/r2.jpg.avif",
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "day-trips",
     },
     {
       id: 13,
       description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+        "A Theme Park in London",
       place: "London",
       image: "/images/r1.jpg.avif",
       price: 100,
       rating: 4.5,
       reviews: 100,
+      type: "theme-parks",
     },
   ];
 
@@ -1791,149 +1804,143 @@ export default function CategoryPage() {
           </div>
         </div>
       </div>
-      <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 md:mt-20 ">
+      <div className="max-w-[1200px] mx-auto xl:px-0 md:mt-20 ">
         <div className="pt-[76px]">
-          {!isWorldwideRoute ? (
-            <>
-              <div className="mb-[34px] md:block hidden">
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink
-                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/"
-                      >
-                        Home
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink
-                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href={`/things-to-do/${city}`}
-                      >
-                        {formattedCityName}
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                        {formattedCategoryName}
-                      </BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-              <div className="md:block hidden mt-0">
-                <div className="flex items-center gap-2 mb-0">
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="w-5 h-5  text-[#e5006e] text-[17px]"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      4.3
-                    </span>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      (151,002)
-                    </span>
-                  </div>
-                </div>
-                <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
-                  {currentCategory.heading}
-                </h1>
-              </div>
-
-              {/* Subcategory Navigation Component - only show for city-specific routes
-              <div className="md:block hidden mt-6">
-                <SubcategoryNavigation 
-                  categoryName={formattedCategoryName}
-                />
-              </div> */}
-            </>
-          ) : (
-            <div>
-              <div className="mb-[34px]">
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink
-                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/"
-                      >
-                        Home
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                        {formattedCategoryName}
-                      </BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-              <div className="flex items-center gap-2">
-                <div>
-                  <h1 className="text-[21px]">{formattedCategoryName} </h1>
-                </div>
-                <div className="flex items-center pt-[6px]">
-                  <Drawer
-                    open={isMobileDrawerOpen}
-                    onOpenChange={setIsMobileDrawerOpen}
-                  >
-                    <DrawerTrigger asChild>
-                      <button>
-                        <ChevronDown size={26} className="text-gray-600" />
-                      </button>
-                    </DrawerTrigger>
-                  </Drawer>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="md:hidden flex justify-center mb-4">
-            <Drawer
-              open={isMobileDrawerOpen}
-              onOpenChange={setIsMobileDrawerOpen}
-            >
-              <DrawerContent className="max-h-[85vh]">
-                <DrawerHeader className="text-start">
-                  <DrawerTitle className="text-[18px] border-b-[1px] pb-4 font-medium font-halyard-text text-[#444444]">
-                    Categories Worldwide
-                  </DrawerTitle>
-                </DrawerHeader>
-                <div className="px-4 pb-6">
-                  <div className="grid grid-cols-2 gap-3">
-                    {categories.map((item) => {
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            scrollToSection(item.id.toString());
-                            setIsMobileDrawerOpen(false);
-                          }}
-                          className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
+          <div className="px-[24px] xl:px-0">
+            {!isWorldwideRoute ? (
+              <>
+                <div className="mb-[34px] md:block hidden">
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem>
+                        <BreadcrumbLink
+                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                          href="/"
                         >
-                          <a
-                            href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
-                            className="text-sm font-halyard-text-light text-[#444444] leading-tight"
-                          >
-                            {item.name}
-                          </a>
+                          Home
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbLink
+                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                          href={`/things-to-do/${city}`}
+                        >
+                          {formattedCityName}
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                          {formattedCategoryName}
+                        </BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
+                <div className="block mt-0">
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                      <svg
+                        className="w-5 h-5  text-[#e5006e] text-[17px]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        4.3
+                      </span>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        (151,002)
+                      </span>
+                    </div>
+                  </div>
+                  <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
+                    {currentCategory.heading}
+                  </h1>
+                </div>
+              </>
+            ) : (
+              <div>
+                <div className="mb-[34px]">
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem>
+                        <BreadcrumbLink
+                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                          href="/"
+                        >
+                          Home
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                          {formattedCategoryName}
+                        </BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <h1 className="text-[21px]">{formattedCategoryName} </h1>
+                  </div>
+                  <div className="flex items-center pt-[6px]">
+                    <Drawer
+                      open={isMobileDrawerOpen}
+                      onOpenChange={setIsMobileDrawerOpen}
+                    >
+                      <DrawerTrigger asChild>
+                        <button>
+                          <ChevronDown size={26} className="text-gray-600" />
                         </button>
-                      );
-                    })}
+                      </DrawerTrigger>
+                    </Drawer>
                   </div>
                 </div>
-              </DrawerContent>
-            </Drawer>
-          </div>
+              </div>
+            )}
 
+            <div className="md:hidden flex justify-center mb-4">
+              <Drawer
+                open={isMobileDrawerOpen}
+                onOpenChange={setIsMobileDrawerOpen}
+              >
+                <DrawerContent className="max-h-[85vh]">
+                  <DrawerHeader className="text-start">
+                    <DrawerTitle className="text-[18px] border-b-[1px] pb-4 font-medium font-halyard-text text-[#444444]">
+                      Categories Worldwide
+                    </DrawerTitle>
+                  </DrawerHeader>
+                  <div className="px-4 pb-6">
+                    <div className="grid grid-cols-2 gap-3">
+                      {categories.map((item) => {
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              scrollToSection(item.id.toString());
+                              setIsMobileDrawerOpen(false);
+                            }}
+                            className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
+                          >
+                            <a
+                              href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
+                              className="text-sm font-halyard-text-light text-[#444444] leading-tight"
+                            >
+                              {item.name}
+                            </a>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </div>
           <div
             ref={navigationRef}
             data-navigation
@@ -1948,7 +1955,7 @@ export default function CategoryPage() {
             <div className="relative">
               <div
                 ref={scrollContainerRef}
-                className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto md:px-[24px] xl:px-0"
+                className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
                 {showLeftButton && (
@@ -2039,7 +2046,7 @@ export default function CategoryPage() {
           </div>
           <div>
             {isWorldwideRoute ? (
-              <div className="border-b-[1px] pb-10 mb-10">
+              <div className="border-b-[1px]  pb-10 mb-10">
                 <CarouselGrid
                   title={`Top experiences`}
                   variant="pills"
@@ -2056,13 +2063,9 @@ export default function CategoryPage() {
                 navigationItems={currentCategory.navigationItems}
               />
             )}
-            {/* <CarouselGrid
-          title="Top experiences in London"
-          recommendations={recommendations}
-        /> */}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
-                <div key={item.id} className="mb-10" id={item.id}>
+                <div key={item.id} className="mb-10 px-[24px]" id={item.id}>
                   <CarouselGrid
                     title={item.label}
                     variant="museums"
@@ -2070,61 +2073,61 @@ export default function CategoryPage() {
                   />
                 </div>
               ))}
-            {currentCategory?.components?.guides && (
-              <div className="mb-10">
-                <CarouselGrid
-                  title={currentCategory.components.guides.title}
-                  variant={
-                    currentCategory.components.guides.variant as
-                      | "tours"
-                      | "transport"
-                  }
-                  recommendations={guides2}
-                />
-              </div>
-            )}
-
-            {currentCategory?.components?.transport && (
-              <div className="mb-10">
-                <CarouselGrid
-                  title={(currentCategory.components.transport as any).title}
-                  variant={
-                    (currentCategory.components.transport as any).variant as
-                      | "tours"
-                      | "transport"
-                  }
-                  recommendations={guides}
-                />
-              </div>
-            )}
-
+          </div>
+          {currentCategory?.components?.guides && (
             <div className="mb-10">
-              <BrowseThemes
-                title="Browse by themes"
-                themes={currentCategory.components.themes || []}
+              <CarouselGrid
+                title={currentCategory.components.guides.title}
+                variant={
+                  currentCategory.components.guides.variant as
+                    | "tours"
+                    | "transport"
+                }
+                recommendations={guides2}
               />
             </div>
-            {!isWorldwideRoute && (
-              <div className="mb-10">
-                <CarouselGrid
-                  title="Nearby cities to explore"
-                  variant="simple"
-                  recommendations={destinations}
-                />
-              </div>
-            )}
+          )}
 
+          {currentCategory?.components?.transport && (
             <div className="mb-10">
-              <Banner />
+              <CarouselGrid
+                title={(currentCategory.components.transport as any).title}
+                variant={
+                  (currentCategory.components.transport as any).variant as
+                    | "tours"
+                    | "transport"
+                }
+                recommendations={guides}
+              />
             </div>
-            {currentCategory.components.testimonials && !isWorldwideRoute && (
-              <div className="mb-10">
-                <Testimonials variant="things-to-do" />
-              </div>
-            )}
-            <div className="mb-10">
-              <Stats />
+          )}
+
+          <div className="mb-10 px-[24px] xl:px-0">
+            <BrowseThemes
+              title="Browse by themes"
+              themes={currentCategory.components.themes || []}
+            />
+          </div>
+          {!isWorldwideRoute && (
+            <div className="mb-10 ">
+              <CarouselGrid
+                title="Nearby cities to explore"
+                variant="simple"
+                recommendations={destinations}
+              />
             </div>
+          )}
+
+          <div className="mb-10 px-[24px] xl:px-0">
+            <Banner />
+          </div>
+          {currentCategory.components.testimonials && !isWorldwideRoute && (
+            <div className="mb-10 px-[24px] xl:px-0">
+              <Testimonials variant="things-to-do" />
+            </div>
+          )}
+          <div className="mb-10 px-[24px] xl:px-0">
+            <Stats />
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ const BookingHeader = () => {
       <div className="flex justify-between items-center">
         {/* Breadcrumb Navigation */}
         <div className="text-sm text-gray-500 items-center gap-2 hidden sm:flex">
-          <span className=" text-gray-800">
+          <span className=" text-[#444444]">
             1. Edge Observation Deck Ticke...
           </span>
           <ChevronRight size={16} />
@@ -35,7 +35,7 @@ const BookingHeader = () => {
           </Button>
           <Button
             variant="outline"
-            className="border-gray-300 text-gray-800 text-sm  px-4 py-2"
+            className="border-gray-300 text-[#444444] text-sm  px-4 py-2"
           >
             Sign in
           </Button>

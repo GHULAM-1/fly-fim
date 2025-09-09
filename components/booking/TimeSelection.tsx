@@ -35,7 +35,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   return (
     <section className="mb-10">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Select a date</h2>
+        <h2 className="text-2xl font-bold text-[#444444] mb-1">Select a date</h2>
         <p className="text-sm text-gray-500">All prices are in USD ($)</p>
       </div>
       <div className="mt-4">

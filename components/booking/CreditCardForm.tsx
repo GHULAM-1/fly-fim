@@ -9,7 +9,7 @@ const CreditCardForm = () => {
       <div className="space-y-1">
         <label
           htmlFor="cardNumber"
-          className="text-sm font-medium text-gray-800"
+          className="text-sm font-medium text-[#444444]"
         >
           Card number
         </label>
@@ -27,7 +27,7 @@ const CreditCardForm = () => {
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label htmlFor="expiry" className="text-sm font-medium text-gray-800">
+          <label htmlFor="expiry" className="text-sm font-medium text-[#444444]">
             Expiry
           </label>
           <Input id="expiry" placeholder="MM/YY" className="h-12" />
@@ -35,7 +35,7 @@ const CreditCardForm = () => {
         <div className="space-y-1">
           <label
             htmlFor="cvv"
-            className="text-sm font-medium text-gray-800 flex items-center"
+            className="text-sm font-medium text-[#444444] flex items-center"
           >
             CVV
             <Info size={14} className="ml-1 text-gray-500" />
@@ -52,7 +52,7 @@ const CreditCardForm = () => {
       <div className="space-y-1">
         <label
           htmlFor="nameOnCard"
-          className="text-sm font-medium text-gray-800"
+          className="text-sm font-medium text-[#444444]"
         >
           Name on card
         </label>

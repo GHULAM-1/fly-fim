@@ -24,7 +24,7 @@ const PopularThings = () => {
 
   return (
     <div className="py-4 sm:py-10 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-28 max-w-screen-2xl mx-auto 2xl:px-0">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
+      <h2 className="text-xl sm:text-2xl font-heading  text-[#444444] mb-6">
         Popular things to do
       </h2>
 
