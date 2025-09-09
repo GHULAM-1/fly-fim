@@ -141,7 +141,7 @@ const PopularThings: React.FC<PopularThingsProps> = ({
     <div className="max-w-[1200px] mx-auto md:px-[24px] xl:px-0 mb-16">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="md:text-[24px] text-[18px] font-halyard-text text-[#444444]">
+        <h2 className="md:text-[24px] text-[18px] font-halyard-text  text-[#444444]">
           {title}
         </h2>
         <div className="hidden md:flex items-center gap-2">

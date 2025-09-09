@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React from 'react';
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, CircleHelp } from "lucide-react";
@@ -13,7 +14,6 @@ import Footer from "@/components/Footer";
 const BookingPage = () => {
   const searchParams = useSearchParams();
 
-  
   const initialDate = searchParams.get("date")
     ? new Date(searchParams.get("date")!)
     : new Date();
@@ -24,7 +24,6 @@ const BookingPage = () => {
   const subcategory = searchParams.get("subcategory") || "studio-tours";
   const item = searchParams.get("itemId") || "default-item";
 
-  
   const itemLink = `/things-to-do/${city}/${category}/${subcategory}/${item}`;
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate);
@@ -63,7 +62,8 @@ const BookingPage = () => {
       setTimeout(() => {
         const elementTop =
           timeSelectionRef.current?.getBoundingClientRect().top ?? 0;
-        const headerOffset = 120;
+        // Adjust header offset for mobile vs desktop
+        const headerOffset = window.innerWidth < 768 ? 80 : 120;
         const scrollPosition = window.scrollY + elementTop - headerOffset;
 
         window.scrollTo({
@@ -77,50 +77,46 @@ const BookingPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <header className="fixed top-0 left-0 w-full bg-white z-50 border-b border-gray-200">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center max-w-[1200px] mx-auto h-20">
-            <div className="flex flex-row gap-10 items-center">
+        <div className="w-full px-4 sm:px-6">
+          <div className="flex justify-between items-center max-w-[1200px] mx-auto h-16 md:h-20">
+            <div className="flex flex-row gap-4 md:gap-10 items-center overflow-hidden">
               <Link href="/">
                 <img
                   src="/images/new-purple-logo.png"
                   alt="logo"
-                  className="w-24 sm:w-32"
+                  className="w-24 shrink-0"
                 />
               </Link>
-
-              <div className="text-sm text-gray-500 items-center gap-2 hidden sm:flex">
+              <div className="text-xs text-gray-500 font-halyard-text-light items-center gap-2 hidden sm:flex">
                 <Link
                   href={itemLink}
                   className="text-gray-800 hover:text-purple-600 hover:underline cursor-pointer truncate"
                   title={itemName}
                 >
-                  1. {itemName.substring(0, 25)}...
+                  1. {itemName.substring(0, 25)}
+                  {itemName.length > 25 ? "..." : ""}
                 </Link>
-
                 <ChevronRight size={16} />
-
                 <span className="font-medium text-gray-900 cursor-default">
                   2. Tickets
                 </span>
-
                 <ChevronRight size={16} />
-
                 <span className="text-gray-400 cursor-default">
                   3. Confirm & pay
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-10">
+            <div className="flex items-center gap-4 md:gap-6 font-halyard-text-light">
               <Link
                 href="/help"
                 className="text-sm flex items-center gap-1 hover:text-purple-600"
               >
-                <CircleHelp strokeWidth={1} size={16} />
+                <CircleHelp strokeWidth={1.5} size={18} />
                 <span className="hidden md:inline">Help</span>
               </Link>
               <Button
                 variant="outline"
-                className="border-gray-300 text-gray-800 text-sm px-4 py-2"
+                className="border-gray-300 text-xs px-3 py-1.5 h-auto"
               >
                 Sign in
               </Button>
@@ -129,7 +125,7 @@ const BookingPage = () => {
         </div>
       </header>
 
-      <main className="pt-28 pb-32 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         <DateSelection
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
@@ -145,6 +141,7 @@ const BookingPage = () => {
             ref={timeSelectionRef}
             type={selectedOption.type}
             selectedOptionTitle={selectedOption.title}
+            selectedDate={selectedDate}
             formattedDate={formattedDate}
           />
         )}
@@ -157,4 +154,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage;
+export default BookingPage 

@@ -1,13 +1,62 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import CarouselCard from "../cards/CarouselCard";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
+interface Experience {
+  _id: string;
+  title: string;
+  description: string;
+  price: number;
+  oldPrice?: number;
+  sale?: number;
+  mainImage: string;
+  tagOnCards?: string;
+  rating: number;
+  reviews: number;
+  cityName: string;
+  countryName: string;
+}
+
+const originalImages = [
+  "/images/r4.jpg.avif",
+  "/images/r3.jpg.avif",
+  "/images/r2.jpg.avif",
+  "/images/r1.jpg.avif",
+  "/images/r4.jpg.avif",
+  "/images/r3.jpg.avif",
+  "/images/r2.jpg.avif",
+  "/images/r1.jpg.avif",
+];
+
 const Recommendations = () => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [recommendations, setRecommendations] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/with-details?limit=8`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch experiences");
+        }
+        const result = await response.json();
+        setRecommendations(result.data || []);
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -27,120 +76,27 @@ const Recommendations = () => {
     }
   };
 
-  const recommendations = [
-    {
-      id: 1,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      badge: "Selling out fast",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "dubai",
-      category: "adventure",
-      subcategory: "skydiving",
-      itemId: "skydive-dubai",
-    },
-    {
-      id: 2,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "athens",
-      category: "culture",
-      subcategory: "historical-sites",
-      itemId: "acropolis-tickets",
-    },
-    {
-      id: 3,
-      badge: "Free cancellation",
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "rome",
-      category: "tours",
-      subcategory: "day-trips",
-      itemId: "pompeii-amalfi-tour",
-    },
-    {
-      id: 4,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio",
-    },
-    {
-      id: 5,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-2",
-    },
-    {
-      id: 6,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-3",
-    },
-    {
-      id: 7,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-4",
-    },
-    {
-      id: 8,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      city: "london",
-      category: "entertainment",
-      subcategory: "studio-tours",
-      itemId: "harry-potter-studio-5",
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
+        <div className="px-[24px] xl:px-0">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+            Travelers' favorite choices
+          </h2>{" "}
+        </div>
+        <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="snap-start flex-shrink-0 w-[282px] p-2">
+              <div className="w-full h-40 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
+              <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
@@ -150,13 +106,13 @@ const Recommendations = () => {
         </h2>
         <div className="hidden md:flex items-center gap-2">
           <button
-            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
             onClick={scrollLeft}
           >
             <ChevronLeftIcon className="w-4 h-4" />
           </button>
           <button
-            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
             onClick={scrollRight}
           >
             <ChevronRightIcon className="w-4 h-4" />
@@ -167,21 +123,25 @@ const Recommendations = () => {
         className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
-        {recommendations.map((recommendation) => (
-          <div key={recommendation.id} className="snap-start flex-shrink-0 w-[282px]">
+        {recommendations.map((rec, index) => (
+          <div key={rec._id} className="snap-start flex-shrink-0 w-[282px]">
             <CarouselCard
               variant="full"
-              image={recommendation.image}
-              place={recommendation.place}
-              rating={recommendation.rating}
-              reviews={recommendation.reviews}
-              description={recommendation.description}
-              price={recommendation.price}
-              badge={recommendation.badge}
-              city={recommendation.city}
-              category={recommendation.category}
-              subcategory={recommendation.subcategory}
-              itemId={recommendation.itemId}
+              image={
+                originalImages[index % originalImages.length] || rec.mainImage
+              }
+              place={rec.cityName || "Top Destination"}
+              rating={rec.rating}
+              reviews={rec.reviews}
+              description={rec.title}
+              price={rec.price}
+              oldPrice={rec.oldPrice}
+              off={rec.sale}
+              badge={rec.tagOnCards}
+              city={rec.cityName}
+              category="tours"
+              subcategory="generic"
+              itemId={rec._id}
             />
           </div>
         ))}

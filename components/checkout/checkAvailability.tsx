@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import CalendarModal from "@/components/booking/CalendarModal";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 
 interface AvailabilityCheckerProps {
   itemName: string;
@@ -12,7 +13,8 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
   itemName,
   city,
 }) => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const { isModalOpen: isCalendarOpen, setIsModalOpen: setIsCalendarOpen } =
+    useNavigationStore();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -88,6 +90,7 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
         onDateSelect={setSelectedDate}
         itemName={itemName}
         city={city}
+        position="top"
       />
     </>
   );

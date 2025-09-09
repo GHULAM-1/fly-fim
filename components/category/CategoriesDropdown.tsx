@@ -30,19 +30,16 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const customScrollbarRef = useRef<HTMLDivElement>(null);
   const params = useParams();
   
-  // Get the city from URL params
   const city = params.city as string;
 
   const decodedCity = decodeURIComponent(city);
 
-  // Format city name properly (for display)
   const formattedCityName = decodedCity
   ? decodedCity.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
   : "City";
 
-  // Categories data
 const categories: Category[] = [
     { id: 1, name: `Top things to do in ${formattedCityName}`, color: "purple", url: `/things-to-do/${city}` },
     { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
@@ -58,23 +55,22 @@ const categories: Category[] = [
     { id: 12, name: "Specials", color: "gray", url: `/things-to-do/${city}/specials` },
   ];
 
-  // Tour listings data for each category
   const tourListings: TourListings = {
-    1: [ // Top things to do in Rome
+    1: [
       "Colosseum",
       "Vatican Museums", 
       "Rome To Pompeii Tours",
       "St. Peter's Basilica",
       "Rome Pantheon",
     ],
-    2: [ // Tickets
+    2: [
       "Colosseum Tickets",
       "Vatican Museums Pass",
       "Roman Forum Access",
       "Pantheon Entry",
       "Castel Sant'Angelo"
     ],
-    3: [ // Tours
+    3: [
       "Rome Walking Tour",
       "Vatican City Tour",
       "Colosseum Guided Tour",
@@ -82,7 +78,7 @@ const categories: Category[] = [
       "Night Photography Tour",
       "Historical Rome Tour",
     ],
-    4: [ // Transportation
+    4: [
       "Airport Transfers",
       "Public Transport",
       "Train Tickets",
@@ -90,20 +86,20 @@ const categories: Category[] = [
       "Private Airport Transfers",
       "Shared Airport Transfers"
     ],
-    5: [ // Travel Services
+    5: [
       "Wifi & SIM Cards",
       "Airport Services",
       "Luggage Storage",
       "Travel Insurance",
       "Visa Services",
     ],
-    6: [ // Cruises
+    6: [
       "River Cruises",
       "Day Cruises",
       "Luxury Cruises",
       "Dinner Cruises",
     ],
-    7: [ // Food & Drink
+    7: [
       "Cooking Classes",
       "Wine Tasting",
       "Restaurant Tours",
@@ -113,7 +109,7 @@ const categories: Category[] = [
       "Coffee Tours",
       "Street Food Tours"
     ],
-    8: [ // Entertainment
+    8: [
       "Theater Shows",
       "Concerts",
       "Opera Tickets",
@@ -122,7 +118,7 @@ const categories: Category[] = [
       "Live Music",
       "Cinema Tickets"
     ],
-    9: [ // Adventure
+    9: [
       "Hiking Tours",
       "Rock Climbing",
       "Zip Lining",
@@ -131,7 +127,7 @@ const categories: Category[] = [
       "Caving Tours",
       "Rafting Adventures"
     ],
-    10: [ // Water Sports
+    10: [
       "Scuba Diving",
       "Snorkeling",
       "Jet Skiing",
@@ -140,17 +136,16 @@ const categories: Category[] = [
       "Paddleboarding",
       "Fishing Tours"
     ],
-    11: [ // Wellness
+    11: [
       "Spa",
     ],
-    12: [ // Specials
+    12: [
       "Combos",
       "Valentine's Day",
       "Digital Experience",
     ],
   };
 
-  // Custom scrollbar functionality
   useEffect(() => {
     const handleCategoriesScroll = () => {
       if (categoriesScrollRef.current && customScrollbarRef.current) {
@@ -168,7 +163,6 @@ const categories: Category[] = [
           const maxThumbTop = clientHeight - thumbHeight;
           const thumbTop = scrollPercentage * maxThumbTop;
           
-          // Force thumb to bottom when at the very end
           const finalThumbTop = scrollTop >= maxScroll - 1 ? maxThumbTop : thumbTop;
           
           scrollbarThumb.style.height = `${thumbHeight}px`;
@@ -182,10 +176,8 @@ const categories: Category[] = [
 
     const scrollElement = categoriesScrollRef.current;
     if (scrollElement) {
-      // Initial setup
       handleCategoriesScroll();
       
-      // Add multiple event listeners to catch all scroll events
       scrollElement.addEventListener("scroll", handleCategoriesScroll);
       scrollElement.addEventListener("wheel", handleCategoriesScroll);
       scrollElement.addEventListener("touchmove", handleCategoriesScroll);
@@ -214,7 +206,6 @@ const categories: Category[] = [
         <Menu size={16} className="text-[#444444] group-hover:text-[#8000ff]" />
         All Categories
         
-        {/* Categories Dropdown */}
         <div
           className={`fixed top-28 left-1/2 transform -translate-x-1/2 mt-2 bg-white  overflow-hidden transition-all duration-300 origin-top ${
             showCategoriesDropdown 
@@ -224,7 +215,6 @@ const categories: Category[] = [
           style={{ zIndex: 1000, width: '1200px', maxWidth: 'calc(100vw - 48px)' }}
         >
           <div className="flex">
-            {/* Left Sidebar - Categories */}
             <div className="w-[25%] p-4 relative">
               <div className="border-r border-gray-200 h-full absolute right-0 top-0 bottom-0"></div>
               <div 
@@ -251,10 +241,8 @@ const categories: Category[] = [
                   ))}
                 </div>
               </div>
-              {/* Gradient overlay for scroll effect */}
               <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
               
-              {/* Custom scrollbar positioned over border */}
               <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-gray-100 pointer-events-none">
                 <div 
                   ref={customScrollbarRef}
@@ -267,20 +255,15 @@ const categories: Category[] = [
               </div>
             </div>
             
-                              {/* Right Content - Tour Listings */}
             <div className="w-[75%] p-4">
               <div className="grid grid-cols-3 gap-6">
                 {hoveredCategory && hoveredCategory !== 1 && tourListings[hoveredCategory as keyof typeof tourListings] ? (
-                  // Show simple list for hovered category (except "Tickets")
                   <div className="col-span-3">
                     <div className="space-y-3">
                       <div className="flex flex-col space-y-3">
                         {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => {
-                          // Get the category name for the current hovered category
                           const categoryObj = categories.find(c => c.id === hoveredCategory);
-                          // Build the subcategory route
                           const categoryRoute = categoryObj?.url?.split('/').pop();
-                          // Map subcategory names to proper URL slugs
                           const getSubcategorySlug = (subcategoryName: string, categoryName: string) => {
                             const name = subcategoryName.toLowerCase();
                             switch (categoryName.toLowerCase()) {
@@ -373,7 +356,6 @@ const categories: Category[] = [
                                 if (name.includes("translation")) return "translations";
                                 break;
                             }
-                            // Fallback to generic slug
                             return item.replace(/\s+/g, '-').toLowerCase();
                           };
                           
@@ -393,9 +375,7 @@ const categories: Category[] = [
                     </div>
                   </div>
                 ) : (
-                  // Default content when no category is hovered
                   <>
-                    {/* Column 1 */}
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
                         <img src="/images/a1.jpg.avif" alt="Colosseum" className="w-12 h-12 object-cover rounded" />
@@ -529,7 +509,7 @@ const categories: Category[] = [
       onMouseLeave={() => setShowBanner(false)}
     >
       <Smartphone size={16} />
-      Get Offer{" "}
+      Download App{" "}
     </button>
   </div>
   );

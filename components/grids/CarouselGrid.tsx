@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import CarouselCard from "../cards/CarouselCard";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ArrowUpDown, Check, X } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { StarIcon } from "lucide-react";
@@ -16,21 +16,53 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import PriceDisplay from "../PriceDisplay";
 import Link from "next/link";
-import { useParams } from "next/navigation"; 
+import { useParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
-import {   
+import {
   Drawer,
-  DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  DrawerFooter,
-  DrawerClose,
 } from "@/components/ui/drawer";
 
+const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M6 2L6 14"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M6 14L2 10"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M10 14L10 2"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+    <path
+      d="M9.99999 2L14 6"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></path>
+  </svg>
+);
 
-// --- add to props interface ---
+
 interface CarouselGridProps {
   title: string;
   recommendations: any[];
@@ -50,9 +82,8 @@ interface CarouselGridProps {
     color?: string;
   }>;
   pills?: boolean;
-  initialSelectedId?: string; // NEW
+  initialSelectedId?: string;
 }
-
 
 const CarouselGrid = ({
   title,
@@ -63,14 +94,21 @@ const CarouselGrid = ({
   initialSelectedId,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
-    const { city, category, subcategory } = useParams();  // Get params using useParams()
-  
-  // Ensure params are strings, not arrays (or fallback to an empty string)
+  const { city, category, subcategory } = useParams();
+
   const cityStr = city ? (Array.isArray(city) ? city[0] : city) : "";
-  const categoryStr = category ? (Array.isArray(category) ? category[0] : category) : "";
-  const subcategoryStr = subcategory ? (Array.isArray(subcategory) ? subcategory[0] : subcategory) : "";
+  const categoryStr = category
+    ? Array.isArray(category)
+      ? category[0]
+      : category
+    : "";
+  const subcategoryStr = subcategory
+    ? Array.isArray(subcategory)
+      ? subcategory[0]
+      : subcategory
+    : "";
   const [sortBy, setSortBy] = useState("Picked for you");
-  const [visibleCards, setVisibleCards] = useState(8); // Initially show 4 cards
+  const [visibleCards, setVisibleCards] = useState(8);
   const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,7 +120,6 @@ const CarouselGrid = ({
     setIsClient(true);
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -97,7 +134,6 @@ const CarouselGrid = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Prevent body scrolling when dropdown is open
   useEffect(() => {
     if (showCategoriesDropdown) {
       document.body.style.overflow = "hidden";
@@ -105,7 +141,6 @@ const CarouselGrid = ({
       document.body.style.overflow = "unset";
     }
 
-    // Cleanup function to restore scrolling when component unmounts
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -155,14 +190,12 @@ const CarouselGrid = ({
 
   const handleSortChange = (option: string) => {
     setSortBy(option);
-    // Add sorting logic here if needed
   };
 
   const handleShowMore = () => {
     setIsLoading(true);
-    // Simulate loading delay
     setTimeout(() => {
-      setVisibleCards((prev) => prev + 4); // Load 4 more cards
+      setVisibleCards((prev) => prev + 4);
       setIsLoading(false);
     }, 1000);
   };
@@ -176,17 +209,16 @@ const CarouselGrid = ({
             {recommendations.length} experiences
           </p>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <ArrowUpDown size={16} />
-                <span className="text-sm px-8 py-3 hover:bg-gray-200 rounded">{`Sort by: ${sortBy}`}</span>
-              <ChevronDown size={16} />
+            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
+              <SortIcon />
+              <span className="text-sm">{`Sort by: ${sortBy}`}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               {sortOptions.map((option) => (
                 <DropdownMenuItem
                   key={option}
                   onClick={() => handleSortChange(option)}
-                  className="flex items-center justify-between cursor-pointer"
+                  className="flex items-center justify-between cursor-pointer "
                 >
                   <span>{option}</span>
                   {sortBy === option && <Check size={16} />}
@@ -275,26 +307,40 @@ const CarouselGrid = ({
   if (variant === "pills") {
     return (
       <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-            {title}
-          </h2>
-        </div>
-        {!pills && (
-          <div className="text-sm text-[#666666] flex justify-between items-center mt-[20px]">
-            <p className="text-[15px] font-halyard-text">Worldwide</p>
-            <p className="text-[12px] font-halyard-text-light">
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444] mb-2">
+              {title}
+            </h2>
+            <p className="text-gray-600 text-sm">
               {recommendations.length} experiences
             </p>
           </div>
-        )}
-        {/* Pills Section */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center font-halyard-text-light gap-2 text-gray-600 hover:text-gray-900 transition-colors  bg-gray-50 px-3 py-3 cursor-pointer ">
+              <SortIcon />
+              <span className="text-sm ">{`Sort by: ${sortBy}`}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {sortOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option}
+                  onClick={() => handleSortChange(option)}
+                  className="flex items-center justify-between cursor-pointer"
+                >
+                  <span>{option}</span>
+                  {sortBy === option && <Check size={16} />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {pills && (
           <div
             className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
             ref={scrollContainerRef}
           >
-            {/* Categories Dropdown Pill - Always shown first */}
             <div className="relative" ref={categoriesDropdownRef}>
               <div
                 onClick={handleCategoriesClick}
@@ -309,7 +355,6 @@ const CarouselGrid = ({
                 />
               </div>
 
-              {/* Dropdown Menu */}
               <div
                 className={`fixed max-w-72 w-full bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 z-[99999] ${
                   showCategoriesDropdown
@@ -321,10 +366,9 @@ const CarouselGrid = ({
                     ? (() => {
                         const rect =
                           categoriesDropdownRef.current.getBoundingClientRect();
-                        const dropdownHeight = 350; // Approximate dropdown height
+                        const dropdownHeight = 350;
                         const spaceBelow = window.innerHeight - rect.bottom;
 
-                        // If not enough space below, position above with minimal gap
                         if (spaceBelow < dropdownHeight + 10) {
                           return rect.top - dropdownHeight - -40;
                         } else {
@@ -380,7 +424,6 @@ const CarouselGrid = ({
               </div>
             </div>
 
-            {/* Show first 4 navigation items as pills */}
             {(
               navigationItems || [
                 { id: "museums", icon: "🏛️", label: "Museums" },
@@ -408,7 +451,6 @@ const CarouselGrid = ({
           </div>
         )}
 
-        {/* Original Carousel Section */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {recommendations.slice(0, visibleCards).map((recommendation) => (
             <CarouselCard
@@ -430,7 +472,6 @@ const CarouselGrid = ({
           ))}
         </div>
 
-        {/* Show More Button */}
         {visibleCards < recommendations.length && (
           <div className="mt-6 text-center">
             <button
@@ -531,7 +572,6 @@ const CarouselGrid = ({
           </div>
         </div>
 
-        {/* Desktop: Horizontal scroll with multiple cards */}
         <div className="hidden md:block">
           <div
             className="flex gap-4 overflow-x-scroll h-[369px] scrollbar-hide"
@@ -546,19 +586,15 @@ const CarouselGrid = ({
                   <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
                   <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
                 </div>
-                {/* Main card - stays in place */}
                 <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
-                  {/* Image */}
                   <div className="relative h-full overflow-hidden">
                     <img
                       src={museum.image}
                       alt={museum.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    {/* Dark overlay for text */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                    {/* Dark overlay for text - using the same gradient as PopularThings */}
                     <div
                       className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
                       style={{
@@ -567,7 +603,6 @@ const CarouselGrid = ({
                       }}
                     />
 
-                    {/* Text overlay - positioned at bottom */}
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                       <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
                         <h3 className="text-lg font-halyard-text mb-1">
@@ -588,7 +623,6 @@ const CarouselGrid = ({
           </div>
         </div>
 
-        {/* Mobile: Single card with museums variant hover effect */}
         <div className="md:hidden">
           <div className="relative overflow-hidden w-full max-w-[420px] mx-auto">
             <div
@@ -607,7 +641,6 @@ const CarouselGrid = ({
                 return (
                   <div key={museum.id} className="w-[25%] shrink-0 px-2">
                     <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
-                      {/* Browser-like top decoration - positioned above image content */}
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
                           className={`w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg transition-all duration-150 ease-in-out ${
@@ -627,10 +660,8 @@ const CarouselGrid = ({
                         className="w-full h-full rounded-lg object-cover mt-0 relative z-20"
                       />
 
-                      {/* Dark overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-20" />
 
-                      {/* Bottom gradient pad - always expanded like museums variant */}
                       <div
                         className="absolute bottom-0 left-0 right-0 pointer-events-none transition-all duration-500 z-20"
                         style={{
@@ -640,7 +671,6 @@ const CarouselGrid = ({
                         }}
                       />
 
-                      {/* Text: slide-up + fade for active */}
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-20">
                         <div
                           className={`transform transition-all duration-700 ease-in-out ${
@@ -669,7 +699,6 @@ const CarouselGrid = ({
     );
   }
   if (variant === "simple") {
-    // Local state for simple variant pagination
     const [currentPage, setCurrentPage] = useState(0);
 
     const simpleScrollLeft = () => {
@@ -685,7 +714,7 @@ const CarouselGrid = ({
     };
 
     const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length); // Show 3 cards at once
+      const maxCards = Math.max(0, recommendations.length);
       if (currentPage < maxCards) {
         console.log(
           "Scrolling right from card",
@@ -697,7 +726,6 @@ const CarouselGrid = ({
       }
     };
 
-    // Touch/swipe functionality for mobile
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
@@ -718,10 +746,10 @@ const CarouselGrid = ({
       const isRightSwipe = distance < -50;
 
       if (isLeftSwipe) {
-        simpleScrollRight(); // Swipe left = go to next card
+        simpleScrollRight();
       }
       if (isRightSwipe) {
-        simpleScrollLeft(); // Swipe right = go to previous card
+        simpleScrollLeft();
       }
     };
 
@@ -803,7 +831,6 @@ const CarouselGrid = ({
     );
   }
   if (variant === "tours") {
-    // Local state for simple variant pagination
     const [currentPage, setCurrentPage] = useState(0);
 
     const simpleScrollLeft = () => {
@@ -819,7 +846,7 @@ const CarouselGrid = ({
     };
 
     const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length); // Show 3 cards at once
+      const maxCards = Math.max(0, recommendations.length);
       if (currentPage < maxCards) {
         console.log(
           "Scrolling right from card",
@@ -831,7 +858,6 @@ const CarouselGrid = ({
       }
     };
 
-    // Touch/swipe functionality for mobile
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
@@ -852,10 +878,10 @@ const CarouselGrid = ({
       const isRightSwipe = distance < -50;
 
       if (isLeftSwipe) {
-        simpleScrollRight(); // Swipe left = go to next card
+        simpleScrollRight();
       }
       if (isRightSwipe) {
-        simpleScrollLeft(); // Swipe right = go to previous card
+        simpleScrollLeft();
       }
     };
 
@@ -935,7 +961,6 @@ const CarouselGrid = ({
     );
   }
   if (variant === "transport") {
-    // Local state for simple variant pagination
     const [currentPage, setCurrentPage] = useState(0);
 
     const simpleScrollLeft = () => {
@@ -951,7 +976,7 @@ const CarouselGrid = ({
     };
 
     const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length); // Allow scrolling through all cards
+      const maxCards = Math.max(0, recommendations.length);
       if (currentPage < maxCards) {
         console.log(
           "Scrolling right from card",
@@ -963,7 +988,6 @@ const CarouselGrid = ({
       }
     };
 
-    // Touch/swipe functionality for mobile
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
@@ -984,10 +1008,10 @@ const CarouselGrid = ({
       const isRightSwipe = distance < -50;
 
       if (isLeftSwipe) {
-        simpleScrollRight(); // Swipe left = go to next card
+        simpleScrollRight();
       }
       if (isRightSwipe) {
-        simpleScrollLeft(); // Swipe right = go to previous card
+        simpleScrollLeft();
       }
     };
 
@@ -1015,22 +1039,22 @@ const CarouselGrid = ({
           </div>
         </div>
         <div className=" relative md:overflow-hidden">
-            <div
-              className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
-              style={{
-                transform:
-                  isClient && window.innerWidth >= 768
-                    ? `translateX(-${currentPage * 400}px)`
-                    : "none",
-                width:
-                  isClient && window.innerWidth >= 768
-                    ? `${recommendations.length * 400}px`
-                    : "auto",
-              }}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-            >
+          <div
+            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            style={{
+              transform:
+                isClient && window.innerWidth >= 768
+                  ? `translateX(-${currentPage * 400}px)`
+                  : "none",
+              width:
+                isClient && window.innerWidth >= 768
+                  ? `${recommendations.length * 400}px`
+                  : "auto",
+            }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             {recommendations.map((recommendation, index) => (
               <Link
                 key={recommendation.id}
@@ -1067,167 +1091,67 @@ const CarouselGrid = ({
     );
   }
 
-if (variant === "subcategory") {
-  const [selectedId, setSelectedId] = useState<string>(
-    // start with the provided initial id, falling back to first nav item
-    navigationItems?.find(n => n.id === initialSelectedId)?.id ||
-      navigationItems?.[0]?.id ||
-      ""
-  );
-  const [sortBy, setSortBy] = useState("Picked for you");
-
-  const sortOptions = [
-    "Picked for you",
-    "Most popular",
-    "Price (low to high)",
-    "Price (high to low)",
-  ];
-
-  // Filter by selected subcategory id
-  // Filter logic preserved, but always returns all experiences
-  const filtered = recommendations;
-
-  // Sorting
-  const sorted = [...filtered].sort((a, b) => {
-    switch (sortBy) {
-      case "Most popular":
-        // if "popularity" not present, fall back to reviews count
-        return (b.popularity ?? b.reviews ?? 0) - (a.popularity ?? a.reviews ?? 0);
-      case "Price (low to high)":
-        return (a.price ?? 0) - (b.price ?? 0);
-      case "Price (high to low)":
-        return (b.price ?? 0) - (a.price ?? 0);
-      case "Picked for you":
-      default:
-        // keep incoming order
-        return 0;
-    }
-  });
-
-  return (
-    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-      {/* Title stays on its own line */}
-      <div className="mb-2">
-        <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-          {title}
-        </h2>
-      </div>
-      
-      {/* Count (left) + Sort (right) — responsive with drawer for small screens */}
-      <div className="mt-3 mb-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-5">
-          {/* left: experiences count */}
-          <p className="text-[12px] sm:text-sm text-[#666666] font-halyard-text-light">
-            {sorted.length} experiences
-          </p>
-
-          {/* right: sort — uses drawer on small screens */}
-          <div className="sm:ml-4 shrink-0">
-            {/* Mobile: DrawerTrigger moved up, static position, full width, centered */}
-            <Drawer shouldScaleBackground={true}>
-              <DrawerTrigger className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[50vw] max-w-[100px] flex items-center justify-center text-[11px] sm:hidden z-50 bg-white py-1 font-halyard-text gap-2 border border-gray-300 rounded-lg">
-                <div className="flex items-center px-3 py-1 hover:bg-gray-100 rounded"> 
-                  <span className="text-sm mr-2">{`Sort by`}</span>
-                  <ArrowUpDown className="w-3 h-3" strokeWidth={1.5} />
-                </div>
-              </DrawerTrigger>
-              <DrawerContent className="sm:hidden fixed inset-0 h-screen max-h-screen overflow-y-auto bg-white z-[100]">
-                <DrawerHeader className="flex items-center justify-between px-4 pt-1 pb-1">
-                  <DrawerTitle className="text-left font-semibold font-halyard-text-light" style={{ fontSize: "18px" }}>Sort by</DrawerTitle>
-                  <DrawerClose asChild>
-                    <button className="p-2 text-gray-500 hover:text-gray-700 rounded-full">
-                      <X className="w-5 h-5" />
-                    </button>
-                  </DrawerClose>
-                </DrawerHeader>
-                <div className="border-b border-gray-200 mx-4" />
-                <div className="px-4 pb-1 pt-1">
-                  <div className="flex flex-col gap-2 mt-1">
-                    {sortOptions.map((option) => (
-                      <DrawerClose asChild key={option}>
-                        <button
-                          onClick={() => setSortBy(option)}
-                          className={`flex items-center justify-between pl-0 pr-4 py-0 text-[#444444] hover:bg-gray-100 cursor-pointer rounded font-medium`}
-                          style={{ fontSize: "15px" }}
-                        >
-                          <span className="text-left pl-0">{option}</span>
-                          {option === sortBy && (
-                            <span className="w-4 h-4 flex items-center justify-center">
-                              <span className="block w-3 h-3 rounded-full border-2 border-purple-600 bg-white" />
-                            </span>
-                          )}
-                        </button>
-                      </DrawerClose>
-                    ))}
-                  </div>
-                </div>
-                {/* Removed DrawerFooter close button, now using X icon above */}
-              </DrawerContent>
-            </Drawer>
-            {/* Desktop: Dropdown remains, hidden on mobile */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-[11px] sm:text-xs md:text-sm text-[#666666] font-halyard-text-light gap-1 sm:gap-2 hover:bg-gray-100 hidden sm:block">
-                <div className="flex items-center px-5 py-2 hover:bg-gray-100 rounded">
-                  <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4 mr-2" strokeWidth={1.5} />
-                  <span className="text-sm">{`Sort by: ${sortBy}`}</span>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="min-w-[250px] rounded-md border border-gray-200 bg-white shadow-md"
+  if (variant === "subcategory") {
+    return (
+      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+            {title}
+          </h2>
+          <div className="flex items-center gap-4">
+            <Link
+              href="#"
+              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+            >
+              See all
+            </Link>
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="text-sm text-gray-500 hover:cursor-pointer border p-2 rounded-full"
+                onClick={scrollLeft}
               >
-                {sortOptions.map((option) => (
-                  <DropdownMenuItem
-                    key={option}
-                    onClick={() => setSortBy(option)}
-                    className={`flex items-center justify-between px-5 py-2 text-sm text-[#666666] hover:bg-gray-100 cursor-pointer rounded ${
-                      option === sortBy ? "bg-gray-100 font-medium" : ""
-                    }`}
-                  >
-                    <span>{option}</span>
-                    {option === sortBy && <Check className="w-4 h-4 text-gray-600" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+              <button
+                className="text-sm text-gray-500 hover:cursor-pointer border p-2 rounded-full"
+                onClick={scrollRight}
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {sorted.map((rec) => (
-          <CarouselCard
-            key={rec.id}
-            image={rec.image}
-            place={rec.place}
-            rating={rec.rating}
-            reviews={rec.reviews}
-            description={rec.description}
-            price={rec.price}
-            oldPrice={rec.oldPrice ?? (rec.off ? Math.round(rec.price / (1 - rec.off / 100)) : undefined)} // derives old price if not provided
-            off={rec.off}
-            badge={rec.badge ?? rec.cancellation} // overlay on image (unchanged)
-            banner={rec.banner ?? "NEW"} 
-            city={cityStr}
-            category={categoryStr}
-            subcategory={subcategoryStr}
-            itemId={rec.id}  // 👈 replaces the rating on the right in pink
-            variant="recommendation"              // 👈 exact look & feel as Recommendations, grid-safe
-          />
-        ))}
-      </div>
-
-      {/* Empty state */}
-      {sorted.length === 0 && (
-        <div className="mt-6 text-sm text-gray-500">
-          No experiences match this subcategory.
+        <div
+          className="mt-4 sm:mt-8 flex overflow-x-auto -ml-4 scrollbar-hide"
+          ref={scrollContainerRef}
+        >
+          {recommendations.map((rec) => (
+            <div key={rec.id} className="pl-4 w-[295px] flex-shrink-0">
+              <CarouselCard
+                image={rec.image}
+                place={rec.place}
+                rating={rec.rating}
+                reviews={rec.reviews}
+                description={rec.description}
+                price={rec.price}
+                oldPrice={rec.oldPrice}
+                off={rec.off}
+                badge={rec.badge ?? rec.cancellation}
+                banner={rec.banner ?? "NEW"}
+                city={cityStr}
+                category={categoryStr}
+                subcategory={subcategoryStr}
+                itemId={rec.id}
+                variant="full"
+              />
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
-  // Default variant (existing layout)
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">

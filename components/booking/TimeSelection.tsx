@@ -13,7 +13,6 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   onDateSelect,
   onMoreDatesClick,
 }) => {
-  // Helper to format date for comparison
   const formatDateKey = (d: Date) => d.toISOString().split("T")[0];
   const selectedDateKey = selectedDate ? formatDateKey(selectedDate) : null;
 
