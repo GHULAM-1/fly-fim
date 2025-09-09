@@ -281,14 +281,14 @@ const ConfirmAndPayPage = () => {
               <div className="text-xs text-gray-500 font-halyard-text-light items-center gap-2 hidden sm:flex">
                 <Link
                   href={itemLink}
-                  className="text-gray-800 hover:text-purple-600 underline cursor-pointer truncate"
+                  className="text-[#444444] hover:text-purple-600 underline cursor-pointer truncate"
                 >
                   1. {itemName}
                 </Link>
                 <ChevronRight size={16} className="shrink-0" />
                 <Link
                   href={ticketsLink}
-                  className="text-gray-800 hover:text-purple-600 underline cursor-pointer whitespace-nowrap"
+                  className="text-[#444444] hover:text-purple-600 underline cursor-pointer whitespace-nowrap"
                 >
                   2. Tickets
                 </Link>
@@ -327,7 +327,7 @@ const ConfirmAndPayPage = () => {
               {formattedCancellationDate}.
             </div>
             <div>
-              <h2 className="text-2xl font-heading text-gray-800 mb-2">
+              <h2 className="text-2xl font-heading text-[#444444] mb-2">
                 Guests
               </h2>
               <div className="flex items-center gap-2 text-sm font-halyard-text-light mb-4">
@@ -345,13 +345,13 @@ const ConfirmAndPayPage = () => {
                 {/* Guest Counters */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div className="mb-2 sm:mb-0">
-                    <p className="font-medium text-gray-800 text-lg">Adult</p>
-                    <p className="text-sm text-gray-800 font-halyard-text-light">
+                    <p className="font-medium text-[#444444] text-lg">Adult</p>
+                    <p className="text-sm text-[#444444] font-halyard-text-light">
                       13 to 61 yrs
                     </p>
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
-                    <span className="font-semibold text-gray-800 sm:w-20 text-left sm:text-right">
+                    <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
                       ${adultPrice.toFixed(2)}
                     </span>
                     <div className="flex items-center gap-4">
@@ -386,13 +386,13 @@ const ConfirmAndPayPage = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div className="mb-2 sm:mb-0">
-                    <p className="font-medium text-gray-800 text-lg">Senior</p>
-                    <p className="text-sm text-gray-800 font-halyard-text-light">
+                    <p className="font-medium text-[#444444] text-lg">Senior</p>
+                    <p className="text-sm text-[#444444] font-halyard-text-light">
                       62 yrs and above
                     </p>
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
-                    <span className="font-semibold text-gray-800 sm:w-20 text-left sm:text-right">
+                    <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
                       ${seniorPrice.toFixed(2)}
                     </span>
                     <div className="flex items-center gap-4">
@@ -427,13 +427,13 @@ const ConfirmAndPayPage = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div className="mb-2 sm:mb-0">
-                    <p className="font-medium text-gray-800 text-lg">Child</p>
-                    <p className="text-sm text-gray-800 font-halyard-text-light">
+                    <p className="font-medium text-[#444444] text-lg">Child</p>
+                    <p className="text-sm text-[#444444] font-halyard-text-light">
                       6 to 12 yrs
                     </p>
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
-                    <span className="font-semibold text-gray-800 sm:w-20 text-left sm:text-right">
+                    <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
                       ${childPrice.toFixed(2)}
                     </span>
                     <div className="flex items-center gap-4">
@@ -486,7 +486,7 @@ const ConfirmAndPayPage = () => {
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           {" "}
-                          <FormLabel className="text-lg text-gray-800">
+                          <FormLabel className="text-lg text-[#444444]">
                             {" "}
                             Full Name{" "}
                           </FormLabel>{" "}
@@ -529,7 +529,7 @@ const ConfirmAndPayPage = () => {
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           {" "}
-                          <FormLabel className="text-lg text-gray-800">
+                          <FormLabel className="text-lg text-[#444444]">
                             {" "}
                             Email address{" "}
                           </FormLabel>{" "}
@@ -575,7 +575,7 @@ const ConfirmAndPayPage = () => {
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           {" "}
-                          <FormLabel className="text-lg text-gray-800">
+                          <FormLabel className="text-lg text-[#444444]">
                             {" "}
                             Confirm email address{" "}
                           </FormLabel>{" "}
@@ -620,7 +620,7 @@ const ConfirmAndPayPage = () => {
                       name="phone"
                       render={() => (
                         <FormItem>
-                          <FormLabel className="text-lg text-gray-800">
+                          <FormLabel className="text-lg text-[#444444]">
                             Phone number
                           </FormLabel>
                           <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
@@ -679,7 +679,7 @@ const ConfirmAndPayPage = () => {
                 <div className="mt-4">
                   <label
                     htmlFor="promoCode"
-                    className="block text-lg font-halyard-text font-medium text-gray-800 mb-2"
+                    className="block text-lg font-halyard-text font-medium text-[#444444] mb-2"
                   >
                     Enter promo code
                   </label>
@@ -698,7 +698,7 @@ const ConfirmAndPayPage = () => {
 
             {/* Payment Options */}
             <div className="pt-6">
-              <h2 className="text-2xl font-heading text-gray-800 mb-4">
+              <h2 className="text-2xl font-heading text-[#444444] mb-4">
                 Select when to pay
               </h2>
               <div className="space-y-4">
@@ -714,7 +714,7 @@ const ConfirmAndPayPage = () => {
                   />{" "}
                   <div className="ml-3">
                     {" "}
-                    <p className="font-heading text-lg text-gray-800">
+                    <p className="font-heading text-lg text-[#444444]">
                       {" "}
                       Pay now{" "}
                     </p>{" "}
@@ -739,7 +739,7 @@ const ConfirmAndPayPage = () => {
                     {" "}
                     <div className="flex flex-row items-center gap-2 mb-1">
                       {" "}
-                      <p className="font-heading text-lg text-gray-800">
+                      <p className="font-heading text-lg text-[#444444]">
                         {" "}
                         Book now, pay later{" "}
                       </p>{" "}
@@ -797,7 +797,7 @@ const ConfirmAndPayPage = () => {
                 paymentTime === "payLater" ? "" : "p-6 border"
               }`}
             >
-              <h2 className="text-xl font-heading text-gray-800 mb-4">
+              <h2 className="text-xl font-heading text-[#444444] mb-4">
                 {paymentTime === "payLater"
                   ? "Confirm with credit or debit card"
                   : "Select your payment method"}
@@ -822,7 +822,7 @@ const ConfirmAndPayPage = () => {
                         className="custom-radio-input"
                       />
                       <div className="ml-3 flex-1">
-                        <span className="font-heading text-xl text-gray-800 flex items-center gap-2">
+                        <span className="font-heading text-xl text-[#444444] flex items-center gap-2">
                           <CreditCard size={20} /> Credit or debit card
                         </span>
                         {paymentMethod === "card" && <CreditCardForm />}
@@ -839,7 +839,7 @@ const ConfirmAndPayPage = () => {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="custom-radio-input"
                       />
-                      <span className="ml-3 font-heading text-xl text-gray-800 flex items-center gap-2">
+                      <span className="ml-3 font-heading text-xl text-[#444444] flex items-center gap-2">
                         {" "}
                         PayPal <FaPaypal
                           size={20}
@@ -856,7 +856,7 @@ const ConfirmAndPayPage = () => {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="custom-radio-input"
                       />
-                      <span className="ml-3 font-heading text-xl text-gray-800 flex items-center gap-2">
+                      <span className="ml-3 font-heading text-xl text-[#444444] flex items-center gap-2">
                         {" "}
                         Google Pay{" "}
                         <img
@@ -929,7 +929,7 @@ const ConfirmAndPayPage = () => {
                       <span className="text-red-500 font-semibold text-sm">
                         {formattedMonth}
                       </span>
-                      <span className="text-2xl text-gray-800 font-bold">
+                      <span className="text-2xl text-[#444444] font-bold">
                         {formattedDayOfMonth}
                       </span>
                       <div className="text-gray-500 text-center text-xs bg-gray-100 w-full rounded-b-md">
@@ -945,7 +945,7 @@ const ConfirmAndPayPage = () => {
                         <Link href={ticketsLink} className="flex-shrink-0">
                           <Pencil
                             size={16}
-                            className="text-gray-500 hover:text-gray-800 cursor-pointer ml-2"
+                            className="text-gray-500 hover:text-[#444444] cursor-pointer ml-2"
                           />
                         </Link>
                       </div>
@@ -957,7 +957,7 @@ const ConfirmAndPayPage = () => {
                         <Link href={ticketsLink} className="flex-shrink-0">
                           <Pencil
                             size={16}
-                            className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                            className="text-gray-500 hover:text-[#444444] cursor-pointer"
                           />
                         </Link>
                       </div>
@@ -974,7 +974,7 @@ const ConfirmAndPayPage = () => {
                           {" "}
                           {adultCount} Adult{adultCount > 1 ? "s" : ""}{" "}
                         </span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-[#444444]">
                           {" "}
                           ${(adultCount * adultPrice).toFixed(2)}{" "}
                         </span>{" "}
@@ -987,7 +987,7 @@ const ConfirmAndPayPage = () => {
                           {" "}
                           {seniorCount} Senior{seniorCount > 1 ? "s" : ""}{" "}
                         </span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-[#444444]">
                           {" "}
                           ${(seniorCount * seniorPrice).toFixed(2)}{" "}
                         </span>{" "}
@@ -1000,7 +1000,7 @@ const ConfirmAndPayPage = () => {
                           {" "}
                           {childCount} Child{childCount > 1 ? "ren" : ""}{" "}
                         </span>{" "}
-                        <span className="text-gray-800">
+                        <span className="text-[#444444]">
                           {" "}
                           ${(childCount * childPrice).toFixed(2)}{" "}
                         </span>{" "}
@@ -1036,11 +1036,11 @@ const ConfirmAndPayPage = () => {
 
                   <div className="border-t"></div>
 
-                  <p className="text-xs font-halyard-text-light text-gray-800">
+                  <p className="text-xs font-halyard-text-light text-[#444444]">
                     Supplied by HY Attractions Manager LLC.
                   </p>
 
-                  <p className="text-xs text-gray-800 font-halyard-text-light">
+                  <p className="text-xs text-[#444444] font-halyard-text-light">
                     By continuing, you agree to the{" "}
                     <a href="#" className="underline">
                       {" "}
@@ -1085,7 +1085,7 @@ const ConfirmAndPayPage = () => {
                     <span className="text-red-500 font-semibold text-sm">
                       {formattedMonth}
                     </span>
-                    <span className="text-2xl text-gray-800 font-bold">
+                    <span className="text-2xl text-[#444444] font-bold">
                       {formattedDayOfMonth}
                     </span>
                     <div className="text-gray-500 text-center text-xs bg-gray-100 w-full rounded-b-md">
@@ -1101,7 +1101,7 @@ const ConfirmAndPayPage = () => {
                       <Link href={ticketsLink} className="flex-shrink-0">
                         <Pencil
                           size={16}
-                          className="text-gray-500 hover:text-gray-800 cursor-pointer ml-2"
+                          className="text-gray-500 hover:text-[#444444] cursor-pointer ml-2"
                         />
                       </Link>
                     </div>
@@ -1113,7 +1113,7 @@ const ConfirmAndPayPage = () => {
                       <Link href={ticketsLink} className="flex-shrink-0">
                         <Pencil
                           size={16}
-                          className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                          className="text-gray-500 hover:text-[#444444] cursor-pointer"
                         />
                       </Link>
                     </div>
@@ -1128,7 +1128,7 @@ const ConfirmAndPayPage = () => {
                         {" "}
                         {adultCount} Adult{adultCount > 1 ? "s" : ""}{" "}
                       </span>{" "}
-                      <span className="text-gray-800">
+                      <span className="text-[#444444]">
                         {" "}
                         ${(adultCount * adultPrice).toFixed(2)}{" "}
                       </span>{" "}
@@ -1141,7 +1141,7 @@ const ConfirmAndPayPage = () => {
                         {" "}
                         {seniorCount} Senior{seniorCount > 1 ? "s" : ""}{" "}
                       </span>{" "}
-                      <span className="text-gray-800">
+                      <span className="text-[#444444]">
                         {" "}
                         ${(seniorCount * seniorPrice).toFixed(2)}{" "}
                       </span>{" "}
@@ -1154,7 +1154,7 @@ const ConfirmAndPayPage = () => {
                         {" "}
                         {childCount} Child{childCount > 1 ? "ren" : ""}{" "}
                       </span>{" "}
-                      <span className="text-gray-800">
+                      <span className="text-[#444444]">
                         {" "}
                         ${(childCount * childPrice).toFixed(2)}{" "}
                       </span>{" "}
@@ -1200,7 +1200,7 @@ const ConfirmAndPayPage = () => {
               <span className="text-gray-500">
                 {paymentTime === "payLater" ? "You pay today" : "Total payable"}
               </span>
-              <p className="font-bold text-xl text-gray-800">
+              <p className="font-bold text-xl text-[#444444]">
                 $
                 {(paymentTime === "payLater"
                   ? payTodayAmount

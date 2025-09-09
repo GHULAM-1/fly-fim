@@ -92,7 +92,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
           <div className="bg-gray-200 h-[1px] w-full"></div>
           <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
-              <p className="font-halyard-text text-gray-800">
+              <p className="font-halyard-text text-[#444444]">
                 {selectedOptionTitle}
               </p>
               <p className="font-halyard-text-light text-gray-600">
@@ -101,7 +101,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
             </div>
             <Button
               onClick={handleNextClick}
-              className="cursor-pointer bg-[#6A00D5] hover:bg-[#5A00B5] px-12 py-3 h-auto text-base rounded-lg"
+              className="cursor-pointer bg-[#8000FF] hover:bg-[#5A00B5] px-12 py-3 h-auto text-base rounded-lg"
             >
               Next
             </Button>
@@ -114,7 +114,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
     return (
       <div ref={ref} className="pt-10 max-w-[855px] ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 items-center">
-          <h2 className="text-2xl font-heading text-gray-800 mb-4 md:mb-0">
+          <h2 className="text-2xl font-heading text-[#444444] mb-4 md:mb-0">
             Pick a time
           </h2>
           <div ref={dropdownRef} className="relative">
@@ -157,7 +157,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
                         </p>
                       )}
                     </div>
-                    <span className="text-gray-800 font-halyard-light">
+                    <span className="text-[#444444] font-halyard-light">
                       ${slot.price}
                     </span>
                   </div>
@@ -169,7 +169,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
 
         <div className="mt-6 border-t border-gray-200 pt-6 flex justify-between items-center">
           <div>
-            <p className="font-halyard-text text-gray-800 ">
+            <p className="font-halyard-text text-[#444444] ">
               {selectedOptionTitle}
             </p>
             <p className="font-halyard-text-light text-gray-500">

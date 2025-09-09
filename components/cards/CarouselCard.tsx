@@ -67,7 +67,7 @@ const CarouselCard = ({
   if (variant === "full") {
     return (
       <Link href={generateLink()} passHref>
-        <div className="w-full group cursor-pointer p-2">
+        <div className="w-full group cursor-pointer">
           <div className="relative mb-2">
             <img
               src={image}
@@ -89,15 +89,15 @@ const CarouselCard = ({
                 <span className="text-gray-500">({reviews})</span>
               </div>
             </div>
-            <h3 className="font-semibold text-gray-800 mt-1 line-clamp-2 h-10">
+            <h3 className="font-medium text-[#444444] mt-1 line-clamp-2 h-auto">
               {description}
             </h3>
             <div className="mt-2">
               <span className="text-xs text-gray-500">from</span>
-              <div className="flex items-baseline gap-2">
+              <div className="flex flex-row items-center  gap-2">
                 <PriceDisplay
                   amount={price}
-                  className="font-bold text-lg text-gray-800"
+                  className="font-semibold text-lg text-[#444444]"
                 />
                 {oldPrice && (
                   <PriceDisplay
@@ -106,7 +106,9 @@ const CarouselCard = ({
                   />
                 )}
                 {off && (
-                  <span className="bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded-md">
+                  <span
+                    className="bg-[#088229] text-white text-[11px] font-halyard py-[0.01rem] px-[0.2rem] rounded-[0.25rem]"
+                  >
                     {off}% off
                   </span>
                 )}

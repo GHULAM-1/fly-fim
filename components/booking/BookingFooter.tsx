@@ -22,7 +22,7 @@ const BookingFooter: React.FC<BookingFooterProps> = ({
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="text-sm overflow-hidden">
-            <h3 className="font-bold font-halyard-text text-gray-800 truncate max-w-[200px] sm:max-w-xs md:max-w-md lg:max-w-lg">
+            <h3 className="font-bold font-halyard-text text-[#444444] truncate max-w-[200px] sm:max-w-xs md:max-w-md lg:max-w-lg">
               {selectedOptionTitle}
             </h3>
             <p className="text-gray-500 font-halyard-text-light">

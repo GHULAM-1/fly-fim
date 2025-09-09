@@ -147,8 +147,8 @@ const handleSelectOption = (option: (typeof options)[0]) => {
   return (
     <>
       <section>
-        <div className="flex items-center gap-4 mb-6">
-          <h2 className="text-2xl font-heading text-gray-800">
+        <div className="flex flex-row items-center gap-2 md:gap-4 mb-6">
+          <h2 className="text-2xl font-heading text-gray-700">
             What do you prefer?
           </h2>
           <div
@@ -163,7 +163,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
            {!isAtStart && (
                       <button
                         onClick={() => scroll("left")}
-                        className="absolute -left-5 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"
                         aria-label="Scroll left"
                       >
                         <ChevronLeft size={20} className="text-gray-700" />
@@ -180,7 +180,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                   "border rounded-lg p-4 flex-shrink-0 w-[250px] transition-all duration- 250 flex flex-col shadow-lg"
                 }
               >
-                <h3 className="font-heading text-gray-800 text-lg mb-2 h-25">
+                <h3 className="font-heading text-[#444444] text-lg mb-2 h-25">
                   {option.title}
                 </h3>
                 <div className="-mx-4 mb-4">
@@ -233,7 +233,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                     <span className="text-xs text-gray-500 font-halyard-text-light">
                       from
                     </span>
-                    <p className="text-lg text-gray-800 font-halyard-text">
+                    <p className="text-lg text-[#444444] font-halyard-text">
                       {option.price}
                     </p>
                   </div>
@@ -278,7 +278,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
            {!isAtEnd && (
                      <button
                        onClick={() => scroll("right")}
-                       className="absolute -right-5 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"
+                       className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"
                        aria-label="Scroll right"
                      >
                        <ChevronRight size={20} className="text-gray-700" />

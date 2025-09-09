@@ -70,7 +70,7 @@ const TravelGuide = () => {
             className="w-1/2 md:w-full h-40 md:h-60 object-cover rounded-xl"
           />
           <div>
-            <h3 className="text-sm md:text-base font-halyard-text text-gray-800 mb-3">
+            <h3 className="text-sm md:text-base font-halyard-text text-[#444444] mb-3">
               Detailed London Itineraries
             </h3>
             <p className="text-xs text-gray-600 md:text-sm font-halyard-text-light">
@@ -88,7 +88,7 @@ const TravelGuide = () => {
             className="w-1/2 md:w-full h-40 md:h-60 object-cover rounded-xl"
           />
           <div>
-            <h3 className="text-sm md:text-base font-halyard-text text-gray-800 mb-3">
+            <h3 className="text-sm md:text-base font-halyard-text text-[#444444] mb-3">
               Best Time To Visit London
             </h3>
             <p className="text-xs text-gray-600 md:text-sm font-halyard-text-light">

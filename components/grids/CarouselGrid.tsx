@@ -62,7 +62,6 @@ const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-
 interface CarouselGridProps {
   title: string;
   recommendations: any[];
@@ -203,17 +202,20 @@ const CarouselGrid = ({
   if (variant === "full") {
     return (
       <div className="py-4  max-w-screen-2xl mx-auto 2xl:px-0">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
+        <h2 className="text-2xl font-heading text-[#444444] mb-2">{title}</h2>
         <div className="flex justify-between items-start mb-6">
           <p className="text-gray-600 text-sm">
             {recommendations.length} experiences
           </p>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center font-light gap-2 text-gray-600 hover:text-gray-900 transition-colors bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
+            <DropdownMenuTrigger className="flex items-center font-light gap-2 font-halyard-text text-gray-500 hover:text-gray-900 transition-colors bg-transparent hover:bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
               <SortIcon />
-              <span className="text-sm">{`Sort by: ${sortBy}`}</span>
+              <span className="text-sm ">{`Sort by: ${sortBy}`}</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent
+              align="end"
+              className="w-56 font-halyard-text text-gray-500"
+            >
               {sortOptions.map((option) => (
                 <DropdownMenuItem
                   key={option}
@@ -278,7 +280,7 @@ const CarouselGrid = ({
                     fill="currentColor"
                     size={12}
                   />
-                  <span className="text-pink-600 text-xs font-semibold">
+                  <span className="text-pink-600 text-xs font-medium">
                     {recommendation.rating}
                   </span>
                   <span className="text-pink-600 text-xs">
@@ -286,10 +288,10 @@ const CarouselGrid = ({
                   </span>
                 </span>
               </div>
-              <p className="font-semibold text-gray-700 mt-2">
+              <p className="font-medium text-gray-700 mt-2">
                 {recommendation.description}
               </p>
-              <p className="font-semibold text-gray-700 mt-2 max-w-32">
+              <p className="font-medium text-gray-700 mt-2 max-w-32">
                 <span className="text-gray-500 text-xs">
                   {t("recommendations.from")}
                 </span>{" "}
@@ -305,174 +307,87 @@ const CarouselGrid = ({
     );
   }
   if (variant === "pills") {
+    const [activePill, setActivePill] = useState(initialSelectedId || "all");
+
+    const filteredRecommendations =
+      activePill === "all"
+        ? recommendations
+        : recommendations.filter((rec) => rec.type === activePill);
+
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+      <div className="py-4 max-w-screen-2xl mx-auto px-[24px] 2xl:px-0">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444] mb-2">
+            <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-2">
               {title}
             </h2>
-            <p className="text-gray-600 text-sm">
-              {recommendations.length} experiences
-            </p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center font-halyard-text-light gap-2 text-gray-600 hover:text-gray-900 transition-colors  bg-gray-50 px-3 py-3 cursor-pointer ">
-              <SortIcon />
-              <span className="text-sm ">{`Sort by: ${sortBy}`}</span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {sortOptions.map((option) => (
-                <DropdownMenuItem
-                  key={option}
-                  onClick={() => handleSortChange(option)}
-                  className="flex items-center justify-between cursor-pointer"
-                >
-                  <span>{option}</span>
-                  {sortBy === option && <Check size={16} />}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {pills && (
           <div
-            className="mt-4 sm:mt-5 flex gap-2 overflow-x-scroll scrollbar-hide"
+            className="mt-4 sm:mt-5 flex gap-2 overflow-x-auto scrollbar-hide"
             ref={scrollContainerRef}
           >
-            <div className="relative" ref={categoriesDropdownRef}>
-              <div
-                onClick={handleCategoriesClick}
-                className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
-              >
-                <span className="text-sm font-halyard-text">Categories</span>
-                <ChevronDown
-                  size={12}
-                  className={`text-gray-500 transition-transform ${
-                    showCategoriesDropdown ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
-
-              <div
-                className={`fixed max-w-72 w-full bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 z-[99999] ${
-                  showCategoriesDropdown
-                    ? "opacity-100"
-                    : "opacity-0 pointer-events-none"
-                }`}
-                style={{
-                  top: categoriesDropdownRef.current
-                    ? (() => {
-                        const rect =
-                          categoriesDropdownRef.current.getBoundingClientRect();
-                        const dropdownHeight = 350;
-                        const spaceBelow = window.innerHeight - rect.bottom;
-
-                        if (spaceBelow < dropdownHeight + 10) {
-                          return rect.top - dropdownHeight - -40;
-                        } else {
-                          return rect.bottom + 2;
-                        }
-                      })()
-                    : 0,
-                  left: categoriesDropdownRef.current
-                    ? categoriesDropdownRef.current.getBoundingClientRect().left
-                    : 0,
-                }}
-              >
-                <div className="p-3">
-                  <div className="space-y-2 max-h-72 overflow-y-auto scrollbar-hide">
-                    {(
-                      navigationItems || [
-                        { id: "museums", icon: "🏛️", label: "Museums" },
-                        { id: "zoos", icon: "🐘", label: "Zoos" },
-                        { id: "city-cards", icon: "🎫", label: "City Cards" },
-                        {
-                          id: "religious-sites",
-                          icon: "⛪",
-                          label: "Religious Sites",
-                        },
-                        { id: "landmarks", icon: "🏛️", label: "Landmarks" },
-                      ]
-                    ).map((item, index) => (
-                      <div
-                        key={item.id || index}
-                        className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          {item.icon && typeof item.icon === "string" ? (
-                            <span className="text-sm">{item.icon}</span>
-                          ) : item.icon ? (
-                            <item.icon size={16} className="text-gray-600" />
-                          ) : null}
-                          <span className="text-sm text-gray-700">
-                            {item.label}
-                          </span>
-                        </div>
-                        <Checkbox
-                          checked={checkedItems.has(item.id || `item-${index}`)}
-                          onCheckedChange={() =>
-                            handleCheckboxChange(item.id || `item-${index}`)
-                          }
-                          className="w-4 h-4 appearance-none checked:bg-[#60c] checked:border-purple-300 border border-gray-300 rounded hover:cursor-pointer"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            <div
+              onClick={() => setActivePill("all")}
+              className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
+                activePill === "all"
+                  ? "bg-purple-600 text-white border-purple-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              <span className="text-sm font-halyard-text">All</span>
             </div>
 
-            {(
-              navigationItems || [
-                { id: "museums", icon: "🏛️", label: "Museums" },
-                { id: "zoos", icon: "🐘", label: "Zoos" },
-                { id: "city-cards", icon: "🎫", label: "City Cards" },
-                { id: "religious-sites", icon: "⛪", label: "Religious Sites" },
-              ]
-            )
-              .slice(0, 4)
-              .map((pill, index) => (
-                <div
-                  key={pill.id || index}
-                  className="flex items-center gap-1 px-[12px] py-[6px] border border-gray-300 rounded-full bg-white text-gray-700 whitespace-nowrap cursor-pointer hover:border-gray-400 transition-colors"
-                >
-                  {pill.icon && typeof pill.icon === "string" ? (
-                    <span className="text-sm">{pill.icon}</span>
-                  ) : pill.icon ? (
-                    <pill.icon size={16} className="text-gray-600" />
-                  ) : null}
-                  <span className="text-sm font-halyard-text">
-                    {pill.label}
-                  </span>
-                </div>
-              ))}
+            {(navigationItems || []).map((pill, index) => (
+              <div
+                key={pill.id || index}
+                onClick={() => setActivePill(pill.id)}
+                className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
+                  activePill === pill.id
+                    ? "bg-purple-600 text-white border-purple-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                {pill.icon && (
+                  <pill.icon
+                    size={16}
+                    className={
+                      activePill === pill.id ? "text-white" : "text-gray-600"
+                    }
+                  />
+                )}
+                <span className="text-sm font-halyard-text">{pill.label}</span>
+              </div>
+            ))}
           </div>
         )}
 
-        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {recommendations.slice(0, visibleCards).map((recommendation) => (
-            <CarouselCard
-              key={recommendation.id}
-              image={recommendation.image}
-              place={recommendation.place}
-              rating={recommendation.rating}
-              reviews={recommendation.reviews}
-              description={recommendation.description}
-              price={recommendation.price}
-              off={recommendation.off}
-              badge={recommendation.cancellation}
-              city={cityStr}
-              category={categoryStr}
-              subcategory={subcategoryStr}
-              itemId={recommendation.id}
-              variant="full"
-            />
-          ))}
+        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-4">
+          {filteredRecommendations
+            .slice(0, visibleCards)
+            .map((recommendation) => (
+              <CarouselCard
+                key={recommendation.id}
+                image={recommendation.image}
+                place={recommendation.place}
+                rating={recommendation.rating}
+                reviews={recommendation.reviews}
+                description={recommendation.description}
+                price={recommendation.price}
+                off={recommendation.cancellation}
+                badge={recommendation.cancellation}
+                city={cityStr}
+                category={categoryStr}
+                subcategory={subcategoryStr}
+                itemId={recommendation.id}
+                variant="full"
+              />
+            ))}
         </div>
 
-        {visibleCards < recommendations.length && (
+        {visibleCards < filteredRecommendations.length && (
           <div className="mt-6 text-center">
             <button
               onClick={handleShowMore}
@@ -543,9 +458,9 @@ const CarouselGrid = ({
     };
 
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+      <div className="py-4 max-w-screen-2xl  mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
           <div className="flex items-center gap-4">
@@ -699,453 +614,145 @@ const CarouselGrid = ({
     );
   }
   if (variant === "simple") {
-    const [currentPage, setCurrentPage] = useState(0);
-
-    const simpleScrollLeft = () => {
-      if (currentPage > 0) {
-        console.log(
-          "Scrolling left from card",
-          currentPage,
-          "to",
-          currentPage - 1
-        );
-        setCurrentPage((prev) => prev - 1);
-      }
-    };
-
-    const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length);
-      if (currentPage < maxCards) {
-        console.log(
-          "Scrolling right from card",
-          currentPage,
-          "to",
-          currentPage + 1
-        );
-        setCurrentPage((prev) => prev + 1);
-      }
-    };
-
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-    const onTouchStart = (e: React.TouchEvent) => {
-      setTouchEnd(null);
-      setTouchStart(e.targetTouches[0].clientX);
-    };
-
-    const onTouchMove = (e: React.TouchEvent) => {
-      setTouchEnd(e.targetTouches[0].clientX);
-    };
-
-    const onTouchEnd = () => {
-      if (!touchStart || !touchEnd) return;
-
-      const distance = touchStart - touchEnd;
-      const isLeftSwipe = distance > 50;
-      const isRightSwipe = distance < -50;
-
-      if (isLeftSwipe) {
-        simpleScrollRight();
-      }
-      if (isRightSwipe) {
-        simpleScrollLeft();
-      }
-    };
-
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+      <div className="py-4">
+        <div className="flex justify-between items-center mb-4 px-[24px] xl:px-0 max-w-[1200px] mx-auto">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
-          <div className="md:flex hidden items-center gap-4">
-            <Link
-              href="/museums"
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
             >
-              See all
-            </Link>
-            <div className="flex items-center gap-2">
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollLeft}
-              >
-                <ChevronLeftIcon className="w-4 h-4" />
-              </button>
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollRight}
-              >
-                <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 relative overflow-hidden">
-          <div
-            className="flex gap-3 md:gap-3 transition-transform duration-700 ease-in-out"
-            style={{
-              transform: `translateX(-${currentPage * 200}px)`,
-              width: `${recommendations.length * 200}px`,
-            }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {recommendations.map((recommendation) => (
-              <Link
-                key={recommendation.id}
-                href={`/things-to-do/${recommendation.city}`}
-                className="flex-shrink-0 cursor-pointer group w-[200px] md:w-[190px]"
-              >
-                <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg p-2">
-                  <div>
-                    <img
-                      src={recommendation.image}
-                      alt={recommendation.description}
-                      className="rounded md:w-full w-full"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-sm md:text-base break-words">
-                      {recommendation.description}{" "}
-                      <span className="font-text md:hidden inline-block text-[#444444] md:mt-2 leading-tight break-words">
-                        {recommendation.city}
-                      </span>
-                    </p>
-                    <p className="font-text md:block hidden text-[#444444] md:mt-2 leading-tight md:max-w-32">
-                      {recommendation.city}
-                    </p>
-
-                    <p className="text-[#666666] font-halyard-text-light text-xs md:text-sm mt-1 break-words">
-                      {recommendation.place}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (variant === "tours") {
-    const [currentPage, setCurrentPage] = useState(0);
-
-    const simpleScrollLeft = () => {
-      if (currentPage > 0) {
-        console.log(
-          "Scrolling left from card",
-          currentPage,
-          "to",
-          currentPage - 1
-        );
-        setCurrentPage((prev) => prev - 1);
-      }
-    };
-
-    const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length);
-      if (currentPage < maxCards) {
-        console.log(
-          "Scrolling right from card",
-          currentPage,
-          "to",
-          currentPage + 1
-        );
-        setCurrentPage((prev) => prev + 1);
-      }
-    };
-
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-    const onTouchStart = (e: React.TouchEvent) => {
-      setTouchEnd(null);
-      setTouchStart(e.targetTouches[0].clientX);
-    };
-
-    const onTouchMove = (e: React.TouchEvent) => {
-      setTouchEnd(e.targetTouches[0].clientX);
-    };
-
-    const onTouchEnd = () => {
-      if (!touchStart || !touchEnd) return;
-
-      const distance = touchStart - touchEnd;
-      const isLeftSwipe = distance > 50;
-      const isRightSwipe = distance < -50;
-
-      if (isLeftSwipe) {
-        simpleScrollRight();
-      }
-      if (isRightSwipe) {
-        simpleScrollLeft();
-      }
-    };
-
-    return (
-      <div className="py-4 md:max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-            {title}
-          </h2>
-          <div className="md:flex hidden items-center gap-4">
-            <div className="flex items-center gap-2">
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollLeft}
-              >
-                <ChevronLeftIcon className="w-4 h-4" />
-              </button>
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollRight}
-              >
-                <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className=" relative md:overflow-hidden">
-          <div
-            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
-            style={{
-              transform:
-                typeof window !== "undefined" && window.innerWidth >= 768
-                  ? `translateX(-${currentPage * 200}px)`
-                  : "none",
-              width:
-                typeof window !== "undefined" && window.innerWidth >= 768
-                  ? `${recommendations.length * 200}px`
-                  : "auto",
-            }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {recommendations.map((recommendation, index) => (
-              <Link
-                key={recommendation.id}
-                href={`/things-to-do/${recommendation.city}`}
-                className={`flex-shrink-0 cursor-pointer group md:w-[290px] ${
-                  index === recommendations.length - 1
-                    ? "pb-0 border-b-0"
-                    : "pb-[12px] md:pb-0 md:border-0 border-b-[1px]"
-                }`}
-              >
-                <div className="flex md:flex-col flex-row gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg md:p-2">
-                  <div className="w-[70%] md:w-full">
-                    <img
-                      src={recommendation.image}
-                      alt={recommendation.description}
-                      className="rounded-lg md:rounded-xl h-[65%] w-full"
-                    />
-                  </div>
-                  <div className="w-[60%] md:w-full">
-                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-[15px] md:text-lg mb-2 break-words">
-                      {recommendation.heading}{" "}
-                    </p>
-
-                    <p className="text-[#666666] font-halyard-text-light line-clamp-3 text-xs md:text-sm mt-1 break-words">
-                      {recommendation.description}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (variant === "transport") {
-    const [currentPage, setCurrentPage] = useState(0);
-
-    const simpleScrollLeft = () => {
-      if (currentPage > 0) {
-        console.log(
-          "Scrolling left from card",
-          currentPage,
-          "to",
-          currentPage - 1
-        );
-        setCurrentPage((prev) => prev - 1);
-      }
-    };
-
-    const simpleScrollRight = () => {
-      const maxCards = Math.max(0, recommendations.length);
-      if (currentPage < maxCards) {
-        console.log(
-          "Scrolling right from card",
-          currentPage,
-          "to",
-          currentPage + 1
-        );
-        setCurrentPage((prev) => prev + 1);
-      }
-    };
-
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-    const onTouchStart = (e: React.TouchEvent) => {
-      setTouchEnd(null);
-      setTouchStart(e.targetTouches[0].clientX);
-    };
-
-    const onTouchMove = (e: React.TouchEvent) => {
-      setTouchEnd(e.targetTouches[0].clientX);
-    };
-
-    const onTouchEnd = () => {
-      if (!touchStart || !touchEnd) return;
-
-      const distance = touchStart - touchEnd;
-      const isLeftSwipe = distance > 50;
-      const isRightSwipe = distance < -50;
-
-      if (isLeftSwipe) {
-        simpleScrollRight();
-      }
-      if (isRightSwipe) {
-        simpleScrollLeft();
-      }
-    };
-
-    return (
-      <div className="py-4 md:max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-            {title}
-          </h2>
-          <div className="md:flex hidden items-center gap-4">
-            <div className="flex items-center gap-2">
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollLeft}
-              >
-                <ChevronLeftIcon className="w-4 h-4" />
-              </button>
-              <button
-                className="text-sm hover:cursor-pointer text-gray-500 underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
-                onClick={simpleScrollRight}
-              >
-                <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className=" relative md:overflow-hidden">
-          <div
-            className="flex md:flex-row flex-col gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
-            style={{
-              transform:
-                isClient && window.innerWidth >= 768
-                  ? `translateX(-${currentPage * 400}px)`
-                  : "none",
-              width:
-                isClient && window.innerWidth >= 768
-                  ? `${recommendations.length * 400}px`
-                  : "auto",
-            }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {recommendations.map((recommendation, index) => (
-              <Link
-                key={recommendation.id}
-                href={`/things-to-do/${recommendation.city}`}
-                className={`flex-shrink-0 cursor-pointer group md:w-[590px] ${
-                  index === recommendations.length - 1
-                    ? "pb-0 border-b-0"
-                    : "pb-[12px] md:pb-0 md:border-0 border-b-[1px]"
-                }`}
-              >
-                <div className="flex flex-row gap-2 md:gap-6 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg md:p-2">
-                  <div className="w-[70%] md:w-[47%]">
-                    <img
-                      src={recommendation.image}
-                      alt={recommendation.description}
-                      className="rounded-sm w-full"
-                    />
-                  </div>
-                  <div className="w-[60%] md:w-full">
-                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-[15px] md:text-lg mb-2 break-words">
-                      {recommendation.heading}{" "}
-                    </p>
-
-                    <p className="text-[#666666] font-halyard-text-light md:line-clamp-2 line-clamp-3 text-xs md:text-sm mt-1 break-words">
-                      {recommendation.description}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (variant === "subcategory") {
-    return (
-      <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
-            {title}
-          </h2>
-          <div className="flex items-center gap-4">
-            <Link
-              href="#"
-              className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
             >
-              See all
-            </Link>
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                className="text-sm text-gray-500 hover:cursor-pointer border p-2 rounded-full"
-                onClick={scrollLeft}
-              >
-                <ChevronLeftIcon className="w-4 h-4" />
-              </button>
-              <button
-                className="text-sm text-gray-500 hover:cursor-pointer border p-2 rounded-full"
-                onClick={scrollRight}
-              >
-                <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </div>
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
         <div
-          className="mt-4 sm:mt-8 flex overflow-x-auto -ml-4 scrollbar-hide"
+          className="mt-4 sm:mt-8 flex overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
         >
-          {recommendations.map((rec) => (
-            <div key={rec.id} className="pl-4 w-[295px] flex-shrink-0">
-              <CarouselCard
-                image={rec.image}
-                place={rec.place}
-                rating={rec.rating}
-                reviews={rec.reviews}
-                description={rec.description}
-                price={rec.price}
-                oldPrice={rec.oldPrice}
-                off={rec.off}
-                badge={rec.badge ?? rec.cancellation}
-                banner={rec.banner ?? "NEW"}
-                city={cityStr}
-                category={categoryStr}
-                subcategory={subcategoryStr}
-                itemId={rec.id}
-                variant="full"
-              />
+          {recommendations.map((rec, index) => (
+            <div
+              key={rec.id}
+              className="w-[45%] sm:w-[30%] md:w-[20%] lg:w-1/6 flex-shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] xl:first:ml-0 xl:last:mr-0"
+            >
+              <div className="group cursor-pointer">
+                <img
+                  src={rec.image}
+                  alt={rec.city}
+                  className="w-full h-32 sm:h-40 object-cover rounded-sm mb-2"
+                />
+                <h3 className="font-heading text-[#444444] text-sm">
+                  {rec.description}{" "}
+                  <span className="font-heading">{rec.city}</span>
+                </h3>
+                <p className="text-xs text-gray-500">{rec.place}</p>
+              </div>
             </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "tours" || variant === "transport") {
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 1;
+    const totalPages = Math.ceil(recommendations.length / itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+
+    return (
+      <div className="py-4">
+        <div className="flex justify-between items-center mb-4 px-[24px] xl:px-0 max-w-[1200px] mx-auto">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+            {title}
+          </h2>
+        </div>
+
+        <div
+          className="mt-4 sm:mt-8 flex overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          ref={scrollContainerRef}
+        >
+          {recommendations.map((guide, index) => (
+            <div
+              key={guide.id}
+              className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] xl:first:ml-0 xl:last:mr-0"
+            >
+              <div className="relative group cursor-pointer">
+                <img
+                  src={guide.image}
+                  alt={guide.heading}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg"></div>
+                <div className="absolute bottom-0 left-0 p-4 text-white">
+                  <h3 className="font-bold text-lg">{guide.heading}</h3>
+                  <p className="text-sm mt-1">{guide.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (variant === "subcategory") {
+    return (
+      <div className="py-4 max-w-screen-2xl mx-auto px-4 2xl:px-0">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-heading text-[#444444]">{title}</h2>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center font-light gap-2 font-halyard-text text-gray-500 hover:text-gray-900 transition-colors bg-transparent hover:bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
+              <SortIcon />
+              <span className="text-sm">{`Sort by: ${sortBy}`}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-56 font-halyard-text text-gray-500"
+            >
+              {sortOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option}
+                  onClick={() => handleSortChange(option)}
+                  className="flex items-center justify-between cursor-pointer"
+                >
+                  <span>{option}</span>
+                  {sortBy === option && <Check size={16} />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+          {recommendations.map((recommendation) => (
+            <CarouselCard
+              key={recommendation.id}
+              image={recommendation.image}
+              place={recommendation.place}
+              rating={recommendation.rating}
+              reviews={recommendation.reviews}
+              description={recommendation.description}
+              price={recommendation.price}
+              off={recommendation.cancellation}
+              badge={recommendation.cancellation}
+              city={cityStr}
+              category={categoryStr}
+              subcategory={subcategoryStr}
+              itemId={recommendation.id}
+              variant="full"
+            />
           ))}
         </div>
       </div>
@@ -1155,7 +762,7 @@ const CarouselGrid = ({
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
+        <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
           {title}
         </h2>
         <div className="flex items-center gap-4">

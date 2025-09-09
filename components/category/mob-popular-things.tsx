@@ -67,7 +67,7 @@ export default function MobPopularThings({
   };
 
   return (
-    <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
+    <div className="py-4 max-w-screen-2xl mx-auto   2xl:px-0">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
           {title}
