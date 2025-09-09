@@ -39,7 +39,7 @@ const MustDo = () => {
 
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+      <h2 className="text-lg sm:text-2xl font-heading  text-gray-700">
         Must do things in London
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-17 mt-4 sm:mt-10">
@@ -55,12 +55,12 @@ const MustDo = () => {
                 <div className="h-6 w-6 shrink-0 text-sm text-white rounded-full flex items-center justify-center bg-gray-700">
                   {item.id}
                 </div>
-                <h3 className="text-lg font-halyard-text text-gray-700">
+                <h3 className="text-xl font-heading text-gray-700">
                   {item.title}
                 </h3>
               </div>
               <p className="text-[#666666] line-clamp-5">{item.description}</p>
-              <button className="text-sm font-semibold text-pink-600 flex gap-2 items-center">
+              <button className="text-md font-medium  text-[#E5006E] flex gap-2 items-center">
                 See tickets
                 <ChevronRightIcon className="w-4 h-4" />
               </button>
