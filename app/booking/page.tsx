@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -154,4 +154,12 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage;
+const BookingPageWrapper = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookingPage />
+    </Suspense>
+  );
+};
+
+export default BookingPageWrapper;

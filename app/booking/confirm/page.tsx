@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -1216,4 +1216,12 @@ const ConfirmAndPayPage = () => {
   );
 };
 
-export default ConfirmAndPayPage;
+const ConfirmAndPayPageWrapper = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfirmAndPayPage />
+    </Suspense>
+  );
+};
+
+export default ConfirmAndPayPageWrapper;
