@@ -21,7 +21,7 @@ import {
   Leaf,
   Users,
   Music,
-  Bus
+  Bus,
 } from "lucide-react";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
@@ -38,26 +38,22 @@ export default function SubcategoryPage() {
 
   const isWorldwideRoute = city === "worldwide";
 
-  // Decode and format category
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
   const decodedCity = decodeURIComponent(city);
 
-
   const formattedCategoryName = decodedCategoryName
-    ? decodedCategoryName.charAt(0).toUpperCase() +
-      decodedCategoryName.slice(1)
+    ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
     : "Category";
 
-  // Format city name properly (for display)
   const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  : "City";  
+    ? decodedCity
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "City";
 
-  // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
     subcategory ? subcategory.split("-").join(" ") : ""
   );
@@ -66,26 +62,20 @@ export default function SubcategoryPage() {
       decodedSubcategoryName.slice(1)
     : "Subcategory";
 
-  // Convert to lowercase hyphenated for config key
   const configKey = decodedSubcategoryName.toLowerCase().replace(/\s+/g, "-");
 
-  // Dynamic heading logic based on subcategory
   const getDynamicHeading = (): string => {
     const cityFormatted = formattedCityName;
 
     if (subcategory) {
-      // If we have a subcategory, format it as "Subcategory in City"
       return `${formattedSubcategoryName} in ${cityFormatted}`;
     } else {
-      // If no subcategory (shouldn't happen on this page, but fallback)
       return `${formattedCategoryName} in ${cityFormatted}`;
     }
   };
 
-  // Comprehensive subcategory configuration - conditional based on worldwide vs city-specific
   const subCategoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: "Global Museums",
           components: {
@@ -99,7 +89,6 @@ export default function SubcategoryPage() {
             ],
           },
         },
-        // Add more as needed, default for others
         default: {
           heading: `Global ${formattedSubcategoryName}`,
           components: {
@@ -111,7 +100,6 @@ export default function SubcategoryPage() {
         },
       }
     : {
-        // CITY-SPECIFIC CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: `Museums in ${city.charAt(0).toUpperCase() + city.slice(1)}`,
           components: {
@@ -125,29 +113,50 @@ export default function SubcategoryPage() {
             ],
           },
         },
-        // Add more as needed, default for others
         default: {
-            heading: getDynamicHeading(),
-            components: {
-                themes: [
-                { icon: Landmark, text: `Landmarks in ${formattedCityName}`, href: "#" },
-                { icon: Ticket, text: `Combo Tickets in ${formattedCityName}`, href: "#" },
-                { icon: Users, text: `Guided Tours in ${formattedCityName}`, href: "#" },
-                { icon: Music, text: `Dance Shows in ${formattedCityName}`, href: "#" },
-                { icon: Bus, text: `Hop-on Hop-off Tours in ${formattedCityName}`, href: "#" },
-                { icon: SunMedium, text: `${formattedCityName} Attractions`, href: "#" },
-                { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
-                ],
-            },
+          heading: getDynamicHeading(),
+          components: {
+            themes: [
+              {
+                icon: Landmark,
+                text: `Landmarks in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Ticket,
+                text: `Combo Tickets in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Users,
+                text: `Guided Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Music,
+                text: `Dance Shows in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: Bus,
+                text: `Hop-on Hop-off Tours in ${formattedCityName}`,
+                href: "#",
+              },
+              {
+                icon: SunMedium,
+                text: `${formattedCityName} Attractions`,
+                href: "#",
+              },
+              { icon: Ship, text: `Guadalquivir River Cruises`, href: "#" },
+            ],
+          },
         },
       };
 
-  // Get current subcategory configuration
   const currentSubCategory =
     subCategoryConfig[configKey as keyof typeof subCategoryConfig] ||
     subCategoryConfig.default;
 
-  // Early return if no subcategory found
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
@@ -238,16 +247,13 @@ export default function SubcategoryPage() {
       city: "Singapore",
     },
   ];
-  // inside SubcategoryPage component, right before the return (...), add dummy data + helpers:
 
-  // Build navigation items from current subcategory config
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
-      const id =
-        (t.text || "")
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9\-]/g, "");
+      const id = (t.text || "")
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9\-]/g, "");
       return {
         id,
         label: t.text,
@@ -255,24 +261,23 @@ export default function SubcategoryPage() {
       };
     }) || [];
 
-  // Dummy experiences. Each item includes subcategoryId to enable filtering.
   const experiences = [
     {
-      id: "ex-1",
+      id: "seville-cathedral-skip-the-line",
       image: "/images/d1.jpg.avif",
       place: "Seville Cathedral",
       rating: 4.7,
       reviews: 8123,
       description: "Skip-the-line entry with optional guided tour",
       price: 24,
-      off: 10,                  
-      oldPrice: 64.18,          
-      badge: "Free cancellation", 
+      off: 10,
+      oldPrice: 64.18,
+      badge: "Free cancellation",
       cancellation: "Free cancellation",
       subcategoryId: navItems[0]?.id ?? "landmarks",
     },
     {
-      id: "ex-2",
+      id: "real-alcazar-priority-entrance",
       image: "/images/d2.jpg.avif",
       place: "Real Alcázar",
       rating: 4.8,
@@ -286,7 +291,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[0]?.id ?? "landmarks",
     },
     {
-      id: "ex-3",
+      id: "guadalquivir-cruise",
       image: "/images/d3.jpg.avif",
       place: "Guadalquivir Cruise",
       rating: 4.5,
@@ -296,7 +301,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
     },
     {
-      id: "ex-4",
+      id: "flamenco-show-tablao",
       image: "/images/d4.jpg.avif",
       place: "Flamenco Show",
       rating: 4.6,
@@ -306,7 +311,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[2]?.id ?? "dance-shows",
     },
     {
-      id: "ex-5",
+      id: "city-card-seville",
       image: "/images/d5.jpg.avif",
       place: "City Card",
       rating: 4.3,
@@ -316,7 +321,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[1]?.id ?? "combo-tickets",
     },
     {
-      id: "ex-6",
+      id: "guided-walking-tour-seville",
       image: "/images/d6.jpeg.avif",
       place: "Guided Walking Tour",
       rating: 4.7,
@@ -326,7 +331,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[2]?.id ?? "guided-tours",
     },
     {
-      id: "ex-7",
+      id: "museum-fine-arts-seville",
       image: "/images/d2.jpg.avif",
       place: "Museum of Fine Arts",
       rating: 4.4,
@@ -336,7 +341,7 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[0]?.id ?? "landmarks",
     },
     {
-      id: "ex-8",
+      id: "hop-on-hop-off-bus-seville",
       image: "/images/d3.jpg.avif",
       place: "Hop-on Hop-off Bus",
       rating: 4.2,
@@ -434,9 +439,9 @@ export default function SubcategoryPage() {
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/things-to-do"
+                        href={`/things-to-do/${city}`}
                       >
-                        Things to do
+                        {formattedCityName}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
@@ -479,10 +484,9 @@ export default function SubcategoryPage() {
                   {getDynamicHeading()}
                 </h1>
               </div>
-              
-              {/* Subcategory Navigation Component */}
+
               <div className="block mt-5">
-                <SubcategoryNavigation 
+                <SubcategoryNavigation
                   categoryName={formattedCategoryName}
                   currentSubcategory={subcategory}
                 />
@@ -543,8 +547,8 @@ export default function SubcategoryPage() {
               </div>
             </div>
           )}
-        <div className="md:mt-10 mt-0">
           <div className="md:mt-10 mt-0">
+            <div className="md:mt-10 mt-0">
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="subcategory"
@@ -554,7 +558,6 @@ export default function SubcategoryPage() {
               />
             </div>
 
-            {/* Tours CarouselGrid Section */}
             <div className="mb-10 mt-10">
               <CarouselGrid
                 title={`Travel Guide and Tips for ${formattedCityName}`}
@@ -562,7 +565,6 @@ export default function SubcategoryPage() {
                 recommendations={guides}
               />
             </div>
-            {/* Dynamic Browse Themes Section */}
             <div className="mb-10 mt-10 ">
               <BrowseThemes
                 title="Browse by themes"

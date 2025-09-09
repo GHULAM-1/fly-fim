@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import ImageGallery from "@/components/checkout/gallery";
 import Banner from "@/components/home/Banner";
@@ -9,8 +9,8 @@ import Recommendations from "@/components/checkout/similar-experiences";
 import ExperienceDetails from "@/components/checkout/features";
 import FaqSection from "@/components/checkout/faqs";
 import CheckAvailability from "@/components/checkout/checkAvailability";
-import CheckoutNav from "@/components/checkout/CheckoutNav";
 import PhotoGalleryDrawer from "@/components/ui/photo-gallery-drawer";
+import { useNavigationStore } from "@/lib/store/navigationStore";
 import {
   BreadcrumbList,
   BreadcrumbSeparator,
@@ -35,12 +35,139 @@ import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 import WhyHeadout from "@/components/checkout/WhyHeadout";
 
+const experiences = [
+  {
+    id: "seville-cathedral-skip-the-line",
+    image: "/images/d1.jpg.avif",
+    place: "Seville Cathedral",
+    rating: 4.7,
+    reviews: 8123,
+    description: "Skip-the-line entry with optional guided tour",
+    price: 24,
+    off: 10,
+    oldPrice: 64.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "real-alcazar-priority-entrance",
+    image: "/images/d2.jpg.avif",
+    place: "Real Alcázar",
+    rating: 4.8,
+    reviews: 15234,
+    description: "Priority entrance + audio guide",
+    price: 29,
+    off: 10,
+    oldPrice: 32.18,
+    badge: "Free cancellation",
+    cancellation: "Free cancellation",
+  },
+  {
+    id: "guadalquivir-cruise",
+    image: "/images/d3.jpg.avif",
+    place: "Guadalquivir Cruise",
+    rating: 4.5,
+    reviews: 5210,
+    description: "1‑hour scenic river cruise",
+    price: 18,
+  },
+  {
+    id: "flamenco-show-tablao",
+    image: "/images/d4.jpg.avif",
+    place: "Flamenco Show",
+    rating: 4.6,
+    reviews: 6632,
+    description: "Authentic tablao experience",
+    price: 25,
+  },
+  {
+    id: "city-card-seville",
+    image: "/images/d5.jpg.avif",
+    place: "City Card",
+    rating: 4.3,
+    reviews: 2101,
+    description: "Multi‑attraction pass for 48h",
+    price: 49,
+  },
+  {
+    id: "guided-walking-tour-seville",
+    image: "/images/d6.jpeg.avif",
+    place: "Guided Walking Tour",
+    rating: 4.7,
+    reviews: 3889,
+    description: "Old Town & Jewish Quarter",
+    price: 22,
+  },
+  {
+    id: "museum-fine-arts-seville",
+    image: "/images/d2.jpg.avif",
+    place: "Museum of Fine Arts",
+    rating: 4.4,
+    reviews: 980,
+    description: "Entry ticket",
+    price: 12,
+  },
+  {
+    id: "hop-on-hop-off-bus-seville",
+    image: "/images/d3.jpg.avif",
+    place: "Hop-on Hop-off Bus",
+    rating: 4.2,
+    reviews: 4312,
+    description: "24‑hour ticket with audio guide",
+    price: 30,
+  },
+  {
+    id: "skydive-dubai",
+    description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
+    badge: "Selling out fast",
+    place: "Dubai",
+    image: "/images/r4.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "acropolis-tickets",
+    description: "Acropolis Parthenon Tickets with Optional Audio Guide",
+    place: "Athens",
+    image: "/images/r3.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "pompeii-amalfi-tour",
+    badge: "Free cancellation",
+    description:
+      "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
+    place: "Italy",
+    image: "/images/r2.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+  {
+    id: "harry-potter-studio",
+    description:
+      "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
+    place: "London",
+    image: "/images/r1.jpg.avif",
+    price: 100,
+    rating: 4.5,
+    reviews: 100,
+  },
+];
+
 const CheckoutPage: React.FC = () => {
   const params = useParams();
+  const router = useRouter();
   const city = params.city as string;
   const categoryName = params.category as string;
   const subcategory = params.subcategory as string;
   const itemId = params.itemId as string;
+  const { isModalOpen } = useNavigationStore();
+
+  const currentExperience = experiences.find((exp) => exp.id === itemId);
 
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
@@ -50,7 +177,6 @@ const CheckoutPage: React.FC = () => {
 
   const isWorldwideRoute = city === "worldwide";
 
-  // Decode and format category
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
   );
@@ -58,10 +184,8 @@ const CheckoutPage: React.FC = () => {
     ? decodedCategoryName.charAt(0).toUpperCase() + decodedCategoryName.slice(1)
     : "Category";
 
-  // Decode URL-encoded characters first, then process
   const decodedCity = decodeURIComponent(city);
 
-  // Format city name properly (for display)
   const formattedCityName = decodedCity
     ? decodedCity
         .split("-")
@@ -69,7 +193,6 @@ const CheckoutPage: React.FC = () => {
         .join(" ")
     : "City";
 
-  // Decode and format subcategory
   const decodedSubcategoryName = decodeURIComponent(
     subcategory ? subcategory.split("-").join(" ") : ""
   );
@@ -78,40 +201,51 @@ const CheckoutPage: React.FC = () => {
       decodedSubcategoryName.slice(1)
     : "Subcategory";
 
-  // Decode and format item
-  const decodedItemName = decodeURIComponent(
-    itemId ? itemId.split("-").join(" ") : ""
-  );
-  const formattedItemName = decodedItemName
-    ? decodedItemName.charAt(0).toUpperCase() + decodedItemName.slice(1)
-    : "Item";
+  const formattedItemName =
+    currentExperience?.description ||
+    decodeURIComponent(itemId ? itemId.split("-").join(" ") : "Item");
 
-  // Convert to lowercase hyphenated for config key
+  const itemCity = currentExperience?.place || formattedCityName;
+
   const configKey = decodedSubcategoryName.toLowerCase().replace(/\s+/g, "-");
 
-  // Dynamic heading logic based on subcategory
+  const handleMobileCheckAvailability = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateString = tomorrow.toISOString();
+
+    const bookingUrl = `/booking?itemName=${encodeURIComponent(
+      formattedItemName
+    )}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(
+      categoryName
+    )}&subcategory=${encodeURIComponent(
+      subcategory
+    )}&itemId=${encodeURIComponent(itemId)}&date=${dateString}`;
+    router.push(bookingUrl);
+  };
+
   const getDynamicHeading = (): string => {
     const cityFormatted = city.charAt(0).toUpperCase() + city.slice(1);
 
     if (subcategory) {
-      // If we have a subcategory, format it as "Subcategory in City"
       return `${formattedSubcategoryName} in ${cityFormatted}`;
     } else {
-      // If no subcategory (shouldn't happen on this page, but fallback)
       return `${formattedCategoryName} in ${cityFormatted}`;
     }
   };
 
-  // Comprehensive subcategory configuration - conditional based on worldwide vs city-specific
   const subCategoryConfig = isWorldwideRoute
     ? {
-        // WORLDWIDE CONFIGURATION (placeholders mimicking category structure)
         museums: {
           heading: "Global Museums",
           components: {
             themes: [
               { icon: Ticket, text: "Global Museum Tickets", href: "#" },
-              { icon: BadgePercent, text: "Religious Site Tickets", href: "#" },
+              {
+                icon: BadgePercent,
+                text: "Religious Site Tickets",
+                href: "#",
+              },
               { icon: Landmark, text: "Landmark Tickets", href: "#" },
               { icon: SunMedium, text: "Zoo Tickets", href: "#" },
               { icon: Ship, text: "City Cards", href: "#" },
@@ -119,7 +253,7 @@ const CheckoutPage: React.FC = () => {
             ],
           },
         },
-        // Add more as needed, default for others
+
         default: {
           heading: `Global ${formattedSubcategoryName}`,
           components: {
@@ -131,7 +265,6 @@ const CheckoutPage: React.FC = () => {
         },
       }
     : {
-        // Add more as needed, default for others
         default: {
           heading: getDynamicHeading(),
           components: {
@@ -172,12 +305,10 @@ const CheckoutPage: React.FC = () => {
         },
       };
 
-  // Get current subcategory configuration
   const currentSubCategory =
     subCategoryConfig[configKey as keyof typeof subCategoryConfig] ||
     subCategoryConfig.default;
 
-  // Early return if no subcategory found
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
@@ -278,7 +409,6 @@ const CheckoutPage: React.FC = () => {
     "/images/tickets-included-07.avif",
   ];
 
-  // Build navigation items from current subcategory config
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
       const id = (t.text || "")
@@ -312,12 +442,10 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <>
-      <CheckoutNav />
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
         <div className="pt-16 md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
-              {/* Breadcrumb Section - Hidden on mobile */}
               <div className="mb-[14px] hidden md:block">
                 <Breadcrumb>
                   <BreadcrumbList>
@@ -333,9 +461,9 @@ const CheckoutPage: React.FC = () => {
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href="/things-to-do"
+                        href={`/things-to-do/${city}`}
                       >
-                        Things to do
+                        {formattedCityName}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
@@ -358,18 +486,14 @@ const CheckoutPage: React.FC = () => {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbLink
-                        className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                        href={`/things-to-do/${city}/${categoryName}/${subcategory}/${itemId}`}
-                      >
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
                         {formattedItemName}
-                      </BreadcrumbLink>
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>
 
-              {/* Mobile Back Button */}
               <div className="hidden sm:block md:hidden mb-4">
                 <button className="flex items-center text-gray-600 text-sm">
                   <svg
@@ -391,15 +515,12 @@ const CheckoutPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Mobile Layout - Image Background with Overlay Content */}
               <div className="md:hidden relative px-0 -mx-4">
-                {/* Background Image Carousel */}
                 <div
                   className="relative cursor-pointer"
                   style={{ height: "33vh" }}
                   onClick={handleImageClick}
                 >
-                  {/* Auto-rotating background images */}
                   <div className="absolute inset-0">
                     {images.map((image, index) => (
                       <div
@@ -423,7 +544,6 @@ const CheckoutPage: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Gradient overlay that blends into the solid navy section */}
                   <div
                     className="
                       pointer-events-none absolute inset-0
@@ -434,7 +554,6 @@ const CheckoutPage: React.FC = () => {
                     "
                   />
 
-                  {/* Animated progress indicator dots/bars */}
                   <div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
                     {images.map((_, index) => (
                       <div
@@ -443,8 +562,8 @@ const CheckoutPage: React.FC = () => {
                           isClient && index === currentImageIndex
                             ? "bg-white w-6"
                             : isClient && index < currentImageIndex
-                            ? "bg-white w-1.5"
-                            : "bg-white/30 w-1.5"
+                              ? "bg-white w-1.5"
+                              : "bg-white/30 w-1.5"
                         }`}
                         style={{
                           backgroundColor:
@@ -471,14 +590,12 @@ const CheckoutPage: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Bottom Content Overlay - This sits on top of the gradient */}
                   <div
                     className="
                       absolute bottom-0 left-0 right-0 px-5 py-3 text-white
                       bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
                     "
                   >
-                    {/* Subcategory and NEW badge - spaced apart */}
                     <div className="flex justify-between items-center mb-0 font-halyard-text">
                       <span className="text-[14px] text-white/90 font-medium">
                         {formattedSubcategoryName}
@@ -488,24 +605,19 @@ const CheckoutPage: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Thin separator line */}
                     <div className="w-full h-px bg-white/20 mb-1" />
 
-                    {/* Main title */}
                     <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
-                      {formattedItemName} in {formattedCityName}
+                      {formattedItemName} in {itemCity}
                     </h2>
                   </div>
                 </div>
               </div>
 
-              {/* Desktop Layout - Original Structure */}
               <div className="hidden md:block">
-                {/* Subcategory and Item Name Section */}
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
                     <div className="flex items-center gap-1">
-                      {/* Optional SVG or icons */}
                     </div>
                   </div>
                   <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
@@ -519,11 +631,10 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e] md:text-[15px]">NEW</span>
                   </h1>
                   <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {formattedCityName}
+                    {formattedItemName} in {itemCity}
                   </h2>
                 </div>
 
-                {/* Image Gallery for Item - Desktop only */}
                 <ImageGallery
                   images={images}
                   itemName={formattedItemName}
@@ -531,13 +642,10 @@ const CheckoutPage: React.FC = () => {
                 />
               </div>
 
-              {/* Tablet Layout - You can customize this for intermediate screen sizes */}
               <div className="hidden sm:block md:hidden">
-                {/* Option 2: Use desktop layout for tablets but with adjusted styling */}
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
                     <div className="flex items-center gap-1">
-                      {/* Optional SVG or icons */}
                     </div>
                   </div>
                   <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
@@ -551,7 +659,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e]">NEW</span>
                   </h1>
                   <h2 className="text-[24px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {formattedCityName}
+                    {formattedItemName} in {itemCity}
                   </h2>
                 </div>
                 <ImageGallery
@@ -563,7 +671,6 @@ const CheckoutPage: React.FC = () => {
             </>
           ) : (
             <div>
-              {/* Only Breadcrumb for Worldwide Routes */}
               <div className="mb-[34px] hidden md:block">
                 <Breadcrumb>
                   <BreadcrumbList>
@@ -606,49 +713,37 @@ const CheckoutPage: React.FC = () => {
           )}
 
           <div className="md:mt-10 mt-6" id="checkout-section">
-            {/* Checkout Section - Features, FAQs, and Sticky Right Section */}
-            {/* Desktop/Tablet Only: Features, FAQs, and Sticky Right Section */}
             <div className="md:flex flex-col lg:flex-row gap-8">
-              {/* Left Content - Features and FAQs */}
               <div className="w-full lg:w-2/3">
-                {/* Features Section */}
                 <div className="mb-8">
                   <ExperienceDetails />
                 </div>
 
-                {/* FAQ Section */}
                 <div className="bg-white rounded-lg">
                   <FaqSection />
                 </div>
               </div>
 
-              {/* Sticky Right Section */}
               <div className="hidden md:block w-full lg:w-1/3">
                 <div className="lg:sticky lg:top-[160px] space-y-6">
                   <CheckAvailability
                     itemName={formattedItemName}
-                    city={formattedCityName}
+                    city={itemCity}
                   />
                   <WhyHeadout />
                 </div>
               </div>
             </div>
 
-            {/* Additional Content Section */}
             <div>
-              {/* Similar Experiences Section */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <Recommendations />
               </div>
 
-              {/* Things to do in city */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <Activities
-                  title={`Top Things to do in ${formattedCityName}`}
-                />
+                <Activities title={`Top Things to do in ${itemCity}`} />
               </div>
 
-              {/* Browse Themes Section */}
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
                 <BrowseThemes
                   title="Browse by themes"
@@ -656,11 +751,10 @@ const CheckoutPage: React.FC = () => {
                 />
               </div>
 
-              {/* Nearby Cities and Stats */}
               {!isWorldwideRoute && (
                 <div className="mb-6 md:mb-10">
                   <CarouselGrid
-                    title="Nearby cities to explore"
+                    title="Explore world's top destinations"
                     variant="simple"
                     recommendations={destinations}
                   />
@@ -678,30 +772,31 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Bar - Hidden on desktop */}
-      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-50 bg-white border-t border-gray-200  px-7 py-3">
-        <div className="flex items-center justify-between gap-3">
-          {/* Price section */}
-          <div className="flex flex-col">
-            <span className="line-through text-gray-500 text-sm font-halyard-text">
-              €55
-            </span>
-            <span className="text-xl font-halyard-text font-bold text-green-600">
-              €49.50
-            </span>
+      {!isModalOpen && (
+        <div className="lg:hidden fixed bottom-14 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-7 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col">
+              <span className="line-through text-gray-500 text-sm font-halyard-text">
+                €55
+              </span>
+              <span className="text-xl font-halyard-text font-bold text-green-600">
+                €49.50
+              </span>
+            </div>
+            <button
+              onClick={handleMobileCheckAvailability}
+              className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200"
+            >
+              Check availability
+            </button>
           </div>
-          {/* Check availability button */}
-          <button className="w-47 py-3 bg-purple-600 text-white font-semibold font-halyard-text rounded-xl text-[14px] hover:bg-purple-700 transition-colors duration-200">
-            Check availability
-          </button>
         </div>
-      </div>
+      )}
 
-      {/* Photo Gallery Drawer */}
       <PhotoGalleryDrawer
         images={images}
         itemName={formattedItemName}
-        city={formattedCityName}
+        city={itemCity}
         initialIndex={currentImageIndex}
         isOpen={isGalleryOpen}
         onOpenChange={setIsGalleryOpen}
