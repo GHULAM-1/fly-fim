@@ -349,7 +349,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
         }
       `}</style>
 
-      <div className="relative pt-20 md:pt-36 pb-4 mx-auto">
+      <div className="relative pt-20 md:pt-34 pb-4 mx-auto">
         <div className="relative mx-auto">
           {/* Text Overlay - positioned absolutely over the image
           <div className="absolute top-6 left-6 md:top-12 md:left-12 z-0 sm:z-10 text-left max-w-md md:max-w-2xl">
@@ -386,7 +386,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
                 return '<span class="' + className + ' custom-bullet"></span>';
               },
             }}
-            className="mySwiper w-full h-[45vh] md:h-[60vh] lg:h-[77vh] rounded-2xl overflow-hidden"
+            className="mySwiper w-full h-[45vh] md:h-[60vh] lg:max-h-[500px] lg:h-full rounded-2xl overflow-hidden"
             onSlideChange={handleSlideChange}
           >
             <SwiperSlide className="rounded-2xl">

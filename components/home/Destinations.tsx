@@ -125,8 +125,11 @@ const Destinations = () => {
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
+      const cardWidth = window.innerWidth >= 768 ? 180 : 140;
+      const gap = 16; // gap-4 = 16px
+      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
       scrollContainerRef.current.scrollBy({
-        left: -scrollContainerRef.current.clientWidth,
+        left: -scrollAmount,
         behavior: "smooth",
       });
     }
@@ -134,8 +137,11 @@ const Destinations = () => {
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
+      const cardWidth = window.innerWidth >= 768 ? 180 : 140;
+      const gap = 16; // gap-4 = 16px
+      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
       scrollContainerRef.current.scrollBy({
-        left: scrollContainerRef.current.clientWidth,
+        left: scrollAmount,
         behavior: "smooth",
       });
     }
@@ -150,9 +156,9 @@ const Destinations = () => {
           </h2>{" "}
         </div>
         <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="snap-start flex-shrink-0 w-[282px] p-2">
-              <div className="w-full h-40 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="snap-start flex-shrink-0 p-2 w-[140px] h-[140px] md:w-[180px] md:h-[180px]">
+              <div className="w-full h-[140px] md:h-[180px] bg-gray-200 rounded-lg animate-pulse mb-2"></div>
               <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
               <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
               <div className="h-8 bg-gray-200 rounded w-1/2 animate-pulse"></div>
@@ -194,26 +200,28 @@ const Destinations = () => {
         </div>
       </div>
       <div
-        className="mt-4 sm:mt-4 flex overflow-x-scroll sm:ml-0 -ml-4 scrollbar-hide"
+        className="mt-4 sm:mt-4 flex md:gap-6 gap-4 overflow-x-scroll sm:ml-0 -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
-        {destinations.map((destination) => (
+        {destinations.map((destination, index) => (
           <Link
             href={`/things-to-do/${destination.slug}`}
             key={destination.id}
-            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4 sm:pl-0 hover:-translate-y-2 transition-all duration-300 pt-2"
+            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${index === 0 ? 'ml-4' : 'ml-0'}`}
           >
-            <img
-              src={destination.image}
-              alt={destination.description}
-              className="rounded h-[65%]"
-            />
-            <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight max-w-32">
-              {destination.description}
-            </p>
-            <p className="text-sm font-lightText text-[#666666] mt-1">
-              {destination.place}
-            </p>
+            <div className="w-[140px] md:w-[180px] ">
+              <img
+                src={destination.image}
+                alt={destination.description}
+                className="rounded w-full object-cover h-[140px] md:h-[180px]"
+              />
+              <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
+                {destination.description}
+              </p>
+              <p className="text-sm font-lightText text-[#666666] mt-1">
+                {destination.place}
+              </p>
+            </div>
           </Link>
         ))}
       </div>
