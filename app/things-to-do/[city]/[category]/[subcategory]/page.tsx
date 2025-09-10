@@ -351,6 +351,26 @@ export default function SubcategoryPage() {
       price: 30,
       subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
     },
+    {
+      id: "museum-fine-arts-seville",
+      image: "/images/d2.jpg.avif",
+      place: "Museum of Fine Arts",
+      rating: 4.4,
+      reviews: 980,
+      description: "Entry ticket",
+      price: 12,
+      subcategoryId: navItems[0]?.id ?? "landmarks",
+    },
+    {
+      id: "hop-on-hop-off-bus-seville",
+      image: "/images/d3.jpg.avif",
+      place: "Hop-on Hop-off Bus",
+      rating: 4.2,
+      reviews: 4312,
+      description: "24‑hour ticket with audio guide",
+      price: 30,
+      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
+    },
   ];
   const guides = [
     {
@@ -552,7 +572,8 @@ export default function SubcategoryPage() {
             <div className=" mt-0">
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
-                variant="subcategory"
+                variant="pills"
+                pills={false}
                 navigationItems={navItems}
                 recommendations={experiences}
                 initialSelectedId={configKey}
