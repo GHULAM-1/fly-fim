@@ -106,8 +106,9 @@ const Cities = () => {
           </div>
         </>
       </div>
-
-      <Stats />
+      <div className="px-[24px]">
+        <Stats />
+      </div>
     </>
   );
 };

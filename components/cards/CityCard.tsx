@@ -26,7 +26,7 @@ const CityCard = ({
           <img
             src={image}
             alt={description}
-            className="rounded md:w-full w-[41px]"
+            className="rounded md:w-full w-[50px]"
           />
         </div>
         <div>
