@@ -586,7 +586,7 @@ const ThingsToDo = () => {
         }
       `}</style>
       <section className="relative">
-        <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-20 border-b">
+        <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-30 border-b">
           <div className="hidden md:block">
             <CategoriesDropdown
               showCategoriesDropdown={showCategoriesDropdown}
@@ -605,7 +605,7 @@ const ThingsToDo = () => {
 
         <div className="max-w-[1200px] relative mx-auto px-[24px] xl:px-0 ">
           <Hero city={city} />
-          <div className="md:hidden px-3 mt-[-30px] pb-2  relative z-20">
+          <div className="md:hidden px-3 mt-[-30px] pb-2  relative z-40">
             <button
               className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
               onClick={() => setIsCustomDrawerOpen(true)}
@@ -651,7 +651,7 @@ const ThingsToDo = () => {
               <button
                 data-section="musicals"
                 onClick={() => scrollToSection("musicals")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "musicals"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -663,7 +663,7 @@ const ThingsToDo = () => {
               <button
                 data-section="landmarks"
                 onClick={() => scrollToSection("landmarks")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "landmarks"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -675,7 +675,7 @@ const ThingsToDo = () => {
               <button
                 data-section="day-trips"
                 onClick={() => scrollToSection("day-trips")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "day-trips"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -687,7 +687,7 @@ const ThingsToDo = () => {
               <button
                 data-section="combos"
                 onClick={() => scrollToSection("combos")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "combos"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -699,7 +699,7 @@ const ThingsToDo = () => {
               <button
                 data-section="cruises"
                 onClick={() => scrollToSection("cruises")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "cruises"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -711,7 +711,7 @@ const ThingsToDo = () => {
               <button
                 data-section="plays"
                 onClick={() => scrollToSection("plays")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "plays"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -723,7 +723,7 @@ const ThingsToDo = () => {
               <button
                 data-section="museums"
                 onClick={() => scrollToSection("museums")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "museums"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
@@ -735,7 +735,7 @@ const ThingsToDo = () => {
               <button
                 data-section="hop-on-hop-off-tours"
                 onClick={() => scrollToSection("hop-on-hop-off-tours")}
-                className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "hop-on-hop-off-tours"
                     ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
                     : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
