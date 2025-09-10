@@ -264,26 +264,29 @@ const ThingsToDo = () => {
   // Scroll active button into view
   const scrollActiveButtonIntoView = useCallback(() => {
     if (!scrollContainerRef.current || !activeSection) return;
-    
+
     const activeButton = scrollContainerRef.current.querySelector(
       `[data-section="${activeSection}"]`
     ) as HTMLElement;
-    
+
     if (!activeButton) return;
-    
+
     const container = scrollContainerRef.current;
     const containerRect = container.getBoundingClientRect();
     const buttonRect = activeButton.getBoundingClientRect();
-    
+
     // Check if button is fully visible
-    const isFullyVisible = 
-      buttonRect.left >= containerRect.left && 
+    const isFullyVisible =
+      buttonRect.left >= containerRect.left &&
       buttonRect.right <= containerRect.right;
-    
+
     if (!isFullyVisible) {
       // Calculate scroll position to center the button
-      const scrollLeft = activeButton.offsetLeft - (container.clientWidth / 2) + (activeButton.clientWidth / 2);
-      
+      const scrollLeft =
+        activeButton.offsetLeft -
+        container.clientWidth / 2 +
+        activeButton.clientWidth / 2;
+
       // Use instant scrolling for maximum responsiveness
       container.scrollLeft = Math.max(0, scrollLeft);
     }
@@ -365,7 +368,7 @@ const ThingsToDo = () => {
     const handleScrollDetection = () => {
       const scrollTop = window.scrollY;
       const viewportHeight = window.innerHeight;
-      
+
       let activeSectionId = "";
       let minDistance = Infinity;
 
@@ -375,7 +378,7 @@ const ThingsToDo = () => {
           const rect = element.getBoundingClientRect();
           const elementTop = rect.top + scrollTop;
           const distance = Math.abs(elementTop - (scrollTop + topOffset));
-          
+
           if (distance < minDistance && rect.top <= topOffset + 50) {
             minDistance = distance;
             activeSectionId = sectionId;
@@ -762,15 +765,17 @@ const ThingsToDo = () => {
           </div>
         </div>
 
-        <div className="max-w-[1200px] mx-auto pb-10">
+        <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
           <CarouselGrid
             title="Top experiences in London"
             recommendations={recommendations}
             variant="subcategory"
           />
         </div>
-        <Activities />
-        <div className="max-w-[1200px] mx-auto pb-10">
+        <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
+          <Activities />
+        </div>
+        <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
           <div id="musicals">
             <CarouselGrid
               title="London Musicals"

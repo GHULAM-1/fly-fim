@@ -411,7 +411,7 @@ const CarouselGrid = ({
     }, [showDropdown]);
 
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto px-[24px] xl:px-0">
+      <div className="py-4 max-w-screen-2xl mx-auto xl:px-0">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-2">
@@ -595,20 +595,20 @@ const CarouselGrid = ({
             .slice(0, visibleCards)
             .map((recommendation) => (
               <CarouselCard
-                key={recommendation.id}
+                variant="recommendation"
                 image={recommendation.image}
                 place={recommendation.place}
                 rating={recommendation.rating}
                 reviews={recommendation.reviews}
                 description={recommendation.description}
                 price={recommendation.price}
-                off={recommendation.cancellation}
-                badge={recommendation.cancellation}
+                off={recommendation.off}
+                oldPrice={recommendation.oldPrice}
+                badge={recommendation.badge}
                 city={cityStr}
                 category={categoryStr}
                 subcategory={subcategoryStr}
                 itemId={recommendation.id}
-                variant="recommendation"
               />
             ))}
         </div>
@@ -768,8 +768,8 @@ const CarouselGrid = ({
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
               style={{
-                transform: `translateX(-${currentMuseumIndex * 23.5}%)`,
-                width: `${recommendations.length * 23.5}%`,
+                transform: `translateX(-${currentMuseumIndex * 27}%)`,
+                width: `${recommendations.length * 27}%`,
               }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -779,7 +779,7 @@ const CarouselGrid = ({
                 const active = index === currentMuseumIndex;
 
                 return (
-                  <div key={museum.id} className="w-[23.5%] shrink-0">
+                  <div key={museum.id} className="w-[27%] shrink-0">
                     <div className="relative h-[334px] rounded-lg overflow-hidden shadow-lg">
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
@@ -868,7 +868,7 @@ const CarouselGrid = ({
           {recommendations.map((rec, index) => (
             <div
               key={rec.id}
-              className="w-[45%] sm:w-[30%] md:w-[20%] lg:w-1/6 flex-shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] xl:first:ml-0 xl:last:mr-0"
+              className="w-[45%] sm:w-[27%] md:w-[20%] lg:w-1/6 flex-shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] xl:first:ml-0 xl:last:mr-0"
             >
               <div className="group cursor-pointer">
                 <img

@@ -93,141 +93,108 @@ export default function CategoryPage() {
   const recommendations = [
     {
       id: 1,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
+      description: "Edge Observation Deck Tickets: Timed Entry",
+      place: "Edge NYC",
       image: "/images/r4.jpg.avif",
-      price: 100,
+      price: 39.2,
+      off: 3,
+      oldPrice: 42.2,
       rating: 4.5,
-      reviews: 100,
-      off: 10,
-      type: "adventure",
+      reviews: 5897,
+      badge: "Free cancellation",
     },
     {
       id: 2,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
       image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      type: "landmarks",
+      price: 30,
+      oldPrice: 32.2,
+      off: 3,
+      rating: 4.4,
+      reviews: 4489,
     },
     {
       id: 3,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
       image: "/images/r2.jpg.avif",
-      price: 100,
+      price: 259,
       rating: 4.5,
-      reviews: 100,
-      type: "day-trips",
+      reviews: 7792,
+      badge: "Free cancellation",
     },
     {
       id: 4,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
       image: "/images/r1.jpg.avif",
-      price: 100,
+      price: 89,
       rating: 4.5,
-      reviews: 100,
-      type: "museums",
+      reviews: 2110,
+      badge: "Free cancellation",
     },
     {
       id: 5,
-      description: "Skydive Dubai: Tandem Skydiving at the Palm Drop Zone",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      off: 10,
-      type: "adventure",
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
     },
     {
       id: 6,
-      description: "Acropolis Parthenon Tickets with Optional Audio Guide",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
       rating: 4.5,
-      reviews: 100,
-      cancellation: "Free cancellation",
-      type: "landmarks",
+      reviews: 7792,
+      badge: "Free cancellation",
     },
     {
       id: 7,
-      description:
-        "From Rome: Pompeii, Amalfi Coast and Sorrento or Positano Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
       rating: 4.5,
-      reviews: 100,
-      type: "day-trips",
+      reviews: 2110,
+      badge: "Free cancellation",
     },
     {
       id: 8,
-      description:
-        "From London: Harry Potter™ Warner Bros. Studio Tickets with Coach Transfers",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      type: "museums",
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
     },
     {
       id: 9,
-      description: "A Zoo experience in London",
-      place: "London",
-      image: "/images/r1.jpg.avif",
-      price: 100,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
       rating: 4.5,
-      reviews: 100,
-      type: "zoos",
+      reviews: 7792,
+      badge: "Free cancellation",
     },
     {
       id: 10,
-      description: "A City Card for Dubai",
-      place: "Dubai",
-      image: "/images/r4.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      off: 10,
-      type: "city-cards",
-    },
-    {
-      id: 11,
-      description: "A Religious Site in Athens",
-      place: "Athens",
-      image: "/images/r3.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      type: "religious-sites",
-    },
-    {
-      id: 12,
-      description: "From Rome: A wonderful Day Trip",
-      place: "Italy",
-      image: "/images/r2.jpg.avif",
-      price: 100,
-      rating: 4.5,
-      reviews: 100,
-      type: "day-trips",
-    },
-    {
-      id: 13,
-      description: "A Theme Park in London",
-      place: "London",
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
       image: "/images/r1.jpg.avif",
-      price: 100,
+      price: 89,
       rating: 4.5,
-      reviews: 100,
-      type: "theme-parks",
+      reviews: 2110,
+      badge: "Free cancellation",
     },
   ];
 
@@ -2046,7 +2013,7 @@ export default function CategoryPage() {
           </div>
           <div>
             {isWorldwideRoute ? (
-              <div className="border-b-[1px]  pb-10 mb-10">
+              <div className="border-b-[1px]  pb-10 mb-10 px-[24px] xl:px-0">
                 <CarouselGrid
                   title={`Top experiences`}
                   variant="pills"
@@ -2056,12 +2023,14 @@ export default function CategoryPage() {
                 />
               </div>
             ) : (
+              <div className="px-[24px] xl:px-0">
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="pills"
                 recommendations={recommendations}
-                navigationItems={currentCategory.navigationItems}
-              />
+                  navigationItems={currentCategory.navigationItems}
+                />
+              </div>
             )}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
@@ -2079,7 +2048,7 @@ export default function CategoryPage() {
               ))}
           </div>
           {currentCategory?.components?.guides && (
-            <div className="mb-10">
+            <div className="mb-10 px-[24px] xl:px-0">
               <CarouselGrid
                 title={currentCategory.components.guides.title}
                 variant={
@@ -2093,7 +2062,7 @@ export default function CategoryPage() {
           )}
 
           {currentCategory?.components?.transport && (
-            <div className="mb-10">
+            <div className="mb-10 px-[24px] xl:px-0">
               <CarouselGrid
                 title={(currentCategory.components.transport as any).title}
                 variant={
