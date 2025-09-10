@@ -889,7 +889,7 @@ const CarouselGrid = ({
     );
   }
 
-  if (variant === "tours" || variant === "transport") {
+  if (variant === "tours") {
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 1;
     const totalPages = Math.ceil(recommendations.length / itemsPerPage);
@@ -898,12 +898,50 @@ const CarouselGrid = ({
       setCurrentPage(page);
     };
 
+    const scrollLeft = () => {
+      if (scrollContainerRef.current) {
+        const cardWidth = window.innerWidth >= 768 ? 24 : 25; // percentage
+        const containerWidth = scrollContainerRef.current.clientWidth;
+        const scrollAmount = ((containerWidth * cardWidth) / 100) * 2; // scroll 2 cards
+        scrollContainerRef.current.scrollBy({
+          left: -scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const scrollRight = () => {
+      if (scrollContainerRef.current) {
+        const cardWidth = window.innerWidth >= 768 ? 24 : 25; // percentage
+        const containerWidth = scrollContainerRef.current.clientWidth;
+        const scrollAmount = ((containerWidth * cardWidth) / 100) * 2; // scroll 2 cards
+        scrollContainerRef.current.scrollBy({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    };
+
     return (
       <div className="py-4 px-[24px] xl:px-0">
         <div className="flex justify-between items-center  max-w-[1200px] mx-auto">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         <div
@@ -930,25 +968,134 @@ const CarouselGrid = ({
               </div>
             </div>
           ))}
-           {recommendations.map((guide, index) => (
-             <div key={guide.id} className={`flex gap-4 ${index < recommendations.length - 1 ? 'border-b border-gray-200 pb-4 mb-4' : ''}`}>
-               <div className="w-[40%]">
-                 <img
-                   src={guide.image}
-                   alt={guide.heading}
-                   className="w-full h-[84px] object-cover rounded-lg"
-                 />
-               </div>
-               <div className="text-[#444444] w-[60%]">
-                 <h3 className="font-semibold font-halyard-text text-[14px]">
-                   {guide.heading}
-                 </h3>
-                 <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
-                   {guide.description}
-                 </p>
-               </div>
-             </div>
-           ))}
+          {recommendations.map((guide, index) => (
+            <div
+              key={guide.id}
+              className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
+            >
+              <div className="w-[40%]">
+                <img
+                  src={guide.image}
+                  alt={guide.heading}
+                  className="w-full h-[84px] object-cover rounded-lg"
+                />
+              </div>
+              <div className="text-[#444444] w-[60%]">
+                <h3 className="font-semibold font-halyard-text text-[14px]">
+                  {guide.heading}
+                </h3>
+                <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
+                  {guide.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (variant === "transport") {
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 1;
+    const totalPages = Math.ceil(recommendations.length / itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+
+    const scrollLeft = () => {
+      if (scrollContainerRef.current) {
+        const cardWidth = window.innerWidth >= 768 ? 49 : 25; // percentage
+        const containerWidth = scrollContainerRef.current.clientWidth;
+        const scrollAmount = ((containerWidth * cardWidth) / 100) * 2; // scroll 2 cards
+        scrollContainerRef.current.scrollBy({
+          left: -scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const scrollRight = () => {
+      if (scrollContainerRef.current) {
+        const cardWidth = window.innerWidth >= 768 ? 49 : 25; // percentage
+        const containerWidth = scrollContainerRef.current.clientWidth;
+        const scrollAmount = ((containerWidth * cardWidth) / 100) * 2; // scroll 2 cards
+        scrollContainerRef.current.scrollBy({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    return (
+      <div className="py-4 xl:px-0">
+        <div className="flex justify-between items-center  max-w-[1200px] mx-auto">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+            {title}
+          </h2>
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+            <button
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-2 sm:mt-8 flex md:flex-row flex-col gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          ref={scrollContainerRef}
+        >
+          {recommendations.map((guide, index) => (
+            <div key={guide.id} className={`w-[25%] hidden md:block md:w-[49%] flex-shrink-0`}>
+              <div className="flex gap-4">
+                <div className="w-[30%]">
+                  <img
+                    src={guide.image}
+                    alt={guide.heading}
+                    className="w-full h-full object-cover rounded-sm"
+                  />
+                </div>
+                <div className="text-[#444444] w-[60%]">
+                  <h3 className="font-semibold font-halyard-text text-[17px]">
+                    {guide.heading}
+                  </h3>
+                  <p className="text-[14px] mt-1 font-halyard-text-light line-clamp-3">
+                    {guide.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+          {recommendations.map((guide, index) => (
+            <div
+              key={guide.id}
+              className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
+            >
+              <div className="w-[40%]">
+                <img
+                  src={guide.image}
+                  alt={guide.heading}
+                  className="w-full h-[84px] object-cover rounded-lg"
+                />
+              </div>
+              <div className="text-[#444444] w-[60%]">
+                <h3 className="font-semibold font-halyard-text text-[14px]">
+                  {guide.heading}
+                </h3>
+                <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
+                  {guide.description}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -956,7 +1103,7 @@ const CarouselGrid = ({
   if (variant === "subcategory") {
     return (
       <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center px-[24px] xl:px-0">
+        <div className="flex justify-between items-center  xl:px-0">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
@@ -983,7 +1130,7 @@ const CarouselGrid = ({
           </div>
         </div>
         <div
-          className="mt-4 ml-[24px] xl:ml-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          className="mt-4  xl:ml-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
         >
           {recommendations.map((recommendation, index) => (

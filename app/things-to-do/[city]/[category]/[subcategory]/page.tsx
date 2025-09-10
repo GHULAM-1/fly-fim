@@ -26,6 +26,7 @@ import {
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
+import Destinations from "@/components/home/Destinations";
 
 export default function SubcategoryPage() {
   const params = useParams();
@@ -547,8 +548,8 @@ export default function SubcategoryPage() {
               </div>
             </div>
           )}
-          <div className="md:mt-10 mt-0">
-            <div className="md:mt-10 mt-0">
+          <div className=" mt-0">
+            <div className=" mt-0">
               <CarouselGrid
                 title={`Top experiences in ${formattedCityName}`}
                 variant="subcategory"
@@ -558,7 +559,7 @@ export default function SubcategoryPage() {
               />
             </div>
 
-            <div className="mb-10 mt-10">
+            <div className="mb-10 mt-5">
               <CarouselGrid
                 title={`Travel Guide and Tips for ${formattedCityName}`}
                 variant="transport"
@@ -572,12 +573,8 @@ export default function SubcategoryPage() {
               />
             </div>
             {!isWorldwideRoute && (
-              <div className="mb-10">
-                <CarouselGrid
-                  title="Nearby cities to explore"
-                  variant="simple"
-                  recommendations={destinations}
-                />
+              <div className="mb-15 mt-5">
+                <Destinations />
               </div>
             )}
 
