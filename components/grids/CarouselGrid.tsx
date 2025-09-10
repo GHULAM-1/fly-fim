@@ -876,13 +876,14 @@ const CarouselGrid = ({
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
-          <div className="flex items-center gap-2  ">
+          <div className="flex items-center gap-1 md:gap-2  ">
             <Link
               href="/cities"
-              className="text-[15px] mr-2 font-halyard-text text-[#444444] underline underline-offset-4 whitespace-nowrap"
+              className="text-[15px] md:mr-2 font-halyard-text text-[#444444] md:underline underline-offset-4 whitespace-nowrap"
             >
               {t("recommendations.seeAll")}
             </Link>
+            <ChevronRightIcon className="md:hidden block w-4 h-4" />
             <button
               className="cursor-pointer hidden md:flex hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
               onClick={scrollLeft}

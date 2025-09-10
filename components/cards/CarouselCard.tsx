@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { StarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
 import PriceDisplay from "../PriceDisplay";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
@@ -45,6 +46,7 @@ const CarouselCard = ({
   itemId,
 }: CarouselCardProps) => {
   const { t } = useTranslation();
+  const swiperRef = useRef<any>(null);
 
   const discountedPrice = off ? price * (1 - off / 100) : price;
 
@@ -132,14 +134,11 @@ const CarouselCard = ({
             )}
             <div className="relative w-full aspect-[16/10] rounded-[4px] overflow-hidden mb-4 group">
               <Swiper
+                ref={swiperRef}
                 loop
                 allowTouchMove={false}
                 autoplay={{ delay: 5000, disableOnInteraction: false }}
-                modules={[Autoplay, Navigation, Pagination]}
-                navigation={{
-                  nextEl: ".swiper-button-next",
-                  prevEl: ".swiper-button-prev",
-                }}
+                modules={[Autoplay, Pagination]}
                 pagination={{
                   clickable: true,
                   renderBullet: (_idx: number, className: string) =>
@@ -162,16 +161,26 @@ const CarouselCard = ({
               <div className="absolute inset-0 pointer-events-none">
                 {/* Left Navigation Button */}
                 <button
-                  className="swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
+                  className="absolute hover:cursor-pointer left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
                   aria-label="Previous image"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    swiperRef.current?.swiper.slidePrev();
+                  }}
                 >
                   <ChevronLeft size={16} className="text-gray-700" />
                 </button>
                 
                 {/* Right Navigation Button */}
                 <button
-                  className="swiper-button-next absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
+                  className="absolute hover:cursor-pointer right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
                   aria-label="Next image"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    swiperRef.current?.swiper.slideNext();
+                  }}
                 >
                   <ChevronRight size={16} className="text-gray-700" />
                 </button>
