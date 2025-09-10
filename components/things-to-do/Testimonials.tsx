@@ -43,7 +43,12 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
       country: "Italy",
       date: "Jul 2025",
       avatar: "/images/t1.jpeg",
-      images: ["/images/d4.jpg.avif", "/images/d3.jpg.avif", "/images/d3.jpg.avif", "/images/d3.jpg.avif"],
+      images: [
+        "/images/d4.jpg.avif",
+        "/images/d3.jpg.avif",
+        "/images/d3.jpg.avif",
+        "/images/d3.jpg.avif",
+      ],
       rating: 5,
       review:
         "Very positive experience. To change the digital tickets, just go to the cashiers (the attendants will show you the correct way) and you will be given the paper tickets. Audio guide well done and very interesting tour of the castle",
@@ -132,7 +137,9 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
       <Star
         key={i}
         className={` w-[14px] h-[14px] ${
-          i < rating ? `text-pink-500 ${i < 4 ? "mr-[2px]" : ""} fill-pink-500` : "text-gray-300"
+          i < rating
+            ? `text-pink-500 ${i < 4 ? "mr-[2px]" : ""} fill-pink-500`
+            : "text-gray-300"
         }`}
       />
     ));
@@ -145,10 +152,10 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
   return (
     <>
       <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
-        <div className="flex justify-between items-center mb-6">
+        <div className="md:flex hidden justify-between items-center mb-6">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444] flex items-center gap-2">
             Millions love flying out with us
-            <img src="/images/info3.png" alt="" className="w-10" />
+            <img src="/images/info3.gif" alt="" className="w-10" />
           </h2>
           <div className="hidden md:flex items-center gap-2">
             <div className="flex items-center gap-2">
@@ -165,6 +172,14 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
                 <ChevronRightIcon className="w-4 h-4" />
               </button>
             </div>
+          </div>
+        </div>
+        <div className="flex md:hidden justify-between items-center mb-6">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+            Millions love flying out with us
+          </h2>
+          <div>
+            <img src="/images/info3.gif" alt="" className="w-10" />
           </div>
         </div>
         <div
