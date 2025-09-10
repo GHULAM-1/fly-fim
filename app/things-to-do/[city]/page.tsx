@@ -5,7 +5,7 @@ import BrowseThemes from "@/components/home/BrowseThemes";
 import Faqs from "@/components/things-to-do/Faqs";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import Stats from "@/components/home/Stats";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Destinations from "@/components/home/Destinations";
 import MustDo from "@/components/things-to-do/MustDo";
 import Hero from "@/components/things-to-do/Hero";
@@ -261,6 +261,42 @@ const ThingsToDo = () => {
     scrollContainerRef.current?.scrollBy({ left: 300, behavior: "smooth" });
   };
 
+  // Scroll active button into view
+  const scrollActiveButtonIntoView = useCallback(() => {
+    if (!scrollContainerRef.current || !activeSection) return;
+    
+    const activeButton = scrollContainerRef.current.querySelector(
+      `[data-section="${activeSection}"]`
+    ) as HTMLElement;
+    
+    if (!activeButton) return;
+    
+    const container = scrollContainerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const buttonRect = activeButton.getBoundingClientRect();
+    
+    // Check if button is fully visible
+    const isFullyVisible = 
+      buttonRect.left >= containerRect.left && 
+      buttonRect.right <= containerRect.right;
+    
+    if (!isFullyVisible) {
+      // Calculate scroll position to center the button
+      const scrollLeft = activeButton.offsetLeft - (container.clientWidth / 2) + (activeButton.clientWidth / 2);
+      
+      // Use instant scrolling for maximum responsiveness
+      container.scrollLeft = Math.max(0, scrollLeft);
+    }
+  }, [activeSection]);
+
+  // Scroll active button into view when activeSection changes
+  useEffect(() => {
+    // Use requestAnimationFrame for immediate execution after DOM update
+    requestAnimationFrame(() => {
+      scrollActiveButtonIntoView();
+    });
+  }, [scrollActiveButtonIntoView]);
+
   useEffect(() => {
     const handleGlobalScroll = () => {
       const scrollTop = window.scrollY;
@@ -325,6 +361,34 @@ const ThingsToDo = () => {
     const mainHeaderHeight = isMobile ? 64 : 120;
     const topOffset = navHeight + mainHeaderHeight;
 
+    // More responsive scroll detection
+    const handleScrollDetection = () => {
+      const scrollTop = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      let activeSectionId = "";
+      let minDistance = Infinity;
+
+      sections.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top + scrollTop;
+          const distance = Math.abs(elementTop - (scrollTop + topOffset));
+          
+          if (distance < minDistance && rect.top <= topOffset + 50) {
+            minDistance = distance;
+            activeSectionId = sectionId;
+          }
+        }
+      });
+
+      if (activeSectionId && activeSectionId !== activeSection) {
+        setActiveSection(activeSectionId);
+      }
+    };
+
+    // Use both Intersection Observer and direct scroll detection
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -335,7 +399,7 @@ const ThingsToDo = () => {
       },
       {
         rootMargin: `-${topOffset}px 0px -${window.innerHeight - topOffset - 100}px 0px`,
-        threshold: 0.1,
+        threshold: 0.01,
       }
     );
 
@@ -344,8 +408,14 @@ const ThingsToDo = () => {
       if (element) observer.observe(element);
     });
 
-    return () => observer.disconnect();
-  }, [setActiveSection]);
+    // Add direct scroll listener for immediate response
+    window.addEventListener("scroll", handleScrollDetection, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScrollDetection);
+    };
+  }, [setActiveSection, activeSection]);
 
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
@@ -506,6 +576,14 @@ const ThingsToDo = () => {
             padding-bottom: max(1rem, env(safe-area-inset-bottom));
           }
         }
+        /* Faster smooth scrolling for navigation */
+        [data-navigation] {
+          scroll-behavior: smooth;
+          scroll-padding: 0;
+        }
+        [data-navigation] * {
+          scroll-behavior: smooth;
+        }
       `}</style>
       <section className="relative">
         <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-20 border-b">
@@ -546,14 +624,14 @@ const ThingsToDo = () => {
         <div
           ref={navigationRef}
           data-navigation
-          className={`block sticky w-full bg-white z-10 py-4 md:top-30 top-16 ${
+          className={`block sticky w-full bg-white z-20 py-4 md:top-30 top-16 ${
             isSectionActive ? "shadow-lg" : ""
           }`}
         >
           <div className="relative">
             <div
               ref={scrollContainerRef}
-              className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
+              className="flex relative gap-2 overflow-x-auto scrollbar-hide z-20 max-w-[1200px] mx-auto px-[24px] xl:px-0"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {showLeftButton && (
@@ -571,6 +649,7 @@ const ThingsToDo = () => {
               )}
 
               <button
+                data-section="musicals"
                 onClick={() => scrollToSection("musicals")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "musicals"
@@ -582,6 +661,7 @@ const ThingsToDo = () => {
                 Musicals
               </button>
               <button
+                data-section="landmarks"
                 onClick={() => scrollToSection("landmarks")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "landmarks"
@@ -593,6 +673,7 @@ const ThingsToDo = () => {
                 Landmarks
               </button>
               <button
+                data-section="day-trips"
                 onClick={() => scrollToSection("day-trips")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "day-trips"
@@ -604,6 +685,7 @@ const ThingsToDo = () => {
                 Day Trips
               </button>
               <button
+                data-section="combos"
                 onClick={() => scrollToSection("combos")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "combos"
@@ -615,6 +697,7 @@ const ThingsToDo = () => {
                 Combos
               </button>
               <button
+                data-section="cruises"
                 onClick={() => scrollToSection("cruises")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "cruises"
@@ -626,6 +709,7 @@ const ThingsToDo = () => {
                 Cruises
               </button>
               <button
+                data-section="plays"
                 onClick={() => scrollToSection("plays")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "plays"
@@ -637,6 +721,7 @@ const ThingsToDo = () => {
                 Plays
               </button>
               <button
+                data-section="museums"
                 onClick={() => scrollToSection("museums")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "museums"
@@ -648,6 +733,7 @@ const ThingsToDo = () => {
                 Museums
               </button>
               <button
+                data-section="hop-on-hop-off-tours"
                 onClick={() => scrollToSection("hop-on-hop-off-tours")}
                 className={`font-halyard-text flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
                   activeSection === "hop-on-hop-off-tours"

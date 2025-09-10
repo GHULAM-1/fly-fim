@@ -386,11 +386,11 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
                 return '<span class="' + className + ' custom-bullet"></span>';
               },
             }}
-            className="mySwiper w-full rounded-2xl overflow-hidden"
+            className="mySwiper w-full h-[45vh] md:h-[60vh] lg:h-[77vh] rounded-2xl overflow-hidden"
             onSlideChange={handleSlideChange}
           >
             <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+              <div className="relative w-full h-full">
                 <img
                   src="/banner1.avif"
                   className="w-full h-full object-cover rounded-2xl"
@@ -399,7 +399,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
               </div>
             </SwiperSlide>
             <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+              <div className="relative w-full h-full">
                 <img
                   src="/banner2.jpeg"
                   className="w-full h-full object-cover rounded-2xl"
@@ -408,7 +408,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
               </div>
             </SwiperSlide>
             <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+              <div className="relative w-full h-full">
                 <img
                   src="/banner3.jpeg"
                   className="w-full h-full object-cover rounded-2xl"

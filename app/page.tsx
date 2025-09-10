@@ -26,7 +26,6 @@ const Home = () => {
         <div className="md:mb-25 mb-15">
           <BrowseThemes />
         </div>
-
         <Banner />
         <Stats />
       </div>
