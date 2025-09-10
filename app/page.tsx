@@ -23,7 +23,10 @@ const Home = () => {
       <Testimonials />
       <MarqueeComp />
       <div className="px-[24px]">
-        <BrowseThemes />
+        <div className="md:mb-25 mb-15">
+          <BrowseThemes />
+        </div>
+
         <Banner />
         <Stats />
       </div>

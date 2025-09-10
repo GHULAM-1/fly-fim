@@ -268,7 +268,7 @@ const Navbar = () => {
   const filteredActivities = filterResults(topActivities, searchQuery);
 
   const isNavSolid = scrolled || pathname !== "/";
-  const navTextColorClass = isNavSolid ? "text-black" : "text-white";
+  const navTextColorClass = isNavSolid ? "text-[#444444]" : "text-white";
 
   return (
     <>
@@ -323,7 +323,7 @@ const Navbar = () => {
 
       <div
         className={`fixed top-0 left-0 w-full z-40 py-2 transition-colors duration-300 ${
-          isNavSolid ? "bg-white border-b border-gray-200" : "bg-transparent"
+          isNavSolid ? "bg-white border-gray-200" : "bg-transparent"
         } ${navTextColorClass}`}
       >
         <div className="max-w-[1200px] mx-auto xl:px-[0px] px-[24px]">
@@ -467,7 +467,7 @@ const Navbar = () => {
                 className="text-sm font-medium flex items-center gap-1"
               >
                 <CircleHelp strokeWidth={1} size={16} />
-                <span className={`hidden  md:block ${navTextColorClass}`}>
+                <span className={`hidden text-[#444444]  md:block ${navTextColorClass}`}>
                   Help
                 </span>
               </Link>

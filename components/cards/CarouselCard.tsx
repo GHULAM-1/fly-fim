@@ -49,17 +49,16 @@ const CarouselCard = ({
   const discountedPrice = off ? price * (1 - off / 100) : price;
 
   const generateLink = () => {
-    
     const slugify = (text: string) =>
       text
-        .toLowerCase()
-        .replace(/\s+/g, "-")
+        ?.toLowerCase()
+        ?.replace(/\s+/g, "-")
         .replace(/[^\w-]+/g, "");
 
     const citySlug = slugify(city);
     const categorySlug = slugify(category);
     const subcategorySlug = slugify(subcategory);
-    const itemSlug = slugify(description); 
+    const itemSlug = slugify(description);
 
     return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemSlug}-${itemId}`;
   };
@@ -72,10 +71,10 @@ const CarouselCard = ({
             <img
               src={image}
               alt={description}
-              className="w-full h-40 object-cover rounded-lg"
+              className="w-full h-44 object-cover rounded-sm"
             />
             {badge && (
-              <span className="absolute top-2 left-2 z-10 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
+              <span className="absolute top-2 left-2 z-0 text-[#444444] bg-white text-[12px] font-text px-2 py-1 rounded">
                 {badge}
               </span>
             )}
@@ -89,26 +88,26 @@ const CarouselCard = ({
                 <span className="text-gray-500">({reviews})</span>
               </div>
             </div>
-            <h3 className="font-medium text-[#444444] mt-1 line-clamp-2 h-auto">
+            <h3 className="font-medium text-[#444444] text-[18px] line-clamp-2 h-auto">
               {description}
             </h3>
             <div className="mt-2">
-              <span className="text-xs text-gray-500">from</span>
               <div className="flex flex-row items-center  gap-2">
-                <PriceDisplay
-                  amount={price}
-                  className="font-semibold text-lg text-[#444444]"
-                />
+                <span className="text-xs text-[#444444]">from</span>
                 {oldPrice && (
                   <PriceDisplay
                     amount={oldPrice}
-                    className="text-sm line-through text-gray-400"
+                    className="text-[12px] line-through text-[#666666]"
                   />
                 )}
+              </div>
+              <div className="flex flex-row items-center  gap-2">
+                <PriceDisplay
+                  amount={price}
+                  className="font-heading text-[16px] text-[#444444]"
+                />
                 {off && (
-                  <span
-                    className="bg-[#088229] text-white text-[11px] font-halyard py-[0.01rem] px-[0.2rem] rounded-[0.25rem]"
-                  >
+                  <span className="bg-[#087F29] text-white text-[11px] font-halyard-text px-1 py-0 rounded">
                     {off}% off
                   </span>
                 )}
@@ -120,7 +119,6 @@ const CarouselCard = ({
     );
   }
 
-  
   if (variant === "recommendation") {
     return (
       <Link href={generateLink()}>

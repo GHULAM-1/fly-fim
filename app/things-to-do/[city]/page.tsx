@@ -373,6 +373,8 @@ const ThingsToDo = () => {
       place: "Edge NYC",
       image: "/images/r4.jpg.avif",
       price: 39.2,
+      off: 3,
+      oldPrice: 42.2,
       rating: 4.5,
       reviews: 5897,
       badge: "Free cancellation",
@@ -383,6 +385,7 @@ const ThingsToDo = () => {
       place: "Museum of Modern Art (MoMA)",
       image: "/images/r3.jpg.avif",
       price: 30,
+      oldPrice: 32.2,
       off: 3,
       rating: 4.4,
       reviews: 4489,
@@ -399,6 +402,68 @@ const ThingsToDo = () => {
     },
     {
       id: 4,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
+      rating: 4.5,
+      reviews: 2110,
+      badge: "Free cancellation",
+    },
+    {
+      id: 5,
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
+    },
+    {
+      id: 6,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
+      rating: 4.5,
+      reviews: 7792,
+      badge: "Free cancellation",
+    },
+    {
+      id: 7,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
+      rating: 4.5,
+      reviews: 2110,
+      badge: "Free cancellation",
+    },
+    {
+      id: 8,
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
+    },
+    {
+      id: 9,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
+      rating: 4.5,
+      reviews: 7792,
+      badge: "Free cancellation",
+    },
+    {
+      id: 10,
       description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
       place: "City Cards",
       image: "/images/r1.jpg.avif",
@@ -617,6 +682,9 @@ const ThingsToDo = () => {
             recommendations={recommendations}
             variant="subcategory"
           />
+        </div>
+        <Activities />
+        <div className="max-w-[1200px] mx-auto pb-10">
           <div id="musicals">
             <CarouselGrid
               title="London Musicals"
@@ -678,8 +746,12 @@ const ThingsToDo = () => {
 
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
         <MustDo />
-        <TravelGuide />
-        <BrowseThemes />
+        <div className="mb-7">
+          <TravelGuide />
+        </div>
+        <div className="mb-10">
+          <BrowseThemes />
+        </div>
         <Testimonials variant="default" />
         <Destinations />
         <Faqs />

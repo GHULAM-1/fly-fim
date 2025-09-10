@@ -39,7 +39,7 @@ const MustDo = () => {
 
   return (
     <div className="py-4 max-w-screen-2xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-heading  text-gray-700">
+      <h2 className="text-lg sm:text-2xl font-heading  text-[#444444]">
         Must do things in London
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-17 mt-4 sm:mt-10">
@@ -52,15 +52,15 @@ const MustDo = () => {
             />
             <div className="flex flex-col gap-3">
               <div className="flex gap-2 items-center">
-                <div className="h-6 w-6 shrink-0 text-sm text-white rounded-full flex items-center justify-center bg-gray-700">
+                <div className="h-6 w-6 shrink-0 text-sm text-white rounded-full flex items-center justify-center bg-[#444444]">
                   {item.id}
                 </div>
-                <h3 className="text-xl font-heading text-gray-700">
+                <h3 className="text-xl font-heading text-[#444444]">
                   {item.title}
                 </h3>
               </div>
-              <p className="text-[#666666] line-clamp-5">{item.description}</p>
-              <button className="text-md font-medium  text-[#E5006E] flex gap-2 items-center">
+              <p className="text-[#444444] text-[15px] font-halyard-text-light line-clamp-5">{item.description}</p>
+              <button className="text-[14px] font-halyard-text font-medium  text-[#E5006E] flex gap-1 items-center">
                 See tickets
                 <ChevronRightIcon className="w-4 h-4" />
               </button>
@@ -68,7 +68,7 @@ const MustDo = () => {
           </div>
         ))}
       </div>
-      <button className="w-full font-halyard-text hover:cursor-pointer sm:w-auto py-3 px-12 rounded-lg border border-gray-700 text-gray-700 font-semibold mt-4 sm:mt-10 mx-auto block">
+      <button className="w-full font-halyard-text hover:cursor-pointer sm:w-auto py-3 px-12 rounded-[12px] border border-[#444444] text-[#444444]  mt-4 sm:mt-10 mx-auto block">
         Show more
       </button>
     </div>

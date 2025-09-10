@@ -9,9 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "../ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 
-  interface HeroProps {
+interface HeroProps {
   city?: string;
-  }
+}
 
 const Hero: React.FC<HeroProps> = ({ city }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,9 +32,10 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
   const currentIndexRef = useRef(0);
   const decodedCity = decodeURIComponent(city ?? "");
   const formattedCityName = decodedCity
-    ? decodedCity.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ')
+    ? decodedCity
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
     : "London";
 
   // Handle hydration only
@@ -232,7 +233,7 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
   // Rotate placeholder text with smoother timing
   useEffect(() => {
     if (!isMounted) return;
-    
+
     if (!isInputFocused && !searchQuery) {
       const interval = setInterval(() => {
         const nextIndex =
@@ -303,43 +304,6 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
     }
   }, [isCustomDrawerOpen]);
 
-  // Animated placeholder component for reusability
-  const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
-    <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
-      <span className="mr-1 font-halyard-text-light md:text-base text-sm flex-shrink-0">{prefix}</span>
-      <div className="relative overflow-hidden h-5 flex items-center flex-1 min-w-0">
-        {/* Previous text - sliding out upward */}
-        {isTransitioning && previousPlaceholderIndex >= 0 && (
-          <span
-            key={`prev-${previousPlaceholderIndex}`}
-            className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
-            style={{
-              animation: "slideOutUp 0.7s ease-out forwards",
-              animationFillMode: "both",
-            }}
-          >
-            {placeholderOptions[previousPlaceholderIndex]}
-          </span>
-        )}
-
-        {/* Current text - sliding in from below */}
-        <span
-          key={`current-${currentPlaceholderIndex}`}
-          className="absolute font-halyard-text-light md:text-base text-sm whitespace-nowrap"
-          style={{
-            animation: isTransitioning
-              ? "slideInUp 0.7s ease-out forwards"
-              : "none",
-            animationFillMode: "both",
-            opacity: isTransitioning ? 0 : 1,
-            transform: isTransitioning ? "translateY(100%)" : "translateY(0)",
-          }}
-        >
-          {placeholderOptions[currentPlaceholderIndex]}
-        </span>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -386,78 +350,76 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
       `}</style>
 
       <div className="relative pt-20 md:pt-36 pb-4 mx-auto">
-<div className="relative mx-auto">
-  {/* Text Overlay - positioned absolutely over the image */}
-  <div className="absolute top-6 left-6 md:top-12 md:left-12 z-0 sm:z-10 text-left max-w-md md:max-w-2xl">
-    <h1 className="text-2xl md:text-5xl font-bold text-white font-halyard-text drop-shadow-lg leading-tight md:leading-normal">
-      Best things to do in {formattedCityName}
-    </h1>
-  </div>
+        <div className="relative mx-auto">
+          {/* Text Overlay - positioned absolutely over the image
+          <div className="absolute top-6 left-6 md:top-12 md:left-12 z-0 sm:z-10 text-left max-w-md md:max-w-2xl">
+            <h1 className="text-2xl md:text-5xl font-bold text-white font-halyard-text drop-shadow-lg leading-tight md:leading-normal">
+              Best things to do in {formattedCityName}
+            </h1>
+          </div> */}
 
-  {/* Dark overlay when search is open */}
-  {isSearchOpen && (
-    <div
-      className="fixed inset-0 bg-black/50 z-0 sm:z-[9998]"
-      onClick={() => {
-        setIsSearchOpen(false);
-        setIsInputFocused(false);
-      }}
-    />
-  )}
+          {/* Dark overlay when search is open */}
+          {isSearchOpen && (
+            <div
+              className="fixed inset-0 bg-black/50 z-0 sm:z-[9998]"
+              onClick={() => {
+                setIsSearchOpen(false);
+                setIsInputFocused(false);
+              }}
+            />
+          )}
 
-  <Swiper
-    autoplay={{
-      delay: 5000,
-      disableOnInteraction: false,
-    }}
-    modules={[Autoplay, Navigation, Pagination]}
-    navigation={{
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    }}
-    pagination={{
-      clickable: true,
-      dynamicBullets: false,
-      renderBullet: function (index, className) {
-        return '<span class="' + className + ' custom-bullet"></span>';
-      },
-    }}
-    className="mySwiper w-full rounded-2xl overflow-hidden"
-    onSlideChange={handleSlideChange}
-  >
-    <SwiperSlide className="rounded-2xl">
-      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
-        <img
-          src="https://cdn-imgix.headout.com/media/images/8515c147e2627c8da9f48f62c9bf254a-Harry%20Potter-Dweb.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-          className="w-full h-full object-cover rounded-2xl"
-          alt="Hero slide 1"
-        />
-      </div>
-    </SwiperSlide>
-    <SwiperSlide className="rounded-2xl">
-      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
-        <img
-          src="https://cdn-imgix.headout.com/media/images/d8700da23f2d351a6f107c1f67da371b-Mean%20Girls%20London%20promo%20banner%20desktop.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-          className="w-full h-full object-cover rounded-2xl"
-          alt="Hero slide 2"
-        />
-      </div>
-    </SwiperSlide>
-    <SwiperSlide className="rounded-2xl">
-      <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[70vh]">
-        <img
-          src="https://cdn-imgix.headout.com/media/images/0a8f6ede9e1b32f3277c4e49bb6aba93-MocoMuseum-Desktop%20Banner-min.png?w=1800&h=750&crop=faces&auto=compress%2Cformat&fit=min"
-          className="w-full h-full object-cover rounded-2xl"
-          alt="Hero slide 3"
-        />
-      </div>
-    </SwiperSlide>
-    <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
-    <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
-  </Swiper>
-
-</div>
-
+          <Swiper
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            modules={[Autoplay, Navigation, Pagination]}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
+            pagination={{
+              clickable: true,
+              dynamicBullets: false,
+              renderBullet: function (index, className) {
+                return '<span class="' + className + ' custom-bullet"></span>';
+              },
+            }}
+            className="mySwiper w-full rounded-2xl overflow-hidden"
+            onSlideChange={handleSlideChange}
+          >
+            <SwiperSlide className="rounded-2xl">
+              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+                <img
+                  src="/banner1.avif"
+                  className="w-full h-full object-cover rounded-2xl"
+                  alt="Hero slide 1"
+                />
+              </div>
+            </SwiperSlide>
+            <SwiperSlide className="rounded-2xl">
+              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+                <img
+                  src="/banner2.jpeg"
+                  className="w-full h-full object-cover rounded-2xl"
+                  alt="Hero slide 2"
+                />
+              </div>
+            </SwiperSlide>
+            <SwiperSlide className="rounded-2xl">
+              <div className="relative w-full h-[45vh] md:h-[60vh] lg:h-[68vh]">
+                <img
+                  src="/banner3.jpeg"
+                  className="w-full h-full object-cover rounded-2xl"
+                  alt="Hero slide 3"
+                />
+              </div>
+            </SwiperSlide>
+            <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
+            <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
+          </Swiper>
+        </div>
 
         {/* Custom Mobile Drawer */}
         <AnimatePresence>
@@ -702,5 +664,6 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
         </AnimatePresence>
       </div>
     </>
-  )}
+  );
+};
 export default Hero;

@@ -25,7 +25,7 @@ interface BrowseThemesProps {
 const BrowseThemes = ({ title = "Browse by themes", themes }: BrowseThemesProps) => {
   return (
     <div className="">
-        <h2 className="text-[24px] font-halyard-text text-[#444444] mb-8 font-bold">
+        <h2 className="text-[24px] font-heading text-[#444444] mb-8 font-bold">
         {title}
       </h2>
 
