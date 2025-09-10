@@ -33,7 +33,7 @@ const Destinations = () => {
   const mockDestinations: Destination[] = [
     {
       id: "1",
-      description: "Things to do in New York",
+      description: "Things to do in ",
       place: "United States",
       city: "New York",
       slug: "new-york",
@@ -41,7 +41,7 @@ const Destinations = () => {
     },
     {
       id: "2",
-      description: "Things to do in London",
+      description: "Things to do in ",
       place: "United Kingdom",
       city: "London",
       slug: "london",
@@ -49,7 +49,7 @@ const Destinations = () => {
     },
     {
       id: "3",
-      description: "Things to do in Dubai",
+      description: "Things to do in ",
       place: "United Arab Emirates",
       city: "Dubai",
       slug: "dubai",
@@ -57,7 +57,7 @@ const Destinations = () => {
     },
     {
       id: "4",
-      description: "Things to do in Rome",
+      description: "Things to do in ",
       place: "Italy",
       city: "Rome",
       slug: "rome",
@@ -65,7 +65,7 @@ const Destinations = () => {
     },
     {
       id: "5",
-      description: "Things to do in Paris",
+      description: "Things to do in ",
       place: "France",
       city: "Paris",
       slug: "paris",
@@ -73,7 +73,7 @@ const Destinations = () => {
     },
     {
       id: "6",
-      description: "Things to do in Singapore",
+      description: "Things to do in ",
       place: "Singapore",
       city: "Singapore",
       slug: "singapore",
@@ -81,7 +81,7 @@ const Destinations = () => {
     },
     {
       id: "7",
-      description: "Things to do in Las Vegas",
+      description: "Things to do in Vegas",
       place: "United States",
       city: "Las Vegas",
       slug: "las-vegas",
@@ -89,7 +89,7 @@ const Destinations = () => {
     },
     {
       id: "8",
-      description: "Things to do in Tokyo",
+      description: "Things to do in ",
       place: "Japan",
       city: "Tokyo",
       slug: "tokyo",
@@ -97,7 +97,7 @@ const Destinations = () => {
     },
     {
       id: "9",
-      description: "Things to do in Barcelona",
+      description: "Things to do in ",
       place: "Spain",
       city: "Barcelona",
       slug: "barcelona",
@@ -105,7 +105,7 @@ const Destinations = () => {
     },
     {
       id: "10",
-      description: "Things to do in Sydney",
+      description: "Things to do in ",
       place: "Australia",
       city: "Sydney",
       slug: "sydney",
@@ -157,7 +157,10 @@ const Destinations = () => {
         </div>
         <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="snap-start flex-shrink-0 p-2 w-[140px] h-[140px] md:w-[180px] md:h-[180px]">
+            <div
+              key={i}
+              className="snap-start flex-shrink-0 p-2 w-[140px] h-[140px] md:w-[180px] md:h-[180px]"
+            >
               <div className="w-full h-[140px] md:h-[180px] bg-gray-200 rounded-lg animate-pulse mb-2"></div>
               <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
               <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
@@ -207,7 +210,7 @@ const Destinations = () => {
           <Link
             href={`/things-to-do/${destination.slug}`}
             key={destination.id}
-            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${index === 0 ? 'ml-4' : 'ml-0'}`}
+            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${index === 0 ? "ml-4 md:ml-0" : "ml-0"}`}
           >
             <div className="w-[140px] md:w-[180px] ">
               <img
@@ -217,6 +220,9 @@ const Destinations = () => {
               />
               <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
                 {destination.description}
+              </p>
+              <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
+                {destination.city}
               </p>
               <p className="text-sm font-lightText text-[#666666] mt-1">
                 {destination.place}

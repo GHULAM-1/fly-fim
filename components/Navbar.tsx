@@ -313,7 +313,7 @@ const Navbar = () => {
       {/* Focus overlay - covers entire viewport except search dropdown */}
       {isInputFocused && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/50 z-80 transition-opacity duration-300"
           onClick={() => {
             setIsSearchOpen(false);
             setIsInputFocused(false);
@@ -322,7 +322,7 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 left-0 w-full z-40 py-2 transition-colors duration-300 ${
+        className={`fixed top-0 left-0 w-full z-80 py-2 transition-colors duration-300 ${
           isNavSolid ? "bg-white border-gray-200" : "bg-transparent"
         } ${navTextColorClass}`}
       >
@@ -346,7 +346,7 @@ const Navbar = () => {
             {(scrolled || pathname !== "/") && (
               <div
                 ref={searchRef}
-                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-50 ${
+                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-80 ${
                   isInputFocused
                     ? "min-w-sm xl:min-w-md"
                     : "min-w-xs xl:min-w-sm"
@@ -412,7 +412,7 @@ const Navbar = () => {
                 </div>
                 <Search strokeWidth={1} />
                 {isSearchOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[51] max-h-80 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-851] max-h-80 overflow-y-auto">
                     {/* Top destinations */}
                     <div className="p-4">
                       <h3 className="text-sm font-medium text-[#444444] mb-3">
@@ -520,7 +520,7 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-50"
+              className="fixed inset-0 bg-black/50 z-80"
               onClick={() => setIsCustomSearchDrawerOpen(false)}
             />
 
@@ -543,7 +543,7 @@ const Navbar = () => {
                   setIsCustomSearchDrawerOpen(false);
                 }
               }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 drawer-container flex flex-col"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-80 drawer-container flex flex-col"
               style={{
                 paddingBottom: `max(1rem, ${safeAreaBottom}px)`,
               }}
