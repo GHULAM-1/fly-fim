@@ -905,7 +905,6 @@ const CarouselGrid = ({
             {title}
           </h2>
         </div>
-
         <div
           className="mt-2 sm:mt-4 flex md:flex-row flex-col gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
