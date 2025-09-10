@@ -75,6 +75,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { ChevronDown } from "lucide-react";
+import Destinations from "@/components/home/Destinations";
 
 export default function CategoryPage() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -179,8 +180,7 @@ export default function CategoryPage() {
     },
     {
       id: 9,
-      description:
-        "A Zoo experience in London",
+      description: "A Zoo experience in London",
       place: "London",
       image: "/images/r1.jpg.avif",
       price: 100,
@@ -211,8 +211,7 @@ export default function CategoryPage() {
     },
     {
       id: 12,
-      description:
-        "From Rome: A wonderful Day Trip",
+      description: "From Rome: A wonderful Day Trip",
       place: "Italy",
       image: "/images/r2.jpg.avif",
       price: 100,
@@ -222,8 +221,7 @@ export default function CategoryPage() {
     },
     {
       id: 13,
-      description:
-        "A Theme Park in London",
+      description: "A Theme Park in London",
       place: "London",
       image: "/images/r1.jpg.avif",
       price: 100,
@@ -1885,7 +1883,9 @@ export default function CategoryPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div>
-                    <h1 className="text-[21px] font-halyard-text text-[#444444] font-semibold">{formattedCategoryName} Worldwide</h1>
+                    <h1 className="text-[21px] font-halyard-text text-[#444444] font-semibold">
+                      {formattedCategoryName} Worldwide
+                    </h1>
                   </div>
                   <div className="flex items-center pt-[6px]">
                     <Drawer
@@ -2065,7 +2065,11 @@ export default function CategoryPage() {
             )}
             {currentCategory.components.stack &&
               currentCategory.navigationItems.map((item) => (
-                <div key={item.id} className="mb-10 px-[24px]" id={item.id}>
+                <div
+                  key={item.id}
+                  className="mb-5 md:mb-10 px-[24px] xl:px-0"
+                  id={item.id}
+                >
                   <CarouselGrid
                     title={item.label}
                     variant="museums"
@@ -2109,12 +2113,8 @@ export default function CategoryPage() {
             />
           </div>
           {!isWorldwideRoute && (
-            <div className="mb-10 ">
-              <CarouselGrid
-                title="Nearby cities to explore"
-                variant="simple"
-                recommendations={destinations}
-              />
+            <div className="mb-10 px-[24px] xl:px-0 md:mb-20">
+              <Destinations />
             </div>
           )}
 

@@ -221,7 +221,7 @@ const Destinations = () => {
               <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
                 {destination.description}
               </p>
-              <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
+              <p className="text-[17px] font-heading text-[#444444] leading-tight">
                 {destination.city}
               </p>
               <p className="text-sm font-lightText text-[#666666] mt-1">
