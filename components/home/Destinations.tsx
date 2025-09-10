@@ -28,8 +28,10 @@ const Destinations = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
 
-  // Mock data array
+  
   const mockDestinations: Destination[] = [
     {
       id: "1",
@@ -113,21 +115,44 @@ const Destinations = () => {
     },
   ];
 
+  const checkScrollPosition = () => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const atStart = el.scrollLeft <= 0;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    setIsAtStart(atStart);
+    setIsAtEnd(atEnd);
+  };
+
   useEffect(() => {
-    // Simulate loading delay for better UX
     const timer = setTimeout(() => {
       setDestinations(mockDestinations);
       setLoading(false);
+      
+      setTimeout(checkScrollPosition, 100);
     }, 500);
 
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (el && !loading) {
+      checkScrollPosition();
+      el.addEventListener("scroll", checkScrollPosition);
+      window.addEventListener("resize", checkScrollPosition);
+      return () => {
+        el.removeEventListener("scroll", checkScrollPosition);
+        window.removeEventListener("resize", checkScrollPosition);
+      };
+    }
+  }, [loading]);
+
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       const cardWidth = window.innerWidth >= 768 ? 180 : 140;
-      const gap = 16; // gap-4 = 16px
-      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
+      const gap = 16;
+      const scrollAmount = (cardWidth + gap) * 6;
       scrollContainerRef.current.scrollBy({
         left: -scrollAmount,
         behavior: "smooth",
@@ -138,8 +163,8 @@ const Destinations = () => {
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       const cardWidth = window.innerWidth >= 768 ? 180 : 140;
-      const gap = 16; // gap-4 = 16px
-      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
+      const gap = 16;
+      const scrollAmount = (cardWidth + gap) * 6;
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -188,14 +213,16 @@ const Destinations = () => {
           </Link>
           <div className="hidden md:flex items-center gap-2">
             <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-40 disabled:cursor-default disabled:hover:border-gray-200"
               onClick={scrollLeft}
+              disabled={isAtStart}
             >
               <ChevronLeftIcon className="w-4 h-4" />
             </button>
             <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] underline underline-offset-4 whitespace-nowrap border p-2 rounded-full"
+              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-40 disabled:cursor-default  disabled:hover:border-gray-200"
               onClick={scrollRight}
+              disabled={isAtEnd}
             >
               <ChevronRightIcon className="w-4 h-4" />
             </button>
@@ -210,7 +237,9 @@ const Destinations = () => {
           <Link
             href={`/things-to-do/${destination.slug}`}
             key={destination.id}
-            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${index === 0 ? "ml-4 md:ml-0" : "ml-0"}`}
+            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${
+              index === 0 ? "ml-4 md:ml-0" : "ml-0"
+            }`}
           >
             <div className="w-[140px] md:w-[180px] ">
               <img

@@ -19,10 +19,10 @@ const Banner = () => {
           className="w-full object-cover block md:hidden rounded-lg"
         />
         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 xl:left-16">
-          <h2 className="text-xl xl:text-3xl text-[#444444] font-heading">
+          <h2 className="text-xl xl:text-3xl text-black font-heading">
             {t("banner.title")}
           </h2>
-          <p className="text-sm xl:text-lg font-halyard-text-light mt-2 text-[#444444] max-w-sm xl:max-w-xl">
+          <p className="text-lg  xl:text-lg font-halyard-text-light mt-2 text-[#444444] max-w-sm xl:max-w-xl">
             {t("banner.subtitle")}
           </p>
         </div>

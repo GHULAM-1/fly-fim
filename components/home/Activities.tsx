@@ -4,14 +4,12 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
-
 interface Activity {
   _id: string;
   title: string;
-  mainImage: string; 
+  mainImage: string;
   cityName: string;
 }
-
 
 const originalImages = [
   "/images/a6.jpg.avif",
@@ -29,6 +27,8 @@ const Activities = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   // Mock data array
   const mockActivities: Activity[] = [
@@ -92,6 +92,34 @@ const Activities = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const checkScrollPosition = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    const scrollEl = scrollContainerRef.current;
+    if (scrollEl) {
+      checkScrollPosition();
+      scrollEl.addEventListener("scroll", checkScrollPosition, {
+        passive: true,
+      });
+      window.addEventListener("resize", checkScrollPosition);
+
+      const timer = setTimeout(checkScrollPosition, 100);
+
+      return () => {
+        scrollEl.removeEventListener("scroll", checkScrollPosition);
+        window.removeEventListener("resize", checkScrollPosition);
+        clearTimeout(timer);
+      };
+    }
+  }, [activities]);
+
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
@@ -110,28 +138,28 @@ const Activities = () => {
     }
   };
 
-   if (loading) {
-     return (
-       <div className="py-8 sm:py-10 bg-zinc-100">
-         <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0 ">
-           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
-             {t("activities.title")}
-           </h2>
-          
-           <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
-             {[...Array(4)].map((_, i) => (
-               <div key={i} className="snap-start flex-shrink-0 w-[282px] p-2">
-                 <div className="w-full h-40 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
-                 <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
-                 <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
-                 <div className="h-8 bg-gray-200 rounded w-1/2 animate-pulse"></div>
-               </div>
-             ))}
-           </div>
-         </div>
-       </div>
-     );
-   }
+  if (loading) {
+    return (
+      <div className="py-8 sm:py-10 bg-zinc-100">
+        <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0 ">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
+            {t("activities.title")}
+          </h2>
+
+          <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="snap-start flex-shrink-0 w-[282px] p-2">
+                <div className="w-full h-40 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-8 sm:py-10 bg-zinc-100">
@@ -147,14 +175,16 @@ const Activities = () => {
             </button>
             <div className="hidden md:flex items-center gap-2">
               <button
-                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-30 disabled:cursor-default disabled:hover:border-gray-200"
                 onClick={scrollLeft}
+                disabled={!canScrollLeft}
               >
                 <ChevronLeftIcon className="w-4 h-4" />
               </button>
               <button
-                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+                className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-30 disabled:cursor-default disabled:hover:border-gray-200"
                 onClick={scrollRight}
+                disabled={!canScrollRight}
               >
                 <ChevronRightIcon className="w-4 h-4" />
               </button>
@@ -169,20 +199,20 @@ const Activities = () => {
             <Link
               href="#"
               key={activity._id}
-              className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px] md:w-[200px]"
+              className="pl-6 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px] md:w-[200px]"
             >
               <img
                 src={
                   originalImages[index % originalImages.length] ||
                   activity.mainImage
-                } 
+                }
                 alt={activity.title}
                 className="rounded w-[156px] h-[208px] md:w-[220px] md:h-[240px] object-cover"
               />
               <p className="text-[17px] font-heading text-[#444444] leading-tight mt-2">
                 {activity.title}
               </p>
-              <p className="text-sm font-lightText text-[#666666] mt-1">
+              <p className="text-sm font-halyard-text text-[#666666] mt-1">
                 {activity.cityName}
               </p>
             </Link>

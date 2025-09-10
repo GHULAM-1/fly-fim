@@ -36,13 +36,16 @@ const Recommendations = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [recommendations, setRecommendations] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Mock data array
+  
   const mockRecommendations: Experience[] = [
     {
       _id: "1",
       title: "Skip-the-Line Eiffel Tower Summit Access",
-      description: "Experience the iconic Eiffel Tower with priority access to the summit",
+      description:
+        "Experience the iconic Eiffel Tower with priority access to the summit",
       price: 45,
       oldPrice: 60,
       sale: 25,
@@ -70,7 +73,8 @@ const Recommendations = () => {
     {
       _id: "3",
       title: "Dubai Desert Safari with BBQ Dinner",
-      description: "Experience the magic of the Arabian desert with traditional entertainment",
+      description:
+        "Experience the magic of the Arabian desert with traditional entertainment",
       price: 85,
       oldPrice: 120,
       sale: 29,
@@ -84,7 +88,8 @@ const Recommendations = () => {
     {
       _id: "4",
       title: "Colosseum Underground & Arena Floor Tour",
-      description: "Explore the hidden areas of Rome's most famous amphitheater",
+      description:
+        "Explore the hidden areas of Rome's most famous amphitheater",
       price: 55,
       oldPrice: 70,
       sale: 21,
@@ -140,7 +145,8 @@ const Recommendations = () => {
     {
       _id: "8",
       title: "Tokyo Robot Restaurant Show",
-      description: "Experience the futuristic entertainment of Tokyo's robot show",
+      description:
+        "Experience the futuristic entertainment of Tokyo's robot show",
       price: 65,
       oldPrice: 80,
       sale: 19,
@@ -154,7 +160,7 @@ const Recommendations = () => {
   ];
 
   useEffect(() => {
-    // Simulate loading delay for better UX
+    
     const timer = setTimeout(() => {
       setRecommendations(mockRecommendations);
       setLoading(false);
@@ -162,6 +168,34 @@ const Recommendations = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const checkScrollPosition = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    const scrollEl = scrollContainerRef.current;
+    if (scrollEl) {
+      checkScrollPosition();
+      scrollEl.addEventListener("scroll", checkScrollPosition, {
+        passive: true,
+      });
+      window.addEventListener("resize", checkScrollPosition);
+
+      const timer = setTimeout(checkScrollPosition, 100);
+
+      return () => {
+        scrollEl.removeEventListener("scroll", checkScrollPosition);
+        window.removeEventListener("resize", checkScrollPosition);
+        clearTimeout(timer);
+      };
+    }
+  }, [recommendations]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -211,14 +245,16 @@ const Recommendations = () => {
         </h2>
         <div className="hidden md:flex items-center gap-2  ">
           <button
-            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-30 disabled:cursor-default disabled:hover:border-gray-200"
             onClick={scrollLeft}
+            disabled={!canScrollLeft}
           >
             <ChevronLeftIcon className="w-4 h-4" />
           </button>
           <button
-            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+            className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full disabled:opacity-30 disabled:cursor-default  disabled:hover:border-gray-200"
             onClick={scrollRight}
+            disabled={!canScrollRight}
           >
             <ChevronRightIcon className="w-4 h-4" />
           </button>
