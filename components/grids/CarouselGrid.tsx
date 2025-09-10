@@ -309,26 +309,81 @@ const CarouselGrid = ({
   if (variant === "pills") {
     const [selectedPills, setSelectedPills] = useState<string[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+    const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
 
     const filteredRecommendations =
       selectedPills.length === 0
         ? recommendations
         : recommendations.filter((rec) => selectedPills.includes(rec.type));
 
-    // Close dropdown when clicking outside
+    const calculateDropdownPosition = (buttonElement: HTMLElement) => {
+      const rect = buttonElement.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const dropdownHeight = 300; // Estimated dropdown height
+      const dropdownWidth = 230; // Estimated dropdown width
+      const isMobile = window.innerWidth < 768;
+      
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const spaceRight = viewportWidth - rect.left;
+      
+      // On mobile, always try to open above due to bottom navbar
+      // On desktop, use normal logic
+      if (isMobile) {
+        // On mobile, prefer opening above, but fallback to below if not enough space above
+        if (spaceAbove > dropdownHeight) {
+          setDropdownPosition('top');
+        } else {
+          setDropdownPosition('bottom');
+        }
+      } else {
+        // Desktop logic: if there's not enough space below but enough above, position above
+        if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+          setDropdownPosition('top');
+        } else {
+          setDropdownPosition('bottom');
+        }
+      }
+    };
+
+    const handleDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setButtonRect(rect);
+      calculateDropdownPosition(e.currentTarget);
+      setShowDropdown(!showDropdown);
+    };
+
+    // Close dropdown when clicking outside and prevent scroll when open
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (showDropdown) {
-          setShowDropdown(false);
+          const target = event.target as Element;
+          // Check if click is outside both the button and dropdown
+          const isOutsideButton = !target.closest('[data-categories-button]');
+          const isOutsideDropdown = !target.closest('[data-categories-dropdown]');
+          
+          if (isOutsideButton && isOutsideDropdown) {
+            setShowDropdown(false);
+            setButtonRect(null);
+          }
         }
       };
       
       if (showDropdown) {
+        // Prevent body scroll when dropdown is open
+        document.body.style.overflow = 'hidden';
         document.addEventListener('mousedown', handleClickOutside);
+      } else {
+        // Restore body scroll when dropdown is closed
+        document.body.style.overflow = 'unset';
       }
       
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
+        // Cleanup: restore scroll when component unmounts
+        document.body.style.overflow = 'unset';
       };
     }, [showDropdown]);
 
@@ -349,8 +404,11 @@ const CarouselGrid = ({
           >
             <div className="relative">
               <div 
-                className="flex items-center gap-1 px-[12px] py-[6px] border-[1px] border-[#222] rounded-full whitespace-nowrap cursor-pointer transition-colors bg-[#f0f0f0] text-[#444444]"
-                onClick={() => setShowDropdown(!showDropdown)}
+                data-categories-button
+                className={`flex items-center gap-1 px-[12px] py-[6px] border-[1px] hover:border-[#444] border-[#e2e2e2]  rounded-full whitespace-nowrap cursor-pointer transition-colors text-[#444444] ${
+                  selectedPills.length > 0 ? "bg-[#f0f0f0] border-[#222]" : ""
+                }`}
+                onClick={handleDropdownClick}
               >
                 {selectedPills.length > 0 && (
                   <div className="w-5 h-5 text-white bg-[#000c] rounded-full flex items-center justify-center text-xs font-bold">
@@ -363,8 +421,22 @@ const CarouselGrid = ({
                 </svg>
               </div>
               
-              {showDropdown && (
-                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[200px]">
+              {showDropdown && buttonRect && (
+                <div 
+                  data-categories-dropdown
+                  className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[230px] max-h-[300px] overflow-y-auto"
+                  style={{
+                    top: dropdownPosition === 'top' 
+                      ? `${Math.max(10, buttonRect.top - 300)}px`
+                      : `${buttonRect.bottom + 8}px`,
+                    left: `${Math.max(10, Math.min(buttonRect.left, window.innerWidth - 250))}px`,
+                    // On mobile, add extra bottom margin to avoid bottom navbar
+                    ...(window.innerWidth < 768 && dropdownPosition === 'bottom' && {
+                      maxHeight: `${Math.min(300, window.innerHeight - buttonRect.bottom - 80)}px`
+                    })
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="p-2">
                     {(navigationItems || []).map((pill, index) => {
                       const isSelected = selectedPills.includes(pill.id);
@@ -372,8 +444,9 @@ const CarouselGrid = ({
                       return (
                         <div
                           key={pill.id || index}
-                          className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded cursor-pointer"
-                          onClick={() => {
+                          className="flex items-center gap-3 px-3 py-2 pb-4 hover:bg-gray-50 rounded cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             if (isSelected) {
                               setSelectedPills(prev => prev.filter(id => id !== pill.id));
                             } else {
@@ -383,18 +456,18 @@ const CarouselGrid = ({
                         >
                           {pill.icon && (
                             <pill.icon
-                              size={20}
-                              className="text-gray-600"
+                              size={16}
+                              className="text-[#222222]"
                             />
                           )}
-                          <span className="text-sm font-halyard-text text-gray-700 flex-1">{pill.label}</span>
-                          <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
+                          <span className="text-[14px] font-halyard-text text-[#222222] flex-1">{pill.label}</span>
+                          <div className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
                             isSelected 
                               ? "bg-purple-600 border-purple-600" 
                               : "border-gray-300"
                           }`}>
                             {isSelected && (
-                              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <svg width="20" height="12" viewBox="0 0 10 8" fill="none">
                                 <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             )}
@@ -423,7 +496,7 @@ const CarouselGrid = ({
                   className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
                     isSelected
                       ? "bg-[#f0f0f0] text-[#444444] border-[#222]"
-                      : "bg-white text-[#444444] border-gray-300 hover:border-gray-400"
+                      : "bg-white text-[#444444] border-[#e2e2e2] hover:border-[#444]"
                   }`}
                 >
                   {pill.icon && (
@@ -470,7 +543,7 @@ const CarouselGrid = ({
                 category={categoryStr}
                 subcategory={subcategoryStr}
                 itemId={recommendation.id}
-                variant="full"
+                variant="recommendation"
               />
             ))}
         </div>
@@ -803,7 +876,7 @@ const CarouselGrid = ({
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
-          <div className="hidden md:flex items-center gap-2  ">
+          <div className="flex items-center gap-2  ">
             <Link
               href="/cities"
               className="text-[15px] mr-2 font-halyard-text text-[#444444] underline underline-offset-4 whitespace-nowrap"
@@ -811,13 +884,13 @@ const CarouselGrid = ({
               {t("recommendations.seeAll")}
             </Link>
             <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+              className="cursor-pointer hidden md:flex hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
               onClick={scrollLeft}
             >
               <ChevronLeftIcon className="w-4 h-4" />
             </button>
             <button
-              className="cursor-pointer hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
+              className="cursor-pointer hidden md:flex hover:border-gray-400 text-sm text-[#666666] border p-2 rounded-full"
               onClick={scrollRight}
             >
               <ChevronRightIcon className="w-4 h-4" />
@@ -831,7 +904,7 @@ const CarouselGrid = ({
           {recommendations.map((recommendation, index) => (
             <div className="snap-start flex-shrink-0 w-[282px]">
               <CarouselCard
-                variant="full"
+                variant="recommendation"
                 image={recommendation.image}
                 place={recommendation.place}
                 rating={recommendation.rating}

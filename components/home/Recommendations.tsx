@@ -231,7 +231,7 @@ const Recommendations = () => {
         {recommendations.map((rec, index) => (
           <div key={rec._id} className="snap-start flex-shrink-0 w-[282px]">
             <CarouselCard
-              variant="full"
+              variant="recommendation"
               image={
                 originalImages[index % originalImages.length] || rec.mainImage
               }

@@ -4,7 +4,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { StarIcon } from "lucide-react";
+import { StarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import PriceDisplay from "../PriceDisplay";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
@@ -130,7 +130,7 @@ const CarouselCard = ({
                 {badge}
               </span>
             )}
-            <div className="relative w-full aspect-[16/10] rounded-[4px] overflow-hidden mb-4">
+            <div className="relative w-full aspect-[16/10] rounded-[4px] overflow-hidden mb-4 group">
               <Swiper
                 loop
                 allowTouchMove={false}
@@ -157,6 +157,25 @@ const CarouselCard = ({
                   <img src={image} className="w-full h-full object-cover" />
                 </SwiperSlide>
               </Swiper>
+              
+              {/* Navigation Buttons */}
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Left Navigation Button */}
+                <button
+                  className="swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={16} className="text-gray-700" />
+                </button>
+                
+                {/* Right Navigation Button */}
+                <button
+                  className="swiper-button-next absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto z-20 shadow-lg"
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={16} className="text-gray-700" />
+                </button>
+              </div>
             </div>
           </div>
           <div className="flex justify-between items-center -mt-2">
