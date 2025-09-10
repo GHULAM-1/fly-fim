@@ -1,15 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import {
-  Music,
-  Theater,
-  Globe,
-  Bus,
-  Ticket,
-  MapPin,
-  Ship,
-  Calendar,
-} from "lucide-react";
 
 interface Theme {
   icon: React.ComponentType<{ size?: number; className?: string }>;
@@ -25,7 +15,7 @@ interface BrowseThemesProps {
 const BrowseThemes = ({ title = "Browse by themes", themes }: BrowseThemesProps) => {
   return (
     <div className="">
-        <h2 className="text-[24px] font-heading text-[#444444] mb-8 font-semibold">
+        <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-4 md:mb-6">
         {title}
       </h2>
 

@@ -120,6 +120,25 @@ const CarouselGrid = ({
   }, []);
 
   useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setVisibleCards(4);
+      } else {
+        setVisibleCards(8);
+      }
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         categoriesDropdownRef.current &&
@@ -309,7 +328,9 @@ const CarouselGrid = ({
   if (variant === "pills") {
     const [selectedPills, setSelectedPills] = useState<string[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+    const [dropdownPosition, setDropdownPosition] = useState<"bottom" | "top">(
+      "bottom"
+    );
     const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
 
     const filteredRecommendations =
@@ -324,26 +345,26 @@ const CarouselGrid = ({
       const dropdownHeight = 300; // Estimated dropdown height
       const dropdownWidth = 230; // Estimated dropdown width
       const isMobile = window.innerWidth < 768;
-      
+
       const spaceBelow = viewportHeight - rect.bottom;
       const spaceAbove = rect.top;
       const spaceRight = viewportWidth - rect.left;
-      
+
       // On mobile, always try to open above due to bottom navbar
       // On desktop, use normal logic
       if (isMobile) {
         // On mobile, prefer opening above, but fallback to below if not enough space above
         if (spaceAbove > dropdownHeight) {
-          setDropdownPosition('top');
+          setDropdownPosition("top");
         } else {
-          setDropdownPosition('bottom');
+          setDropdownPosition("bottom");
         }
       } else {
         // Desktop logic: if there's not enough space below but enough above, position above
         if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
-          setDropdownPosition('top');
+          setDropdownPosition("top");
         } else {
-          setDropdownPosition('bottom');
+          setDropdownPosition("bottom");
         }
       }
     };
@@ -361,34 +382,36 @@ const CarouselGrid = ({
         if (showDropdown) {
           const target = event.target as Element;
           // Check if click is outside both the button and dropdown
-          const isOutsideButton = !target.closest('[data-categories-button]');
-          const isOutsideDropdown = !target.closest('[data-categories-dropdown]');
-          
+          const isOutsideButton = !target.closest("[data-categories-button]");
+          const isOutsideDropdown = !target.closest(
+            "[data-categories-dropdown]"
+          );
+
           if (isOutsideButton && isOutsideDropdown) {
             setShowDropdown(false);
             setButtonRect(null);
           }
         }
       };
-      
+
       if (showDropdown) {
         // Prevent body scroll when dropdown is open
-        document.body.style.overflow = 'hidden';
-        document.addEventListener('mousedown', handleClickOutside);
+        document.body.style.overflow = "hidden";
+        document.addEventListener("mousedown", handleClickOutside);
       } else {
         // Restore body scroll when dropdown is closed
-        document.body.style.overflow = 'unset';
+        document.body.style.overflow = "unset";
       }
-      
+
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
         // Cleanup: restore scroll when component unmounts
-        document.body.style.overflow = 'unset';
+        document.body.style.overflow = "unset";
       };
     }, [showDropdown]);
 
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto px-[24px] 2xl:px-0">
+      <div className="py-4 max-w-screen-2xl mx-auto px-[24px] xl:px-0">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-2">
@@ -403,7 +426,7 @@ const CarouselGrid = ({
             ref={scrollContainerRef}
           >
             <div className="relative">
-              <div 
+              <div
                 data-categories-button
                 className={`flex items-center gap-1 px-[12px] py-[6px] border-[1px] hover:border-[#444] border-[#e2e2e2]  rounded-full whitespace-nowrap cursor-pointer transition-colors text-[#444444] ${
                   selectedPills.length > 0 ? "bg-[#f0f0f0] border-[#222]" : ""
@@ -416,31 +439,45 @@ const CarouselGrid = ({
                   </div>
                 )}
                 <span className="text-sm font-halyard-text">Categories</span>
-                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="ml-1">
-                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg
+                  width="12"
+                  height="8"
+                  viewBox="0 0 12 8"
+                  fill="none"
+                  className="ml-1"
+                >
+                  <path
+                    d="M1 1.5L6 6.5L11 1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
-              
+
               {showDropdown && buttonRect && (
-                <div 
+                <div
                   data-categories-dropdown
                   className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[230px] max-h-[300px] overflow-y-auto"
                   style={{
-                    top: dropdownPosition === 'top' 
-                      ? `${Math.max(10, buttonRect.top - 300)}px`
-                      : `${buttonRect.bottom + 8}px`,
+                    top:
+                      dropdownPosition === "top"
+                        ? `${Math.max(10, buttonRect.top - 300)}px`
+                        : `${buttonRect.bottom + 8}px`,
                     left: `${Math.max(10, Math.min(buttonRect.left, window.innerWidth - 250))}px`,
                     // On mobile, add extra bottom margin to avoid bottom navbar
-                    ...(window.innerWidth < 768 && dropdownPosition === 'bottom' && {
-                      maxHeight: `${Math.min(300, window.innerHeight - buttonRect.bottom - 80)}px`
-                    })
+                    ...(window.innerWidth < 768 &&
+                      dropdownPosition === "bottom" && {
+                        maxHeight: `${Math.min(300, window.innerHeight - buttonRect.bottom - 80)}px`,
+                      }),
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="p-2">
                     {(navigationItems || []).map((pill, index) => {
                       const isSelected = selectedPills.includes(pill.id);
-                      
+
                       return (
                         <div
                           key={pill.id || index}
@@ -448,27 +485,41 @@ const CarouselGrid = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             if (isSelected) {
-                              setSelectedPills(prev => prev.filter(id => id !== pill.id));
+                              setSelectedPills((prev) =>
+                                prev.filter((id) => id !== pill.id)
+                              );
                             } else {
-                              setSelectedPills(prev => [...prev, pill.id]);
+                              setSelectedPills((prev) => [...prev, pill.id]);
                             }
                           }}
                         >
                           {pill.icon && (
-                            <pill.icon
-                              size={16}
-                              className="text-[#222222]"
-                            />
+                            <pill.icon size={16} className="text-[#222222]" />
                           )}
-                          <span className="text-[14px] font-halyard-text text-[#222222] flex-1">{pill.label}</span>
-                          <div className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
-                            isSelected 
-                              ? "bg-purple-600 border-purple-600" 
-                              : "border-gray-300"
-                          }`}>
+                          <span className="text-[14px] font-halyard-text text-[#222222] flex-1">
+                            {pill.label}
+                          </span>
+                          <div
+                            className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
+                              isSelected
+                                ? "bg-purple-600 border-purple-600"
+                                : "border-gray-300"
+                            }`}
+                          >
                             {isSelected && (
-                              <svg width="20" height="12" viewBox="0 0 10 8" fill="none">
-                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <svg
+                                width="20"
+                                height="12"
+                                viewBox="0 0 10 8"
+                                fill="none"
+                              >
+                                <path
+                                  d="M1 4L3.5 6.5L9 1"
+                                  stroke="white"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
                               </svg>
                             )}
                           </div>
@@ -480,17 +531,19 @@ const CarouselGrid = ({
               )}
             </div>
 
-            {(navigationItems || []).map((pill, index) => {
+            {(navigationItems || []).slice(0, 5).map((pill, index) => {
               const isSelected = selectedPills.includes(pill.id);
-              
+
               return (
                 <div
                   key={pill.id || index}
                   onClick={() => {
                     if (isSelected) {
-                      setSelectedPills(prev => prev.filter(id => id !== pill.id));
+                      setSelectedPills((prev) =>
+                        prev.filter((id) => id !== pill.id)
+                      );
                     } else {
-                      setSelectedPills(prev => [...prev, pill.id]);
+                      setSelectedPills((prev) => [...prev, pill.id]);
                     }
                   }}
                   className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
@@ -500,22 +553,34 @@ const CarouselGrid = ({
                   }`}
                 >
                   {pill.icon && (
-                    <pill.icon
-                      size={16}
-                      className="text-gray-600"
-                    />
+                    <pill.icon size={16} className="text-gray-600" />
                   )}
-                  <span className="text-sm font-halyard-text">{pill.label}</span>
+                  <span className="text-sm font-halyard-text">
+                    {pill.label}
+                  </span>
                   {isSelected && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedPills(prev => prev.filter(id => id !== pill.id));
+                        setSelectedPills((prev) =>
+                          prev.filter((id) => id !== pill.id)
+                        );
                       }}
                       className="ml-1 hover:cursor-pointer w-4 h-4 flex items-center justify-center text-gray-500 hover:text-[#444444]"
                     >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M9 3L3 9M3 3L9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M9 3L3 9M3 3L9 9"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </button>
                   )}
@@ -525,7 +590,7 @@ const CarouselGrid = ({
           </div>
         )}
 
-        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-4">
+        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 gap-y-4 gap-x-4">
           {filteredRecommendations
             .slice(0, visibleCards)
             .map((recommendation) => (
@@ -553,7 +618,7 @@ const CarouselGrid = ({
             <button
               onClick={handleShowMore}
               disabled={isLoading}
-              className="px-[46px] py-[10px] min-w-[174.4px] hover:cursor-pointer min-h-[43.6px] bg-white border border-gray-300 text-[#444444] rounded-lg hover:border-gray-400 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-[46px] py-[10px] w-full md:w-[174.4px] hover:cursor-pointer min-h-[43.6px] bg-white border border-gray-300 text-[#444444] rounded-lg hover:border-gray-400 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-1">
@@ -576,7 +641,6 @@ const CarouselGrid = ({
       </div>
     );
   }
-
   if (variant === "museums") {
     const [currentMuseumIndex, setCurrentMuseumIndex] = useState(0);
     const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -619,7 +683,7 @@ const CarouselGrid = ({
     };
 
     return (
-      <div className="py-4 max-w-screen-2xl  mx-auto 2xl:px-0">
+      <div className="py-4 max-w-screen-[1200px] mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
@@ -650,13 +714,13 @@ const CarouselGrid = ({
 
         <div className="hidden md:block">
           <div
-            className="flex gap-4 overflow-x-scroll h-[369px] scrollbar-hide"
+            className="flex gap-6 overflow-x-scroll h-[369px] scrollbar-hide"
             ref={scrollContainerRef}
           >
             {recommendations.map((museum) => (
               <div
                 key={museum.id}
-                className="flex-shrink-0 w-80 cursor-pointer group max-w-[280px] h-[354px] relative"
+                className="flex-shrink-0 cursor-pointer group w-[calc(24%-10px)] h-[354px] relative"
               >
                 <div className="flex justify-center relative h-[15px] items-center flex-col ">
                   <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
@@ -702,10 +766,10 @@ const CarouselGrid = ({
         <div className="md:hidden">
           <div className="relative overflow-hidden w-full max-w-[420px] mx-auto">
             <div
-              className="flex transition-transform duration-500 ease-out"
+              className="flex gap-4 transition-transform duration-500 ease-out"
               style={{
-                transform: `translateX(-${currentMuseumIndex * 25}%)`,
-                width: `${recommendations.length * 25}%`,
+                transform: `translateX(-${currentMuseumIndex * 23.5}%)`,
+                width: `${recommendations.length * 23.5}%`,
               }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -715,8 +779,8 @@ const CarouselGrid = ({
                 const active = index === currentMuseumIndex;
 
                 return (
-                  <div key={museum.id} className="w-[25%] shrink-0 px-2">
-                    <div className="relative h-[354px] rounded-lg overflow-hidden shadow-lg">
+                  <div key={museum.id} className="w-[23.5%] shrink-0">
+                    <div className="relative h-[334px] rounded-lg overflow-hidden shadow-lg">
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
                           className={`w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg transition-all duration-150 ease-in-out ${
@@ -835,36 +899,56 @@ const CarouselGrid = ({
     };
 
     return (
-      <div className="py-4">
-        <div className="flex justify-between items-center mb-4 px-[24px] xl:px-0 max-w-[1200px] mx-auto">
+      <div className="py-4 px-[24px] xl:px-0">
+        <div className="flex justify-between items-center  max-w-[1200px] mx-auto">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
           </h2>
         </div>
 
         <div
-          className="mt-4 sm:mt-8 flex overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          className="mt-2 sm:mt-4 flex md:flex-row flex-col gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
         >
           {recommendations.map((guide, index) => (
             <div
               key={guide.id}
-              className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] xl:first:ml-0 xl:last:mr-0"
+              className="w-[25%] md:block hidden md:w-[24%] flex-shrink-0"
             >
-              <div className="relative group cursor-pointer">
-                <img
-                  src={guide.image}
-                  alt={guide.heading}
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg"></div>
-                <div className="absolute bottom-0 left-0 p-4 text-white">
-                  <h3 className="font-bold text-lg">{guide.heading}</h3>
-                  <p className="text-sm mt-1">{guide.description}</p>
-                </div>
+              <img
+                src={guide.image}
+                alt={guide.heading}
+                className="w-[96%] mb-2 object-cover rounded-lg"
+              />
+              <div className="text-[#444444]">
+                <h3 className="font-semibold font-halyard-text text-[17px]">
+                  {guide.heading}
+                </h3>
+                <p className="text-sm mt-1 font-halyard-text-light line-clamp-3">
+                  {guide.description}
+                </p>
               </div>
             </div>
           ))}
+           {recommendations.map((guide, index) => (
+             <div key={guide.id} className={`flex gap-4 ${index < recommendations.length - 1 ? 'border-b border-gray-200 pb-4 mb-4' : ''}`}>
+               <div className="w-[40%]">
+                 <img
+                   src={guide.image}
+                   alt={guide.heading}
+                   className="w-full h-[84px] object-cover rounded-lg"
+                 />
+               </div>
+               <div className="text-[#444444] w-[60%]">
+                 <h3 className="font-semibold font-halyard-text text-[14px]">
+                   {guide.heading}
+                 </h3>
+                 <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
+                   {guide.description}
+                 </p>
+               </div>
+             </div>
+           ))}
         </div>
       </div>
     );
