@@ -302,7 +302,7 @@ const BrowseThemes = () => {
 
   return (
     <div className=" max-w-[1200px] mt-3 mx-auto ">
-      <h2 className="text-lg sm:text-2xl tracking-wide font-heading text-[#444444] mb-4 md:mb-10">
+      <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-4 md:mb-10">
         Browse by themes{" "}
       </h2>
       <div className="relative">

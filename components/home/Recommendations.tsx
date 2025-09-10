@@ -37,25 +37,130 @@ const Recommendations = () => {
   const [recommendations, setRecommendations] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/with-details?limit=8`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch experiences");
-        }
-        const result = await response.json();
-        setRecommendations(result.data || []);
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Mock data array
+  const mockRecommendations: Experience[] = [
+    {
+      _id: "1",
+      title: "Skip-the-Line Eiffel Tower Summit Access",
+      description: "Experience the iconic Eiffel Tower with priority access to the summit",
+      price: 45,
+      oldPrice: 60,
+      sale: 25,
+      mainImage: "/images/r1.jpg.avif",
+      tagOnCards: "Bestseller",
+      rating: 4.8,
+      reviews: 2847,
+      cityName: "Paris",
+      countryName: "France",
+    },
+    {
+      _id: "2",
+      title: "London Eye Fast Track Entry",
+      description: "Skip the queues and enjoy panoramic views of London",
+      price: 32,
+      oldPrice: 40,
+      sale: 20,
+      mainImage: "/images/r2.jpg.avif",
+      tagOnCards: "Popular",
+      rating: 4.6,
+      reviews: 1923,
+      cityName: "London",
+      countryName: "United Kingdom",
+    },
+    {
+      _id: "3",
+      title: "Dubai Desert Safari with BBQ Dinner",
+      description: "Experience the magic of the Arabian desert with traditional entertainment",
+      price: 85,
+      oldPrice: 120,
+      sale: 29,
+      mainImage: "/images/r3.jpg.avif",
+      tagOnCards: "Limited Time",
+      rating: 4.9,
+      reviews: 3421,
+      cityName: "Dubai",
+      countryName: "United Arab Emirates",
+    },
+    {
+      _id: "4",
+      title: "Colosseum Underground & Arena Floor Tour",
+      description: "Explore the hidden areas of Rome's most famous amphitheater",
+      price: 55,
+      oldPrice: 70,
+      sale: 21,
+      mainImage: "/images/r4.jpg.avif",
+      tagOnCards: "Exclusive",
+      rating: 4.7,
+      reviews: 2156,
+      cityName: "Rome",
+      countryName: "Italy",
+    },
+    {
+      _id: "5",
+      title: "Times Square Food Tour",
+      description: "Taste the best of New York's diverse culinary scene",
+      price: 75,
+      oldPrice: 95,
+      sale: 21,
+      mainImage: "/images/r1.jpg.avif",
+      tagOnCards: "Foodie Favorite",
+      rating: 4.5,
+      reviews: 1834,
+      cityName: "New York",
+      countryName: "United States",
+    },
+    {
+      _id: "6",
+      title: "Singapore Night Safari",
+      description: "Discover nocturnal wildlife in the world's first night zoo",
+      price: 48,
+      oldPrice: 60,
+      sale: 20,
+      mainImage: "/images/r2.jpg.avif",
+      tagOnCards: "Family Friendly",
+      rating: 4.4,
+      reviews: 1657,
+      cityName: "Singapore",
+      countryName: "Singapore",
+    },
+    {
+      _id: "7",
+      title: "Las Vegas Strip Helicopter Tour",
+      description: "Soar above the dazzling lights of the Las Vegas Strip",
+      price: 125,
+      oldPrice: 150,
+      sale: 17,
+      mainImage: "/images/r3.jpg.avif",
+      tagOnCards: "Thrilling",
+      rating: 4.8,
+      reviews: 987,
+      cityName: "Las Vegas",
+      countryName: "United States",
+    },
+    {
+      _id: "8",
+      title: "Tokyo Robot Restaurant Show",
+      description: "Experience the futuristic entertainment of Tokyo's robot show",
+      price: 65,
+      oldPrice: 80,
+      sale: 19,
+      mainImage: "/images/r4.jpg.avif",
+      tagOnCards: "Unique Experience",
+      rating: 4.3,
+      reviews: 1234,
+      cityName: "Tokyo",
+      countryName: "Japan",
+    },
+  ];
 
-    fetchRecommendations();
+  useEffect(() => {
+    // Simulate loading delay for better UX
+    const timer = setTimeout(() => {
+      setRecommendations(mockRecommendations);
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const scrollLeft = () => {

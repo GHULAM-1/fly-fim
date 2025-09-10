@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Star, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import TestimonialsViewer from "./testimonials-viewer";
 
 interface TestimonialsProps {
   variant: "things-to-do" | "default";
@@ -14,6 +15,8 @@ interface TestimonialsProps {
 
 const Testimonials = ({ variant }: TestimonialsProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -40,7 +43,7 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
       country: "Italy",
       date: "Jul 2025",
       avatar: "/images/t1.jpeg",
-      images: ["/images/d4.jpg.avif", "/images/d3.jpg.avif"],
+      images: ["/images/d4.jpg.avif", "/images/d3.jpg.avif", "/images/d3.jpg.avif", "/images/d3.jpg.avif"],
       rating: 5,
       review:
         "Very positive experience. To change the digital tickets, just go to the cashiers (the attendants will show you the correct way) and you will be given the paper tickets. Audio guide well done and very interesting tour of the castle",
@@ -122,24 +125,28 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
 
   const renderStars = (
     rating: number,
-    width: string = "w-4",
-    height: string = "h-4"
+    width: string = "w-3.5",
+    height: string = "h-3.1"
   ) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`${width} ${height} ${
-          i < rating ? "text-pink-500 fill-pink-500" : "text-gray-300"
+        className={` w-[14px] h-[14px] ${
+          i < rating ? `text-pink-500 ${i < 4 ? "mr-[2px]" : ""} fill-pink-500` : "text-gray-300"
         }`}
       />
     ));
   };
 
-  if (variant == "things-to-do") {
-    return (
+  const handleViewGallery = (testimonial: any) => {
+    setSelectedTestimonial(testimonial);
+    setIsGalleryOpen(true);
+  };
+  return (
+    <>
       <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444] flex items-center gap-2">
+          <h2 className="text-lg sm:text-2xl font-heading text-[#444444] flex items-center gap-2">
             Millions love flying out with us
             <img src="/images/info3.png" alt="" className="w-10" />
           </h2>
@@ -170,12 +177,12 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
               className=" bg-white border rounded-xl flex-shrink-0 w-[287px]"
             >
               {/* Header with avatar, name, country and rating */}
-              <div className="flex justify-between px-4 py-2 flex-col items-start mb-4">
+              <div className="flex justify-between px-4 py-2 gap-1 flex-col items-start mb-0">
                 <div className="flex items-center gap-3">
                   <img
                     src={testimonial.avatar}
                     alt={testimonial.name}
-                    className="w-9 h-9 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
                     <h3 className="text-[16px] font-halyard-text text-[#444444]">
@@ -197,15 +204,25 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
               </div>
 
               {/* Images */}
-              <div className="flex px-4 gap-2 mb-4">
-                {testimonial.images.map((image, index) => (
+              <div className="flex px-4 gap-2 mb-2 relative">
+                {testimonial.images.slice(0, 3).map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Experience image ${index + 1}`}
-                    className="w-1/2 h-24 object-cover rounded-xl"
+                    className="w-[30%] h-[108px] object-cover rounded-md"
                   />
                 ))}
+                {testimonial.images.length > 3 && (
+                  <button
+                    onClick={() => handleViewGallery(testimonial)}
+                    className="absolute hover:cursor-pointer right-6 top-0 w-[27%] h-[108px] bg-black/50  flex items-center justify-center rounded-md hover:bg-opacity-70 transition-all duration-200"
+                  >
+                    <div className="text-white text-center">
+                      <div className="text-[13px] ">see more</div>
+                    </div>
+                  </button>
+                )}
               </div>
 
               {/* Review text */}
@@ -231,94 +248,17 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
           ))}
         </div>
       </div>
-    );
-  }
-  return (
-    <div className="py-4 sm:py-10 max-w-screen-2xl mx-auto 2xl:px-0">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-gray-700 flex items-center gap-2">
-          Millions love flying out with us
-          <img src="/images/info3.png" alt="" className="w-10" />
-        </h2>
-        <div className="hidden md:flex items-center gap-2">
-          <Link
-            href="#"
-            className="text-sm text-gray-500 underline underline-offset-4 whitespace-nowrap"
-          >
-            See all
-          </Link>
-        </div>
-      </div>
-      <Carousel>
-        <CarouselContent className="px-4 gap-4">
-          {testimonials.map((testimonial) => (
-            <CarouselItem
-              key={testimonial.id}
-              className="p-4 bg-white border rounded-xl basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-            >
-              {/* Header with avatar, name, country and rating */}
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <h3 className="text-lg font-halyard-text text-[#444444]">
-                      {testimonial.name}
-                    </h3>
-                    <p className="text-[#666666] font-halyard-text-light text-sm">
-                      {testimonial.country}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="flex items-center">
-                    {renderStars(testimonial.rating)}
-                  </div>
-                  <span className="text-pink-500 font-semibold ml-1">
-                    {testimonial.rating}/5
-                  </span>
-                </div>
-              </div>
 
-              {/* Images */}
-              <div className="flex gap-2 mb-4">
-                {testimonial.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Experience image ${index + 1}`}
-                    className="w-1/2 h-24 object-cover rounded-lg"
-                  />
-                ))}
-              </div>
-
-              {/* Review text */}
-              <p className="text-gray-700 text-sm font-halyard-text-light mb-3">
-                {testimonial.review}
-              </p>
-
-              {/* View original review link */}
-              <Link
-                href="#"
-                className="text-blue-600 text-sm font-halyard-text hover:underline block mb-4"
-              >
-                View original review in {testimonial.originalLanguage}
-              </Link>
-
-              {/* Experience name */}
-              <div className="border-t pt-3">
-                <p className="text-gray-600 text-sm font-halyard-text-light underline">
-                  {testimonial.experience}
-                </p>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
-    </div>
+      {/* Gallery Modal */}
+      {selectedTestimonial && (
+        <TestimonialsViewer
+          images={selectedTestimonial.images}
+          itemName={`${selectedTestimonial.name}'s Photos`}
+          isOpen={isGalleryOpen}
+          onClose={() => setIsGalleryOpen(false)}
+        />
+      )}
+    </>
   );
 };
 

@@ -6,7 +6,7 @@ const Stats = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="max-w-[1200px] mx-auto my-[44px] py-[32px] xl:px-0">
+    <div className="max-w-[1200px] mx-auto my-[20px] md:my-[50px] py-[32px] xl:px-0">
       <h2 className="text-lg sm:text-[30px] font-heading text-[#444444]">
         {t("stats.title")}
       </h2>

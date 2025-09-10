@@ -235,7 +235,7 @@ export default function CategoryPage() {
 
   const categoryName = params.category as string;
   const city = params.city as string;
-  const isWorldwideRoute = city === "worldwide";
+  const isWorldwideRoute = city.toLowerCase() === "worldwide";
 
   const decodedCity = decodeURIComponent(city);
 
@@ -1863,7 +1863,7 @@ export default function CategoryPage() {
               </>
             ) : (
               <div>
-                <div className="mb-[34px]">
+                <div className="mb-[24px]">
                   <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem>
@@ -1885,7 +1885,7 @@ export default function CategoryPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div>
-                    <h1 className="text-[21px]">{formattedCategoryName} </h1>
+                    <h1 className="text-[21px] font-halyard-text text-[#444444] font-semibold">{formattedCategoryName} Worldwide</h1>
                   </div>
                   <div className="flex items-center pt-[6px]">
                     <Drawer
@@ -2123,7 +2123,7 @@ export default function CategoryPage() {
           </div>
           {currentCategory.components.testimonials && !isWorldwideRoute && (
             <div className="mb-10 px-[24px] xl:px-0">
-              <Testimonials variant="things-to-do" />
+              <Testimonials variant="default" />
             </div>
           )}
           <div className="mb-10 px-[24px] xl:px-0">

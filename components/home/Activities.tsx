@@ -30,25 +30,66 @@ const Activities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/experiences/with-details?limit=8`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch activities");
-        }
-        const result = await response.json();
-        setActivities(result.data.sort(() => 0.5 - Math.random()) || []);
-      } catch (error) {
-        console.error("Error fetching activities:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Mock data array
+  const mockActivities: Activity[] = [
+    {
+      _id: "1",
+      title: "Museum Tours",
+      mainImage: "/images/a1.jpg.avif",
+      cityName: "Paris",
+    },
+    {
+      _id: "2",
+      title: "Food & Drink",
+      mainImage: "/images/a2.jpg.avif",
+      cityName: "Tokyo",
+    },
+    {
+      _id: "3",
+      title: "Adventure Sports",
+      mainImage: "/images/a3.png.avif",
+      cityName: "Dubai",
+    },
+    {
+      _id: "4",
+      title: "Cultural Experiences",
+      mainImage: "/images/a4.jpg.avif",
+      cityName: "Rome",
+    },
+    {
+      _id: "5",
+      title: "Nightlife & Shows",
+      mainImage: "/images/a5.jpg.avif",
+      cityName: "Las Vegas",
+    },
+    {
+      _id: "6",
+      title: "Nature & Wildlife",
+      mainImage: "/images/a6.jpg.avif",
+      cityName: "Singapore",
+    },
+    {
+      _id: "7",
+      title: "Shopping & Markets",
+      mainImage: "/images/a1.jpg.avif",
+      cityName: "London",
+    },
+    {
+      _id: "8",
+      title: "Historical Sites",
+      mainImage: "/images/a2.jpg.avif",
+      cityName: "New York",
+    },
+  ];
 
-    fetchActivities();
+  useEffect(() => {
+    // Simulate loading delay for better UX
+    const timer = setTimeout(() => {
+      setActivities(mockActivities.sort(() => 0.5 - Math.random()));
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const scrollLeft = () => {

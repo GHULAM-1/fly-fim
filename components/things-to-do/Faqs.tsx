@@ -53,7 +53,7 @@ const Faqs = () => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2" className="border-b py-3">
-          <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-gray-700">
+          <AccordionTrigger className="hover:cursor-pointer text-lg sm:text-2xl font-semibold md:font-bold text-[#444444]">
             Plan Your Visit To London
           </AccordionTrigger>
           <AccordionContent className="font-halyard-text-light text-[#444444]">

@@ -67,7 +67,7 @@ export default function MobPopularThings({
   };
 
   return (
-    <div className="py-4 max-w-screen-2xl mx-auto   2xl:px-0">
+    <div className="py-4 max-w-screen-2xl mx-auto px-[24px]  2xl:px-0">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-lg sm:text-2xl font-halyard-text md:font-bold text-[#444444]">
           {title}
@@ -110,7 +110,7 @@ export default function MobPopularThings({
             <Link
               key={recommendation.id}
               href={`/things-to-do/${recommendation.city}`}
-              className="flex-shrink-0 cursor-pointer group w-[159px] md:w-[190px]"
+              className="flex-shrink-0 cursor-pointer group w-[165px] md:w-[190px]"
             >
               <div className=" relative flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 pr-2 rounded-lg">
                 <div>

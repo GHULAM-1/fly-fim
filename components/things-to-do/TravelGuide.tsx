@@ -4,13 +4,13 @@ import { Diamond, Calendar, Clock, MapPin } from "lucide-react";
 const TravelGuide = () => {
   return (
     <div className="py-10 max-w-screen-2xl mx-auto 2xl:px-0">
-      <h2 className="text-lg sm:text-2xl font-semibold md:font-bold text-[#444444]">
+      <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
         Get inspired for your London visit
       </h2>
 
-      <div className="flex flex-col md:flex-row gap-6 mt-4">
+      <div className="flex flex-col hover:cursor-pointer md:flex-row gap-6 mt-4">
         {/* Large Purple Card */}
-        <div className="w-full md:w-1/2 h-[80%] bg-[#330066] rounded-xl overflow-hidden relative p-3 group">
+        <div className="w-full md:w-1/2 h-[80%] bg-[#330066] rounded-xl overflow-hidden relative p-4 group">
           <img
             src="https://cdn-imgix.headout.com/blog-guide/Map.svg?w=325.5&h=306.6&fm=svg&crop=faces&auto=compress%2Cformat&fit=min"
             alt=""
@@ -21,41 +21,41 @@ const TravelGuide = () => {
             {/* Image Section */}
             <div className="w-full md:w-1/2 h-full rounded-lg overflow-hidden z-10">
               <img
-                src="/images/d1.jpg.avif"
+                src="/travel.jpg"
                 alt="London Eye"
                 className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-all duration-300"
               />
             </div>
 
             {/* Content Section */}
-            <div className="w-full md:w-1/2 p-3 md:p-6 text-white relative z-10">
-              <h3 className="text-xl font-bold mb-3">London Travel Guide</h3>
+            <div className="w-full md:w-1/2 p-3 md:pl-6 text-white relative z-10">
+              <h3 className="text-xl font-halyard-text font-semibold mb-2">London Travel Guide</h3>
 
-              <p className="text-purple-100 text-sm leading-relaxed">
+              <p className="text-white font-halyard-text text-[13px]">
                 Top things to do, budget hacks, public transportation, best
                 restaurants & hotels, culture tips & more inside!
               </p>
               <div className="my-3 h-[0.5px] w-full bg-gray-300" />
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-xs">
+              <div className="space-y-3 font-halyard-text mb-6">
+                <div className="flex items-center gap-2 text-[13px]">
                   <Diamond className="w-4 h-4" />
                   <span>Top attractions & hidden gems</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-[13px]">
                   <Clock className="w-4 h-4" />
                   <span>Tips on tickets and timings</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-[13px]">
                   <Calendar className="w-4 h-4" />
                   <span>Best of food, shopping & fun</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-[13px]">
                   <MapPin className="w-4 h-4" />
                   <span>Seasonal and local events</span>
                 </div>
               </div>
 
-              <button className="text-sm bg-white text-purple-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              <button className="text-sm font-halyard-text bg-white text-purple-800 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                 Get Inspired
               </button>
             </div>

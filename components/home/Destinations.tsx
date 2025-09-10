@@ -29,42 +29,98 @@ const Destinations = () => {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Mock data array
+  const mockDestinations: Destination[] = [
+    {
+      id: "1",
+      description: "Things to do in New York",
+      place: "United States",
+      city: "New York",
+      slug: "new-york",
+      image: cityImageMap["New York"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "2",
+      description: "Things to do in London",
+      place: "United Kingdom",
+      city: "London",
+      slug: "london",
+      image: cityImageMap["London"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "3",
+      description: "Things to do in Dubai",
+      place: "United Arab Emirates",
+      city: "Dubai",
+      slug: "dubai",
+      image: cityImageMap["Dubai"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "4",
+      description: "Things to do in Rome",
+      place: "Italy",
+      city: "Rome",
+      slug: "rome",
+      image: cityImageMap["Rome"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "5",
+      description: "Things to do in Paris",
+      place: "France",
+      city: "Paris",
+      slug: "paris",
+      image: cityImageMap["Paris"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "6",
+      description: "Things to do in Singapore",
+      place: "Singapore",
+      city: "Singapore",
+      slug: "singapore",
+      image: cityImageMap["Singapore"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "7",
+      description: "Things to do in Las Vegas",
+      place: "United States",
+      city: "Las Vegas",
+      slug: "las-vegas",
+      image: cityImageMap["Las Vegas"] || "/images/d1.jpg.avif",
+    },
+    {
+      id: "8",
+      description: "Things to do in Tokyo",
+      place: "Japan",
+      city: "Tokyo",
+      slug: "tokyo",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: "9",
+      description: "Things to do in Barcelona",
+      place: "Spain",
+      city: "Barcelona",
+      slug: "barcelona",
+      image: "/images/d1.jpg.avif",
+    },
+    {
+      id: "10",
+      description: "Things to do in Sydney",
+      place: "Australia",
+      city: "Sydney",
+      slug: "sydney",
+      image: "/images/d1.jpg.avif",
+    },
+  ];
+
   useEffect(() => {
-    const fetchDestinations = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/cities`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch cities");
-        }
-        const result = await response.json();
+    // Simulate loading delay for better UX
+    const timer = setTimeout(() => {
+      setDestinations(mockDestinations);
+      setLoading(false);
+    }, 500);
 
-        const uniqueCities = new Map<string, Destination>();
-
-        result.data.forEach((city: any) => {
-          if (!uniqueCities.has(city.cityName)) {
-            const slug = city.cityName.toLowerCase().replace(/\s+/g, "-");
-            uniqueCities.set(city.cityName, {
-              id: city._id,
-              description: `Things to do in ${city.cityName}`,
-              place: city.countryName,
-              city: city.cityName,
-              slug: slug,
-              image: cityImageMap[city.cityName] || "/images/d1.jpg.avif",
-            });
-          }
-        });
-
-        setDestinations(Array.from(uniqueCities.values()));
-      } catch (error) {
-        console.error("Error fetching destinations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDestinations();
+    return () => clearTimeout(timer);
   }, []);
 
   const scrollLeft = () => {
@@ -138,19 +194,19 @@ const Destinations = () => {
         </div>
       </div>
       <div
-        className="mt-4 sm:mt-4 flex overflow-x-scroll -ml-4 scrollbar-hide"
+        className="mt-4 sm:mt-4 flex overflow-x-scroll sm:ml-0 -ml-4 scrollbar-hide"
         ref={scrollContainerRef}
       >
         {destinations.map((destination) => (
           <Link
             href={`/things-to-do/${destination.slug}`}
             key={destination.id}
-            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4 hover:-translate-y-2 transition-all duration-300 pt-2"
+            className="basis-2/5 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 shrink-0 pl-4 sm:pl-0 hover:-translate-y-2 transition-all duration-300 pt-2"
           >
             <img
               src={destination.image}
               alt={destination.description}
-              className="rounded"
+              className="rounded h-[65%]"
             />
             <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight max-w-32">
               {destination.description}
