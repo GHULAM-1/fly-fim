@@ -26,7 +26,12 @@ const DateSelection: React.FC<DateSelectionProps> = ({
     const startDate = new Date(centerDate);
     startDate.setDate(centerDate.getDate() - 2);
 
-    for (let i = 0; i < 7; i++) {
+    // Show 7 days on desktop, 5 days on mobile (but 7 on very small screens for scroll)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const isVerySmallScreen = typeof window !== 'undefined' && window.innerWidth < 375;
+    const daysToShow = isMobile && !isVerySmallScreen ? 5 : 7;
+
+    for (let i = 0; i < daysToShow; i++) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
       week.push({
@@ -49,6 +54,17 @@ const DateSelection: React.FC<DateSelectionProps> = ({
     setWeekDisplay(generateWeekDays(center));
   }, []);
 
+  // Handle window resize to update date display
+  useEffect(() => {
+    const handleResize = () => {
+      const center = selectedDate || new Date();
+      setWeekDisplay(generateWeekDays(center));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [selectedDate]);
+
   const handleDateSelectFromCalendar = (date: Date) => {
     onDateSelect(date);
     setWeekDisplay(generateWeekDays(date));
@@ -68,7 +84,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
         </div>
 
         <div className="mt-6">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-2 max-[375px]:overflow-x-auto max-[375px]">
             {weekDisplay.map((d) => {
               const isSelected = selectedDate
                 ? formatDateKey(d.fullDate) === formatDateKey(selectedDate)
@@ -78,28 +94,28 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                 <button
                   key={d.date}
                   onClick={() => onDateSelect(d.fullDate)}
-                  className={`flex flex-col  items-center justify-center  md:p-3 w-15 md:w-22 h-17 md:h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
+                  className={`flex flex-col items-center justify-center md:p-3 px-[2px] py-[16px] md:w-22 w-[calc(100%/6.2)] h-19 md:h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
                     isSelected
-                      ? "border-purple-600 bg-purple-100 rounded-lg border text-purple-800"
-                      : "border border-transparent hover:border-gray-400 hover:bg-gray-50 rounded-lg"
+                      ? "border-purple-600 bg-purple-100 md:rounded-lg rounded-[4px] border text-purple-800"
+                      : "border border-transparent hover:border-gray-400 hover:bg-gray-50 md:rounded-lg rounded-[4px]"
                   }`}
                 >
                   <span
-                    className={`text-sm uppercase font-halyard-text ${
+                    className={`md:text-sm text-xs uppercase font-halyard-text ${
                       isSelected ? "text-purple-800" : "text-gray-500"
                     }`}
                   >
                     {d.day}
                   </span>
                   <span
-                    className={`  font-halyard-text mt-1 ${
+                    className={`  font-halyard-text md:text-sm text-xs md:mt-1 mt-0.5 ${
                       isSelected ? "text-purple-800" : "text-[#444444]"
                     }`}
                   >
                     {d.date}
                   </span>
                   <span
-                    className={`text-xs mt-1 font-halyard-text-light ${
+                    className={`md:text-xs text-[10px] md:mt-1 mt-0.5 font-halyard-text-light ${
                       isSelected ? "text-purple-800" : "text-gray-500"
                     }`}
                   >
@@ -111,7 +127,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
 
             <button
               onClick={() => setIsCalendarOpen(true)}
-              className="flex flex-col items-center justify-center p-1 w-22 h-20 flex-shrink-0 transition-colors duration-200 cursor-pointer hover:border-gray-400 hover:bg-gray-50 hover:border hover:rounded-lg"
+              className="flex flex-col items-center justify-center p-1 md:w-22 w-[calc(100%/6)] h-20 flex-shrink-0 transition-colors duration-200 cursor-pointer hover:border-gray-400 hover:bg-gray-50 hover:border hover:rounded-lg"
             >
               <Calendar size={20} className="text-gray-700" />
               <span className="underline font-halyard-text text-[#444444] mt-2 text-sm">

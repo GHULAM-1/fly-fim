@@ -71,7 +71,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             disabled={isPastDate}
             onClick={() => onDateSelect(date)}
             className={cn(
-              "h-14 rounded-lg text-sm font-medium relative transition-colors duration-150 flex flex-col items-center justify-center",
+              "h-14 rounded-lg hover:cursor-pointer text-sm font-medium relative transition-colors duration-150 flex flex-col items-center justify-center",
               isPastDate
                 ? "text-gray-300 cursor-not-allowed"
                 : "hover:bg-purple-50 text-[#444444]",

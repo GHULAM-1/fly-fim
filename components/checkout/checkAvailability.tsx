@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import CalendarModal from "@/components/booking/CalendarModal";
 import { useNavigationStore } from "@/lib/store/navigationStore";
 
@@ -13,6 +14,8 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
   itemName,
   city,
 }) => {
+  const router = useRouter();
+  const params = useParams();
   const { isModalOpen: isCalendarOpen, setIsModalOpen: setIsCalendarOpen } =
     useNavigationStore();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -28,6 +31,27 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
       month: "long",
       year: "numeric",
     });
+  };
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setIsCalendarOpen(false);
+    
+    // Redirect to booking page with selected date
+    const dateString = date.toISOString();
+    const categoryName = params.category as string;
+    const subcategory = params.subcategory as string;
+    const itemId = params.itemId as string;
+    
+    const bookingUrl = `/booking?itemName=${encodeURIComponent(
+      itemName
+    )}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(
+      categoryName
+    )}&subcategory=${encodeURIComponent(
+      subcategory
+    )}&itemId=${encodeURIComponent(itemId)}&date=${dateString}`;
+    
+    router.push(bookingUrl);
   };
 
   return (
@@ -87,7 +111,7 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
         isOpen={isCalendarOpen}
         onClose={() => setIsCalendarOpen(false)}
         selectedDate={selectedDate}
-        onDateSelect={setSelectedDate}
+        onDateSelect={handleDateSelect}
         itemName={itemName}
         city={city}
         position="top"

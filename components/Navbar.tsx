@@ -290,8 +290,8 @@ const Navbar = () => {
 
   // Check if we're on a checkout page
   const isCheckoutPage = pathname.includes('/things-to-do/') && pathname.split('/').length >= 5;
-  
-  const isNavSolid = scrolled || (pathname !== "/" && !isCheckoutPage) || (isCheckoutPage && window.innerWidth >= 768);
+  console.log(isCheckoutPage);
+  const isNavSolid = scrolled || (pathname !== "/" || isCheckoutPage) || (isCheckoutPage && window.innerWidth >= 768);
   const navTextColorClass = isNavSolid ? "text-[#444444]" : "text-white";
 
   return (
@@ -373,7 +373,7 @@ const Navbar = () => {
                 isInputFocused
                   ? "min-w-sm xl:min-w-md"
                   : "min-w-xs xl:min-w-sm"
-              }`}
+              } ${!isNavSolid ? "opacity-0 pointer-events-none" : "opacity-100"}`}
                 onClick={() => {
                   setIsSearchOpen(true);
                   inputRef.current?.focus();
