@@ -24,9 +24,12 @@ const CheckoutNav: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Only run on desktop (md and up)
+    // Only run on desktop (md and up) - completely disable on mobile
     const isDesktop = window.innerWidth >= 768;
-    if (!isDesktop) return;
+    if (!isDesktop) {
+      setActive(false);
+      return;
+    }
 
     // Assume the main header height is 72px (adjust this value based on your actual header height)
     const headerHeight = 72;
@@ -76,8 +79,24 @@ const CheckoutNav: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Only run initial check on desktop
+    if (window.innerWidth >= 768) {
+      handleScroll(); // Initial check
+    }
+    
+    // Handle resize to disable on mobile
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setActive(false);
+      }
+    };
+    
+    window.addEventListener("resize", handleResize);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
