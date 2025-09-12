@@ -78,21 +78,23 @@ const CheckoutNav: React.FC = () => {
       }
     };
 
+    // Only add event listeners on desktop
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Only run initial check on desktop
-    if (window.innerWidth >= 768) {
-      handleScroll(); // Initial check
-    }
     
     // Handle resize to disable on mobile
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setActive(false);
+        // Remove event listeners on mobile
+        window.removeEventListener("scroll", handleScroll);
+      } else {
+        // Add event listeners back on desktop
+        window.addEventListener("scroll", handleScroll, { passive: true });
       }
     };
-    
+
     window.addEventListener("resize", handleResize);
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);

@@ -113,12 +113,13 @@ const FaqSection: React.FC = () => {
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
       });
 
-      // Create map
+      // Create map with lazy initialization to prevent layout shifts
       const map = L.map(mapContainerRef.current, {
         center: [37.3857231, -5.9922638], // Seville coordinates
         zoom: 15,
         zoomControl: true,
         attributionControl: true,
+        preferCanvas: true, // Use canvas renderer for better performance
       });
 
       // Add OpenStreetMap tiles
@@ -137,13 +138,35 @@ const FaqSection: React.FC = () => {
       `);
 
       mapRef.current = map;
+      
+      // Force map to invalidate size after initialization to prevent display issues
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      }, 200);
     };
 
-    // Initialize map after a short delay to ensure DOM is ready
-    const timer = setTimeout(initializeMap, 100);
+    // Only initialize if the Where section is visible to prevent layout shifts on page load
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && mapContainerRef.current && !mapRef.current) {
+          // Delay initialization slightly to prevent scroll jumping
+          setTimeout(initializeMap, 50);
+          observer.disconnect(); // Only initialize once
+        }
+      });
+    }, { 
+      threshold: 0.1,
+      rootMargin: '50px 0px' // Start loading when element is close to viewport
+    });
+
+    if (mapContainerRef.current) {
+      observer.observe(mapContainerRef.current);
+    }
     
     return () => {
-      clearTimeout(timer);
+      observer.disconnect();
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -602,7 +625,7 @@ const FaqSection: React.FC = () => {
             <div className="rounded-lg overflow-hidden">
               <div 
                 ref={mapContainerRef}
-                className="w-full h-[300px] md:h-auto rounded-lg"
+                className="w-full h-[300px] md:h-auto rounded-lg relative z-20"
                 style={{ 
                   minHeight: "300px",
                   aspectRatio: "unset"

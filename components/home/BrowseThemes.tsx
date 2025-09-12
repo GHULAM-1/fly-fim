@@ -28,6 +28,7 @@ import {
   ShoppingBag,
   Calendar,
   History,
+  Flag,
 } from "lucide-react";
 
 type TabKey =
@@ -224,7 +225,7 @@ const BrowseThemes = () => {
 
   const categories: Array<{ key: TabKey; icon: any; label: string }> = [
     { key: "Tickets", icon: Ticket, label: "Tickets" },
-    { key: "Tours", icon: MapPin, label: "Tours" },
+    { key: "Tours", icon: Flag, label: "Tours" },
     { key: "Transportation", icon: Car, label: "Transportation" },
     { key: "Travel Services", icon: Luggage, label: "Travel Services" },
     { key: "Cruises", icon: Ship, label: "Cruises" },

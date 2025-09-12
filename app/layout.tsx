@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CurrencyProvider } from "@/lib/currency-context";
 import Tabs from "@/components/Tabs";
 import { usePathname } from "next/navigation";
@@ -13,6 +13,8 @@ import { Toaster } from "sonner";
 import { ToastContainerComponent } from "@/components/toast";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { CalendarProvider } from "@/lib/hooks/useCalendarState";
+import SplashScreen from "@/components/ui/SplashScreen";
+import { useSplashScreen } from "@/lib/hooks/useSplashScreen";
 
 // --- FONT DEFINITIONS (No changes here) ---
 const heading = localFont({
@@ -53,6 +55,12 @@ const displayLight = localFont({
 const RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
+  // Initialize splash screen - shows on every route change
+  const { isVisible: showSplash } = useSplashScreen({
+    minDuration: 4000, // Show for 4 seconds to let animation complete (frame #140+)
+    showOnRouteChange: true // Show on every navigation
+  });
+
   useEffect(() => {
     // Load saved language from localStorage
     const savedLanguage = localStorage.getItem("preferred-language");
@@ -85,10 +93,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {!isDashboard && !isBookingPage && <Navbar />}
-      {children}
-      {!isDashboard && !isBookingPage && pathname !== "/account" && <Footer />}
-      {!isDashboard && !isBookingPage && <Tabs />}
+      {/* Splash Screen - shows on every route change */}
+      <SplashScreen isVisible={showSplash} />
+      
+      {/* Main App Content */}
+      <div className={`transition-opacity duration-300 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
+        {!isDashboard && !isBookingPage && <Navbar />}
+        {children}
+        {!isDashboard && !isBookingPage && pathname !== "/account" && <Footer />}
+        {!isDashboard && !isBookingPage && <Tabs />}
+      </div>
     </>
   );
 }
@@ -104,6 +118,8 @@ export default function RootLayout({
         <title>
           Fly in Minute: Things To Do, Attractions, Cruises, Tours & Experiences
         </title>
+        {/* Preload splash screen assets */}
+        <link rel="preload" href="/loader.gif" as="image" type="image/gif" />
       </head>
       {/* --- THIS IS THE CRITICAL CHANGE --- */}
       {/* We apply all the font variables to the body tag */}

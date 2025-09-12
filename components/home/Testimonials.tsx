@@ -53,7 +53,7 @@ const Testimonials = () => {
       country: "United Kingdom",
       avatar: "D",
       avatarColor: "bg-purple-500",
-      image: "/images/t1.jpeg",
+      image: "/FLY-REVIEW.jpg",
       rating: 5,
       review:
         "Amazing experience! The tour was well organized and our guide was incredibly knowledgeable. Highly recommend this to anyone visiting the city.",

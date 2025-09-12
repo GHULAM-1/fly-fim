@@ -13,6 +13,19 @@
   display: none;
 }
 
+/* Prevent background glitches during route transitions */
+.splash-screen-active {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Smooth transitions */
+.route-transition {
+  transition: opacity 0.3s ease-in-out;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

@@ -288,10 +288,16 @@ const Navbar = () => {
   const filteredDestinations = filterResults(topDestinations, searchQuery);
   const filteredActivities = filterResults(topActivities, searchQuery);
 
-  // Check if we're on a checkout page
-  const isCheckoutPage = pathname.includes('/things-to-do/') && pathname.split('/').length >= 5;
-  console.log(isCheckoutPage);
-  const isNavSolid = scrolled || (pathname !== "/" || isCheckoutPage) || (isCheckoutPage && window.innerWidth >= 768);
+  // Check if we're on a checkout page (itemId page with 6 path segments)
+  // Example: /things-to-do/new-york/tickets/colosseum-tickets/skip-the-line-entry = 6 segments
+  const pathSegments = pathname.split('/').filter(segment => segment !== '');
+  const isCheckoutPage = pathname.includes('/things-to-do/') && pathSegments.length >= 5;
+  // Navbar should be transparent (isNavSolid = false) ONLY when:
+  // 1. On home page (pathname === "/") OR 
+  // 2. On checkout page (isCheckoutPage = true)
+  // AND not scrolled
+  const shouldBeTransparent = !scrolled && (pathname === "/" || isCheckoutPage);
+  const isNavSolid = !shouldBeTransparent;
   const navTextColorClass = isNavSolid ? "text-[#444444]" : "text-white";
 
   return (
