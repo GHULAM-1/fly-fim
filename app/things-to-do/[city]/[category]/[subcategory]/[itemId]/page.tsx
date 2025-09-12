@@ -533,6 +533,11 @@ const CheckoutPage: React.FC = () => {
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Ensure page starts at top on mobile
+    if (window.innerWidth < 768) {
+      window.scrollTo(0, 0);
+    }
   }, []);
 
   useEffect(() => {
