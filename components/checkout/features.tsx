@@ -77,10 +77,10 @@ const ExperienceDetails: React.FC = () => {
                 <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${item.bg}`} style={{ padding: '8px' }}>
                   <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 ${item.color}`} />
                 </span>
-                <div className="font-halyard-text text-xs sm:text-sm">
+                <div className="font-halyard-text text-[#444444] text-xs sm:text-sm">
                   {item.title && (
                     <span
-                      className={`font-semibold font-halyard-text text-xs sm:text-sm ${
+                      className={`font-halyard-text text-xs sm:text-sm ${
                         item.title === 'Open today' ? 'text-green-600' : ''
                       }`}
                     >
@@ -89,7 +89,7 @@ const ExperienceDetails: React.FC = () => {
                     </span>
                   )}
                   {item.title && item.description && <br />}
-                  {item.description && <span className="font-halyard-text-light text-[11px] sm:text-xs">{item.description}</span>}
+                  {item.description && <span className="font-halyard-text-light text-[#666666] text-[11px] sm:text-xs">{item.description}</span>}
                 </div>
               </div>
             );

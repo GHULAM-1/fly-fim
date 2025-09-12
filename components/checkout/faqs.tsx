@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, Clock, Info, Ticket, Users, Shield, FileText, Navigation, Check, X } from 'lucide-react';
 import OperatingHoursCard from './operating-hours';
+import ItinerarySection from './ItinerarySection';
 import { Circle } from "lucide-react";
 function Bullet() {
   return (
@@ -41,7 +42,7 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-3">
-          <h3 className="font-semibold font-halyard-text text-gray-700" style={{ fontSize: '21px' }}>
+          <h3 className="font-semibold font-halyard-text text-[#444444]" style={{ fontSize: '21px' }}>
             {title}
           </h3>
         </div>
@@ -53,9 +54,9 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
       </div>
       {description && (
         <p 
-          className="font-halyard-text text-[#444444] mt-2"
+          className="font-halyard-text text-[15px] md:text-[17px] text-[#444444] mt-2"
           style={{ 
-            fontSize: '1.0625rem',
+            
             fontWeight: 300,
             lineHeight: '1.75rem',
             marginBottom: 0,
@@ -92,7 +93,7 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
 
 const FaqSection: React.FC = () => {
   // Set first four FAQ sections open by default, rest closed
-  const defaultOpenFaqs = ["highlights", "inclusions", "exclusions", "cancellation-policy"];
+  const defaultOpenFaqs = ["highlights", "inclusions"];
 
   return (
     <div className="faq-section max-w-4xl font-halyard-text">
@@ -107,7 +108,7 @@ const FaqSection: React.FC = () => {
             <div className="pt-2">
                <Bullet />
             </div>
-               <span className="leading-relaxed">
+               <span className="text-[15px] md:text-[17px] leading-relaxed">
                  No queues, just pure discovery step into the magic of the Alcázar
                  in a small group for an intimate, more insightful experience.
                </span>
@@ -116,7 +117,7 @@ const FaqSection: React.FC = () => {
            <div className="pt-2">
               <Bullet />
              </div>
-            <span className="leading-relaxed">
+            <span className="text-[15px] md:text-[17px] leading-relaxed">
               Explore some of the key highlights of the Alcazar, including the
               different sites that backdrop the dreamy Kingdom of Dorne in HBO's
               Game of Thrones.
@@ -126,7 +127,7 @@ const FaqSection: React.FC = () => {
             <div className="pt-2">
                <Bullet />
                </div>
-            <span className="leading-relaxed">
+            <span className="text-[15px] md:text-[17px] leading-relaxed">
               Your expert English-speaking guide will offer fascinating insights
               into the Alcazar's rich history and details about its
               architectural evolution.
@@ -136,7 +137,7 @@ const FaqSection: React.FC = () => {
            <div className="pt-2">
               <Bullet />
              </div>
-            <span className="leading-relaxed">
+            <span className="text-[15px] md:text-[17px] leading-relaxed">
               Stroll through seven hectares of lush gardens with peacocks,
               fountains, and unforgettable gems like the Garden of the Poets and
               the Fountain of Fame.
@@ -152,23 +153,28 @@ const FaqSection: React.FC = () => {
         isOpenByDefault={defaultOpenFaqs.includes("inclusions")}
       >
         <ul className="space-y-3 font-halyard-text">
-          <li className="flex items-start gap-3">
+          <li className="flex items-start  gap-3">
             <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span>Entry to the Alcázar of Seville</span>
+            <span className="text-[15px] md:text-[17px]">Entry to the Alcázar of Seville</span>
           </li>
           <li className="flex items-start gap-3">
             <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span>Expert English-speaking guide</span>
+            <span className="text-[15px] md:text-[17px]">Expert English-speaking guide</span>
           </li>
           <li className="flex items-start gap-3">
             <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span>Small group tour (no more than 10 participants)</span>
+            <span className="text-[15px] md:text-[17px]">Small group tour (no more than 10 participants)</span>
           </li>
           <li className="flex items-start gap-3">
             <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span>Radio device system (if needed)</span>
+            <span className="text-[15px] md:text-[17px]">Radio device system (if needed)</span>
           </li>
         </ul>
+      </FaqItem>
+
+      {/* Itinerary */}
+      <FaqItem title="Itinerary" id="itinerary">
+        <ItinerarySection />
       </FaqItem>
 
       {/* Exclusions */}
@@ -180,11 +186,11 @@ const FaqSection: React.FC = () => {
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
             <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            <span>Hotel transfers & transportation</span>
+            <span className="text-[15px] md:text-[17px]">Hotel transfers & transportation</span>
           </li>
           <li className="flex items-start gap-3">
             <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            <span>Personal expenses</span>
+            <span className="text-[15px] md:text-[17px]">Personal expenses</span>
           </li>
         </ul>
       </FaqItem>
@@ -195,7 +201,7 @@ const FaqSection: React.FC = () => {
         id="cancellation-policy"
         isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
       >
-        <p className="mb-3 font-halyard-text">
+        <p className="mb-3 font-halyard-text text-[15px] md:text-[17px]">
           You can cancel these tickets up to 7 days before the experience begins
           and get a full refund.
         </p>
@@ -204,7 +210,7 @@ const FaqSection: React.FC = () => {
       {/* Your Experience */}
       <FaqItem title="Your Experience" id="your-experience">
         <div className="space-y-4 font-halyard-text">
-          <p className="font-semibold text-gray-900">
+          <p className="font-semibold text-[15px] md:text-[17px] text-gray-900">
             Skip the lines and step back in time on a small-group guided tour of
             the Royal Alcázar of Seville, one of Europe's oldest royal palaces
             still in use. Explore its many highlights with an expert
@@ -213,10 +219,10 @@ const FaqSection: React.FC = () => {
 
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
+              <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-2">
                 Getting started
               </h4>
-              <p className="text-gray-700">
+              <p className="text-[15px] md:text-[17px] text-gray-700">
                 Meet your guide at the Plaza del Triunfo in Seville to have your
                 tickets validated. Make sure you carry your original passport or
                 ID, and that the name on it matches the name on your ticket.
@@ -226,10 +232,10 @@ const FaqSection: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
+              <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-2">
                 What to expect
               </h4>
-              <p className="text-gray-700 mb-3">
+              <p className="text-[15px] md:text-[17px] text-gray-700 mb-3">
                 Wander through the majestic Alcazar of Seville, where Islamic
                 and Christian styles intertwine harmoniously. From Game of
                 Thrones filming locations to the lavish meeting rooms of Spanish
@@ -239,10 +245,10 @@ const FaqSection: React.FC = () => {
 
               <div className="space-y-3">
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-1">
+                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
                     Architectural splendor:
                   </h5>
-                  <p className="text-gray-700">
+                  <p className="text-[15px] md:text-[17px] text-gray-700">
                     Marvel at the Alcázar's signature mix of Mudéjar, Gothic,
                     Renaissance, and Baroque elements. Intricate tilework,
                     carved wooden ceilings, and elegant arches highlight the
@@ -250,10 +256,10 @@ const FaqSection: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-1">
+                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
                     Legendary courtyards:
                   </h5>
-                  <p className="text-gray-700">
+                  <p className="text-[15px] md:text-[17px] text-gray-700">
                     Explore the Courtyard of the Maidens (Patio de las
                     Doncellas), an emblem of Islamic design with its reflective
                     pool and colonnades, as well as the charming and
@@ -262,10 +268,10 @@ const FaqSection: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-1">
+                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
                     The Hall of Ambassadors:
                   </h5>
-                  <p className="text-gray-700">
+                  <p className="text-[15px] md:text-[17px] text-gray-700">
                     Step inside the Alcázar's most iconic chamber, known for its
                     magnificent domed ceiling, gilded decoration, and historic
                     importance as the throne room of King Pedro I. This is where
@@ -273,10 +279,10 @@ const FaqSection: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-1">
+                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
                     Treasures of the past:
                   </h5>
-                  <p className="text-gray-700">
+                  <p className="text-[15px] md:text-[17px] text-gray-700">
                     View priceless works of art including The Virgin of the
                     Navigators, a tribute to Spain's Age of Exploration, along
                     with other paintings, furnishings, and tapestries that
@@ -284,10 +290,10 @@ const FaqSection: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <h5 className="font-medium text-gray-900 mb-1">
+                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
                     Lush palace gardens:
                   </h5>
-                  <p className="text-gray-700">
+                  <p className="text-[15px] md:text-[17px] text-gray-700">
                     End your tour in serenity as you stroll through the vast
                     Alcazar Seville gardens. Discover trickling fountains,
                     exotic flora, maze-like hedges, and colorful peacocks—all
@@ -337,18 +343,18 @@ const FaqSection: React.FC = () => {
       <FaqItem title="Know Before You Go" id="know-before-you-go">
         <div className="space-y-6 font-halyard-text">
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">What to bring</h4>
+            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">What to bring</h4>
             <ul className="space-y-2">
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]">
                   Bring a valid passport or ID card for entry along with your
                   ticket.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]">
                   You can present your ticket printed or on your mobile.
                 </span>
               </li>
@@ -356,47 +362,47 @@ const FaqSection: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
+            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
               What's not allowed
             </h4>
             <ul className="space-y-2">
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   Food and drinks are not permitted inside the monument (except
                   for water and food for babies).
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Alcohol, drugs, and intoxicated behavior are strictly
                   prohibited.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Weapons, sharp objects, and large bags or luggage are not
                   allowed.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Pets are not permitted, except for guide dogs or emotional
                   support dogs with valid documentation.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Selfie sticks, flash photography, and tripods are not allowed.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Entering barefoot and bachelor or bachelorette party groups
                   are not permitted.
                 </span>
@@ -405,18 +411,18 @@ const FaqSection: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">Accessibility</h4>
+            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">Accessibility</h4>
             <ul className="space-y-2">
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   The Alcázar of Seville is wheelchair and pram/stroller
                   accessible.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Guide dogs and emotional support animals are allowed within
                   the Alcázar, subject to producing the official documentation.
                 </span>
@@ -425,32 +431,32 @@ const FaqSection: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
+            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
               Additional information
             </h4>
             <ul className="space-y-2">
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   You must arrive at the designated entry point 15 minutes
                   before your scheduled time to complete check-in.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]" >
                   Your guide will only speak English throughout the tour.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   Your ticket does not include a visit to the Royal High Room.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   In the event of heavy rain or winds, the management holds the
                   sole discretion to restrict access to the gardens for security
                   reasons.
@@ -458,21 +464,21 @@ const FaqSection: React.FC = () => {
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   The monument is vacated at 17:45 from October to March and at
                   19:45 from April to September.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   You will have to go through airport-style security screening
                   while entering the Alcazar (bags included).
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span>
+                <span className="text-[15px] md:text-[17px]"  >
                   Once you get your tickets validated and enter the Alcázar, you
                   cannot re-enter the complex.
                 </span>
@@ -488,18 +494,18 @@ const FaqSection: React.FC = () => {
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span>Your voucher will be emailed to you instantly.</span>
+              <span className="text-[15px] md:text-[17px]"  >Your voucher will be emailed to you instantly.</span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span>
+              <span className="text-[15px] md:text-[17px]"  >
                 Display the voucher on your mobile phone with a valid photo ID
                 at the meeting point.
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span>
+              <span className="text-[15px] md:text-[17px]"  >
                 Please arrive at the meeting point 5 minutes before the
                 scheduled time of your visit to avoid any delays.
               </span>
@@ -508,16 +514,16 @@ const FaqSection: React.FC = () => {
         </div>
       </FaqItem>
 
+
       {/* Where */}
       <FaqItem title="Where" id="where">
         <div className="space-y-4 font-halyard-text">
           {/* Meeting Point */}
           <div>
             <p
-              className="text-[#444444] mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-150"
+              className="text-[15px] md:text-[17px] text-[#444444] mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-150"
               style={{
                 fontFamily: "halyard-text",
-                fontSize: "1.0625rem",
                 fontWeight: 300,
                 lineHeight: "1.75rem",
                 marginBottom: 0,
@@ -541,7 +547,7 @@ const FaqSection: React.FC = () => {
                 }
               }}
             >
-              Plaza del Triunfo, Big statue, Seville
+              Plaza del Triunfo, Big statue, Seville"
             </p>
           </div>
 

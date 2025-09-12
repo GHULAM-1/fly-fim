@@ -12,13 +12,14 @@ const CheckoutNav: React.FC = () => {
   const faqSections = [
     { id: "highlights", label: "Highlights" },
     { id: "inclusions", label: "Inclusions" },
+    { id: "itinerary", label: "Itinerary" },
     { id: "exclusions", label: "Exclusions" },
     { id: "cancellation-policy", label: "Cancellation Policy" },
     { id: "your-experience", label: "Your Experience" },
     { id: "operating-hours", label: "Operating Hours" },
     { id: "know-before-you-go", label: "Know Before You Go" },
     { id: "my-tickets", label: "My Tickets" },
-    { id: "where", label: "Where" },
+    { id: "where", label: "Where?" },
   ];
 
   useEffect(() => {
@@ -35,7 +36,8 @@ const CheckoutNav: React.FC = () => {
       const windowHeight = window.innerHeight;
 
       // Check if checkout section is in view (when features section becomes visible)
-      const isCheckoutVisible = sectionRect.top <= totalFixedHeight && sectionRect.bottom > 0;
+      const isCheckoutVisible =
+        sectionRect.top <= totalFixedHeight && sectionRect.bottom > 0;
 
       // Check if we've scrolled past the checkout section
       const isPastCheckout = sectionRect.top > windowHeight;
@@ -52,7 +54,8 @@ const CheckoutNav: React.FC = () => {
           const rect = faq.getBoundingClientRect();
           const elementHeight = rect.height;
           const visibleTop = Math.max(rect.top, totalFixedHeight);
-          const visibleHeight = Math.min(rect.bottom, windowHeight) - visibleTop;
+          const visibleHeight =
+            Math.min(rect.bottom, windowHeight) - visibleTop;
 
           if (visibleHeight > 0) {
             const visibility = visibleHeight / elementHeight;
@@ -75,7 +78,9 @@ const CheckoutNav: React.FC = () => {
   useEffect(() => {
     const updateBar = () => {
       if (navRef.current) {
-        const activeButton = navRef.current.querySelector(`button[data-id="${activeFaq}"]`);
+        const activeButton = navRef.current.querySelector(
+          `button[data-id="${activeFaq}"]`
+        );
         if (activeButton) {
           const left = (activeButton as HTMLElement).offsetLeft;
           const width = (activeButton as HTMLElement).offsetWidth;
@@ -107,7 +112,8 @@ const CheckoutNav: React.FC = () => {
     if (element) {
       // Get the position of the element relative to the document
       const rect = element.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       const headerHeight = 72; // Main header height
       const navHeight = 56; // Height of the fixed nav (h-14 in Tailwind = 56px)
       const buffer = 20; // Additional buffer for spacing
@@ -125,7 +131,7 @@ const CheckoutNav: React.FC = () => {
 
   return (
     <nav
-      className={`fixed left-0 w-full z-40 transition-all duration-300 ${
+      className={`fixed left-0 w-full md:block hidden z-40 transition-all duration-300 ${
         active
           ? "bg-white shadow-md transform translate-y-0"
           : "bg-transparent pointer-events-none transform -translate-y-full"
@@ -133,15 +139,18 @@ const CheckoutNav: React.FC = () => {
       // Adjust this value to match your main header height
       style={{ top: navTop }}
     >
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-center h-14 relative">
-          <div ref={navRef} className="flex gap-4 overflow-x-auto scrollbar-hide">
+      <div className="max-w-[1200px]  mx-auto xl:px-0 px-[24px]">
+        <div className="flex items-center  justify-start h-12 relative">
+          <div
+            ref={navRef}
+            className="flex gap-8 overflow-x-auto scrollbar-hide"
+          >
             {faqSections.map((section) => (
               <button
                 key={section.id}
                 data-id={section.id}
                 onClick={() => scrollToFaq(section.id)}
-                className={`relative flex items-center justify-center whitespace-nowrap px-3 py-2 text-sm font-halyard-text font-medium transition-colors duration-200 h-full ${
+                className={`relative hover:cursor-pointer flex items-center justify-center whitespace-nowrap py-2 text-sm font-halyard-text font-medium transition-colors duration-200 h-full ${
                   activeFaq === section.id
                     ? "text-gray-900" // Active text color
                     : "text-gray-600 hover:text-gray-900"

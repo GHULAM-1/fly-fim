@@ -772,7 +772,7 @@ const ThingsToDo = () => {
             variant="subcategory"
           />
         </div>
-        <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
+        <div className=" px-[24px] xl:px-0 pb-10">
           <Activities />
         </div>
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">

@@ -89,12 +89,27 @@ const Navbar = () => {
       const getHeroHeight = () => {
         const width = window.innerWidth;
 
-        if (width >= 768) {
-          // md breakpoint and up - trigger just before Hero ends
-          return 580; // 640px - 60px early
+        // Check if we're on a checkout page (itemId route)
+        const isCheckoutPage = pathname.includes('/things-to-do/') && pathname.split('/').length >= 5;
+
+        if (isCheckoutPage) {
+          // On checkout page - use mobile hero height (45vh)
+          if (width >= 768) {
+            // Desktop - no hero, so navbar should be solid
+            return 0;
+          } else {
+            // Mobile - 45vh of viewport height with small buffer
+            return window.innerHeight * 0.45 - 20;
+          }
         } else {
-          // mobile - trigger just before Hero ends
-          return 364; // 414px - 50px early
+          // Home page or other pages
+          if (width >= 768) {
+            // md breakpoint and up - trigger just before Hero ends
+            return 580; // 640px - 60px early
+          } else {
+            // mobile - trigger just before Hero ends
+            return 364; // 414px - 50px early
+          }
         }
       };
 
@@ -106,7 +121,7 @@ const Navbar = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -267,7 +282,10 @@ const Navbar = () => {
   const filteredDestinations = filterResults(topDestinations, searchQuery);
   const filteredActivities = filterResults(topActivities, searchQuery);
 
-  const isNavSolid = scrolled || pathname !== "/";
+  // Check if we're on a checkout page
+  const isCheckoutPage = pathname.includes('/things-to-do/') && pathname.split('/').length >= 5;
+  
+  const isNavSolid = scrolled || (pathname !== "/" && !isCheckoutPage) || (isCheckoutPage && window.innerWidth >= 768);
   const navTextColorClass = isNavSolid ? "text-[#444444]" : "text-white";
 
   return (
@@ -343,7 +361,7 @@ const Navbar = () => {
                 />
               )}
             </Link>
-            {(scrolled || pathname !== "/") && (
+            {(scrolled || (pathname !== "/" && !isCheckoutPage)) && (
               <div
                 ref={searchRef}
                 className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-80 ${

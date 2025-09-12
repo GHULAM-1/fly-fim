@@ -574,6 +574,7 @@ export default function SubcategoryPage() {
                 title={`Top experiences in ${formattedCityName}`}
                 variant="pills"
                 pills={false}
+                cityName={formattedCityName}
                 navigationItems={navItems}
                 recommendations={experiences}
                 initialSelectedId={configKey}
