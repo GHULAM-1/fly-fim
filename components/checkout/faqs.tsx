@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { MapPin, Clock, Info, Ticket, Users, Shield, FileText, Navigation, Check, X } from 'lucide-react';
+import { MapPin, Clock, Info, Ticket, Users, Shield, FileText, Navigation, Check, X, Map } from 'lucide-react';
 import OperatingHoursCard from './operating-hours';
 import ItinerarySection from './ItinerarySection';
 import { Circle } from "lucide-react";
+import ReviewsSection from './reviews-section';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 function Bullet() {
   return (
     <Circle
@@ -94,6 +97,59 @@ const FaqItem: React.FC<FaqItemProps> = ({ title, description, isOpenByDefault =
 const FaqSection: React.FC = () => {
   // Set first four FAQ sections open by default, rest closed
   const defaultOpenFaqs = ["highlights", "inclusions"];
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize OpenStreetMap
+  useEffect(() => {
+    const initializeMap = () => {
+      if (!mapContainerRef.current || mapRef.current) return;
+
+      // Fix default markers in Leaflet
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+      });
+
+      // Create map
+      const map = L.map(mapContainerRef.current, {
+        center: [37.3857231, -5.9922638], // Seville coordinates
+        zoom: 15,
+        zoomControl: true,
+        attributionControl: true,
+      });
+
+      // Add OpenStreetMap tiles
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 18,
+      }).addTo(map);
+
+      // Add marker for meeting point
+      const marker = L.marker([37.3857231, -5.9922638]).addTo(map);
+      marker.bindPopup(`
+        <div class="p-2">
+          <h3 class="font-semibold text-sm">Meeting Point</h3>
+          <p class="text-xs text-gray-600">Plaza del Triunfo, Big statue, Seville</p>
+        </div>
+      `);
+
+      mapRef.current = map;
+    };
+
+    // Initialize map after a short delay to ensure DOM is ready
+    const timer = setTimeout(initializeMap, 100);
+    
+    return () => {
+      clearTimeout(timer);
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div className="faq-section max-w-4xl font-halyard-text">
@@ -314,29 +370,34 @@ const FaqSection: React.FC = () => {
             {
               period: "1st Apr - 30th Sep",
               hours: [
-                { day: "Monday", time: "09:30am - 07:00pm" },
-                { day: "Tuesday", time: "09:30am - 07:00pm" },
-                { day: "Wednesday", time: "09:30am - 07:00pm" },
-                { day: "Thursday", time: "09:30am - 07:00pm" },
-                { day: "Friday", time: "09:30am - 07:00pm" },
-                { day: "Saturday", time: "09:30am - 07:00pm" },
-                { day: "Sunday", time: "09:30am - 07:00pm" },
+                { day: "Monday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Tuesday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Wednesday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Thursday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Friday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Saturday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
+                { day: "Sunday", time: "09:30am - 07:00pm", lastEntry: "06:00pm" },
               ],
             },
             {
               period: "1st Oct - 31st Mar",
               hours: [
-                { day: "Monday", time: "09:30am - 05:00pm" },
-                { day: "Tuesday", time: "09:30am - 05:00pm" },
-                { day: "Wednesday", time: "09:30am - 05:00pm" },
-                { day: "Thursday", time: "09:30am - 05:00pm" },
-                { day: "Friday", time: "09:30am - 05:00pm" },
-                { day: "Saturday", time: "09:30am - 05:00pm" },
-                { day: "Sunday", time: "09:30am - 05:00pm" },
+                { day: "Monday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Tuesday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Wednesday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Thursday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Friday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Saturday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
+                { day: "Sunday", time: "09:30am - 05:00pm", lastEntry: "04:00pm" },
               ],
             },
           ]}
         />
+      </FaqItem>
+
+      {/* Reviews */}
+      <FaqItem title="Reviews" id="reviews">
+        <ReviewsSection />
       </FaqItem>
 
       {/* Know Before You Go */}
@@ -519,51 +580,41 @@ const FaqSection: React.FC = () => {
       <FaqItem title="Where" id="where">
         <div className="space-y-4 font-halyard-text">
           {/* Meeting Point */}
-          <div>
-            <p
-              className="text-[15px] md:text-[17px] text-[#444444] mb-3 cursor-pointer hover:text-purple-600 transition-colors duration-150"
-              style={{
-                fontFamily: "halyard-text",
-                fontWeight: 300,
-                lineHeight: "1.75rem",
-                marginBottom: 0,
-                listStyle: "none",
-                boxSizing: "border-box",
-                border: "0 solid",
-                textDecoration: "none",
-              }}
-              onMouseEnter={() => {
-                const iframe = document.querySelector("iframe");
-                if (iframe) {
-                  iframe.src =
-                    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d792.5831348826104!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus";
-                }
-              }}
-              onMouseLeave={() => {
-                const iframe = document.querySelector("iframe");
-                if (iframe) {
-                  iframe.src =
-                    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.3325395304414!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus";
+          <div className='flex items-center gap-2 group'>
+            <Map className="w-4 h-4 text-[#02819c] hover:cursor-pointer inline-block group-hover:text-[#444444]"/>
+            <p 
+              className="text-[15px] font-halyard-text md:text-[17px] text-[#02819c] hover:cursor-pointer hover:text-[#444444] group-hover:text-[#444444]"
+              onClick={() => {
+                if (mapRef.current) {
+                  mapRef.current.setView([37.3857231, -5.9922638], 18, {
+                    animate: true,
+                    duration: 1.0
+                  });
                 }
               }}
             >
-              Plaza del Triunfo, Big statue, Seville"
+              Plaza del Triunfo, Big statue, Seville
             </p>
           </div>
 
           {/* Map Integration */}
-          <div className="mt-4">
-            <div className="rounded-lg p-4">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.3325395304414!2d-5.9922638!3d37.3857231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDIzJzA4LjYiTiA1wrA1OSczMi4yIlc!5e0!3m2!1sen!2sus!4v1624456789012!5m2!1sen!2sus"
-                width="100%"
-                height="300"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="rounded-lg"
-              ></iframe>
+          <div className="mt-4 md:block hidden">
+            <div className="rounded-lg overflow-hidden">
+              <div 
+                ref={mapContainerRef}
+                className="w-full h-[300px] md:h-auto rounded-lg"
+                style={{ 
+                  minHeight: "300px",
+                  aspectRatio: "unset"
+                }}
+              ></div>
+              <style jsx>{`
+                @media (min-width: 768px) {
+                  div[ref="${mapContainerRef}"] {
+                    aspect-ratio: 1.98;
+                  }
+                }
+              `}</style>
             </div>
           </div>
         </div>

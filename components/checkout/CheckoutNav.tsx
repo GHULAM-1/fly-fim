@@ -17,12 +17,17 @@ const CheckoutNav: React.FC = () => {
     { id: "cancellation-policy", label: "Cancellation Policy" },
     { id: "your-experience", label: "Your Experience" },
     { id: "operating-hours", label: "Operating Hours" },
+    { id: "reviews", label: "Reviews" },
     { id: "know-before-you-go", label: "Know Before You Go" },
     { id: "my-tickets", label: "My Tickets" },
     { id: "where", label: "Where?" },
   ];
 
   useEffect(() => {
+    // Only run on desktop (md and up)
+    const isDesktop = window.innerWidth >= 768;
+    if (!isDesktop) return;
+
     // Assume the main header height is 72px (adjust this value based on your actual header height)
     const headerHeight = 72;
     const navHeight = 56;
@@ -143,7 +148,7 @@ const CheckoutNav: React.FC = () => {
         <div className="flex items-center  justify-start h-12 relative">
           <div
             ref={navRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide"
+            className="flex gap-6 overflow-x-auto scrollbar-hide"
           >
             {faqSections.map((section) => (
               <button
