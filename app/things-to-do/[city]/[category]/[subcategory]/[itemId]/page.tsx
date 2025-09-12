@@ -533,12 +533,35 @@ const CheckoutPage: React.FC = () => {
 
   useEffect(() => {
     setIsClient(true);
-    
-    // Ensure page starts at top on mobile
-    if (window.innerWidth < 768) {
-      window.scrollTo(0, 0);
-    }
   }, []);
+
+  // Separate effect for scroll to top - only run once on mount
+  useEffect(() => {
+    // Ensure page starts at top - only run once
+    // Use setTimeout to ensure this runs after any other scroll behavior and DOM is ready
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 100);
+
+    // Prevent any unwanted scroll behavior during initial load
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // Temporarily disable programmatic scrolling during page load
+    document.addEventListener('scroll', preventScroll, { passive: false });
+    
+    // Re-enable scrolling after initial load is complete
+    const enableScrollTimer = setTimeout(() => {
+      document.removeEventListener('scroll', preventScroll);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(enableScrollTimer);
+      document.removeEventListener('scroll', preventScroll);
+    };
+  }, []); // Empty dependency array means this only runs once
 
   useEffect(() => {
     if (!isClient) return;
@@ -633,7 +656,7 @@ const CheckoutPage: React.FC = () => {
               <div className="md:hidden relative px-0 -mx-4">
                 <div
                   className="relative cursor-pointer"
-                  style={{ height: "58vh" }}
+                  style={{ height: "58vh", overflow: "hidden" }}
                   onClick={handleImageClick}
                 >
                   <div className="absolute inset-0">

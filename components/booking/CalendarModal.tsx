@@ -217,7 +217,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 h-full bg-black/70 z-[9999] animate-fade-in"
+      className="fixed inset-0 h-full bg-black/70 z-[99999] animate-fade-in"
       onClick={onClose}
     >
       <div
@@ -228,7 +228,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-fade-in duration-300 max-h-[75vh] flex flex-col"
+          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-fade-in duration-300 max-h-[75vh] flex flex-col relative z-[100000]"
         >
           <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white z-10">
             <h2 className="text-xl font-heading text-[#444444]">

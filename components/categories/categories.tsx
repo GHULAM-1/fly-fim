@@ -81,9 +81,41 @@ export default function CategoriesCards({
             <ChevronRightIcon className="w-4 h-4" />
           </div>
         </div>
-        <div className="mt-6 relative overflow-hidden">
+        <div className="mt-6 relative">
+          {/* Mobile: Free scrolling */}
+          <div className="block md:hidden overflow-x-auto scrollbar-hide">
+            <div className="flex gap-3">
+              {recommendations.map((recommendation) => (
+                <Link
+                  key={recommendation.id}
+                  href={`/things-to-do/${recommendation.city}`}
+                  className="flex-shrink-0 cursor-pointer group w-[156px]"
+                >
+                  <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
+                    <div>
+                      <img
+                        src={recommendation.image}
+                        alt={recommendation.description}
+                        className="rounded w-[156px] h-[210px]"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-text text-[#444444] leading-tight text-[17px] break-words">
+                        {recommendation.place}{" "}
+                      </p>
+                      <p className="text-[#666666] font-halyard-text-light text-[14px] mt-1 break-words">
+                        {recommendation.price}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Controlled scrolling */}
           <div
-            className="flex gap-3 md:gap-2 transition-transform duration-700 ease-in-out"
+            className="hidden md:flex gap-2 transition-transform duration-700 ease-in-out overflow-hidden"
             style={{
               transform: `translateX(-${currentPage * 200}px)`,
               width: `${recommendations.length * 200}px`,
@@ -96,21 +128,21 @@ export default function CategoriesCards({
               <Link
                 key={recommendation.id}
                 href={`/things-to-do/${recommendation.city}`}
-                className="flex-shrink-0 cursor-pointer group w-[156px]  md:w-[190px]"
+                className="flex-shrink-0 cursor-pointer group w-[190px]"
               >
                 <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
                   <div>
                     <img
                       src={recommendation.image}
                       alt={recommendation.description}
-                      className="rounded w-[156px] md:w-full h-[210px]"
+                      className="rounded w-full h-[210px]"
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-text text-[#444444] md:mt-2 leading-tight text-[17px] md:text-base break-words">
+                    <p className="font-text text-[#444444] mt-2 leading-tight text-base break-words">
                       {recommendation.place}{" "}
                     </p>
-                    <p className="text-[#666666] font-halyard-text-light text-[14px] md:text-sm mt-1 break-words">
+                    <p className="text-[#666666] font-halyard-text-light text-sm mt-1 break-words">
                       {recommendation.price}
                     </p>
                   </div>
