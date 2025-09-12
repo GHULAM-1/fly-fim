@@ -34,6 +34,9 @@ import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 import WhyHeadout from "@/components/checkout/WhyHeadout";
+import ItinerarySection from "@/components/checkout/ItinerarySection";
+import CheckoutNav from "@/components/checkout/CheckoutNav";
+import Destinations from "@/components/home/Destinations";
 
 const experiences = [
   {
@@ -312,7 +315,113 @@ const CheckoutPage: React.FC = () => {
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
-
+  const recommendations = [
+    {
+      id: 1,
+      description: "Edge Observation Deck Tickets: Timed Entry",
+      place: "Edge NYC",
+      image: "/images/r4.jpg.avif",
+      price: 39.2,
+      off: 3,
+      oldPrice: 42.2,
+      rating: 4.5,
+      reviews: 5897,
+      badge: "Free cancellation",
+    },
+    {
+      id: 2,
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      oldPrice: 32.2,
+      off: 3,
+      rating: 4.4,
+      reviews: 4489,
+    },
+    {
+      id: 3,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
+      rating: 4.5,
+      reviews: 7792,
+      badge: "Free cancellation",
+    },
+    {
+      id: 4,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
+      rating: 4.5,
+      reviews: 2110,
+      badge: "Free cancellation",
+    },
+    {
+      id: 5,
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
+    },
+    {
+      id: 6,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
+      rating: 4.5,
+      reviews: 7792,
+      badge: "Free cancellation",
+    },
+    {
+      id: 7,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
+      rating: 4.5,
+      reviews: 2110,
+      badge: "Free cancellation",
+    },
+    {
+      id: 8,
+      description: "The Museum of Modern Art (MoMA) Tickets",
+      place: "Museum of Modern Art (MoMA)",
+      image: "/images/r3.jpg.avif",
+      price: 30,
+      off: 3,
+      oldPrice: 32.2,
+      rating: 4.4,
+      reviews: 4489,
+    },
+    {
+      id: 9,
+      description: "NYC Helicopter Tour from Downtown Manhattan",
+      place: "Helicopter Tours",
+      image: "/images/r2.jpg.avif",
+      price: 259,
+      rating: 4.5,
+      reviews: 7792,
+      badge: "Free cancellation",
+    },
+    {
+      id: 10,
+      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
+      place: "City Cards",
+      image: "/images/r1.jpg.avif",
+      price: 89,
+      rating: 4.5,
+      reviews: 2110,
+      badge: "Free cancellation",
+    },
+  ];
   const destinations = [
     {
       id: 1,
@@ -443,7 +552,8 @@ const CheckoutPage: React.FC = () => {
   return (
     <>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
-        <div className="pt-16 md:pt-[76px]">
+        <CheckoutNav />
+        <div className=" md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
               <div className="mb-[14px] hidden md:block">
@@ -486,7 +596,7 @@ const CheckoutPage: React.FC = () => {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666] truncate max-w-[200px]">
                         {formattedItemName}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
@@ -518,7 +628,7 @@ const CheckoutPage: React.FC = () => {
               <div className="md:hidden relative px-0 -mx-4">
                 <div
                   className="relative cursor-pointer"
-                  style={{ height: "33vh" }}
+                  style={{ height: "58vh" }}
                   onClick={handleImageClick}
                 >
                   <div className="absolute inset-0">
@@ -537,79 +647,91 @@ const CheckoutPage: React.FC = () => {
                         <img
                           src={image}
                           alt={`${formattedItemName} ${index + 1}`}
-                          className="w-full h-full object-contain"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
+                          className="w-full h-full object-cover"
                         />
                       </div>
                     ))}
                   </div>
 
                   <div
-                    className="
-                      pointer-events-none absolute inset-0
-                      bg-gradient-to-b
-                      from-transparent from-[35%]
-                      via-[#0a174e]/55 via-[75%]
-                      to-[#0a174e] to-100%
-                    "
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(188.04deg, rgba(21, 1, 42, 0) 30%, rgb(21, 1, 42) 80%)",
+                    }}
                   />
 
-                  <div className="absolute left-4 bottom-[70px] px-1 flex flex-row items-center gap-1.5 z-10">
-                    {images.map((_, index) => (
-                      <div
-                        key={index}
-                        className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
-                          isClient && index === currentImageIndex
-                            ? "bg-white w-6"
-                            : isClient && index < currentImageIndex
-                              ? "bg-white w-1.5"
-                              : "bg-white/30 w-1.5"
-                        }`}
-                        style={{
-                          backgroundColor:
-                            !isClient && index === 0 ? "white" : undefined,
-                          width: !isClient && index === 0 ? "24px" : undefined,
-                        }}
-                      >
-                        <div
-                          className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
-                            isClient && index === currentImageIndex
-                              ? "w-full"
-                              : "w-0"
-                          }`}
-                          style={{
-                            transition:
-                              isClient && index === currentImageIndex
-                                ? "width 5s linear"
-                                : "none",
-                            width:
-                              !isClient && index === 0 ? "100%" : undefined,
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
                   <div
-                    className="
-                      absolute bottom-0 left-0 right-0 px-5 py-3 text-white
-                      bg-gradient-to-t from-[#0a174e] via-[#0a174e]/95 to-transparent
-                    "
+                    className="absolute bottom-0 left-0 right-0 px-5 py-4 text-white"
+                    style={{
+                      background:
+                        "linear-gradient(188.04deg, rgba(21, 1, 42, 0) 30%, rgb(21, 1, 42) 80%)",
+                    }}
                   >
-                    <div className="flex justify-between items-center mb-0 font-halyard-text">
-                      <span className="text-[14px] text-white/90 font-medium">
-                        {formattedSubcategoryName}
-                      </span>
-                      <span className="text-[14px] bg-transparent text-pink-500 px-2 py-1 rounded font-medium">
-                        NEW
-                      </span>
+                    <div className="flex justify-between items-start mb-3 font-halyard-text">
+                      <div className="flex flex-col">
+                        {/* Pagination dots */}
+                        <div className="flex flex-row items-center gap-1.5 mb-2">
+                          {images.map((_, index) => (
+                            <div
+                              key={index}
+                              className={`relative h-1.5 rounded-full transition-all duration-500 ease-in-out ${
+                                isClient && index === currentImageIndex
+                                  ? "bg-white w-6"
+                                  : isClient && index < currentImageIndex
+                                    ? "bg-white w-1.5"
+                                    : "bg-white/30 w-1.5"
+                              }`}
+                              style={{
+                                backgroundColor:
+                                  !isClient && index === 0
+                                    ? "white"
+                                    : undefined,
+                                width:
+                                  !isClient && index === 0 ? "24px" : undefined,
+                              }}
+                            >
+                              <div
+                                className={`absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-5000 ease-linear ${
+                                  isClient && index === currentImageIndex
+                                    ? "w-full"
+                                    : "w-0"
+                                }`}
+                                style={{
+                                  transition:
+                                    isClient && index === currentImageIndex
+                                      ? "width 5s linear"
+                                      : "none",
+                                  width:
+                                    !isClient && index === 0
+                                      ? "100%"
+                                      : undefined,
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-[14px] flex justify-between text-white/90 font-medium mb-2">
+                          {formattedSubcategoryName}
+                          <div className="flex items-center gap-1 text-pink-500">
+                            <svg
+                              className="w-4 h-4 fill-current"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            <span className="text-[14px] font-medium">4.5</span>
+                            <span className="text-[14px] font-medium underline">
+                              (194)
+                            </span>
+                          </div>
+                        </div>
+
+                        <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
+                          {formattedItemName} in {itemCity}
+                        </h2>
+                      </div>
                     </div>
-
-                    <div className="w-full h-px bg-white/20 mb-1" />
-
-                    <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
-                      {formattedItemName} in {itemCity}
-                    </h2>
                   </div>
                 </div>
               </div>
@@ -617,8 +739,7 @@ const CheckoutPage: React.FC = () => {
               <div className="hidden md:block">
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
-                    <div className="flex items-center gap-1">
-                    </div>
+                    <div className="flex items-center gap-1"></div>
                   </div>
                   <h1 className="text-[12px] sm:text-[14px] md:text-[17px] font-bold text-[#444444] font-halyard-text-light">
                     <span className="text-[#666666]">
@@ -645,8 +766,7 @@ const CheckoutPage: React.FC = () => {
               <div className="hidden sm:block md:hidden">
                 <div className="block mt-0">
                   <div className="flex items-center gap-2 mb-0">
-                    <div className="flex items-center gap-1">
-                    </div>
+                    <div className="flex items-center gap-1"></div>
                   </div>
                   <h1 className="text-[14px] font-bold text-[#444444] font-halyard-text-light">
                     <span className="text-[#666666]">
@@ -702,7 +822,7 @@ const CheckoutPage: React.FC = () => {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                      <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666] truncate max-w-[200px]">
                         {formattedItemName}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
@@ -737,14 +857,18 @@ const CheckoutPage: React.FC = () => {
 
             <div>
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <Recommendations />
+                <CarouselGrid
+                  title="Similar experiences you'd love"
+                  recommendations={recommendations}
+                  variant="subcategory"
+                />
               </div>
 
               <div className="mb-6 md:mb-10 mt-6 md:mt-10">
-                <Activities title={`Top Things to do in ${itemCity}`} />
+                <Activities title={`Top Things to do in ${itemCity}`} className="px-[0px]" />
               </div>
 
-              <div className="mb-6 md:mb-10 mt-6 md:mt-10">
+              <div className="mb-6 md:mb-15 mt-6 md:mt-10">
                 <BrowseThemes
                   title="Browse by themes"
                   themes={currentSubCategory.components.themes || []}
@@ -752,12 +876,8 @@ const CheckoutPage: React.FC = () => {
               </div>
 
               {!isWorldwideRoute && (
-                <div className="mb-6 md:mb-10">
-                  <CarouselGrid
-                    title="Explore world's top destinations"
-                    variant="simple"
-                    recommendations={destinations}
-                  />
+                <div className="mb-6 md:mb-15">
+                  <Destinations />
                 </div>
               )}
 
@@ -776,10 +896,14 @@ const CheckoutPage: React.FC = () => {
         <div className="lg:hidden fixed bottom-14 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-7 py-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-col">
-              <span className="line-through text-gray-500 text-sm font-halyard-text">
-                €55
+              <span className=" text-gray-500 text-sm font-halyard-text">
+                <span className="text-gray-500 text-sm font-halyard-text">
+                  from
+                </span>
+                {" "}
+                <span className="line-through">€55</span>
               </span>
-              <span className="text-xl font-halyard-text font-bold text-green-600">
+              <span className="text-[18px] font-halyard-text font-bold text-[#095730]">
                 €49.50
               </span>
             </div>

@@ -81,6 +81,7 @@ interface CarouselGridProps {
     color?: string;
   }>;
   pills?: boolean;
+  cityName?: string;
   initialSelectedId?: string;
 }
 
@@ -91,6 +92,7 @@ const CarouselGrid = ({
   navigationItems,
   pills = true,
   initialSelectedId,
+  cityName,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
@@ -115,6 +117,7 @@ const CarouselGrid = ({
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
+  const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -208,6 +211,7 @@ const CarouselGrid = ({
 
   const handleSortChange = (option: string) => {
     setSortBy(option);
+    setIsSortDrawerOpen(false);
   };
 
   const handleShowMore = () => {
@@ -420,7 +424,7 @@ const CarouselGrid = ({
           </div>
         </div>
 
-        {pills && (
+        {pills ? (
           <div
             className="mt-4 sm:mt-5 flex gap-2 overflow-x-auto scrollbar-hide"
             ref={scrollContainerRef}
@@ -588,9 +592,125 @@ const CarouselGrid = ({
               );
             })}
           </div>
+        ) : (
+          <div className="flex justify-between items-center mb-0">
+            <p className="md:hidden block font-halyard-text text-[#666666] text-sm">
+              {cityName}
+            </p>
+            <p className="text-[#666666] font-halyard-text text-sm">
+              {recommendations.length} experiences
+            </p>
+
+            {/* Desktop Dropdown */}
+            <div className="hidden md:block">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center font-light gap-2 font-halyard-text text-gray-500 transition-colors bg-transparent hover:bg-gray-50 px-3 py-2 md:py-3 md:px-3 cursor-pointer">
+                  <SortIcon />
+                  <span className="text-sm ">{`Sort by: ${sortBy}`}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-64 px-0 py-[10px] rounded-[4px] font-halyard-text !text-[#666666]"
+                >
+                  {sortOptions.map((option) => (
+                    <DropdownMenuItem
+                      key={option}
+                      onClick={() => handleSortChange(option)}
+                      className="flex px-4 py-[14px] rounded-[0px] items-center !text-[#666666] font-halyard-text hover:!bg-[#F0F0F0] hover:!text-[#666666] justify-between cursor-pointer "
+                    >
+                      <span className="!text-[#666666] text-[15px] !font-halyard-text hover:!text-[#666666]">
+                        {option}
+                      </span>
+                      {sortBy === option && (
+                        <Check
+                          size={16}
+                          className="!text-[#666666] hover:!text-[#666666]"
+                        />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Mobile Drawer Button - Hidden in normal flow */}
+            <div className="md:hidden fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40">
+              <button
+                onClick={() => setIsSortDrawerOpen(true)}
+                className="flex items-center font-light gap-2 font-halyard-text text-gray-500 hover:text-gray-900 transition-colors bg-white hover:bg-gray-50 py-[6px] px-[12px] rounded-lg border border-gray-200 shadow-lg"
+              >
+                <span className="text-sm !font-halyard-text !text-[#444444]">{`Sort by`}</span>
+                <SortIcon />
+              </button>
+            </div>
+          </div>
         )}
 
-        <div className="mt-4 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 gap-y-4 gap-x-4">
+        {/* Mobile Sort Drawer */}
+        {isSortDrawerOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/20"
+              onClick={() => setIsSortDrawerOpen(false)}
+            />
+
+            {/* Drawer Content */}
+            <div className="absolute bottom-0 left-0 top-20 right-0 bg-white rounded-t-2xl shadow-2xl">
+              <div className="p-6">
+                <div className="flex border-b border-[#E2E2E2] pb-4  items-center justify-between mb-5">
+                  <h3 className="text-lg font-semibold text-[#444444] !font-halyard-text">
+                    Sort by
+                  </h3>
+                  <button
+                    onClick={() => setIsSortDrawerOpen(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                 <div className="space-y-2">
+                   {sortOptions.map((option) => (
+                     <button
+                       key={option}
+                       onClick={() => handleSortChange(option)}
+                       className={`w-full flex items-center justify-between rounded-lg text-left transition-colors text-[#666666] font-halyard-text font-[15px]`}
+                     >
+                       <span className="font-halyard-text font-[15px] text-[#444444]">{option}</span>
+                       {/* Radio Button Indicator - Right Aligned */}
+                       <div className="flex-shrink-0">
+                         {sortBy === option ? (
+                           <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
+                             <div className="w-[8px] h-[8px] rounded-full bg-white"></div>
+                           </div>
+                         ) : (
+                           <div className="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                         )}
+                       </div>
+                     </button>
+                   ))}
+                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`mt-4 ${pills ? "sm:mt-8" : "sm:mt-2"} grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 gap-y-4 gap-x-4`}
+        >
           {filteredRecommendations
             .slice(0, visibleCards)
             .map((recommendation) => (
@@ -1054,7 +1174,10 @@ const CarouselGrid = ({
           ref={scrollContainerRef}
         >
           {recommendations.map((guide, index) => (
-            <div key={guide.id} className={`w-[25%] hidden md:block md:w-[49%] flex-shrink-0`}>
+            <div
+              key={guide.id}
+              className={`w-[25%] hidden md:block md:w-[49%] flex-shrink-0`}
+            >
               <div className="flex gap-4">
                 <div className="w-[30%]">
                   <img

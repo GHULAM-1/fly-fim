@@ -143,42 +143,39 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, itemName, city }) =
       </div>
 
       {/* Desktop Grid Layout - Main image on left, thumbnails on right */}
-      <div className="hidden md:flex gap-2 mb-6 relative">
+      <div className="hidden md:flex gap-4 mb-6 relative max-w-full">
         {/* Main large image */}
         <div 
-          className="flex-1 relative group cursor-pointer transition-all duration-300 w-1/2"
+          className="flex-1 relative group cursor-pointer transition-all duration-300 min-w-0"
           onClick={() => handleImageClick(0)}
         >
-          <div className="w-full" style={{ maxWidth: '592px', height: '370px' }}>
+          <div className="w-full h-[375px]">
             <img
               src={images[0]}
               alt={`${itemName} main image`}
               className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-95 rounded-tl-2xl rounded-bl-2xl"
-              style={{ width: '600px', height: '375px' }}
             />
           </div>
         </div>
 
         {/* Thumbnail grid on right */}
-        <div className="w-1/2">
-          <div className="grid grid-cols-2 gap-2" style={{ height: '375px' }}>
+        <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-2 gap-3 h-[375px]">
             {images.slice(1, 5).map((image, index) => (
               <div 
                 key={index + 1} 
                 className={`relative group cursor-pointer overflow-hidden ${index === 1 ? 'rounded-tr-2xl' : ''} ${index === 3 ? 'rounded-br-2xl' : ''}`}
-                style={{ aspectRatio: '292/183.5', height: '183.5px' }}
                 onClick={() => handleImageClick(index + 1)}
               >
                 <img
                   src={image}
                   alt={`${itemName} image ${index + 2}`}
                   className="w-full h-full object-cover transition-all duration-300"
-                  style={{ aspectRatio: '292/183.5' }}
                 />
                 {/* Black overlay on hover */}
                 <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-30 bg-black transition-opacity duration-300 rounded-lg" />
                 {index === 1 && (
-                  <div className="absolute top-2 right-2 bg-white bg-opacity-90 font-halyard-text text-[#444444] text-gray-700 text-sm font-medium flex items-center gap-1" style={{ borderRadius: '8px', padding: '6px 12px' }}>
+                  <div className="absolute top-2 right-2 bg-white bg-opacity-90 font-halyard-text text-[#444444] text-sm font-medium flex items-center gap-1" style={{ borderRadius: '8px', padding: '6px 12px' }}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -289,13 +286,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, itemName, city }) =
         >
           <div 
             ref={modalRef}
-            className={`relative bg-transparent w-full max-w-6xl mx-4 transition-all duration-300 ease-out pb-8 ${
+            className={`relative bg-transparent w-full max-w-[90vw] xl:max-w-6xl mx-auto transition-all duration-300 ease-out pb-8 ${
               isAnimating 
                 ? 'translate-y-0 opacity-100' 
                 : 'translate-y-full opacity-0'
             }`}
             style={{ 
-              marginTop: 'auto', 
+              marginTop: '15vh', 
               marginBottom: '2rem'
             }}
             onClick={(e) => e.stopPropagation()}
@@ -322,7 +319,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, itemName, city }) =
                 <img
                   src={images[currentImageIndex]}
                   alt={`${itemName} - Image ${currentImageIndex + 1}`}
-                  className="w-full h-[300px] md:h-[450px] lg:h-[500px] object-cover rounded-lg"
+                  className="w-full h-[300px] md:h-[450px] lg:h-[450px] object-cover rounded-lg"
                 />
                 
                 {/* Image counter */}

@@ -3,12 +3,13 @@ import React, { useRef } from "react";
 
 interface ActivitiesProps {
   title: string;
+  className?: string;
 }
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
-
-export default function Activities({ title }: ActivitiesProps) {
+import { cn } from "@/lib/utils";
+export default function Activities({ title, className }: ActivitiesProps) {
   const { t } = useTranslation();
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -85,7 +86,7 @@ export default function Activities({ title }: ActivitiesProps) {
   return (
     <div className="py-8 sm:py-10 bg-transparent">
       <div className="max-w-[1200px] mx-auto 2xl:px-0">
-        <div className="flex justify-between xl:px-0 px-[24px] items-center">
+        <div className={cn("flex justify-between xl:px-0 px-[24px] items-center", className)}>
           <h2 className="text-lg sm:text-2xl  font-heading text-[#444444]">
             {title || t("activities.title")}
           </h2>
@@ -111,7 +112,7 @@ export default function Activities({ title }: ActivitiesProps) {
           </div>
         </div>
         <div
-          className="mt-4 sm:mt-2 pl-[24px] xl:px-0 flex overflow-x-scroll -ml-4 scrollbar-hide"
+          className={cn("mt-4 sm:mt-2 pl-[24px] xl:px-0 flex overflow-x-scroll -ml-4 scrollbar-hide", className)}
           ref={scrollContainerRef}
         >
           {activities.map((activity) => (
