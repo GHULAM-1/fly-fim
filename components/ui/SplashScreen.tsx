@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 interface SplashScreenProps {
   isVisible: boolean;
@@ -10,8 +10,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
   isVisible, 
   onComplete
 }) => {
-  const [animationComplete, setAnimationComplete] = useState(false);
-
   useEffect(() => {
     if (isVisible) {
       // Prevent scrolling when splash is visible
@@ -19,17 +17,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
       document.body.style.position = 'fixed'; // Prevent background glitches
       document.body.style.width = '100%';
       document.body.style.height = '100%';
-      
-      // Reset animation state
-      setAnimationComplete(false);
-      
-      // Wait for animation to complete (assuming your GIF is around 3-4 seconds for full cycle)
-      // Frame #140 would be roughly at 3.5-4 seconds if it's 30fps
-      const animationTimer = setTimeout(() => {
-        setAnimationComplete(true);
-      }, 4000); // 4 seconds to ensure animation reaches frame #140+
-
-      return () => clearTimeout(animationTimer);
     } else {
       // Re-enable scrolling when splash is hidden
       document.body.style.overflow = 'unset';
@@ -68,7 +55,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
           decoding="async"
           style={{
             imageRendering: 'crisp-edges',
-            imageRendering: '-webkit-crisp-edges',
           }}
         />
       </div>
