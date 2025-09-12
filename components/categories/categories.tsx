@@ -98,12 +98,12 @@ export default function CategoriesCards({
                 href={`/things-to-do/${recommendation.city}`}
                 className="flex-shrink-0 cursor-pointer group w-[156px]  md:w-[190px]"
               >
-                <div className="flex flex-col pr-1 gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
+                <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
                   <div>
                     <img
                       src={recommendation.image}
                       alt={recommendation.description}
-                      className="rounded md:w-full w-full h-[210px]"
+                      className="rounded w-[156px] md:w-full h-[210px]"
                     />
                   </div>
                   <div className="min-w-0">
