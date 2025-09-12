@@ -36,6 +36,8 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import { getThingsToDoPageData } from "@/lib/api/thingsToDo";
+import { City, Experience } from "@/types/home";
 
 const ThingsToDo = () => {
   const {
@@ -49,22 +51,47 @@ const ThingsToDo = () => {
     isSectionActive,
   } = useNavigationStore();
 
+  
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
-
   const [isCustomDrawerOpen, setIsCustomDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
   const [previousPlaceholderIndex, setPreviousPlaceholderIndex] = useState(-1);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  
+  const [loading, setLoading] = useState(true);
+  const [destinations, setDestinations] = useState<City[]>([]);
+  const [topExperiences, setTopExperiences] = useState<Experience[]>([]);
+  const [activities, setActivities] = useState<Experience[]>([]);
+
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
+  const params = useParams();
+  const city = params.city as string;
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    const fetchData = async () => {
+      if (city) {
+        setLoading(true);
+        const response = await getThingsToDoPageData(city);
+        if (response.success) {
+          setDestinations(response.data.destinations);
+          setActivities(response.data.topExperiences); 
+          setTopExperiences(response.data.topExperiences);
+        } else {
+          console.error("Failed to fetch data:", response.message);
+        }
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [city]);
 
   const placeholderOptions = [
     "experiences and cities",
@@ -219,10 +246,8 @@ const ThingsToDo = () => {
     </div>
   );
 
-  const params = useParams();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
-  const city = params.city as string;
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -261,7 +286,7 @@ const ThingsToDo = () => {
     scrollContainerRef.current?.scrollBy({ left: 300, behavior: "smooth" });
   };
 
-  // Scroll active button into view
+  
   const scrollActiveButtonIntoView = useCallback(() => {
     if (!scrollContainerRef.current || !activeSection) return;
 
@@ -275,26 +300,26 @@ const ThingsToDo = () => {
     const containerRect = container.getBoundingClientRect();
     const buttonRect = activeButton.getBoundingClientRect();
 
-    // Check if button is fully visible
+    
     const isFullyVisible =
       buttonRect.left >= containerRect.left &&
       buttonRect.right <= containerRect.right;
 
     if (!isFullyVisible) {
-      // Calculate scroll position to center the button
+      
       const scrollLeft =
         activeButton.offsetLeft -
         container.clientWidth / 2 +
         activeButton.clientWidth / 2;
 
-      // Use instant scrolling for maximum responsiveness
+      
       container.scrollLeft = Math.max(0, scrollLeft);
     }
   }, [activeSection]);
 
-  // Scroll active button into view when activeSection changes
+  
   useEffect(() => {
-    // Use requestAnimationFrame for immediate execution after DOM update
+    
     requestAnimationFrame(() => {
       scrollActiveButtonIntoView();
     });
@@ -364,7 +389,7 @@ const ThingsToDo = () => {
     const mainHeaderHeight = isMobile ? 64 : 120;
     const topOffset = navHeight + mainHeaderHeight;
 
-    // More responsive scroll detection
+    
     const handleScrollDetection = () => {
       const scrollTop = window.scrollY;
       const viewportHeight = window.innerHeight;
@@ -391,7 +416,7 @@ const ThingsToDo = () => {
       }
     };
 
-    // Use both Intersection Observer and direct scroll detection
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -411,7 +436,7 @@ const ThingsToDo = () => {
       if (element) observer.observe(element);
     });
 
-    // Add direct scroll listener for immediate response
+    
     window.addEventListener("scroll", handleScrollDetection, { passive: true });
 
     return () => {
@@ -438,114 +463,6 @@ const ThingsToDo = () => {
   useEffect(() => {
     checkScrollButtons();
   }, []);
-
-  const recommendations = [
-    {
-      id: 1,
-      description: "Edge Observation Deck Tickets: Timed Entry",
-      place: "Edge NYC",
-      image: "/images/r4.jpg.avif",
-      price: 39.2,
-      off: 3,
-      oldPrice: 42.2,
-      rating: 4.5,
-      reviews: 5897,
-      badge: "Free cancellation",
-    },
-    {
-      id: 2,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      oldPrice: 32.2,
-      off: 3,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 3,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 4,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 5,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 6,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 7,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 8,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 9,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 10,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-  ];
 
   return (
     <div className="relative min-h-screen">
@@ -579,7 +496,7 @@ const ThingsToDo = () => {
             padding-bottom: max(1rem, env(safe-area-inset-bottom));
           }
         }
-        /* Faster smooth scrolling for navigation */
+       
         [data-navigation] {
           scroll-behavior: smooth;
           scroll-padding: 0;
@@ -767,68 +684,68 @@ const ThingsToDo = () => {
 
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
           <CarouselGrid
-            title="Top experiences in London"
-            recommendations={recommendations}
+            title={`Top experiences in ${city.charAt(0).toUpperCase() + city.slice(1)}`}
+            recommendations={topExperiences}
             variant="subcategory"
           />
         </div>
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
-          <Activities />
+          <Activities activities={activities} loading={loading} />
         </div>
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
           <div id="musicals">
             <CarouselGrid
               title="London Musicals"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="landmarks">
             <CarouselGrid
               title="Landmarks in London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="day-trips">
             <CarouselGrid
               title="Day Trips From London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="combos">
             <CarouselGrid
               title="Combos Tickets in London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="cruises">
             <CarouselGrid
               title="Thames River Cruise"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="plays">
             <CarouselGrid
               title="Plays in London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="museums">
             <CarouselGrid
               title="Museums in London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
           <div id="hop-on-hop-off-tours">
             <CarouselGrid
               title="Hop-on Hop-off Tours London"
-              recommendations={recommendations}
+              recommendations={topExperiences}
               variant="subcategory"
             />
           </div>
@@ -844,7 +761,7 @@ const ThingsToDo = () => {
           <BrowseThemes />
         </div>
         <Testimonials variant="default" />
-        <Destinations />
+        <Destinations destinations={destinations} loading={loading} />
         <Faqs />
         <Banner />
         <Stats />

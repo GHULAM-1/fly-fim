@@ -1,133 +1,27 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { City } from "@/types/home"; 
 
-const cityImageMap: { [key: string]: string } = {
-  "New York": "/images/d6.jpeg.avif",
-  London: "/images/d5.jpg.avif",
-  Dubai: "/images/d4.jpg.avif",
-  Rome: "/images/d3.jpg.avif",
-  Paris: "/images/d2.jpg.avif",
-  Singapore: "/images/d1.jpg.avif",
-  "Las Vegas": "/images/d6.jpeg.avif",
-};
-
-interface Destination {
-  id: string;
-  description: string;
-  place: string;
-  image: string;
-  city: string;
-  slug: string;
+interface DestinationsProps {
+  destinations: City[];
+  loading: boolean;
 }
 
-const Destinations = () => {
+const Destinations: React.FC<DestinationsProps> = ({
+  destinations,
+  loading,
+}) => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Mock data array
-  const mockDestinations: Destination[] = [
-    {
-      id: "1",
-      description: "Things to do in ",
-      place: "United States",
-      city: "New York",
-      slug: "new-york",
-      image: cityImageMap["New York"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "2",
-      description: "Things to do in ",
-      place: "United Kingdom",
-      city: "London",
-      slug: "london",
-      image: cityImageMap["London"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "3",
-      description: "Things to do in ",
-      place: "United Arab Emirates",
-      city: "Dubai",
-      slug: "dubai",
-      image: cityImageMap["Dubai"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "4",
-      description: "Things to do in ",
-      place: "Italy",
-      city: "Rome",
-      slug: "rome",
-      image: cityImageMap["Rome"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "5",
-      description: "Things to do in ",
-      place: "France",
-      city: "Paris",
-      slug: "paris",
-      image: cityImageMap["Paris"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "6",
-      description: "Things to do in ",
-      place: "Singapore",
-      city: "Singapore",
-      slug: "singapore",
-      image: cityImageMap["Singapore"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "7",
-      description: "Things to do in Vegas",
-      place: "United States",
-      city: "Las Vegas",
-      slug: "las-vegas",
-      image: cityImageMap["Las Vegas"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "8",
-      description: "Things to do in ",
-      place: "Japan",
-      city: "Tokyo",
-      slug: "tokyo",
-      image: "/images/d1.jpg.avif",
-    },
-    {
-      id: "9",
-      description: "Things to do in ",
-      place: "Spain",
-      city: "Barcelona",
-      slug: "barcelona",
-      image: "/images/d1.jpg.avif",
-    },
-    {
-      id: "10",
-      description: "Things to do in ",
-      place: "Australia",
-      city: "Sydney",
-      slug: "sydney",
-      image: "/images/d1.jpg.avif",
-    },
-  ];
-
-  useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setDestinations(mockDestinations);
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       const cardWidth = window.innerWidth >= 768 ? 180 : 140;
-      const gap = 16; // gap-4 = 16px
-      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
+      const gap = 16; 
+      const scrollAmount = (cardWidth + gap) * 6; 
       scrollContainerRef.current.scrollBy({
         left: -scrollAmount,
         behavior: "smooth",
@@ -138,8 +32,8 @@ const Destinations = () => {
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       const cardWidth = window.innerWidth >= 768 ? 180 : 140;
-      const gap = 16; // gap-4 = 16px
-      const scrollAmount = (cardWidth + gap) * 6; // Scroll 6 cards at a time
+      const gap = 16; 
+      const scrollAmount = (cardWidth + gap) * 6; 
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -147,13 +41,15 @@ const Destinations = () => {
     }
   };
 
+  const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, "-");
+
   if (loading) {
     return (
       <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
         <div className="px-[24px] xl:px-0">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
             {t("destinations.title")}
-          </h2>{" "}
+          </h2>
         </div>
         <div className="mt-4 pl-[24px] xl:pl-0 sm:mt-4 flex gap-5 overflow-hidden">
           {[...Array(6)].map((_, i) => (
@@ -208,24 +104,26 @@ const Destinations = () => {
       >
         {destinations.map((destination, index) => (
           <Link
-            href={`/things-to-do/${destination.slug}`}
-            key={destination.id}
-            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${index === 0 ? "ml-4 md:ml-0" : "ml-0"}`}
+            href={`/things-to-do/${slugify(destination.cityName)}`}
+            key={destination._id}
+            className={`shrink-0 flex hover:-translate-y-2 transition-all duration-300 pt-2 w-[140px] md:w-[180px] ${
+              index === 0 ? "ml-4 md:ml-0" : "ml-0"
+            }`}
           >
             <div className="w-[140px] md:w-[180px] ">
               <img
-                src={destination.image}
-                alt={destination.description}
+                src={`/images/d${(index % 6) + 1}.jpg.avif`} 
+                alt={destination.cityName}
                 className="rounded w-full object-cover h-[140px] md:h-[180px]"
               />
               <p className="text-[17px] font-heading text-[#444444] mt-2 leading-tight">
-                {destination.description}
+                Things to do in
               </p>
               <p className="text-[17px] font-heading text-[#444444] leading-tight">
-                {destination.city}
+                {destination.cityName}
               </p>
               <p className="text-sm font-lightText text-[#666666] mt-1">
-                {destination.place}
+                {destination.countryName}
               </p>
             </div>
           </Link>

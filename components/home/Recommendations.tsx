@@ -1,167 +1,22 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import CarouselCard from "../cards/CarouselCard";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
+import { Experience } from "@/types/home"; 
 
-interface Experience {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  oldPrice?: number;
-  sale?: number;
-  mainImage: string;
-  tagOnCards?: string;
-  rating: number;
-  reviews: number;
-  cityName: string;
-  countryName: string;
+interface RecommendationsProps {
+  recommendations: Experience[];
+  loading: boolean;
 }
 
-const originalImages = [
-  "/images/r4.jpg.avif",
-  "/images/r3.jpg.avif",
-  "/images/r2.jpg.avif",
-  "/images/r1.jpg.avif",
-  "/images/r4.jpg.avif",
-  "/images/r3.jpg.avif",
-  "/images/r2.jpg.avif",
-  "/images/r1.jpg.avif",
-];
-
-const Recommendations = () => {
+const Recommendations: React.FC<RecommendationsProps> = ({
+  recommendations,
+  loading,
+}) => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [recommendations, setRecommendations] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Mock data array
-  const mockRecommendations: Experience[] = [
-    {
-      _id: "1",
-      title: "Skip-the-Line Eiffel Tower Summit Access",
-      description: "Experience the iconic Eiffel Tower with priority access to the summit",
-      price: 45,
-      oldPrice: 60,
-      sale: 25,
-      mainImage: "/images/r1.jpg.avif",
-      tagOnCards: "Bestseller",
-      rating: 4.8,
-      reviews: 2847,
-      cityName: "Paris",
-      countryName: "France",
-    },
-    {
-      _id: "2",
-      title: "London Eye Fast Track Entry",
-      description: "Skip the queues and enjoy panoramic views of London",
-      price: 32,
-      oldPrice: 40,
-      sale: 20,
-      mainImage: "/images/r2.jpg.avif",
-      tagOnCards: "Popular",
-      rating: 4.6,
-      reviews: 1923,
-      cityName: "London",
-      countryName: "United Kingdom",
-    },
-    {
-      _id: "3",
-      title: "Dubai Desert Safari with BBQ Dinner",
-      description: "Experience the magic of the Arabian desert with traditional entertainment",
-      price: 85,
-      oldPrice: 120,
-      sale: 29,
-      mainImage: "/images/r3.jpg.avif",
-      tagOnCards: "Limited Time",
-      rating: 4.9,
-      reviews: 3421,
-      cityName: "Dubai",
-      countryName: "United Arab Emirates",
-    },
-    {
-      _id: "4",
-      title: "Colosseum Underground & Arena Floor Tour",
-      description: "Explore the hidden areas of Rome's most famous amphitheater",
-      price: 55,
-      oldPrice: 70,
-      sale: 21,
-      mainImage: "/images/r4.jpg.avif",
-      tagOnCards: "Exclusive",
-      rating: 4.7,
-      reviews: 2156,
-      cityName: "Rome",
-      countryName: "Italy",
-    },
-    {
-      _id: "5",
-      title: "Times Square Food Tour",
-      description: "Taste the best of New York's diverse culinary scene",
-      price: 75,
-      oldPrice: 95,
-      sale: 21,
-      mainImage: "/images/r1.jpg.avif",
-      tagOnCards: "Foodie Favorite",
-      rating: 4.5,
-      reviews: 1834,
-      cityName: "New York",
-      countryName: "United States",
-    },
-    {
-      _id: "6",
-      title: "Singapore Night Safari",
-      description: "Discover nocturnal wildlife in the world's first night zoo",
-      price: 48,
-      oldPrice: 60,
-      sale: 20,
-      mainImage: "/images/r2.jpg.avif",
-      tagOnCards: "Family Friendly",
-      rating: 4.4,
-      reviews: 1657,
-      cityName: "Singapore",
-      countryName: "Singapore",
-    },
-    {
-      _id: "7",
-      title: "Las Vegas Strip Helicopter Tour",
-      description: "Soar above the dazzling lights of the Las Vegas Strip",
-      price: 125,
-      oldPrice: 150,
-      sale: 17,
-      mainImage: "/images/r3.jpg.avif",
-      tagOnCards: "Thrilling",
-      rating: 4.8,
-      reviews: 987,
-      cityName: "Las Vegas",
-      countryName: "United States",
-    },
-    {
-      _id: "8",
-      title: "Tokyo Robot Restaurant Show",
-      description: "Experience the futuristic entertainment of Tokyo's robot show",
-      price: 65,
-      oldPrice: 80,
-      sale: 19,
-      mainImage: "/images/r4.jpg.avif",
-      tagOnCards: "Unique Experience",
-      rating: 4.3,
-      reviews: 1234,
-      cityName: "Tokyo",
-      countryName: "Japan",
-    },
-  ];
-
-  useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setRecommendations(mockRecommendations);
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -228,14 +83,12 @@ const Recommendations = () => {
         className="mt-4 ml-[24px] xl:ml-0 sm:mt-4 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         ref={scrollContainerRef}
       >
-        {recommendations.map((rec, index) => (
+        {recommendations.map((rec) => (
           <div key={rec._id} className="snap-start flex-shrink-0 w-[282px]">
             <CarouselCard
               variant="recommendation"
-              image={
-                originalImages[index % originalImages.length] || rec.mainImage
-              }
-              place={rec.cityName || "Top Destination"}
+              image={rec.mainImage}
+              place={rec.cityName}
               rating={rec.rating}
               reviews={rec.reviews}
               description={rec.title}
