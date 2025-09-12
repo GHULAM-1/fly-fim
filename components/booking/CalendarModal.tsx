@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { useCalendarState } from "@/lib/hooks/useCalendarState";
 
 const getMonthName = (monthIndex: number) => {
   const monthNames = [
@@ -116,6 +117,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   position = "center",
 }) => {
   const router = useRouter();
+  const { setCalendarOpen } = useCalendarState();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -134,11 +136,15 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      setCalendarOpen(true);
+    } else {
+      setCalendarOpen(false);
     }
     return () => {
       document.body.style.overflow = "unset";
+      setCalendarOpen(false);
     };
-  }, [isOpen]);
+  }, [isOpen, setCalendarOpen]);
 
   const handleDateSelect = (date: Date) => {
     onDateSelect(date);
@@ -170,7 +176,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
       <Drawer open={isOpen} onOpenChange={onClose}>
         <DrawerContent
           bgClass="bg-white"
-          className="h-[70vh] mt-0 rounded-4xl flex flex-col"
+          className="h-[65vh] mt-0 rounded-4xl flex flex-col"
         >
           <div className="sticky top-0 bg-gray-1100 z-10 p-2 border-b">
             <div className="grid grid-cols-7 gap-1">
@@ -217,13 +223,12 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
       <div
         className={cn(
           "w-full h-screen flex justify-center p-4",
-          position === "center" && "items-center",
-          position === "top" && "items-start pt-28"
+          "items-start pt-20 lg:items-end 3xl:items-center lg:pt-0"
         )}
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-fade-in duration-300 max-h-[90vh] flex flex-col"
+          className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl animate-fade-in duration-300 max-h-[75vh] flex flex-col"
         >
           <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white z-10">
             <h2 className="text-xl font-heading text-[#444444]">

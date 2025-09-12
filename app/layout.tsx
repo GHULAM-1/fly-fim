@@ -12,6 +12,7 @@ import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { ToastContainerComponent } from "@/components/toast";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
+import { CalendarProvider } from "@/lib/hooks/useCalendarState";
 
 // --- FONT DEFINITIONS (No changes here) ---
 const heading = localFont({
@@ -114,7 +115,9 @@ export default function RootLayout({
           <ToastContainerComponent />
           <CurrencyProvider>
             <ConvexClientProvider>
-              <LayoutContent>{children}</LayoutContent>
+              <CalendarProvider>
+                <LayoutContent>{children}</LayoutContent>
+              </CalendarProvider>
             </ConvexClientProvider>
           </CurrencyProvider>
         </I18nextProvider>

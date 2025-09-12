@@ -119,6 +119,12 @@ const Navbar = () => {
         setScrolled(false);
       }
     };
+    
+    // Initial check on mount with small delay to ensure proper state
+    setTimeout(() => {
+      handleScroll();
+    }, 100);
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
@@ -361,14 +367,13 @@ const Navbar = () => {
                 />
               )}
             </Link>
-            {(scrolled || (pathname !== "/" && !isCheckoutPage)) && (
-              <div
-                ref={searchRef}
-                className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-80 ${
-                  isInputFocused
-                    ? "min-w-sm xl:min-w-md"
-                    : "min-w-xs xl:min-w-sm"
-                }`}
+            <div
+              ref={searchRef}
+              className={`relative hidden lg:flex items-center bg-zinc-100 border border-gray-200 gap-2 rounded-md py-2 px-4 transition-all duration-300 z-80 ${
+                isInputFocused
+                  ? "min-w-sm xl:min-w-md"
+                  : "min-w-xs xl:min-w-sm"
+              }`}
                 onClick={() => {
                   setIsSearchOpen(true);
                   inputRef.current?.focus();
@@ -477,7 +482,6 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            )}
             <div className="hidden md:flex items-center gap-6 ">
               <LanguageCurrencyDropdown scrolled={isNavSolid} />
               <Link

@@ -16,6 +16,7 @@ import {
 
 const ExperienceDetails: React.FC = () => {
   const [isOperatingHoursOpen, setIsOperatingHoursOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Handle click outside modal (desktop/web only)
@@ -80,7 +81,7 @@ const ExperienceDetails: React.FC = () => {
                 <div className="font-halyard-text text-[#444444] text-xs sm:text-sm">
                   {item.title && (
                     <span
-                      className={`font-halyard-text text-xs sm:text-sm ${
+                      className={`font-halyard-text font-semibold text-xs sm:text-sm ${
                         item.title === 'Open today' ? 'text-green-600' : ''
                       }`}
                     >
@@ -98,8 +99,8 @@ const ExperienceDetails: React.FC = () => {
       </div>
 
       {/* ===== MOBILE DRAWER (matches screenshot) ===== */}
-      {isOperatingHoursOpen && (
-        <div className="sm:hidden">
+      {isOperatingHoursOpen && typeof window !== 'undefined' && window.innerWidth < 768 && (
+        <div className="md:hidden">
           <Drawer open={isOperatingHoursOpen} onOpenChange={setIsOperatingHoursOpen} shouldScaleBackground>
             <DrawerContent bgClass="bg-white" className="rounded-t-2xl border-0 shadow-2xl max-h-[75vh]">
               {/* Handle
@@ -168,31 +169,32 @@ const ExperienceDetails: React.FC = () => {
 
       {/* ===== DESKTOP / WEB MODAL (unchanged) ===== */}
       {isOperatingHoursOpen && (
-        <div className="hidden sm:flex fixed inset-0 bg-[rgba(0,0,0,0.2)] items-end justify-center z-50 animate-fade-in">
-          <div
-            ref={modalRef}
-            className="calendar-modal bg-white w-full max-w-4xl mx-4 mb-4 rounded-2xl shadow-2xl animate-slide-up max-h-[80vh] overflow-y-auto"
-            style={{ marginBottom: '20vh' }}
-          >
+        <div className="hidden md:block fixed inset-0 bg-[rgba(0,0,0,0.2)] z-50 animate-fade-in">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div
+              ref={modalRef}
+              className="calendar-modal bg-white w-full max-w-3xl rounded-2xl shadow-2xl animate-slide-up max-h-[80vh] overflow-y-auto"
+            >
             <div className="p-6">
               <OperatingHoursCard
                 title="Alcazar of Seville"
                 operatingHours={[
                   {
                     hours: [
-                      { day: 'Monday', time: '09:30am - 07:00pm' },
-                      { day: 'Tuesday', time: '09:30am - 07:00pm' },
-                      { day: 'Wednesday', time: '09:30am - 07:00pm' },
-                      { day: 'Thursday', time: '09:30am - 07:00pm' },
-                      { day: 'Friday', time: '09:30am - 07:00pm' },
-                      { day: 'Saturday', time: '09:30am - 07:00pm' },
-                      { day: 'Sunday', time: '09:30am - 07:00pm' },
+                      { day: 'Monday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Tuesday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Wednesday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Thursday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Friday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Saturday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Sunday', time: 'Closed', lastEntry: 'N/A' },
                     ],
                   },
                 ]}
                 showPeriodSelector={false}
                 onClose={() => setIsOperatingHoursOpen(false)}
               />
+            </div>
             </div>
           </div>
         </div>

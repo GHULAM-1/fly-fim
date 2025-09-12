@@ -25,6 +25,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { useCalendarState } from "@/lib/hooks/useCalendarState";
 
 const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -96,6 +97,7 @@ const CarouselGrid = ({
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
+  const { isCalendarOpen } = useCalendarState();
 
   const cityStr = city ? (Array.isArray(city) ? city[0] : city) : "";
   const categoryStr = category
@@ -118,9 +120,54 @@ const CarouselGrid = ({
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false);
+  
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Prevent interaction with CarouselGrid when calendar is open
+  useEffect(() => {
+    if (isCalendarOpen) {
+      // Close any open dropdowns/drawers
+      setShowCategoriesDropdown(false);
+      setIsSortDrawerOpen(false);
+      
+      // Check if CarouselGrid is in view and scroll up if needed
+      const carouselElement = document.querySelector('[data-carousel-grid]');
+      if (carouselElement) {
+        const rect = carouselElement.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isInView) {
+          // Scroll up to show calendar (scroll to a position that shows the calendar area)
+          const scrollPosition = Math.max(0, window.scrollY - 200);
+          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        }
+      }
+    }
+  }, [isCalendarOpen]);
+
+  // Add scroll listener to detect when CarouselGrid comes into view when calendar is open
+  useEffect(() => {
+    if (!isCalendarOpen) return;
+
+    const handleScroll = () => {
+      const carouselElement = document.querySelector('[data-carousel-grid]');
+      if (carouselElement) {
+        const rect = carouselElement.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isInView) {
+          // Scroll up to show calendar
+          const scrollPosition = Math.max(0, window.scrollY - 200);
+          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isCalendarOpen]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -180,6 +227,20 @@ const CarouselGrid = ({
   };
 
   const handleCategoriesClick = () => {
+    if (isCalendarOpen) {
+      // Scroll up to show calendar if CarouselGrid is in view
+      const carouselElement = document.querySelector('[data-carousel-grid]');
+      if (carouselElement) {
+        const rect = carouselElement.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isInView) {
+          const scrollPosition = Math.max(0, window.scrollY - 200);
+          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        }
+      }
+      return;
+    }
     const newState = !showCategoriesDropdown;
     setShowCategoriesDropdown(newState);
   };
@@ -210,6 +271,20 @@ const CarouselGrid = ({
   ];
 
   const handleSortChange = (option: string) => {
+    if (isCalendarOpen) {
+      // Scroll up to show calendar if CarouselGrid is in view
+      const carouselElement = document.querySelector('[data-carousel-grid]');
+      if (carouselElement) {
+        const rect = carouselElement.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isInView) {
+          const scrollPosition = Math.max(0, window.scrollY - 200);
+          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        }
+      }
+      return;
+    }
     setSortBy(option);
     setIsSortDrawerOpen(false);
   };
@@ -415,7 +490,10 @@ const CarouselGrid = ({
     }, [showDropdown]);
 
     return (
-      <div className="py-4 max-w-screen-2xl mx-auto xl:px-0">
+      <div 
+        data-carousel-grid
+        className={`py-4 max-w-screen-2xl mx-auto xl:px-0 ${isCalendarOpen ? 'pointer-events-none opacity-50' : ''}`}
+      >
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-2">
@@ -1225,7 +1303,10 @@ const CarouselGrid = ({
   }
   if (variant === "subcategory") {
     return (
-      <div className="py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0">
+      <div 
+        data-carousel-grid
+        className={`py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0 ${isCalendarOpen ? 'pointer-events-none opacity-50' : ''}`}
+      >
         <div className="flex justify-between items-center  xl:px-0">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
