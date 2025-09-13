@@ -364,7 +364,7 @@ const FaqSection: React.FC = () => {
         </ul>
       </FaqItem>
 
-      {/* Inclusions */}
+      {/* Inclusions
       <FaqItem
         title="Inclusions"
         id="inclusions"
@@ -396,7 +396,7 @@ const FaqSection: React.FC = () => {
             </span>
           </li>
         </ul>
-      </FaqItem>
+      </FaqItem> */}
 
       {/* Itinerary */}
       <FaqItem title="Itinerary" id="itinerary">
@@ -626,9 +626,9 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Reviews */}
-      <FaqItem title="Reviews" id="reviews">
+      {/* <FaqItem title="Reviews" id="reviews">
         <ReviewsSection />
-      </FaqItem>
+      </FaqItem> */}
 
       {/* Know Before You Go */}
       <FaqItem title="Know Before You Go" id="know-before-you-go" >
