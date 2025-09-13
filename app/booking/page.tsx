@@ -10,6 +10,7 @@ import TicketOptions from "@/components/booking/TicketOptions";
 import PickATime from "@/components/booking/PickATime";
 import Stats from "@/components/home/Stats";
 import Footer from "@/components/Footer";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
 const BookingPage = () => {
   const searchParams = useSearchParams();
@@ -34,7 +35,7 @@ const BookingPage = () => {
   } | null>(null);
   const [showTimeSelection, setShowTimeSelection] = useState(false);
   const timeSelectionRef = useRef<HTMLDivElement>(null);
-
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const formattedDate = selectedDate
     ? selectedDate.toLocaleDateString("en-US", {
         weekday: "short",
@@ -75,7 +76,7 @@ const BookingPage = () => {
   }, [selectedOption?.id, showTimeSelection]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <header className="fixed top-0 left-0 w-full bg-white z-50 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6">
           <div className="flex justify-between items-center max-w-[1200px] mx-auto  h-16 md:h-20">
@@ -117,6 +118,7 @@ const BookingPage = () => {
               <Button
                 variant="outline"
                 className="border-gray-300 text-xs px-3 py-1.5 h-auto"
+                onClick={() => setAuthDialogOpen(true)}
               >
                 Sign in
               </Button>
@@ -125,7 +127,7 @@ const BookingPage = () => {
         </div>
       </header>
 
-      <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-[24px] xl:px-0 py-4">
+      <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-[24px] xl:px-0 py-4 overflow-x-hidden">
         <DateSelection
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
@@ -150,6 +152,8 @@ const BookingPage = () => {
         <Stats />
         <Footer />
       </div>
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
+
     </div>
   );
 };

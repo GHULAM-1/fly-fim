@@ -26,6 +26,7 @@ const Navbar = () => {
   const [safeAreaBottom, setSafeAreaBottom] = useState(0);
   const { user, loading } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
@@ -41,12 +42,15 @@ const Navbar = () => {
     "tours",
   ];
 
-  // Dynamic viewport height detection
+  // Dynamic viewport height detection and mobile detection
   useEffect(() => {
     const updateViewportHeight = () => {
       // Get the actual viewport height
       const vh = window.innerHeight * 0.01;
       setViewportHeight(vh);
+
+      // Update mobile state
+      setIsMobile(window.innerWidth < 768);
 
       // Get safe area bottom for devices with home indicator
       const safeAreaBottomValue = parseInt(
@@ -62,6 +66,7 @@ const Navbar = () => {
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
+    // Immediate initial setup
     updateViewportHeight();
     setVH();
 
@@ -121,13 +126,16 @@ const Navbar = () => {
     };
     
     // Initial check on mount with small delay to ensure proper state
-    setTimeout(() => {
+    const initTimeout = setTimeout(() => {
       handleScroll();
-    }, 100);
+    }, 150); // Increased delay to ensure mobile state is set
     
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
+    return () => {
+      clearTimeout(initTimeout);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname, isMobile]); // Add isMobile as dependency
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -292,12 +300,22 @@ const Navbar = () => {
   // Example: /things-to-do/new-york/tickets/colosseum-tickets/skip-the-line-entry = 6 segments
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
   const isCheckoutPage = pathname.includes('/things-to-do/') && pathSegments.length >= 5;
-  // Navbar should be transparent (isNavSolid = false) ONLY when:
-  // 1. On home page (pathname === "/") OR 
-  // 2. On checkout page (isCheckoutPage = true)
-  // AND not scrolled
-  const shouldBeTransparent = !scrolled && (pathname === "/" || isCheckoutPage);
-  const isNavSolid = !shouldBeTransparent;
+  
+  // Determine navbar transparency
+  let isNavSolid = true; // Default to solid
+  
+  if (!scrolled) {
+    if (pathname === "/") {
+      // Home page: always transparent when not scrolled
+      isNavSolid = false;
+    } else if (isCheckoutPage && isMobile) {
+      // Checkout page on mobile: transparent when not scrolled
+      isNavSolid = false;
+    } else if (isCheckoutPage && !isMobile) {
+      // Checkout page on desktop: always solid
+      isNavSolid = true;
+    }
+  }
   const navTextColorClass = isNavSolid ? "text-[#444444]" : "text-white";
 
   return (
