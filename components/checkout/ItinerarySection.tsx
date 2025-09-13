@@ -402,7 +402,7 @@ const ItinerarySection: React.FC = () => {
           // Fit map to show all markers
           if (markers.length > 0) {
             const group = new L.FeatureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.1));
+            map.fitBounds(group.getBounds().pad(0.1), { animate: false });
           }
         }
 
@@ -490,8 +490,7 @@ const ItinerarySection: React.FC = () => {
 
                 mapRef.current.fitBounds(bounds, {
                   padding: L.point(20, 20),
-                  animate: true,
-                  duration: 0.5,
+                  animate: false,
                 });
               }
             }, 300);
@@ -529,8 +528,7 @@ const ItinerarySection: React.FC = () => {
         ) {
           const coords = locationCoordinates[selectedItem.location];
           mapRef.current.setView(coords, 15, {
-            animate: true,
-            duration: 1.0,
+            animate: false,
           });
         }
       }
@@ -733,12 +731,30 @@ const ItinerarySection: React.FC = () => {
           const width = (activeButton as HTMLElement).offsetWidth;
           setBarPosition({ left, width });
 
-          // Scroll active tab into view if it's not visible
-          activeButton.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
+          // Scroll active tab into view within the tab container only (don't scroll the page)
+          const tabContainer = tabsRef.current;
+          const buttonLeft = (activeButton as HTMLElement).offsetLeft;
+          const buttonWidth = (activeButton as HTMLElement).offsetWidth;
+          const containerWidth = tabContainer.clientWidth;
+          const currentScroll = tabContainer.scrollLeft;
+
+          // Calculate if button is outside visible area
+          const buttonRight = buttonLeft + buttonWidth;
+          const visibleLeft = currentScroll;
+          const visibleRight = currentScroll + containerWidth;
+
+          // Only scroll the tab container, not the page
+          if (buttonLeft < visibleLeft) {
+            tabContainer.scrollTo({
+              left: buttonLeft - 20,
+              behavior: "smooth"
+            });
+          } else if (buttonRight > visibleRight) {
+            tabContainer.scrollTo({
+              left: buttonRight - containerWidth + 20,
+              behavior: "smooth"
+            });
+          }
         }
       }
     };
@@ -747,7 +763,11 @@ const ItinerarySection: React.FC = () => {
       updateBar();
     };
 
-    updateBar();
+    // Debounce the updateBar call to prevent rapid triggers
+    const timeoutId = setTimeout(() => {
+      updateBar();
+    }, 100);
+
     window.addEventListener("resize", updateBar);
 
     if (tabsRef.current) {
@@ -755,6 +775,7 @@ const ItinerarySection: React.FC = () => {
     }
 
     return () => {
+      clearTimeout(timeoutId);
       window.removeEventListener("resize", updateBar);
       if (tabsRef.current) {
         tabsRef.current.removeEventListener("scroll", handleScroll);
@@ -967,7 +988,7 @@ const ItinerarySection: React.FC = () => {
 
                   if (allMarkers.length > 0) {
                     const group = new L.FeatureGroup(allMarkers);
-                    mapRef.current.fitBounds(group.getBounds().pad(0.1));
+                    mapRef.current.fitBounds(group.getBounds().pad(0.1), { animate: false });
                   }
                 }
               }}
