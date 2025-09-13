@@ -50,7 +50,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
         <img 
           src="/loader.gif" 
           alt="Loading..." 
-          className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-contain"
+          className="w-48 h-48 md:w-72 md:h-72 object-contain"
           loading="eager"
           decoding="async"
           style={{

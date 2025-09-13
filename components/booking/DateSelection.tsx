@@ -84,7 +84,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
         </div>
 
         <div className="mt-6">
-          <div className="flex items-center gap-2 max-[375px]:overflow-x-auto max-[375px]">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
             {weekDisplay.map((d) => {
               const isSelected = selectedDate
                 ? formatDateKey(d.fullDate) === formatDateKey(selectedDate)
@@ -94,7 +94,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                 <button
                   key={d.date}
                   onClick={() => onDateSelect(d.fullDate)}
-                  className={`flex flex-col items-center justify-center md:p-3 px-[2px] py-[16px] md:w-22 w-[calc(100%/6.2)] h-19 md:h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
+                  className={`flex flex-col items-center justify-center md:p-3 px-[2px] py-[16px] md:w-22 w-[calc(100%/6.7)] h-17 md:h-22 flex-shrink-0 transition-colors duration-200 cursor-pointer ${
                     isSelected
                       ? "border-purple-600 bg-purple-100 md:rounded-lg rounded-[4px] border text-purple-800"
                       : "border border-transparent hover:border-gray-400 hover:bg-gray-50 md:rounded-lg rounded-[4px]"
@@ -130,10 +130,10 @@ const DateSelection: React.FC<DateSelectionProps> = ({
               className="flex flex-col items-center justify-center p-1 md:w-22 w-[calc(100%/6)] h-20 flex-shrink-0 transition-colors duration-200 cursor-pointer hover:border-gray-400 hover:bg-gray-50 hover:border hover:rounded-lg"
             >
               <Calendar size={20} className="text-gray-700" />
-              <span className="underline font-halyard-text text-[#444444] mt-2 text-sm">
+              <span className="underline font-halyard-text text-[#444444] mt-2 md:text-sm text-xs">
                 More 
               </span>
-              <span className="underline font-halyard-text text-[#444444]  text-sm">
+              <span className="underline font-halyard-text text-[#444444]  md:text-sm text-xs">
                  dates
               </span>
             </button>

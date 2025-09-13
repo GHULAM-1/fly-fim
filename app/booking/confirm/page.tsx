@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/form";
 import CreditCardForm from "@/components/booking/CreditCardForm";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
 function Bullet() {
   return (
@@ -135,7 +136,7 @@ const ConfirmAndPayPage = () => {
   const time = searchParams.get("time") || "9:00am-10:00pm";
   const optionTitle =
     searchParams.get("optionTitle") || "General Admission: Timed Entry";
-
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const dateObj = new Date(date);
   const formattedMonth = dateObj.toLocaleString("en-US", { month: "short" });
   const formattedDayOfMonth = dateObj.getDate();
@@ -309,6 +310,7 @@ const ConfirmAndPayPage = () => {
               <Button
                 variant="outline"
                 className="border-gray-300 text-xs px-3 py-1.5 h-auto"
+                onClick={() => setAuthDialogOpen(true)}
               >
                 Sign in
               </Button>
@@ -1212,6 +1214,8 @@ const ConfirmAndPayPage = () => {
           </div>
         </div>
       </div>
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
+
     </div>
   );
 };
