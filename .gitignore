@@ -41,3 +41,10 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Visual testing - ignore current screenshots but keep references
+screenshots/*.png
+screenshots/diff/
+screenshots/reports/
+# Keep reference/baseline images
+!screenshots/reference/
