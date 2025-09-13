@@ -8,7 +8,7 @@ const CheckoutNav: React.FC = () => {
   const [navTop, setNavTop] = useState("72px");
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
-  const userScrollTimeout = useRef<NodeJS.Timeout>();
+  const userScrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Define all FAQ sections in order
   const faqSections = [
@@ -44,7 +44,9 @@ const CheckoutNav: React.FC = () => {
     const handleScroll = () => {
       // Track that user is actively scrolling
       setIsUserScrolling(true);
-      clearTimeout(userScrollTimeout.current);
+      if (userScrollTimeout.current) {
+        clearTimeout(userScrollTimeout.current);
+      }
       
       // Reset user scrolling flag after they stop
       userScrollTimeout.current = setTimeout(() => {
@@ -121,7 +123,9 @@ const CheckoutNav: React.FC = () => {
 
     return () => {
       clearTimeout(scrollTimeout);
-      clearTimeout(userScrollTimeout.current);
+      if (userScrollTimeout.current) {
+        clearTimeout(userScrollTimeout.current);
+      }
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
