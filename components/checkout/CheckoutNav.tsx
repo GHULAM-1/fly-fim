@@ -26,6 +26,10 @@ const CheckoutNav: React.FC = () => {
   ];
 
   useEffect(() => {
+    // Completely disable CheckoutNav to prevent auto-scroll issues
+    setActive(false);
+    return;
+    
     // Only run on desktop (md and up) - completely disable on mobile
     const isDesktop = window.innerWidth >= 768;
     if (!isDesktop) {
