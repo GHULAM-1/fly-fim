@@ -30,16 +30,24 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const customScrollbarRef = useRef<HTMLDivElement>(null);
   const params = useParams();
   
-  const city = params.city as string;
+  var city = params.city as string | undefined;
 
-  const decodedCity = decodeURIComponent(city);
+  // Check if city is undefined or the string "undefined"
+  if (!city || city === "undefined") {
+    console.log("city is undefined, setting to worldwide");
+    city = "worldwide";
+  }
 
+  const decodedCity = city ? decodeURIComponent(city) : "worldwide";
+
+  console.log("Final city value:", city);
+  console.log("Decoded city:", decodedCity);
+  
   const formattedCityName = decodedCity
   ? decodedCity.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
-  : "City";
-
+  : "Worldwide";
 const categories: Category[] = [
     { id: 1, name: `Top things to do in ${formattedCityName}`, color: "purple", url: `/things-to-do/${city}` },
     { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
@@ -360,7 +368,7 @@ const categories: Category[] = [
                           };
                           
                           const subcategorySlug = getSubcategorySlug(item, categoryObj?.name || "");
-                          const subcategoryUrl = `/things-to-do/${city}/${categoryRoute}/${subcategorySlug}`;
+                          const subcategoryUrl = (city && city !== 'undefined') ? `/things-to-do/${city}/${categoryRoute}/${subcategorySlug}` : "/";
                           return (
                             <a
                               key={index}
