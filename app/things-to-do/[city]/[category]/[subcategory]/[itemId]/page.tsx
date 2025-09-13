@@ -868,7 +868,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
 
                 <div className="bg-white rounded-lg">
-                  <FaqSection />
+                  {/* <FaqSection /> */}
                 </div>
               </div>
 
