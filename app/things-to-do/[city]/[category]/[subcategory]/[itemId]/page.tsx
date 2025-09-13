@@ -422,92 +422,6 @@ const CheckoutPage: React.FC = () => {
       badge: "Free cancellation",
     },
   ];
-  const destinations = [
-    {
-      id: 1,
-      description: "Things to do in",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 2,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 3,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 4,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 5,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 6,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-    {
-      id: 7,
-      description: "Things to do in York",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 8,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 9,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 10,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 11,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 12,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-  ];
 
   const images = [
     "/images/tickets-included-01.avif",
@@ -543,23 +457,8 @@ const CheckoutPage: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }, 100);
 
-    // Prevent any unwanted scroll behavior during initial load
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-    };
-
-    // Temporarily disable programmatic scrolling during page load
-    document.addEventListener('scroll', preventScroll, { passive: false });
-    
-    // Re-enable scrolling after initial load is complete
-    const enableScrollTimer = setTimeout(() => {
-      document.removeEventListener('scroll', preventScroll);
-    }, 300);
-
     return () => {
       clearTimeout(timer);
-      clearTimeout(enableScrollTimer);
-      document.removeEventListener('scroll', preventScroll);
     };
   }, []); // Empty dependency array means this only runs once
 
