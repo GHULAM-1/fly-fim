@@ -58,9 +58,6 @@ const CheckoutNav: React.FC = () => {
       
       // Debounce the scroll handling to avoid interference with natural scrolling
       scrollTimeout = setTimeout(() => {
-        // Skip tracking if user is actively scrolling
-        if (isUserScrolling) return;
-        
         const checkoutSection = document.getElementById("checkout-section");
         if (!checkoutSection) return;
 
@@ -76,7 +73,8 @@ const CheckoutNav: React.FC = () => {
 
         setActive(isCheckoutVisible && !isPastCheckout);
 
-        if (isCheckoutVisible && !isPastCheckout) {
+        // Only update FAQ tracking if user is not actively scrolling
+        if (isCheckoutVisible && !isPastCheckout && !isUserScrolling) {
           // Find which FAQ section is currently most visible (with debouncing)
           const faqElements = document.querySelectorAll(".faq-item");
           let activeFaqId = "highlights"; // Default to first FAQ
@@ -100,7 +98,7 @@ const CheckoutNav: React.FC = () => {
 
           setActiveFaq(activeFaqId);
         }
-      }, 200); // Increased debounce delay to 200ms for smoother experience
+      }, 300); // Increased debounce delay to 300ms for smoother experience
     };
 
     // Only add event listeners on desktop with passive scrolling
