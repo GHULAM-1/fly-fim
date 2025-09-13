@@ -405,7 +405,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Exclusions */}
-      {/* <FaqItem
+      <FaqItem
         title="Exclusions"
         id="exclusions"
         isOpenByDefault={defaultOpenFaqs.includes("exclusions")}
@@ -424,10 +424,10 @@ const FaqSection: React.FC = () => {
             </span>
           </li>
         </ul>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Cancellation Policy */}
-      {/* <FaqItem
+      <FaqItem
         title="Cancellation Policy"
         id="cancellation-policy"
         isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
@@ -436,10 +436,10 @@ const FaqSection: React.FC = () => {
           You can cancel these tickets up to 7 days before the experience begins
           and get a full refund.
         </p>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Your Experience */}
-      {/* <FaqItem title="Your Experience" id="your-experience" >
+      <FaqItem title="Your Experience" id="your-experience" >
         <div className="space-y-4 font-halyard-text">
           <p className="font-semibold text-[15px] md:text-[17px] text-gray-900">
             Skip the lines and step back in time on a small-group guided tour of
@@ -535,10 +535,10 @@ const FaqSection: React.FC = () => {
             </div>
           </div>
         </div>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Operating Hours */}
-      {/* <FaqItem title="Operating Hours" id="operating-hours">
+      <FaqItem title="Operating Hours" id="operating-hours">
         <OperatingHoursCard
           title="Alcazar of Seville"
           operatingHours={[
@@ -624,15 +624,15 @@ const FaqSection: React.FC = () => {
             },
           ]}
         />
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Reviews */}
-      {/* <FaqItem title="Reviews" id="reviews">
+      <FaqItem title="Reviews" id="reviews">
         <ReviewsSection />
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Know Before You Go */}
-      {/* <FaqItem title="Know Before You Go" id="know-before-you-go" >
+      <FaqItem title="Know Before You Go" id="know-before-you-go" >
         <div className="space-y-6 font-halyard-text">
           <div>
             <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
@@ -782,10 +782,10 @@ const FaqSection: React.FC = () => {
             </ul>
           </div>
         </div>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* My Tickets */}
-      {/* <FaqItem title="My Tickets" id="my-tickets">
+      <FaqItem title="My Tickets" id="my-tickets">
         <div className="space-y-4 font-halyard-text">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
@@ -810,13 +810,13 @@ const FaqSection: React.FC = () => {
             </li>
           </ul>
         </div>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Where */}
-      {/* <FaqItem title="Where" id="where"> */}
-        {/* <div className="space-y-4 font-halyard-text"> */}
+      <FaqItem title="Where" id="where">
+        <div className="space-y-4 font-halyard-text">
           {/* Meeting Point */}
-          {/* <div className="flex items-center gap-2 group">
+          <div className="flex items-center gap-2 group">
             <Map className="w-4 h-4 text-[#02819c] hover:cursor-pointer inline-block group-hover:text-[#444444]" />
             <p
               className="text-[15px] md:block hidden font-halyard-text md:text-[17px] text-[#02819c] hover:cursor-pointer hover:text-[#444444] group-hover:text-[#444444]"
@@ -839,10 +839,10 @@ const FaqSection: React.FC = () => {
             >
               Plaza del Triunfo, Big statue, Seville
             </p>
-          </div> */}
+          </div>
 
           {/* Desktop Map Integration */}
-          {/* <div className="mt-4 md:block hidden">
+          <div className="mt-4 md:block hidden">
             <div className="rounded-lg overflow-hidden">
               <div
                 ref={mapContainerRef}
@@ -860,9 +860,9 @@ const FaqSection: React.FC = () => {
                 }
               `}</style>
             </div>
-          </div> */}
-        {/* </div> */}
-      {/* </FaqItem> */}
+          </div>
+        </div>
+      </FaqItem>
 
       {showMobileMapDrawer && (
         <div className="md:hidden fixed inset-0 bg-white z-[9999]">
