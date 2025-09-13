@@ -138,11 +138,12 @@ const CarouselGrid = ({
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
         
-        if (isInView) {
-          // Scroll up to show calendar (scroll to a position that shows the calendar area)
-          const scrollPosition = Math.max(0, window.scrollY - 200);
-          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-        }
+        // Disabled auto-scroll to prevent unwanted scrolling behavior
+        // if (isInView) {
+        //   // Scroll up to show calendar (scroll to a position that shows the calendar area)
+        //   const scrollPosition = Math.max(0, window.scrollY - 200);
+        //   window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        // }
       }
     }
   }, [isCalendarOpen]);
@@ -157,11 +158,12 @@ const CarouselGrid = ({
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
         
-        if (isInView) {
-          // Scroll up to show calendar
-          const scrollPosition = Math.max(0, window.scrollY - 200);
-          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-        }
+        // Disabled auto-scroll to prevent unwanted scrolling behavior
+        // if (isInView) {
+        //   // Scroll up to show calendar
+        //   const scrollPosition = Math.max(0, window.scrollY - 200);
+        //   window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        // }
       }
     };
 
@@ -234,10 +236,11 @@ const CarouselGrid = ({
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
         
-        if (isInView) {
-          const scrollPosition = Math.max(0, window.scrollY - 200);
-          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-        }
+        // Disabled auto-scroll to prevent unwanted scrolling behavior
+        // if (isInView) {
+        //   const scrollPosition = Math.max(0, window.scrollY - 200);
+        //   window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        // }
       }
       return;
     }
@@ -278,10 +281,11 @@ const CarouselGrid = ({
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
         
-        if (isInView) {
-          const scrollPosition = Math.max(0, window.scrollY - 200);
-          window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-        }
+        // Disabled auto-scroll to prevent unwanted scrolling behavior
+        // if (isInView) {
+        //   const scrollPosition = Math.max(0, window.scrollY - 200);
+        //   window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+        // }
       }
       return;
     }

@@ -59,9 +59,15 @@ const FaqItem: React.FC<FaqItemProps> = ({
     if (contentRef.current) {
       setIsAnimating(true);
       onAnimationStateChange?.(true);
-      contentRef.current.style.maxHeight = isOpen
-        ? `${contentRef.current.scrollHeight}px`
-        : "0px";
+      
+      // Use requestAnimationFrame to ensure smooth animation without scroll interference
+      requestAnimationFrame(() => {
+        if (contentRef.current) {
+          contentRef.current.style.maxHeight = isOpen
+            ? `${contentRef.current.scrollHeight}px`
+            : "0px";
+        }
+      });
       
       // Reset animation state after transition completes
       const timer = setTimeout(() => {
@@ -158,21 +164,6 @@ const FaqSection: React.FC = () => {
 
   // Track if any FAQ is currently animating to prevent scroll interference
   const [isAnyFaqAnimating, setIsAnyFaqAnimating] = useState(false);
-
-  // Prevent scroll during FAQ animations
-  useEffect(() => {
-    if (isAnyFaqAnimating) {
-      const preventScroll = (e: Event) => {
-        e.preventDefault();
-      };
-      
-      document.addEventListener('scroll', preventScroll, { passive: false });
-      
-      return () => {
-        document.removeEventListener('scroll', preventScroll);
-      };
-    }
-  }, [isAnyFaqAnimating]);
 
   // Initialize mobile map drawer
   const initializeMobileMap = () => {
