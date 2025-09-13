@@ -8,11 +8,13 @@ import Destinations from "@/components/home/Destinations";
 import Recommendations from "@/components/home/Recommendations";
 import Activities from "@/components/home/Activities";
 import Testimonials from "@/components/home/Testimonials";
+import PaymentSuccessHandler from "@/components/PaymentSuccessHandler";
 import React from "react";
 
 const Home = () => {
   return (
     <div>
+      <PaymentSuccessHandler />
       <Hero />
       <Info />
       <div className="px-[24px]">
