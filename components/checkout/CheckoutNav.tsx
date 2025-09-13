@@ -5,8 +5,8 @@ const CheckoutNav: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activeFaq, setActiveFaq] = useState<string>("highlights");
   const [barPosition, setBarPosition] = useState({ left: 0, width: 0 });
-  const [navTop, setNavTop] = useState("72px");
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const userScrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -25,42 +25,45 @@ const CheckoutNav: React.FC = () => {
     { id: "where", label: "Where?" },
   ];
 
+  // Initialize desktop check
   useEffect(() => {
-    // Completely disable CheckoutNav to prevent auto-scroll issues
-    setActive(false);
-    return;
+    const checkDesktop = () => {
+      const desktop = window.innerWidth >= 768;
+      setIsDesktop(desktop);
+      if (!desktop) {
+        setActive(false);
+      }
+    };
     
-    // Only run on desktop (md and up) - completely disable on mobile
-    const isDesktop = window.innerWidth >= 768;
-    if (!isDesktop) {
-      setActive(false);
-      return;
-    }
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
-    // Assume the main header height is 72px (adjust this value based on your actual header height)
-    const headerHeight = 72;
+  // Handle scroll events - only on desktop
+  useEffect(() => {
+    console.log("isDesktop", isDesktop);
+    if (!isDesktop) return;
+
+    const headerHeight = 76;
     const navHeight = 56;
     const totalFixedHeight = headerHeight + navHeight;
-    
-    // Debounce scroll handler to prevent excessive calls
     let scrollTimeout: NodeJS.Timeout;
 
     const handleScroll = () => {
-      // Track that user is actively scrolling
       setIsUserScrolling(true);
+      
       if (userScrollTimeout.current) {
         clearTimeout(userScrollTimeout.current);
       }
       
-      // Reset user scrolling flag after they stop
       userScrollTimeout.current = setTimeout(() => {
         setIsUserScrolling(false);
       }, 150);
 
-      // Clear previous timeout
       clearTimeout(scrollTimeout);
       
-      // Debounce the scroll handling to avoid interference with natural scrolling
       scrollTimeout = setTimeout(() => {
         const checkoutSection = document.getElementById("checkout-section");
         if (!checkoutSection) return;
@@ -77,11 +80,9 @@ const CheckoutNav: React.FC = () => {
 
         setActive(isCheckoutVisible && !isPastCheckout);
 
-        // Only update FAQ tracking if user is not actively scrolling
         if (isCheckoutVisible && !isPastCheckout && !isUserScrolling) {
-          // Find which FAQ section is currently most visible (with debouncing)
           const faqElements = document.querySelectorAll(".faq-item");
-          let activeFaqId = "highlights"; // Default to first FAQ
+          let activeFaqId = "highlights";
           let maxVisibility = 0;
 
           faqElements.forEach((faq: any) => {
@@ -102,26 +103,10 @@ const CheckoutNav: React.FC = () => {
 
           setActiveFaq(activeFaqId);
         }
-      }, 300); // Increased debounce delay to 300ms for smoother experience
+      }, 300);
     };
 
-    // Only add event listeners on desktop with passive scrolling
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
-    // Handle resize to disable on mobile
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setActive(false);
-        clearTimeout(scrollTimeout);
-        // Remove event listeners on mobile
-        window.removeEventListener("scroll", handleScroll);
-      } else {
-        // Add event listeners back on desktop
-        window.addEventListener("scroll", handleScroll, { passive: true });
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
 
     return () => {
       clearTimeout(scrollTimeout);
@@ -129,11 +114,13 @@ const CheckoutNav: React.FC = () => {
         clearTimeout(userScrollTimeout.current);
       }
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isDesktop]);
 
+  // Update active bar position
   useEffect(() => {
+    if (!isDesktop) return;
+    
     const updateBar = () => {
       if (navRef.current) {
         const activeButton = navRef.current.querySelector(
@@ -150,33 +137,18 @@ const CheckoutNav: React.FC = () => {
     updateBar();
     window.addEventListener("resize", updateBar);
     return () => window.removeEventListener("resize", updateBar);
-  }, [activeFaq]);
-
-  useEffect(() => {
-    const updateNavTop = () => {
-      if (window.innerWidth <= 640) {
-        setNavTop("64px");
-      } else {
-        setNavTop("72px");
-      }
-    };
-    updateNavTop();
-    window.addEventListener("resize", updateNavTop);
-    return () => window.removeEventListener("resize", updateNavTop);
-  }, []);
+  }, [activeFaq, isDesktop]);
 
   const scrollToFaq = (faqId: string) => {
+    if (!isDesktop) return;
+    
     const element = document.getElementById(faqId);
     if (element) {
-      // Get the position of the element relative to the document
       const rect = element.getBoundingClientRect();
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const headerHeight = 72; // Main header height
-      const navHeight = 56; // Height of the fixed nav (h-14 in Tailwind = 56px)
-      const buffer = 20; // Additional buffer for spacing
-
-      // Calculate the target scroll position
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const headerHeight = 76;
+      const navHeight = 56;
+      const buffer = 20;
       const totalOffset = headerHeight + navHeight + buffer;
       const targetPosition = rect.top + scrollTop - totalOffset;
 
@@ -187,15 +159,19 @@ const CheckoutNav: React.FC = () => {
     }
   };
 
+  // Only render on desktop
+  if (!isDesktop) {
+    return null;
+  }
+
   return (
     <nav
-      className={`fixed left-0 w-full md:block hidden z-40 transition-all duration-300 ${
+      className={`fixed left-0 w-full z-40 transition-all duration-300 ${
         active
           ? "bg-white shadow-md transform translate-y-0"
           : "bg-transparent pointer-events-none transform -translate-y-full"
       }`}
-      // Adjust this value to match your main header height
-      style={{ top: navTop }}
+      style={{ top: "76px" }}
     >
       <div className="max-w-[1200px]  mx-auto xl:px-0 px-[24px]">
         <div className="flex items-center  justify-start h-12 relative">
