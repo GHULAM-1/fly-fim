@@ -24,6 +24,32 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
     setSelectedDate(null);
   }, []);
 
+  // Handle modal open/close for scroll adjustment
+  useEffect(() => {
+    if (isCalendarOpen) {
+      // Only scroll up if carousel is visible in viewport
+      const carouselElement = document.querySelector('[data-carousel-grid]') ||
+                             document.querySelector('.mb-6.md\\:mb-10.z-0') ||
+                             document.getElementById('checkout-section');
+
+      if (carouselElement) {
+        const carouselRect = carouselElement.getBoundingClientRect();
+
+        // Only scroll up if carousel is currently visible in viewport
+        if (carouselRect.top < window.innerHeight && carouselRect.bottom > 0) {
+          const currentScrollY = window.scrollY;
+          const scrollUpAmount = 150; // Scroll up by 150px
+          const scrollTarget = Math.max(0, currentScrollY - scrollUpAmount);
+
+          window.scrollTo({
+            top: scrollTarget,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  }, [isCalendarOpen]);
+
   const formatDate = (date: Date | null) => {
     if (!date) return "Select a date";
     return date.toLocaleDateString("en-US", {
