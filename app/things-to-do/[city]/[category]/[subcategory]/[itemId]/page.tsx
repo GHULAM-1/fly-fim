@@ -773,7 +773,7 @@ const CheckoutPage: React.FC = () => {
             </div>
 
             <div>
-              <div className="mb-6 md:mb-10 z-0 mt-6 md:mt-10">
+              <div className="mb-6 md:mb-10 z-0 mt-6 md:mt-10" data-carousel-grid>
                 <CarouselGrid
                   title="Similar experiences you'd love"
                   recommendations={recommendations}

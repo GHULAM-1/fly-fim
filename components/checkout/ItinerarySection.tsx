@@ -950,10 +950,10 @@ const ItinerarySection: React.FC = () => {
 
       {/* Map View */}
       {viewMode === "map" ? (
-        <div className="relative">
+        <div className="relative z-0">
           {/* Toggle Button - Fixed position relative to viewport */}
           <div
-            className={`absolute top-4 z-30 transition-all duration-300 ease-in-out ${
+            className={`absolute top-4 z-1 transition-all duration-300 ease-in-out ${
               showSidebar ? "left-82" : "left-4"
             }`}
           >
@@ -971,7 +971,7 @@ const ItinerarySection: React.FC = () => {
 
           {/* Recenter Button - Top right of map */}
           <div
-            className={`absolute top-4 z-30 transition-all duration-300 ease-in-out ${
+            className={`absolute top-4 z-1 transition-all duration-300 ease-in-out ${
               showSidebar ? "right-4" : "right-4"
             }`}
           >
@@ -1018,7 +1018,7 @@ const ItinerarySection: React.FC = () => {
                 ? "w-[calc(100%-20rem)] ml-80 rounded-r-lg"
                 : "w-full ml-0 rounded-lg"
             }`}
-            style={{ zIndex: 1 }}
+            style={{ zIndex: 0 }}
           >
             {/* Leaflet Map Container */}
             <div
@@ -1070,14 +1070,14 @@ const ItinerarySection: React.FC = () => {
 
           {/* Timeline Sidebar - Same as Timeline View */}
           <div
-            className={`absolute top-0 left-0 w-80 h-full bg-white border-2 border-gray-300 rounded-l-lg p-4 max-h-[500px] overflow-y-auto shadow-xl transition-transform duration-300 ease-in-out ${
+            className={`absolute top-0 left-0 w-80 h-full bg-white border-2 border-gray-300 rounded-l-lg p-4 max-h-[500px] overflow-y-auto shadow-xl transition-transform duration-300 ease-in-out z-0 ${
               showSidebar ? "translate-x-0" : "-translate-x-full"
             }`}
           >
             <div className="relative">
               {/* Vertical Line */}
               <div
-                className="absolute left-3 top-0 w-0.5 bg-purple-600"
+                className="absolute left-3 top-0 w-0.5 bg-purple-600 z-0"
                 style={{ height: "calc(100% - 3rem)" }}
               ></div>
 
@@ -1090,7 +1090,7 @@ const ItinerarySection: React.FC = () => {
                     onClick={() => handleLocationClick(item)}
                   >
                     {/* Icon */}
-                    <div className="relative z-10 flex-shrink-0">
+                    <div className="relative z-1 flex-shrink-0">
                       {item.type === "start" ? (
                         <div className="w-6 h-6 bg-purple-600 rounded-xs flex items-center justify-center">
                           <ArrowRight className="w-3 h-3 text-white" />
@@ -1224,10 +1224,10 @@ const ItinerarySection: React.FC = () => {
         </div>
       ) : (
         /* Timeline View */
-        <div className="relative">
+        <div className="relative z-0">
           {/* Vertical Line - stops at the last item */}
           <div
-            className="absolute left-3 top-0 w-0.5 bg-purple-600"
+            className="absolute left-3 top-0 w-0.5 bg-purple-600 z-0"
             style={{ height: "calc(100% - 7rem)" }}
           ></div>
 
@@ -1237,7 +1237,7 @@ const ItinerarySection: React.FC = () => {
               className="relative flex items-start gap-4 mb-8 last:mb-0"
             >
               {/* Icon */}
-              <div className="relative z-10 font-halyard-text flex-shrink-0">
+              <div className="relative z-1 font-halyard-text flex-shrink-0">
                 {item.type === "start" ? (
                   <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center">
                     <ArrowRight className="w-4 h-4 text-white" />
@@ -1517,7 +1517,7 @@ const ItinerarySection: React.FC = () => {
 
       {/* Map Drawer - Full Screen Overlay */}
       {showMapDrawer && (
-        <div className="fixed inset-0 bg-black" style={{zIndex: 1000}}>
+        <div className="fixed inset-0 bg-black" style={{zIndex: 50}}>
           {/* Close Button */}
           <button
             onClick={() => setShowMapDrawer(false)}
