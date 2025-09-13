@@ -580,7 +580,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
-        {/* <CheckoutNav /> */}
+        <CheckoutNav />
         <div className=" md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
@@ -868,7 +868,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
 
                 <div className="bg-white rounded-lg">
-                  {/* <FaqSection /> */}
+                  <FaqSection />
                 </div>
               </div>
 
