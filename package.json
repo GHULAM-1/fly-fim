@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:visual": "node scripts/visual-test.js",
+    "test:screenshots": "node scripts/take-screenshots.js",
+    "test:compare": "node scripts/compare-screenshots.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -55,6 +58,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/puppeteer": "^5.4.7",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
+    "puppeteer": "^23.8.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.4",
     "typescript": "^5"
