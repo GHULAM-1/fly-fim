@@ -55,29 +55,29 @@ const FaqItem: React.FC<FaqItemProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   if (contentRef.current) {
-  //     setIsAnimating(true);
-  //     onAnimationStateChange?.(true);
+  useEffect(() => {
+    if (contentRef.current) {
+      setIsAnimating(true);
+      onAnimationStateChange?.(true);
       
-  //     // Use requestAnimationFrame to ensure smooth animation without scroll interference
-  //     requestAnimationFrame(() => {
-  //       if (contentRef.current) {
-  //         contentRef.current.style.maxHeight = isOpen
-  //           ? `${contentRef.current.scrollHeight}px`
-  //           : "0px";
-  //       }
-  //     });
+      // Use requestAnimationFrame to ensure smooth animation without scroll interference
+      requestAnimationFrame(() => {
+        if (contentRef.current) {
+          contentRef.current.style.maxHeight = isOpen
+            ? `${contentRef.current.scrollHeight}px`
+            : "0px";
+        }
+      });
       
-  //     // Reset animation state after transition completes
-  //     const timer = setTimeout(() => {
-  //       setIsAnimating(false);
-  //       onAnimationStateChange?.(false);
-  //     }, 300); // Match the transition duration
+      // Reset animation state after transition completes
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+        onAnimationStateChange?.(false);
+      }, 300); // Match the transition duration
       
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [isOpen, onAnimationStateChange]);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, onAnimationStateChange]);
 
   return (
     <div className="faq-item mb-12 border-b border-gray-200 pb-6" id={id}>
@@ -320,6 +320,7 @@ const FaqSection: React.FC = () => {
         title="Highlights"
         isOpenByDefault={defaultOpenFaqs.includes("highlights")}
         id="highlights"
+        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3 ">
@@ -365,10 +366,10 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Inclusions */}
-      {/* <FaqItem
+      <FaqItem
         title="Inclusions"
         id="inclusions"
-        isOpenByDefault={defaultOpenFaqs.includes("inclusions")}
+        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start  gap-3">
@@ -396,7 +397,7 @@ const FaqSection: React.FC = () => {
             </span>
           </li>
         </ul>
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Itinerary */}
       {/* <FaqItem title="Itinerary" id="itinerary">
