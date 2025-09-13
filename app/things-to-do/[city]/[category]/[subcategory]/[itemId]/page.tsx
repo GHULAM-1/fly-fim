@@ -432,35 +432,25 @@ const CheckoutPage: React.FC = () => {
     "/images/tickets-included-07.avif",
   ];
 
-  const navItems =
-    (currentSubCategory.components.themes || []).map((t: any) => {
-      const id = (t.text || "")
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9\-]/g, "");
-      return {
-        id,
-        label: t.text,
-        icon: t.icon,
-      };
-    }) || [];
 
   useEffect(() => {
     setIsClient(true);
+    // Simple scroll to top on mount
+    window.scrollTo(0, 0);
   }, []);
 
-  // Separate effect for scroll to top - only run once on mount
-  useEffect(() => {
-    // Ensure page starts at top - only run once
-    // Use setTimeout to ensure this runs after any other scroll behavior and DOM is ready
-    const timer = setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 100);
+  // // Separate effect for scroll to top - only run once on mount
+  // useEffect(() => {
+  //   // Ensure page starts at top - only run once
+  //   // Use setTimeout to ensure this runs after any other scroll behavior and DOM is ready
+  //   const timer = setTimeout(() => {
+  //     window.scrollTo({ top: 0, behavior: 'instant' });
+  //   }, 100);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []); // Empty dependency array means this only runs once
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, []); // Empty dependency array means this only runs once
 
   useEffect(() => {
     if (!isClient) return;

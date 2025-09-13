@@ -55,29 +55,29 @@ const FaqItem: React.FC<FaqItemProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      setIsAnimating(true);
-      onAnimationStateChange?.(true);
+  // useEffect(() => {
+  //   if (contentRef.current) {
+  //     setIsAnimating(true);
+  //     onAnimationStateChange?.(true);
       
-      // Use requestAnimationFrame to ensure smooth animation without scroll interference
-      requestAnimationFrame(() => {
-        if (contentRef.current) {
-          contentRef.current.style.maxHeight = isOpen
-            ? `${contentRef.current.scrollHeight}px`
-            : "0px";
-        }
-      });
+  //     // Use requestAnimationFrame to ensure smooth animation without scroll interference
+  //     requestAnimationFrame(() => {
+  //       if (contentRef.current) {
+  //         contentRef.current.style.maxHeight = isOpen
+  //           ? `${contentRef.current.scrollHeight}px`
+  //           : "0px";
+  //       }
+  //     });
       
-      // Reset animation state after transition completes
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-        onAnimationStateChange?.(false);
-      }, 300); // Match the transition duration
+  //     // Reset animation state after transition completes
+  //     const timer = setTimeout(() => {
+  //       setIsAnimating(false);
+  //       onAnimationStateChange?.(false);
+  //     }, 300); // Match the transition duration
       
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, onAnimationStateChange]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isOpen, onAnimationStateChange]);
 
   return (
     <div className="faq-item mb-12 border-b border-gray-200 pb-6" id={id}>
@@ -320,7 +320,6 @@ const FaqSection: React.FC = () => {
         title="Highlights"
         isOpenByDefault={defaultOpenFaqs.includes("highlights")}
         id="highlights"
-        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3 ">
@@ -370,7 +369,6 @@ const FaqSection: React.FC = () => {
         title="Inclusions"
         id="inclusions"
         isOpenByDefault={defaultOpenFaqs.includes("inclusions")}
-        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start  gap-3">
@@ -401,7 +399,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Itinerary */}
-      <FaqItem title="Itinerary" id="itinerary" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Itinerary" id="itinerary">
         <ItinerarySection />
       </FaqItem>
 
@@ -410,7 +408,6 @@ const FaqSection: React.FC = () => {
         title="Exclusions"
         id="exclusions"
         isOpenByDefault={defaultOpenFaqs.includes("exclusions")}
-        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <ul className="space-y-3 font-halyard-text">
           <li className="flex items-start gap-3">
@@ -433,7 +430,6 @@ const FaqSection: React.FC = () => {
         title="Cancellation Policy"
         id="cancellation-policy"
         isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
-        onAnimationStateChange={setIsAnyFaqAnimating}
       >
         <p className="mb-3 font-halyard-text text-[15px] md:text-[17px]">
           You can cancel these tickets up to 7 days before the experience begins
@@ -442,7 +438,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Your Experience */}
-      <FaqItem title="Your Experience" id="your-experience" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Your Experience" id="your-experience" >
         <div className="space-y-4 font-halyard-text">
           <p className="font-semibold text-[15px] md:text-[17px] text-gray-900">
             Skip the lines and step back in time on a small-group guided tour of
@@ -541,7 +537,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Operating Hours */}
-      <FaqItem title="Operating Hours" id="operating-hours" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Operating Hours" id="operating-hours">
         <OperatingHoursCard
           title="Alcazar of Seville"
           operatingHours={[
@@ -630,12 +626,12 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Reviews */}
-      <FaqItem title="Reviews" id="reviews" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Reviews" id="reviews">
         <ReviewsSection />
       </FaqItem>
 
       {/* Know Before You Go */}
-      <FaqItem title="Know Before You Go" id="know-before-you-go" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Know Before You Go" id="know-before-you-go" >
         <div className="space-y-6 font-halyard-text">
           <div>
             <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
@@ -788,7 +784,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* My Tickets */}
-      <FaqItem title="My Tickets" id="my-tickets" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="My Tickets" id="my-tickets">
         <div className="space-y-4 font-halyard-text">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
@@ -816,7 +812,7 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Where */}
-      <FaqItem title="Where" id="where" onAnimationStateChange={setIsAnyFaqAnimating}>
+      <FaqItem title="Where" id="where">
         <div className="space-y-4 font-halyard-text">
           {/* Meeting Point */}
           <div className="flex items-center gap-2 group">
