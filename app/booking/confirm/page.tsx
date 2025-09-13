@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -37,6 +37,11 @@ import {
 import CreditCardForm from "@/components/booking/CreditCardForm";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { loadStripe } from '@stripe/stripe-js';
+import { toast } from "sonner";
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 function Bullet() {
   return (
@@ -80,9 +85,21 @@ const ConfirmAndPayPage = () => {
   const [paymentTime, setPaymentTime] = useState("payNow");
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  
+  // Credit card form state
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: ""
+  });
 
   const [countryCode, setCountryCode] = useState("+92");
   const [nationalNumber, setNationalNumber] = useState("");
+  
+  // Ref for scrolling to form errors
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (paymentError) {
@@ -169,12 +186,166 @@ const ConfirmAndPayPage = () => {
   const itemLink = `/things-to-do/${city}/${category}/${subcategory}/${item}`;
   const ticketsLink = `/booking?${searchParams.toString()}`;
 
-  const handlePaymentAttempt = () => {
+  // Credit card formatting functions
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    // Limit to 16 digits
+    const limitedV = v.substring(0, 16);
+    const matches = limitedV.match(/\d{4,16}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    if (parts.length) {
+      return parts.join(' ');
+    } else {
+      return limitedV;
+    }
+  };
+
+  const formatExpiryDate = (value: string) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
+  const handleCardInputChange = (field: string, value: string) => {
+    let formattedValue = value;
+    
+    if (field === 'cardNumber') {
+      formattedValue = formatCardNumber(value);
+    } else if (field === 'expiryDate') {
+      formattedValue = formatExpiryDate(value);
+    } else if (field === 'cvv') {
+      formattedValue = value.replace(/[^0-9]/gi, '').substring(0, 4);
+    }
+    
+    setCardDetails(prev => ({
+      ...prev,
+      [field]: formattedValue
+    }));
+  };
+
+  // Function to scroll to form errors
+  const scrollToFormErrors = () => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  };
+
+  const handlePaymentAttempt = async () => {
     if (!paymentMethod) {
       setPaymentError(true);
+      scrollToFormErrors();
+      return;
+    }
+
+    // Validate form first
+    const isValid = await form.trigger();
+    if (!isValid) {
+      scrollToFormErrors();
+      return;
+    }
+
+    // Validate credit card information only if card payment is selected or payLater
+    if (paymentMethod === "card" || paymentTime === "payLater") {
+      if (!cardDetails.cardNumber || !cardDetails.expiryDate || !cardDetails.cvv || !cardDetails.cardholderName) {
+        toast.error("Please fill in all credit card details");
+        scrollToFormErrors();
+        return;
+      }
+      
+      // Basic validation for card number (should have 16 digits)
+      const cardNumberDigits = cardDetails.cardNumber.replace(/\s/g, '');
+      if (cardNumberDigits.length !== 16) {
+        toast.error("Please enter a valid 16-digit card number");
+        scrollToFormErrors();
+        return;
+      }
+      
+      // Basic validation for expiry date (should be MM/YY format)
+      if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiryDate)) {
+        toast.error("Please enter expiry date in MM/YY format");
+        scrollToFormErrors();
+        return;
+      }
+      
+      // Basic validation for CVV (should be 3-4 digits)
+      if (!/^\d{3,4}$/.test(cardDetails.cvv)) {
+        toast.error("Please enter a valid CVV");
+        scrollToFormErrors();
+        return;
+      }
+    }
+
+    const formData = form.getValues();
+    
+    setIsProcessingPayment(true);
+    setPaymentError(false);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          buildID: item,
+          buildName: itemName,
+          bill: totalPayable,
+          guestDetails: {
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            adultCount,
+            seniorCount,
+            childCount,
+            date,
+            time,
+            optionTitle
+          },
+          cardDetails: (paymentMethod === "card" || paymentTime === "payLater") ? {
+            cardNumber: cardDetails.cardNumber,
+            expiryDate: cardDetails.expiryDate,
+            cvv: cardDetails.cvv,
+            cardholderName: cardDetails.cardholderName
+          } : null
+        }),
+      });
+
+      const { sessionId, error } = await response.json();
+      
+      if (error) {
+        console.error('Error creating checkout session:', error);
+        setPaymentError(true);
+        return;
+      }
+
+      const stripe = await stripePromise;
+      if (stripe) {
+        const { error: stripeError } = await stripe.redirectToCheckout({ 
+          sessionId 
+        });
+        
+        if (stripeError) {
+          console.error('Stripe error:', stripeError);
+          setPaymentError(true);
+          toast.error("Payment Error - There was an error processing your payment. Please try again.");
     } else {
-      form.handleSubmit((data) => console.log("Form Data:", data))();
-      console.log("Processing payment with:", paymentMethod);
+          toast.success("Redirecting to Payment - You are being redirected to complete your payment securely.");
+        }
+      }
+    } catch (err) {
+      console.error('Payment processing error:', err);
+      setPaymentError(true);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -185,38 +356,33 @@ const ConfirmAndPayPage = () => {
       paymentTime === "payLater" ? "at $0" : `$${totalPayable.toFixed(2)}`;
 
     switch (paymentMethod) {
-      case "paypal":
+      case "stripe":
         buttonContent = (
           <div className="flex items-center justify-center">
             <span className="mr-2 font-halyard-text-light">Pay with</span>
             <img
-              src="/images/booking/paypal.svg"
-              alt="PayPal Logo"
+              src="/stripe.png"
+              alt="Stripe Logo"
               className="h-6"
             />
           </div>
         );
-        buttonClasses = "bg-[#ffc439] hover:bg-[#ffb400] text-[#111]";
-        break;
-      case "gpay":
-        buttonContent = (
-          <div className="flex flex-row gap-0.5 items-center justify-center">
-            <span className="mr-2 font-halyard-text-light">Pay with</span>
-            <img
-              src="/images/booking/googlePay.svg"
-              alt="Google Pay Logo"
-              className="h-8"
-            />
-            <span className="text-lg font-halyard-text-light">Pay</span>
-          </div>
-        );
-        buttonClasses = "bg-black hover:bg-gray-800 text-white";
+        buttonClasses = "bg-[#635BFF] hover:bg-[#5A52E5] text-white";
         break;
       default:
         buttonContent = (
-          <div className="flex items-center justify-center">
+          <div className="flex hover:cursor-pointer items-center justify-center">
+            {isProcessingPayment ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Processing...
+              </>
+            ) : (
+              <>
             <Lock size={16} className="mr-2" />
             Confirm {amountText}
+              </>
+            )}
           </div>
         );
         buttonClasses = "bg-[#6A00D5] hover:bg-[#5A00B5] text-white";
@@ -225,9 +391,18 @@ const ConfirmAndPayPage = () => {
 
     if (paymentTime === "payLater") {
       buttonContent = (
-        <div className="flex items-center justify-center">
+        <div className="flex hover:cursor-pointer items-center justify-center">
+          {isProcessingPayment ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Processing...
+            </>
+          ) : (
+            <>
           <Lock size={16} className="mr-2" />
           Confirm at $0
+            </>
+          )}
         </div>
       );
       buttonClasses = "bg-[#6A00D5] hover:bg-[#5A00B5] text-white";
@@ -236,9 +411,10 @@ const ConfirmAndPayPage = () => {
     return (
       <Button
         onClick={handlePaymentAttempt}
-        className={`w-full font-semibold rounded-xl transition-all duration-300 ease-in-out ${
+        disabled={isProcessingPayment}
+        className={`w-full font-semibold hover:cursor-pointer rounded-xl transition-all duration-300 ease-in-out ${
           isSticky ? "py-4 text-base" : "py-6 text-lg"
-        } ${buttonClasses}`}
+        } ${buttonClasses} ${isProcessingPayment ? 'opacity-75 cursor-not-allowed' : ''}`}
       >
         {buttonContent}
       </Button>
@@ -472,7 +648,7 @@ const ConfirmAndPayPage = () => {
             </div>
 
             {/* Guest Details Form */}
-            <div className="pt-12">
+            <div ref={formRef} className="pt-12">
               <h2 className="text-2xl font-halyard-text font-semibold text-gray-700 mb-1">
                 Guest details
               </h2>
@@ -810,7 +986,67 @@ const ConfirmAndPayPage = () => {
                 </p>
               )}
               {paymentTime === "payLater" ? (
-                <CreditCardForm />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Card number
+                    </label>
+                    <input
+                      type="text"
+                      value={cardDetails.cardNumber}
+                      onChange={(e) => handleCardInputChange('cardNumber', e.target.value)}
+                      placeholder="0000 0000 0000 0000"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                      maxLength={16}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Expiry
+                      </label>
+                      <input
+                        type="text"
+                        value={cardDetails.expiryDate}
+                        onChange={(e) => handleCardInputChange('expiryDate', e.target.value)}
+                        placeholder="MM/YY"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                        maxLength={5}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CVV
+                      </label>
+                      <input
+                        type="text"
+                        value={cardDetails.cvv}
+                        onChange={(e) => handleCardInputChange('cvv', e.target.value)}
+                        placeholder="123"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                        maxLength={4}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name on card
+                    </label>
+                    <input
+                      type="text"
+                      value={cardDetails.cardholderName}
+                      onChange={(e) => handleCardInputChange('cardholderName', e.target.value)}
+                      placeholder="John Doe"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                    />
+                  </div>
+                  
+                  <div className="text-xs text-gray-500">
+                    Your card details are secured using 2048-bit SSL encryption.
+                  </div>
+                </div>
               ) : (
                 <div className="space-y-4">
                   <div className="border rounded-lg transition-all duration-200 border-gray-200 ">
@@ -827,7 +1063,69 @@ const ConfirmAndPayPage = () => {
                         <span className="font-heading text-xl text-[#444444] flex items-center gap-2">
                           <CreditCard size={20} /> Credit or debit card
                         </span>
-                        {paymentMethod === "card" && <CreditCardForm />}
+                        {paymentMethod === "card" && (
+                          <div className="mt-4 space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Card number
+                              </label>
+                              <input
+                                type="text"
+                                value={cardDetails.cardNumber}
+                                onChange={(e) => handleCardInputChange('cardNumber', e.target.value)}
+                                placeholder="0000 0000 0000 0000"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                                maxLength={19}
+                              />
+                      </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Expiry
+                                </label>
+                                <input
+                                  type="text"
+                                  value={cardDetails.expiryDate}
+                                  onChange={(e) => handleCardInputChange('expiryDate', e.target.value)}
+                                  placeholder="MM/YY"
+                                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                                  maxLength={5}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  CVV
+                                </label>
+                                <input
+                                  type="text"
+                                  value={cardDetails.cvv}
+                                  onChange={(e) => handleCardInputChange('cvv', e.target.value)}
+                                  placeholder="123"
+                                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                                  maxLength={4}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Name on card
+                              </label>
+                              <input
+                                type="text"
+                                value={cardDetails.cardholderName}
+                                onChange={(e) => handleCardInputChange('cardholderName', e.target.value)}
+                                placeholder="John Doe"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                              />
+                            </div>
+                            
+                            <div className="text-xs text-gray-500">
+                              Your card details are secured using 2048-bit SSL encryption.
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </label>
                   </div>
@@ -853,20 +1151,19 @@ const ConfirmAndPayPage = () => {
                       <input
                         type="radio"
                         name="paymentMethod"
-                        value="gpay"
-                        checked={paymentMethod === "gpay"}
+                        value="stripe"
+                        checked={paymentMethod === "stripe"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="custom-radio-input"
                       />
                       <span className="ml-3 font-heading text-xl text-[#444444] flex items-center gap-2">
                         {" "}
-                        Google Pay{" "}
+                        Stripe{" "}
                         <img
-                          src="/images/booking/googlePay.svg"
-                          alt="Google Pay Logo"
-                          className="h-8"
+                          src="/stripe.png"
+                          alt="Stripe Logo"
+                          className="h-6"
                         />{" "}
-                        <span className="text-lg">Pay</span>{" "}
                       </span>
                     </label>
                   </>
@@ -906,7 +1203,7 @@ const ConfirmAndPayPage = () => {
                 and the <span className="underline">Cancellation Policy</span>.
               </p>
 
-              <div className="w-full md:w-1/2">{renderPaymentButton()}</div>
+              <div className="w-full hover:cursor-pointer md:w-1/2">{renderPaymentButton()}</div>
             </div>
           </div>
 
@@ -1037,10 +1334,6 @@ const ConfirmAndPayPage = () => {
                   )}
 
                   <div className="border-t"></div>
-
-                  <p className="text-xs font-halyard-text-light text-[#444444]">
-                    Supplied by HY Attractions Manager LLC.
-                  </p>
 
                   <p className="text-xs text-[#444444] font-halyard-text-light">
                     By continuing, you agree to the{" "}
