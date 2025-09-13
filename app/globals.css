@@ -144,6 +144,11 @@
 
 body {
   font-family: var(--font-regular);
+  scroll-behavior: auto !important;
+}
+
+html {
+  scroll-behavior: auto !important;
 }
 
 .font-lightText {
