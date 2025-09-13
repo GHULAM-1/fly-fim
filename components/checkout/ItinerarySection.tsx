@@ -172,7 +172,7 @@ const ItinerarySection: React.FC = () => {
         // Create map with disabled zoom controls
         const map = L.map(mapContainerRef.current, {
           zoomControl: false,
-          scrollWheelZoom: true,
+          scrollWheelZoom: false,
           doubleClickZoom: true,
           touchZoom: true,
           boxZoom: true,
@@ -192,6 +192,15 @@ const ItinerarySection: React.FC = () => {
         }
 
         console.log("Map created successfully");
+
+        // Prevent map from interfering with page scroll
+        const mapContainer = mapContainerRef.current;
+        if (mapContainer) {
+          mapContainer.addEventListener('wheel', (e) => {
+            // Allow page scroll to work normally when over the map
+            e.stopPropagation();
+          }, { passive: true });
+        }
 
         // Add OpenStreetMap tiles
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -403,14 +412,6 @@ const ItinerarySection: React.FC = () => {
         setMapInitializing(false);
 
         console.log("Map initialization complete");
-
-        // Simple invalidateSize after a short delay
-        setTimeout(() => {
-          if (mapRef.current) {
-            mapRef.current.invalidateSize();
-            console.log("Map invalidateSize called");
-          }
-        }, 100);
       } catch (error) {
         console.error("Map initialization failed:", error);
         setMapError(true);
