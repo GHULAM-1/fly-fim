@@ -400,9 +400,9 @@ const FaqSection: React.FC = () => {
       </FaqItem>
 
       {/* Itinerary */}
-      {/* <FaqItem title="Itinerary" id="itinerary">
+      <FaqItem title="Itinerary" id="itinerary">
         <ItinerarySection />
-      </FaqItem> */}
+      </FaqItem>
 
       {/* Exclusions */}
       {/* <FaqItem
