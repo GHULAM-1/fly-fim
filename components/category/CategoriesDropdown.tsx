@@ -1,29 +1,31 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { ChevronRight, Menu, Smartphone } from "lucide-react";
 import { useParams } from "next/navigation";
+import { Category as APICategory } from "@/types/things-to-do/things-to-do-types";
 
-interface Category {
+interface DisplayCategory {
   id: number;
   name: string;
   color: string;
   url?: string;
-}
-
-interface TourListings {
-  [key: number]: string[];
+  subcategories?: { name: string; experiences: any[] }[];
 }
 
 interface CategoriesDropdownProps {
   showCategoriesDropdown: boolean;
   setShowCategoriesDropdown: (show: boolean) => void;
   setShowBanner: (show: boolean) => void;
+  categories: { categoryName: string; subcategories: { subcategoryName: string }[] }[];
+  topExperiences: any[];
 }
 
 const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   showCategoriesDropdown,
   setShowCategoriesDropdown,
   setShowBanner,
+  categories,
+  topExperiences,
 }) => {
   const [hoveredCategory, setHoveredCategory] = useState(1);
   const categoriesScrollRef = useRef<HTMLDivElement>(null);
@@ -44,115 +46,35 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   console.log("Decoded city:", decodedCity);
   
   const formattedCityName = decodedCity
-  ? decodedCity.split('-').map(word => 
+  ? decodedCity.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
   : "Worldwide";
-const categories: Category[] = [
-    { id: 1, name: `Top things to do in ${formattedCityName}`, color: "purple", url: `/things-to-do/${city}` },
-    { id: 2, name: "Tickets", color: "gray", url: `/things-to-do/${city}/tickets` },
-    { id: 3, name: "Tours", color: "gray", url: `/things-to-do/${city}/tours` },
-    { id: 4, name: "Transportation", color: "gray", url: `/things-to-do/${city}/transportation` },
-    { id: 5, name: "Travel Services", color: "gray", url: `/things-to-do/${city}/travel-services` },
-    { id: 6, name: "Cruises", color: "gray", url: `/things-to-do/${city}/cruises` },
-    { id: 7, name: "Food & Drink", color: "gray", url: `/things-to-do/${city}/food-drink` },
-    { id: 8, name: "Entertainment", color: "gray", url: `/things-to-do/${city}/entertainment` },
-    { id: 9, name: "Adventure", color: "gray", url: `/things-to-do/${city}/adventure` },
-    { id: 10, name: "Water Sports", color: "gray", url: `/things-to-do/${city}/water-sports` },
-    { id: 11, name: "Wellness", color: "gray", url: `/things-to-do/${city}/wellness` },
-    { id: 12, name: "Specials", color: "gray", url: `/things-to-do/${city}/specials` },
-  ];
 
-  const tourListings: TourListings = {
-    1: [
-      "Colosseum",
-      "Vatican Museums", 
-      "Rome To Pompeii Tours",
-      "St. Peter's Basilica",
-      "Rome Pantheon",
-    ],
-    2: [
-      "Colosseum Tickets",
-      "Vatican Museums Pass",
-      "Roman Forum Access",
-      "Pantheon Entry",
-      "Castel Sant'Angelo"
-    ],
-    3: [
-      "Rome Walking Tour",
-      "Vatican City Tour",
-      "Colosseum Guided Tour",
-      "Food & Wine Tour",
-      "Night Photography Tour",
-      "Historical Rome Tour",
-    ],
-    4: [
-      "Airport Transfers",
-      "Public Transport",
-      "Train Tickets",
-      "Train Passes",
-      "Private Airport Transfers",
-      "Shared Airport Transfers"
-    ],
-    5: [
-      "Wifi & SIM Cards",
-      "Airport Services",
-      "Luggage Storage",
-      "Travel Insurance",
-      "Visa Services",
-    ],
-    6: [
-      "River Cruises",
-      "Day Cruises",
-      "Luxury Cruises",
-      "Dinner Cruises",
-    ],
-    7: [
-      "Cooking Classes",
-      "Wine Tasting",
-      "Restaurant Tours",
-      "Food Markets",
-      "Pizza Making",
-      "Gelato Tours",
-      "Coffee Tours",
-      "Street Food Tours"
-    ],
-    8: [
-      "Theater Shows",
-      "Concerts",
-      "Opera Tickets",
-      "Comedy Shows",
-      "Dance Performances",
-      "Live Music",
-      "Cinema Tickets"
-    ],
-    9: [
-      "Hiking Tours",
-      "Rock Climbing",
-      "Zip Lining",
-      "Paragliding",
-      "Mountain Biking",
-      "Caving Tours",
-      "Rafting Adventures"
-    ],
-    10: [
-      "Scuba Diving",
-      "Snorkeling",
-      "Jet Skiing",
-      "Sailing",
-      "Kayaking",
-      "Paddleboarding",
-      "Fishing Tours"
-    ],
-    11: [
-      "Spa",
-    ],
-    12: [
-      "Combos",
-      "Valentine's Day",
-      "Digital Experience",
-    ],
-  };
+  // Transform API data to display categories
+  const displayCategories: DisplayCategory[] = useMemo(() => {
+    const transformed: DisplayCategory[] = [
+      { id: 1, name: `Top things to do in ${formattedCityName}`, color: "purple", url: `/things-to-do/${city}` }
+    ];
+
+    // Add API categories starting from id 2
+    categories.forEach((apiCategory, index) => {
+      const categorySlug = apiCategory.categoryName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+      transformed.push({
+        id: index + 2,
+        name: apiCategory.categoryName,
+        color: "gray",
+        url: `/things-to-do/${city}/${categorySlug}`,
+        subcategories: apiCategory.subcategories.map(sub => ({
+          name: sub.subcategoryName,
+          experiences: []
+        }))
+      });
+    });
+
+    return transformed;
+  }, [categories, city, formattedCityName]);
+
 
   useEffect(() => {
     const handleCategoriesScroll = () => {
@@ -231,7 +153,7 @@ const categories: Category[] = [
                 id="categories-scroll"
               >
                 <div className="space-y-2">
-                  {categories.map((category) => (
+                  {displayCategories.map((category) => (
                                          <a 
                        key={category.id}
                        href={category.url || `/things-to-do/${city}`}
@@ -265,242 +187,115 @@ const categories: Category[] = [
             
             <div className="w-[75%] p-4">
               <div className="grid grid-cols-3 gap-6">
-                {hoveredCategory && hoveredCategory !== 1 && tourListings[hoveredCategory as keyof typeof tourListings] ? (
-                  <div className="col-span-3">
-                    <div className="space-y-3">
-                      <div className="flex flex-col space-y-3">
-                        {tourListings[hoveredCategory as keyof typeof tourListings].map((item, index) => {
-                          const categoryObj = categories.find(c => c.id === hoveredCategory);
-                          const categoryRoute = categoryObj?.url?.split('/').pop();
-                          const getSubcategorySlug = (subcategoryName: string, categoryName: string) => {
-                            const name = subcategoryName.toLowerCase();
-                            switch (categoryName.toLowerCase()) {
-                              case "tours":
-                                if (name.includes("walking")) return "walking-tours";
-                                if (name.includes("guided")) return "guided-tours";
-                                if (name.includes("hop-on") || name.includes("hop off")) return `hop-on-hop-off-tours-${city}`;
-                                if (name.includes("city")) return "city-tours";
-                                if (name.includes("day")) return "day-trips";
-                                if (name.includes("heritage")) return "heritage-experiences";
-                                break;
-                              case "tickets":
-                                if (name.includes("museum")) return "museums";
-                                if (name.includes("landmark")) return "landmarks";
-                                if (name.includes("zoo")) return "zoos";
-                                if (name.includes("religious")) return "religious-sites";
-                                if (name.includes("city card")) return "city-cards";
-                                if (name.includes("theme park")) return "theme-parks";
-                                break;
-                              case "transportation":
-                                if (name.includes("public")) return "public-transport";
-                                if (name.includes("car rental")) return "car-rentals";
-                                if (name.includes("ferry")) return "ferry-services";
-                                if (name.includes("airport")) return "airport-transfers";
-                                if (name.includes("bike")) return "bike-rentals";
-                                if (name.includes("metro")) return "metro-services";
-                                break;
-                              case "food-drink":
-                                if (name.includes("cooking")) return "cooking-classes";
-                                if (name.includes("food tour")) return "food-tours";
-                                if (name.includes("wine")) return "wine-tastings";
-                                if (name.includes("restaurant")) return "restaurant-reservations";
-                                if (name.includes("market")) return "local-markets";
-                                if (name.includes("dietary")) return "dietary-options";
-                                break;
-                              case "entertainment":
-                                if (name.includes("live show")) return "live-shows";
-                                if (name.includes("theater")) return "theater";
-                                if (name.includes("theme park")) return "theme-parks";
-                                if (name.includes("concert")) return "concerts";
-                                if (name.includes("comedy")) return "comedy-clubs";
-                                if (name.includes("nightlife")) return "nightlife";
-                                break;
-                              case "adventure":
-                                if (name.includes("hiking")) return "hiking";
-                                if (name.includes("rock climbing")) return "rock-climbing";
-                                if (name.includes("off-road")) return "off-road-tours";
-                                if (name.includes("zip")) return "zip-lining";
-                                if (name.includes("caving")) return "caving";
-                                if (name.includes("paragliding")) return "paragliding";
-                                break;
-                              case "water-sports":
-                                if (name.includes("sailing")) return "sailing";
-                                if (name.includes("scuba")) return "scuba-diving";
-                                if (name.includes("surfing")) return "surfing";
-                                if (name.includes("kayaking")) return "kayaking";
-                                if (name.includes("jet ski")) return "jet-skiing";
-                                if (name.includes("fishing")) return "fishing";
-                                break;
-                              case "wellness":
-                                if (name.includes("spa")) return "spa-retreats";
-                                if (name.includes("yoga")) return "yoga-classes";
-                                if (name.includes("meditation")) return "meditation";
-                                if (name.includes("fitness")) return "fitness-centers";
-                                if (name.includes("thermal")) return "thermal-baths";
-                                if (name.includes("mindfulness")) return "mindfulness";
-                                break;
-                              case "specials":
-                                if (name.includes("discount")) return "discount-deals";
-                                if (name.includes("vip")) return "vip-experiences";
-                                if (name.includes("package")) return "package-deals";
-                                if (name.includes("seasonal")) return "seasonal-offers";
-                                if (name.includes("last minute")) return "last-minute";
-                                if (name.includes("group")) return "group-discounts";
-                                break;
-                              case "cruises":
-                                if (name.includes("port")) return "port-excursions";
-                                if (name.includes("shore")) return "shore-tours";
-                                if (name.includes("cruise package")) return "cruise-packages";
-                                if (name.includes("onboard")) return "onboard-activities";
-                                if (name.includes("dining")) return "dining-options";
-                                if (name.includes("entertainment")) return "entertainment";
-                                break;
-                              case "travel-services":
-                                if (name.includes("planning")) return "planning";
-                                if (name.includes("concierge")) return "concierge";
-                                if (name.includes("insurance")) return "insurance";
-                                if (name.includes("visa")) return "visa-services";
-                                if (name.includes("currency")) return "currency";
-                                if (name.includes("translation")) return "translations";
-                                break;
-                            }
-                            return item.replace(/\s+/g, '-').toLowerCase();
-                          };
-                          
-                          const subcategorySlug = getSubcategorySlug(item, categoryObj?.name || "");
-                          const subcategoryUrl = (city && city !== 'undefined') ? `/things-to-do/${city}/${categoryRoute}/${subcategorySlug}` : "/";
-                          return (
-                            <a
-                              key={index}
-                              href={subcategoryUrl}
-                              className="block text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1"
-                            >
-                              {item}
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a1.jpg.avif" alt="Colosseum" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Colosseum</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $21.04</div>
+                {(() => {
+                  const hoveredCategoryObj = displayCategories.find(c => c.id === hoveredCategory);
+
+                  if (hoveredCategory && hoveredCategory !== 1 && hoveredCategoryObj?.subcategories) {
+                    return (
+                      <div className="col-span-3">
+                        <div className="space-y-3">
+                          <div className="flex flex-col space-y-3">
+                            {hoveredCategoryObj.subcategories.map((subcategory, index) => {
+                              const categoryRoute = hoveredCategoryObj?.url?.split('/').pop();
+                              const subcategorySlug = subcategory.name.replace(/\s+/g, '-').toLowerCase();
+                              const subcategoryUrl = (city && city !== 'undefined') ? `/things-to-do/${city}/${categoryRoute}/${subcategorySlug}` : "/";
+
+                              return (
+                                <a
+                                  key={index}
+                                  href={subcategoryUrl}
+                                  className="block text-[15px] font-halyard-text text-[#444444] hover:text-[#8000ff] cursor-pointer py-1"
+                                >
+                                  {subcategory.name}
+                                </a>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a2.jpg.avif" alt="Vatican Museums" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Vatican Museums</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
+                    );
+                  }
+
+                  // Show top experiences for "Top things to do" category (id: 1)
+                  if (hoveredCategory === 1) {
+                    // Get top 15 experiences from topExperiences prop
+                    const topExperiencesToShow = topExperiences.slice(0, 15);
+
+                    // Split into 3 columns
+                    const col1 = topExperiencesToShow.slice(0, 5);
+                    const col2 = topExperiencesToShow.slice(5, 10);
+                    const col3 = topExperiencesToShow.slice(10, 15);
+
+                    return (
+                      <>
+                        <div className="space-y-4">
+                          {col1.map((experience) => (
+                            <div key={experience._id} className="flex items-center space-x-3">
+                              <img
+                                src={experience.basicInfo.mainImage[0] || "/images/a1.jpg.avif"}
+                                alt={experience.basicInfo.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">
+                                  {experience.basicInfo.title}
+                                </div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">
+                                  from ${experience.basicInfo.price.toFixed(2)}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a3.png.avif" alt="Rome To Pompeii Tours" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Pompeii Tours</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $93.89</div>
+
+                        {/* Column 2 */}
+                        <div className="space-y-4">
+                          {col2.map((experience) => (
+                            <div key={experience._id} className="flex items-center space-x-3">
+                              <img
+                                src={experience.basicInfo.mainImage[0] || "/images/a2.jpg.avif"}
+                                alt={experience.basicInfo.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">
+                                  {experience.basicInfo.title}
+                                </div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">
+                                  from ${experience.basicInfo.price.toFixed(2)}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a4.jpg.avif" alt="St. Peter's Basilica" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">St. Peter's Basilica</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $7.01</div>
+
+                        {/* Column 3 */}
+                        <div className="space-y-4">
+                          {col3.map((experience) => (
+                            <div key={experience._id} className="flex items-center space-x-3">
+                              <img
+                                src={experience.basicInfo.mainImage[0] || "/images/a3.jpg.avif"}
+                                alt={experience.basicInfo.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <div className="font-halyard-text text-[16px] text-[#444444]">
+                                  {experience.basicInfo.title}
+                                </div>
+                                <div className="text-[12px] font-halyard-text-light text-[#666666]">
+                                  from ${experience.basicInfo.price.toFixed(2)}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a5.jpg.avif" alt="Rome Pantheon" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Rome Pantheon</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $5.73</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Column 2 */}
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a6.jpg.avif" alt="Castel Sant Angelo" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Castel Sant Angelo</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $18.70</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d1.jpg.avif" alt="Sistine Chapel" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Sistine Chapel</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $29.22</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d2.jpg.avif" alt="Musei Capitolini" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Musei Capitolini</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $32.61</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d3.jpg.avif" alt="Roman Catacombs Tour" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Roman Catacombs Tour</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $14.03</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d4.jpg.avif" alt="Borghese Gallery" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Borghese Gallery</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $26.89</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                                              {/* Column 3 */}
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d5.jpg.avif" alt="Altare della Patria" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Altare della Patria</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $38.58</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/d6.jpeg.avif" alt="Doria Pamphilj Gallery" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Doria Pamphilj Gallery</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $33.90</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a1.jpg.avif" alt="Rome To Amalfi Coast Tours" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Amalfi Coast Tours</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $139.11</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a2.jpg.avif" alt="Rome To Tuscany Tours" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Rome To Tuscany Tours</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $115.73</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <img src="/images/a4.jpg.avif" alt="Bioparco Rome" className="w-12 h-12 object-cover rounded" />
-                        <div>
-                          <div className="font-halyard-text text-[16px] text-[#444444]">Bioparco Rome</div>
-                          <div className="text-[12px] font-halyard-text-light text-[#666666]">from $22.21</div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+                      </>
+                    );
+                  }
+
+                  // Default fallback
+                  return null;
+                })()}
               </div>
             </div>
         </div>
@@ -517,7 +312,7 @@ const categories: Category[] = [
       onMouseLeave={() => setShowBanner(false)}
     >
       <Smartphone size={16} />
-      Download App{" "}
+      Get Offer{" "}
     </button>
   </div>
   );

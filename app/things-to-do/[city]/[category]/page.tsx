@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
@@ -66,6 +66,11 @@ import CityCard from "@/components/cards/CityCard";
 import MobPopularThings from "@/components/category/mob-popular-things";
 import Stats from "@/components/home/Stats";
 import Testimonials from "@/components/things-to-do/Testimonials";
+import { fetchCityBycityName } from "@/api/cities/cities-api";
+import { fetchCategoryBycategoryName } from "@/api/category/category-api";
+import { fetchCategoryPageById } from "@/api/category-page/category-page-api";
+import { CategoryPageData } from "@/types/category-page/category-page-types";
+import { Category as APICategory } from "@/types/things-to-do/things-to-do-types";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -84,11 +89,93 @@ export default function CategoryPage() {
   const [showRightButton, setShowRightButton] = useState(true);
   const [isCarouselVisible, setIsCarouselVisible] = useState(true);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [categoryPageData, setCategoryPageData] =
+    useState<CategoryPageData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
   const { activeSection, setActiveSection } = useNavigationStore();
+
+  // Create consolidated array of all unique experiences
+  const allUniqueExperiences = useMemo(() => {
+    const allArrays = [
+      ...(categoryPageData?.topExperiences || []),
+      ...(categoryPageData?.popularExperiences || []),
+      ...(categoryPageData?.category?.subcategories?.flatMap(
+        (sub) => sub.experiences
+      ) || []),
+    ];
+
+    // Remove duplicates by _id
+    return allArrays.filter(
+      (experience, index, self) =>
+        index === self.findIndex((exp) => exp._id === experience._id)
+    );
+  }, [categoryPageData]);
+  console.log("allUniqueExperiences", allUniqueExperiences);
+  const mapExperiencesToAttractions = (experiences: any[]) => {
+    return experiences.map((experience, index) => ({
+      id: index + 1,
+      title: experience.basicInfo?.title || `Experience ${index + 1}`,
+      description:
+        experience.basicInfo?.description || "Discover an amazing experience",
+      category:
+        categoryPageData?.category?.categoryName ||
+        formattedCategoryName ||
+        "Experience",
+      price: experience.basicInfo?.price
+        ? `from $ ${experience.basicInfo.price.toFixed(2)}`
+        : "from $ 0.00",
+      image:
+        experience.basicInfo?.mainImage?.[0] ||
+        experience.basicInfo?.images?.[0] ||
+        "/images/default.jpg",
+      audience: ["Popular", "Recommended"],
+      rating: 4.5,
+    }));
+  };
+
+  const mapTopExperiencesToRecommendations = (experiences: any[]) => {
+    if (!experiences || !Array.isArray(experiences)) {
+      return [];
+    }
+
+    return experiences.map((experience, index) => {
+      const price = experience.basicInfo?.price || 0;
+      const oldPrice = experience.basicInfo?.oldPrice;
+      const off = experience.basicInfo?.sale;
+
+      // Use subcategoryName directly from the experience's relationships
+      const subcategorySlug =
+        experience.relationships?.subcategoryName
+          ?.toLowerCase()
+          ?.replace(/\s+/g, "-")
+          ?.replace(/[&]/g, "") || "general";
+
+      return {
+        id: index + 1,
+        itemId: experience._id || `exp-${index + 1}`,
+        description:
+          experience.basicInfo?.title || `Top Experience ${index + 1}`,
+        place:
+          experience.relationships?.categoryName ||
+          categoryPageData?.category?.categoryName ||
+          formattedCategoryName ||
+          "Experience",
+        image: experience.basicInfo?.images || ["/images/r1.jpg.avif"],
+        price: price,
+        oldPrice: oldPrice,
+        off: off,
+        rating: 4.5,
+        reviews: Math.floor(Math.random() * 4000) + 1000, // Random reviews between 1000-5000
+        badge: experience.flags?.isPopular ? "Free cancellation" : undefined,
+        type: subcategorySlug, // Add type for pill filtering
+      };
+    });
+  };
 
   const recommendations = [
     {
@@ -219,7 +306,7 @@ export default function CategoryPage() {
   const formattedCityName = decodedCity
     ? decodedCity
         .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(" ")
     : "City";
 
@@ -383,7 +470,7 @@ export default function CategoryPage() {
         },
         cruises: {
           style: "bordered",
-          heading: `Cruises in ${city}`,
+          heading: `Cruises in ${formattedCityName}`,
           navigationItems: [
             {
               id: "port-excursions",
@@ -437,7 +524,7 @@ export default function CategoryPage() {
         },
         "food-drink": {
           style: "simple",
-          heading: `Food & Drink in ${city}`,
+          heading: `Food & Drink in ${formattedCityName}`,
           navigationItems: [
             {
               id: "cooking-classes",
@@ -491,7 +578,7 @@ export default function CategoryPage() {
         },
         entertainment: {
           style: "bordered",
-          heading: `Entertainment shows in ${city}`,
+          heading: `Entertainment shows in ${formattedCityName}`,
           navigationItems: [
             {
               id: "live-shows",
@@ -589,7 +676,7 @@ export default function CategoryPage() {
         },
         "water-sports": {
           style: "bordered",
-          heading: `Water Sports in ${city}`,
+          heading: `Water Sports in ${formattedCityName}`,
           navigationItems: [
             { id: "sailing", label: "Sailing", icon: Ship, color: "purple" },
             {
@@ -628,7 +715,7 @@ export default function CategoryPage() {
         },
         wellness: {
           style: "bordered",
-          heading: `Health & Wellness in ${city}`,
+          heading: `Health & Wellness in ${formattedCityName}`,
           navigationItems: [
             {
               id: "spa-retreats",
@@ -682,7 +769,7 @@ export default function CategoryPage() {
         },
         specials: {
           style: "bordered",
-          heading: `${city} Specials`,
+          heading: `${formattedCityName} Specials`,
           navigationItems: [
             {
               id: "discount-deals",
@@ -763,7 +850,7 @@ export default function CategoryPage() {
     : {
         tickets: {
           style: "bordered",
-          heading: `${city} Attractions`,
+          heading: `${formattedCityName} Attractions`,
           navigationItems: [
             { id: "museums", label: "Museums", icon: Tv, color: "purple" },
             {
@@ -1103,7 +1190,7 @@ export default function CategoryPage() {
         },
         entertainment: {
           style: "simple",
-          heading: `Entertainment shows in ${city}`,
+          heading: `Entertainment shows in ${formattedCityName}`,
           navigationItems: [
             {
               id: "live-shows",
@@ -1152,7 +1239,7 @@ export default function CategoryPage() {
         },
         adventure: {
           style: "simple",
-          heading: `Adventure in ${city}`,
+          heading: `Adventure in ${formattedCityName}`,
           navigationItems: [
             {
               id: "hiking",
@@ -1400,11 +1487,121 @@ export default function CategoryPage() {
     return <div>Category not found</div>;
   }
 
+  const getIconForSubcategory = (subcategoryName: string) => {
+    const name = subcategoryName.toLowerCase();
+
+    if (name.includes("museum") || name.includes("art")) return Tv;
+    if (name.includes("landmark") || name.includes("monument")) return Landmark;
+    if (name.includes("zoo") || name.includes("animal")) return SunMedium;
+    if (
+      name.includes("religious") ||
+      name.includes("temple") ||
+      name.includes("church")
+    )
+      return BadgePercent;
+    if (name.includes("park") || name.includes("theme")) return Leaf;
+    if (
+      name.includes("show") ||
+      name.includes("live") ||
+      name.includes("performance")
+    )
+      return Music;
+    if (name.includes("theater") || name.includes("theatre")) return Tv;
+    if (name.includes("concert") || name.includes("music")) return Headphones;
+    if (name.includes("comedy") || name.includes("stand-up")) return Smile;
+    if (
+      name.includes("nightlife") ||
+      name.includes("club") ||
+      name.includes("bar")
+    )
+      return Moon;
+    if (
+      name.includes("tour") ||
+      name.includes("walking") ||
+      name.includes("guided")
+    )
+      return Footprints;
+    if (name.includes("city") || name.includes("sightseeing")) return MapPin;
+    if (name.includes("day trip") || name.includes("excursion")) return Globe;
+    if (
+      name.includes("food") ||
+      name.includes("dining") ||
+      name.includes("restaurant")
+    )
+      return Utensils;
+    if (name.includes("cooking") || name.includes("culinary")) return ChefHat;
+    if (name.includes("wine") || name.includes("tasting")) return Wine;
+    if (name.includes("market") || name.includes("shopping"))
+      return ShoppingBag;
+    if (
+      name.includes("transport") ||
+      name.includes("bus") ||
+      name.includes("metro")
+    )
+      return Bus;
+    if (name.includes("ferry") || name.includes("boat")) return Ship;
+    if (name.includes("car") || name.includes("rental")) return Car;
+    if (name.includes("airport") || name.includes("transfer")) return BusFront;
+    if (name.includes("bike") || name.includes("cycling")) return Bike;
+    if (name.includes("train") || name.includes("rail")) return Train;
+    if (name.includes("adventure") || name.includes("hiking")) return Mountain;
+    if (
+      name.includes("water") ||
+      name.includes("swimming") ||
+      name.includes("pool")
+    )
+      return Droplets;
+    if (
+      name.includes("spa") ||
+      name.includes("wellness") ||
+      name.includes("massage")
+    )
+      return Leaf;
+    if (name.includes("fitness") || name.includes("gym")) return Dumbbell;
+    if (name.includes("yoga") || name.includes("meditation")) return Heart;
+    if (name.includes("cruise") || name.includes("sailing")) return Ship;
+    if (
+      name.includes("discount") ||
+      name.includes("deal") ||
+      name.includes("offer")
+    )
+      return BadgePercent;
+    if (name.includes("vip") || name.includes("premium")) return Star;
+    if (name.includes("package") || name.includes("combo")) return Gift;
+    if (name.includes("seasonal") || name.includes("holiday")) return Calendar;
+    if (name.includes("group") || name.includes("family")) return Users;
+
+    return Ticket; // Default fallback icon
+  };
+
+  const dynamicNavigationItems =
+    categoryPageData?.categories?.flatMap((category) =>
+      category.subcategories.map((subcategory) => {
+        const subcategorySlug = subcategory.subcategoryName
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[&]/g, "");
+        return {
+          id: subcategorySlug,
+          label: subcategory.subcategoryName,
+          icon: getIconForSubcategory(subcategory.subcategoryName),
+          color: "purple" as const,
+        };
+      })
+    ) || [];
+
   const getButtonStyles = (item: any, isActive: boolean) => {
     const baseClasses =
       "font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 md:py-[25px] md:px-[15px] py-[0px] px-[11px] whitespace-nowrap transition-all duration-200";
 
-    switch (currentCategory.style) {
+    // Override style to "bordered" if category is "ticket" or "Ticket"
+    const effectiveStyle =
+      formattedCategoryName.toLowerCase() === "ticket" ||
+      formattedCategoryName.toLowerCase() === "tickets"
+        ? "bordered"
+        : currentCategory.style;
+
+    switch (effectiveStyle) {
       case "bordered":
         return `${baseClasses} border rounded-[4px] ${
           isActive
@@ -1479,7 +1676,11 @@ export default function CategoryPage() {
   };
 
   useEffect(() => {
-    const sections = currentCategory.navigationItems.map((item) => item.id);
+    const navigationItems =
+      dynamicNavigationItems.length > 0
+        ? dynamicNavigationItems
+        : currentCategory.navigationItems;
+    const sections = navigationItems.map((item) => item.id);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -1505,7 +1706,11 @@ export default function CategoryPage() {
     });
 
     return () => observer.disconnect();
-  }, [setActiveSection]);
+  }, [
+    setActiveSection,
+    dynamicNavigationItems,
+    currentCategory.navigationItems,
+  ]);
 
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
@@ -1547,6 +1752,42 @@ export default function CategoryPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const fetchCategoryPageData = async () => {
+      if (!categoryName || !city) return;
+
+      setLoading(true);
+      setError(null);
+      setCategoryPageData(null);
+
+      try {
+        const cityData = await fetchCityBycityName(city);
+        const categoryData = await fetchCategoryBycategoryName(categoryName);
+        const categoryPageResponse = await fetchCategoryPageById(
+          cityData._id,
+          categoryData._id
+        );
+
+        if (categoryPageResponse.success && categoryPageResponse.data) {
+          setCategoryPageData(categoryPageResponse.data);
+        } else {
+          setError(
+            categoryPageResponse.message || "Failed to fetch category page data"
+          );
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error occurred";
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryPageData();
+  }, [city, categoryName]);
+
   const destinations = [
     {
       id: 1,
@@ -1759,6 +2000,13 @@ export default function CategoryPage() {
             showCategoriesDropdown={showCategoriesDropdown}
             setShowCategoriesDropdown={setShowCategoriesDropdown}
             setShowBanner={setShowBanner}
+            categories={categoryPageData?.allCategories?.map(category => ({
+              categoryName: category.categoryName,
+              subcategories: category.subcategories.map(sub => ({
+                subcategoryName: sub.subcategoryName
+              }))
+            })) || []}
+            topExperiences={categoryPageData?.topExperiences || []}
           />
           <div
             className={` transition-all duration-300 origin-top overflow-hidden ${
@@ -1814,10 +2062,12 @@ export default function CategoryPage() {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                       <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        4.3
+                        {categoryPageData?.reviews ?
+                          (categoryPageData.reviews.reduce((acc, review) => acc + review.stars, 0) / categoryPageData.reviews.length).toFixed(1)
+                          : '4.3'}
                       </span>
                       <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        (151,002)
+                        ({categoryPageData?.reviews ? categoryPageData.reviews.length.toLocaleString() : '151,002'})
                       </span>
                     </div>
                   </div>
@@ -1912,7 +2162,10 @@ export default function CategoryPage() {
             ref={navigationRef}
             data-navigation
             className={`${
-              currentCategory.style === "simple"
+              (formattedCategoryName.toLowerCase() === "ticket" ||
+              formattedCategoryName.toLowerCase() === "tickets"
+                ? "bordered"
+                : currentCategory.style) === "simple"
                 ? "relative"
                 : "sticky md:top-30 top-15"
             } w-full bg-white z-30 py-4 transition-all duration-500 transform ${
@@ -1938,7 +2191,11 @@ export default function CategoryPage() {
                     </div>
                   </div>
                 )}
-                {currentCategory.style === "simple" && (
+
+                {(formattedCategoryName.toLowerCase() === "ticket" ||
+                formattedCategoryName.toLowerCase() === "tickets"
+                  ? "bordered"
+                  : currentCategory.style) === "simple" && (
                   <div className="relative">
                     <Button
                       variant="default"
@@ -1955,8 +2212,10 @@ export default function CategoryPage() {
                     )}
                   </div>
                 )}
-
-                {currentCategory.navigationItems.map((item) => {
+                {(dynamicNavigationItems.length > 0
+                  ? dynamicNavigationItems
+                  : currentCategory.navigationItems
+                ).map((item) => {
                   const IconComponent = item.icon;
                   const isActive = activeSection === item.id;
                   return (
@@ -1966,7 +2225,10 @@ export default function CategoryPage() {
                         onClick={() => scrollToSection(item.id)}
                         className={getButtonStyles(item, isActive)}
                       >
-                        {currentCategory.style === "simple" &&
+                        {(formattedCategoryName.toLowerCase() === "ticket" ||
+                        formattedCategoryName.toLowerCase() === "tickets"
+                          ? "bordered"
+                          : currentCategory.style) === "simple" &&
                         isActive ? null : (
                           <IconComponent
                             strokeWidth={1}
@@ -1993,15 +2255,24 @@ export default function CategoryPage() {
                   </div>
                 )}
               </div>
-              {currentCategory.style === "simple" && (
+              {(formattedCategoryName.toLowerCase() === "ticket" ||
+              formattedCategoryName.toLowerCase() === "tickets"
+                ? "bordered"
+                : currentCategory.style) === "simple" && (
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
               )}
             </div>
           </div>
           <div className="md:mt-10 mt-0">
-            {currentCategory.components.popular && !isWorldwideRoute && (
-              <PopularThings />
-            )}
+            {!isWorldwideRoute &&
+              categoryPageData?.popularExperiences &&
+              categoryPageData.popularExperiences.length > 0 && (
+                <PopularThings
+                  attractions={mapExperiencesToAttractions(
+                    categoryPageData.popularExperiences
+                  )}
+                />
+              )}
           </div>
           <div className="">
             {currentCategory.components.popular && isWorldwideRoute && (
@@ -2018,22 +2289,34 @@ export default function CategoryPage() {
                   title={`Top experiences`}
                   variant="pills"
                   pills={false}
-                  recommendations={recommendations}
-                  navigationItems={currentCategory.navigationItems}
+                  recommendations={
+                    categoryPageData?.topExperiences &&
+                    categoryPageData.topExperiences.length > 0
+                      ? mapTopExperiencesToRecommendations(
+                          categoryPageData.topExperiences
+                        )
+                      : recommendations
+                  }
                 />
               </div>
             ) : (
               <div className="px-[24px] xl:px-0">
-              <CarouselGrid
-                title={`Top experiences in ${formattedCityName}`}
-                variant="pills"
-                recommendations={recommendations}
-                  navigationItems={currentCategory.navigationItems}
+                <CarouselGrid
+                  title={`Top experiences in ${formattedCityName}`}
+                  variant="pills"
+                  recommendations={
+                    categoryPageData?.topExperiences &&
+                    categoryPageData.topExperiences.length > 0
+                      ? mapTopExperiencesToRecommendations(
+                          categoryPageData.topExperiences
+                        )
+                      : recommendations
+                  }
                 />
               </div>
             )}
             {currentCategory.components.stack &&
-              currentCategory.navigationItems.map((item) => (
+              (dynamicNavigationItems.length > 0 ? dynamicNavigationItems : currentCategory.navigationItems).map((item) => (
                 <div
                   key={item.id}
                   className="mb-5 md:mb-10 px-[24px] xl:px-0"
@@ -2042,7 +2325,34 @@ export default function CategoryPage() {
                   <CarouselGrid
                     title={item.label}
                     variant="museums"
-                    recommendations={recommendations}
+                    recommendations={(() => {
+                      const filtered = allUniqueExperiences.filter(
+                        (exp) =>
+                          exp.relationships?.subcategoryName === item.label
+                      );
+                      console.log(`Filtered experiences for ${item.label}:`, filtered);
+
+                      const mapped = filtered.map((experience, index) => ({
+                        id: index + 1,
+                        name:
+                          experience.basicInfo?.title ||
+                          `Experience ${index + 1}`,
+                        image:
+                          experience.basicInfo?.images?.[0] ||
+                          experience.basicInfo?.mainImage?.[0] ||
+                          "/images/default.jpg",
+                        place:
+                          experience.basicInfo?.title ||
+                          item.label,
+                        description:
+                          experience.basicInfo?.description ||
+                          `Discover ${experience.basicInfo?.title}`,
+                        price: experience.basicInfo?.price || 0,
+                      }));
+
+                      console.log(`Mapped experiences for ${item.label}:`, mapped);
+                      return mapped.length > 0 ? mapped : [];
+                    })()}
                   />
                 </div>
               ))}
@@ -2078,7 +2388,19 @@ export default function CategoryPage() {
           <div className="mb-10 px-[24px] xl:px-0">
             <BrowseThemes
               title="Browse by themes"
-              themes={currentCategory.components.themes || []}
+              themes={
+                categoryPageData?.categories
+                  ? categoryPageData.categories.flatMap((category) =>
+                      category.subcategories.map((subcategory) => ({
+                        icon: getIconForSubcategory(
+                          subcategory.subcategoryName
+                        ),
+                        text: subcategory.subcategoryName,
+                        href: `/things-to-do/${formattedCityName}/${formattedCategoryName}/${subcategory.subcategoryName.toLowerCase().replace(/\s+/g, "-").replace(/[&]/g, "")}`,
+                      }))
+                    )
+                  : currentCategory.components.themes || []
+              }
             />
           </div>
           {!isWorldwideRoute && (
@@ -2092,7 +2414,7 @@ export default function CategoryPage() {
           </div>
           {currentCategory.components.testimonials && !isWorldwideRoute && (
             <div className="mb-10 px-[24px] xl:px-0">
-              <Testimonials variant="default" />
+              <Testimonials variant="default" reviewsData={categoryPageData?.reviews} />
             </div>
           )}
           <div className="mb-10 px-[24px] xl:px-0">

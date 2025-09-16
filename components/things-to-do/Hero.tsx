@@ -11,9 +11,10 @@ import { Search, ArrowLeft } from "lucide-react";
 
 interface HeroProps {
   city?: string;
+  images?: string[];
 }
 
-const Hero: React.FC<HeroProps> = ({ city }) => {
+const Hero: React.FC<HeroProps> = ({ city, images }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -389,33 +390,17 @@ const Hero: React.FC<HeroProps> = ({ city }) => {
             className="mySwiper w-full h-[45vh] md:h-[60vh] lg:max-h-[500px] lg:h-full rounded-2xl overflow-hidden"
             onSlideChange={handleSlideChange}
           >
-            <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-full">
-                <img
-                  src="/banner1.avif"
-                  className="w-full h-full object-cover rounded-2xl"
-                  alt="Hero slide 1"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-full">
-                <img
-                  src="/banner2.jpeg"
-                  className="w-full h-full object-cover rounded-2xl"
-                  alt="Hero slide 2"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide className="rounded-2xl">
-              <div className="relative w-full h-full">
-                <img
-                  src="/banner3.jpeg"
-                  className="w-full h-full object-cover rounded-2xl"
-                  alt="Hero slide 3"
-                />
-              </div>
-            </SwiperSlide>
+            {images?.map((image, index) => (
+              <SwiperSlide key={index} className="rounded-2xl">
+                <div className="relative w-full h-full">
+                  <img
+                    src={image}
+                    className="w-full h-full object-cover rounded-2xl"
+                    alt={`Hero slide ${index + 1}`}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
             <div className="!hidden md:!block swiper-button-next after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg mr-5" />
             <div className="!hidden md:!block swiper-button-prev after:text-black after:!text-xs after:w-8 after:h-8 after:absolute after:bg-white after:flex after:items-center after:justify-center after:rounded-full after:shadow-lg ml-5" />
           </Swiper>
