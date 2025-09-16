@@ -5,13 +5,18 @@ import BrowseThemes from "@/components/home/BrowseThemes";
 import Faqs from "@/components/things-to-do/Faqs";
 import CarouselGrid from "@/components/grids/CarouselGrid";
 import Stats from "@/components/home/Stats";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Destinations from "@/components/home/Destinations";
 import MustDo from "@/components/things-to-do/MustDo";
 import Hero from "@/components/things-to-do/Hero";
 import TravelGuide from "@/components/things-to-do/TravelGuide";
 import Testimonials from "@/components/things-to-do/Testimonials";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
+import { fetchThingsToDoByCityId } from "@/api/things-to-do/things-to-do-api";
+import { ThingsToDoPageData, StructuredExperience } from "@/types/things-to-do/things-to-do-types";
+import { fetchFaqsByExperienceIds } from "@/api/faq/faq-api";
+import { fetchCityBycityName } from "@/api/cities/cities-api";
+import { Faq } from "@/types/faq/faq-types";
 import {
   ArrowLeft,
   BadgePercent,
@@ -62,9 +67,136 @@ const ThingsToDo = () => {
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef(0);
 
+  // API state
+  const [thingsToDoData, setThingsToDoData] = useState<ThingsToDoPageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [faqsData, setFaqsData] = useState<Faq[]>([]);
+
+  const params = useParams();
+  const city = params.city as string;
+
+  // Create consolidated array of all unique experiences
+  const allUniqueExperiences = useMemo(() => {
+    if (!thingsToDoData) return [];
+
+    const allArrays = [
+      ...(thingsToDoData.topExperiences || []),
+      ...(thingsToDoData.mustDoExperiences || []),
+      ...(thingsToDoData.mainCards || []),
+      ...(thingsToDoData.categories?.flatMap(cat =>
+        cat.subcategories.flatMap(sub => sub.experiences)
+      ) || []),
+    ];
+
+    // Remove duplicates by _id
+    const uniqueExperiences = allArrays.filter((experience, index, self) =>
+      index === self.findIndex(exp => exp._id === experience._id)
+    );
+
+    console.log("City page allUniqueExperiences:", uniqueExperiences);
+    return uniqueExperiences;
+  }, [thingsToDoData]);
+
+  // Create categories structure from actual experiences
+  const categoriesFromExperiences = useMemo(() => {
+    const categoryMap = new Map<string, Set<string>>();
+
+    allUniqueExperiences.forEach(exp => {
+      const categoryName = exp.relationships?.categoryName;
+      const subcategoryName = exp.relationships?.subcategoryName;
+
+      if (categoryName && subcategoryName) {
+        if (!categoryMap.has(categoryName)) {
+          categoryMap.set(categoryName, new Set<string>());
+        }
+        categoryMap.get(categoryName)!.add(subcategoryName);
+      }
+    });
+
+    return Array.from(categoryMap.entries()).map(([categoryName, subcategoriesSet]) => ({
+      categoryName,
+      subcategories: Array.from(subcategoriesSet).map(subcategoryName => ({
+        subcategoryName
+      }))
+    }));
+  }, [allUniqueExperiences]);
+
+  // Create array of max 10 unique subcategories from allUniqueExperiences
+  const uniqueSubcategories = useMemo(() => {
+    const subcategorySet = new Set<string>();
+
+    allUniqueExperiences.forEach(exp => {
+      const subcategoryName = exp.relationships?.subcategoryName;
+      if (subcategoryName) {
+        subcategorySet.add(subcategoryName);
+      }
+    });
+
+    return Array.from(subcategorySet).slice(0, 10).map(subcategoryName => ({
+      subcategoryName,
+      sectionId: subcategoryName.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, ''),
+      experiences: allUniqueExperiences.filter(exp => exp.relationships?.subcategoryName === subcategoryName)
+    }));
+  }, [allUniqueExperiences]);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // API call effect
+  useEffect(() => {
+    const loadThingsToDoData = async () => {
+      if (!city) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+        console.log('Fetching city data for city name:', city);
+
+        // First, get city ID by city name
+        const cityData = await fetchCityBycityName(city);
+        console.log('City data received:', cityData);
+
+        // Then, fetch things to do data using city ID
+        console.log('Fetching things to do data for city ID:', cityData._id);
+        const data = await fetchThingsToDoByCityId(cityData._id);
+        console.log('Things to do data received:', data);
+        setThingsToDoData(data);
+      } catch (err) {
+        console.error('Error loading things to do data:', err);
+        setError('Failed to load things to do data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadThingsToDoData();
+  }, [city]);
+
+  // Fetch FAQs after things-to-do data is loaded
+  useEffect(() => {
+    const loadFaqsData = async () => {
+      if (!thingsToDoData) return;
+
+      try {
+        // Extract all experience IDs from the things-to-do data
+        const experienceIds = thingsToDoData.categories
+          .flatMap(category => category.subcategories)
+          .flatMap(subcategory => subcategory.experiences)
+          .map(experience => experience._id);
+
+        if (experienceIds.length > 0) {
+          const faqs = await fetchFaqsByExperienceIds(experienceIds);
+          setFaqsData(faqs);
+        }
+      } catch (err) {
+        // Don't set error state for FAQs, just keep empty array
+      }
+    };
+
+    loadFaqsData();
+  }, [thingsToDoData]);
 
   const placeholderOptions = [
     "experiences and cities",
@@ -219,10 +351,43 @@ const ThingsToDo = () => {
     </div>
   );
 
-  const params = useParams();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
-  const city = params.city as string;
+
+  // Icon mapping function for categories
+  const getIconForCategory = (categoryName: string) => {
+    const name = categoryName.toLowerCase();
+    if (name.includes('music') || name.includes('concert') || name.includes('musical')) return Music;
+    if (name.includes('landmark') || name.includes('monument') || name.includes('attraction')) return Landmark;
+    if (name.includes('trip') || name.includes('tour') || name.includes('day')) return SunMedium;
+    if (name.includes('combo') || name.includes('deal') || name.includes('package')) return BadgePercent;
+    if (name.includes('cruise') || name.includes('boat') || name.includes('water')) return Ship;
+    if (name.includes('play') || name.includes('theatre') || name.includes('theater')) return Leaf;
+    if (name.includes('museum') || name.includes('gallery') || name.includes('exhibit')) return Tv;
+    if (name.includes('hop') || name.includes('bus') || name.includes('transport')) return BusFront;
+    // Additional mappings
+    if (name.includes('food') || name.includes('dining') || name.includes('restaurant')) return Leaf;
+    if (name.includes('adventure') || name.includes('outdoor') || name.includes('sport')) return SunMedium;
+    if (name.includes('entertainment') || name.includes('show') || name.includes('performance')) return Music;
+    // Default fallback icon
+    return Music;
+  };
+
+  // Transform API experiences to recommendations format
+  const transformExperiencesToRecommendations = (experiences: any[]) => {
+    return experiences.map(exp => ({
+      id: exp._id,
+      description: exp.basicInfo.title,
+      place: exp.basicInfo.tagOnCards || "",
+      image: exp.basicInfo.mainImage[0] || "/images/default.jpg",
+      price: exp.basicInfo.price,
+      oldPrice: exp.basicInfo.oldPrice,
+      off: exp.basicInfo.sale,
+      rating: 4.5, // Default since not in API
+      reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews for variety
+      badge: exp.basicInfo.tagOnCards
+    }));
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -347,16 +512,7 @@ const ThingsToDo = () => {
   }, [setScroll, setIsSectionActive, setShowSectionNavigation]);
 
   useEffect(() => {
-    const sections = [
-      "musicals",
-      "landmarks",
-      "day-trips",
-      "combos",
-      "cruises",
-      "plays",
-      "museums",
-      "hop-on-hop-off-tours",
-    ];
+    const sections = uniqueSubcategories.map(subcategory => subcategory.sectionId);
 
     const navigationElement = navigationRef.current;
     const navHeight = navigationElement ? navigationElement.offsetHeight : 0;
@@ -418,7 +574,7 @@ const ThingsToDo = () => {
       observer.disconnect();
       window.removeEventListener("scroll", handleScrollDetection);
     };
-  }, [setActiveSection, activeSection]);
+  }, [setActiveSection, activeSection, uniqueSubcategories]);
 
   useEffect(() => {
     const handleResize = () => checkScrollButtons();
@@ -592,6 +748,8 @@ const ThingsToDo = () => {
         <div className="hidden md:block fixed top-19 bg-white w-full py-3 z-30 border-b">
           <div className="hidden md:block">
             <CategoriesDropdown
+              categories={categoriesFromExperiences}
+              topExperiences={allUniqueExperiences}
               showCategoriesDropdown={showCategoriesDropdown}
               setShowCategoriesDropdown={setShowCategoriesDropdown}
               setShowBanner={setShowBanner}
@@ -607,7 +765,7 @@ const ThingsToDo = () => {
         </div>
 
         <div className="max-w-[1200px] relative mx-auto px-[24px] xl:px-0 ">
-          <Hero city={city} />
+          <Hero city={city} images={thingsToDoData?.mainCards.flatMap((card) => card.basicInfo.mainImage)} />
           <div className="md:hidden px-3 mt-[-30px] pb-2  relative z-40">
             <button
               className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
@@ -651,102 +809,26 @@ const ThingsToDo = () => {
                 </div>
               )}
 
-              <button
-                data-section="musicals"
-                onClick={() => scrollToSection("musicals")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "musicals"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <Music strokeWidth={1} />
-                Musicals
-              </button>
-              <button
-                data-section="landmarks"
-                onClick={() => scrollToSection("landmarks")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "landmarks"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <Landmark strokeWidth={1} />
-                Landmarks
-              </button>
-              <button
-                data-section="day-trips"
-                onClick={() => scrollToSection("day-trips")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "day-trips"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <SunMedium strokeWidth={1} />
-                Day Trips
-              </button>
-              <button
-                data-section="combos"
-                onClick={() => scrollToSection("combos")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "combos"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <BadgePercent strokeWidth={1} />
-                Combos
-              </button>
-              <button
-                data-section="cruises"
-                onClick={() => scrollToSection("cruises")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "cruises"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <Ship strokeWidth={1} />
-                Cruises
-              </button>
-              <button
-                data-section="plays"
-                onClick={() => scrollToSection("plays")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "plays"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <Leaf strokeWidth={1} />
-                Plays
-              </button>
-              <button
-                data-section="museums"
-                onClick={() => scrollToSection("museums")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "museums"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <Tv strokeWidth={1} />
-                Museums
-              </button>
-              <button
-                data-section="hop-on-hop-off-tours"
-                onClick={() => scrollToSection("hop-on-hop-off-tours")}
-                className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                  activeSection === "hop-on-hop-off-tours"
-                    ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                    : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                }`}
-              >
-                <BusFront strokeWidth={1} />
-                Hop-On Hop-Off Tours
-              </button>
+              {uniqueSubcategories.map((subcategory, index) => {
+                const sectionId = subcategory.sectionId;
+                const IconComponent = getIconForCategory(subcategory.subcategoryName);
+
+                return (
+                  <button
+                    key={index}
+                    data-section={sectionId}
+                    onClick={() => scrollToSection(sectionId)}
+                    className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                      activeSection === sectionId
+                        ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
+                        : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                    }`}
+                  >
+                    <IconComponent strokeWidth={1} />
+                    {subcategory.subcategoryName}
+                  </button>
+                );
+              })}
 
               {showRightButton && (
                 <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
@@ -767,8 +849,8 @@ const ThingsToDo = () => {
 
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
           <CarouselGrid
-            title="Top experiences in London"
-            recommendations={recommendations}
+            title={`Top experiences in ${city?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`}
+            recommendations={thingsToDoData?.topExperiences ? transformExperiencesToRecommendations(thingsToDoData.topExperiences) : recommendations}
             variant="subcategory"
           />
         </div>
@@ -776,76 +858,34 @@ const ThingsToDo = () => {
           <Activities />
         </div>
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
-          <div id="musicals">
-            <CarouselGrid
-              title="London Musicals"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="landmarks">
-            <CarouselGrid
-              title="Landmarks in London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="day-trips">
-            <CarouselGrid
-              title="Day Trips From London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="combos">
-            <CarouselGrid
-              title="Combos Tickets in London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="cruises">
-            <CarouselGrid
-              title="Thames River Cruise"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="plays">
-            <CarouselGrid
-              title="Plays in London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="museums">
-            <CarouselGrid
-              title="Museums in London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
-          <div id="hop-on-hop-off-tours">
-            <CarouselGrid
-              title="Hop-on Hop-off Tours London"
-              recommendations={recommendations}
-              variant="subcategory"
-            />
-          </div>
+          {uniqueSubcategories.map((subcategory, index) => {
+            const sectionId = subcategory.sectionId;
+            const transformedRecommendations = transformExperiencesToRecommendations(subcategory.experiences);
+
+            return (
+              <div key={index} id={sectionId}>
+                <CarouselGrid
+                  title={subcategory.subcategoryName}
+                  recommendations={transformedRecommendations.length > 0 ? transformedRecommendations : recommendations}
+                  variant="subcategory"
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
 
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
-        <MustDo />
+        <MustDo mustDoData={thingsToDoData?.mustDoExperiences} city={city} />
         <div className="mb-7">
           <TravelGuide />
         </div>
         <div className="mb-10">
-          <BrowseThemes />
+          <BrowseThemes categoriesData={thingsToDoData?.categories} city={city} />
         </div>
-        <Testimonials variant="default" />
+        <Testimonials variant="default" reviewsData={thingsToDoData?.reviews} />
         <Destinations />
-        <Faqs />
+        <Faqs faqsData={faqsData} />
         <Banner />
         <Stats />
       </div>

@@ -2,6 +2,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+interface BannerProps {
+  title: string;
+  subtitle: string;
+}
 const Banner = () => {
   const { t } = useTranslation();
 

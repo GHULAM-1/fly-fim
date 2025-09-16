@@ -175,30 +175,40 @@ const PopularThings: React.FC<PopularThingsProps> = ({
         <h2 className="md:text-[24px] text-[18px] font-heading  text-[#444444]">
           {title}
         </h2>
-        <div className="hidden md:flex items-center gap-2">
-          <button
-            onClick={prevSlide}
-            aria-label="Previous"
-            className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-gray-400 transition-colors"
-          >
-            <ChevronLeft size={20} className="text-[#444444]" />
-          </button>
-          <button
-            onClick={nextSlide}
-            aria-label="Next"
-            className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-gray-400 transition-colors"
-          >
-            <ChevronRight size={20} className="text-[#444444]" />
-          </button>
-        </div>
+        {total > 3 && (
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={prevSlide}
+              aria-label="Previous"
+              className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-gray-400 transition-colors"
+            >
+              <ChevronLeft size={20} className="text-[#444444]" />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next"
+              className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-gray-400 transition-colors"
+            >
+              <ChevronRight size={20} className="text-[#444444]" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ===== DESKTOP: Original hover effects without sliding ===== */}
       <div className="hidden md:block">
         <div className="flex gap-6 h-[340px]">
-          {attractions
-            .slice(currentIndex, currentIndex + 3)
-            .map((attraction, index) => {
+          {Array.from({ length: 3 }, (_, index) => {
+            const attraction = attractions[currentIndex + index];
+            
+            // If no attraction, render an empty div that takes up space
+            if (!attraction) {
+              return (
+                <div key={`placeholder-${index}`} className="flex-1 bg-transparent rounded-xl">
+                  {/* This empty div will take up space */}
+                </div>
+              );
+            }
               const isHovered = hoveredCard === index;
 
               // Calculate card visibility and width based on hover state

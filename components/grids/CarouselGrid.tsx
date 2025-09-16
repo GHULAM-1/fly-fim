@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +26,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useCalendarState } from "@/lib/hooks/useCalendarState";
+import { CategoryResponseItem } from "@/types/category-page/category-page-types";
 
 const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -84,6 +85,7 @@ interface CarouselGridProps {
   pills?: boolean;
   cityName?: string;
   initialSelectedId?: string;
+  categories?: CategoryResponseItem[];
 }
 
 const CarouselGrid = ({
@@ -94,6 +96,7 @@ const CarouselGrid = ({
   pills = true,
   initialSelectedId,
   cityName,
+  categories,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
@@ -415,11 +418,42 @@ const CarouselGrid = ({
       "bottom"
     );
     const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+    // Extract unique subcategories from recommendations
+    const subcategoriesFromRecommendations = useMemo(() => {
+      const subcategoryNames = recommendations
+        ?.map(rec => rec.type)
+        .filter((name, index, self) => name && self.indexOf(name) === index);
 
-    const filteredRecommendations =
-      selectedPills.length === 0
-        ? recommendations
-        : recommendations.filter((rec) => selectedPills.includes(rec.type));
+      return subcategoryNames?.map(name => ({
+        subcategoryName: name
+      })) || [];
+    }, [recommendations]);
+
+    // Memoize the selectedPills Set for better performance
+    const selectedPillsSet = useMemo(() => new Set(selectedPills), [selectedPills]);
+
+    // Optimize filtering with useMemo to prevent unnecessary re-computations
+    const filteredRecommendations = useMemo(() => {
+      if (selectedPills.length === 0) {
+        return recommendations;
+      }
+
+      // Filter by subcategory name from relationships
+      return recommendations.filter((rec) => {
+        const subcategorySlug = rec.type?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+        return selectedPillsSet.has(subcategorySlug);
+      });
+    }, [recommendations, selectedPills, selectedPillsSet]);
+
+    // Optimize pill toggle with useCallback to prevent unnecessary re-renders
+    const handlePillToggle = useCallback((pillId: string) => {
+      setSelectedPills((prev) => {
+        const newSelected = prev.includes(pillId)
+          ? prev.filter((id) => id !== pillId)
+          : [...prev, pillId];
+        return newSelected;
+      });
+    }, []);
 
     const calculateDropdownPosition = (buttonElement: HTMLElement) => {
       const rect = buttonElement.getBoundingClientRect();
@@ -511,6 +545,7 @@ const CarouselGrid = ({
             className="mt-4 sm:mt-5 flex gap-2 overflow-x-auto scrollbar-hide"
             ref={scrollContainerRef}
           >
+            {(subcategoriesFromRecommendations.length > 5) && (
             <div className="relative">
               <div
                 data-categories-button
@@ -561,29 +596,21 @@ const CarouselGrid = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="p-2">
-                    {(navigationItems || []).map((pill, index) => {
-                      const isSelected = selectedPills.includes(pill.id);
+                    {subcategoriesFromRecommendations.map((subcategory, index) => {
+                      const subId = subcategory.subcategoryName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+                      const isSelected = selectedPills.includes(subId);
 
                       return (
                         <div
-                          key={pill.id || index}
+                          key={index}
                           className="flex items-center gap-3 px-3 py-2 pb-4 hover:bg-gray-50 rounded cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (isSelected) {
-                              setSelectedPills((prev) =>
-                                prev.filter((id) => id !== pill.id)
-                              );
-                            } else {
-                              setSelectedPills((prev) => [...prev, pill.id]);
-                            }
+                            handlePillToggle(subId);
                           }}
                         >
-                          {pill.icon && (
-                            <pill.icon size={16} className="text-[#222222]" />
-                          )}
                           <span className="text-[14px] font-halyard-text text-[#222222] flex-1">
-                            {pill.label}
+                            {subcategory.subcategoryName}
                           </span>
                           <div
                             className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
@@ -616,41 +643,29 @@ const CarouselGrid = ({
                 </div>
               )}
             </div>
-
-            {(navigationItems || []).slice(0, 5).map((pill, index) => {
-              const isSelected = selectedPills.includes(pill.id);
+            )}
+            {subcategoriesFromRecommendations.slice(0, 5).map((subcategory, index) => {
+              const subId = subcategory.subcategoryName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+              const isSelected = selectedPills.includes(subId);
 
               return (
                 <div
-                  key={pill.id || index}
-                  onClick={() => {
-                    if (isSelected) {
-                      setSelectedPills((prev) =>
-                        prev.filter((id) => id !== pill.id)
-                      );
-                    } else {
-                      setSelectedPills((prev) => [...prev, pill.id]);
-                    }
-                  }}
+                  key={index}
+                  onClick={() => handlePillToggle(subId)}
                   className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
                     isSelected
                       ? "bg-[#f0f0f0] text-[#444444] border-[#222]"
                       : "bg-white text-[#444444] border-[#e2e2e2] hover:border-[#444]"
                   }`}
                 >
-                  {pill.icon && (
-                    <pill.icon size={16} className="text-gray-600" />
-                  )}
                   <span className="text-sm font-halyard-text">
-                    {pill.label}
+                    {subcategory.subcategoryName}
                   </span>
                   {isSelected && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedPills((prev) =>
-                          prev.filter((id) => id !== pill.id)
-                        );
+                        handlePillToggle(subId);
                       }}
                       className="ml-1 hover:cursor-pointer w-4 h-4 flex items-center justify-center text-gray-500 hover:text-[#444444]"
                     >

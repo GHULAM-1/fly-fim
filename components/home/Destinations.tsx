@@ -3,6 +3,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { fetchCities } from "@/api/cities/cities-api";
+import { City } from "@/types/cities/cities-types";
 
 const cityImageMap: { [key: string]: string } = {
   "New York": "/images/d6.jpeg.avif",
@@ -23,104 +25,56 @@ interface Destination {
   slug: string;
 }
 
+// Function to transform API response to match component structure - same as cities route
+const transformCityData = (response: any): Destination[] => {
+  const cities = response.data || response;
+  // Check if cities is an array
+  if (!Array.isArray(cities)) {
+    console.error('Cities is not an array:', cities);
+    return [];
+  }
+
+  return cities.map((city) => {
+    console.log('Individual city:', city); // Debug log for each city
+    return {
+      id: city._id,
+      description: "Things to do in ", // Default description
+      place: city.countryName,
+      city: city.cityName,
+      slug: city.cityName.toLowerCase().replace(/\s+/g, '-'),
+      image: city.imageUrl || city.image || cityImageMap[city.cityName] || "/images/d1.jpg.avif", // Fallback to default image
+    };
+  });
+};
+
 const Destinations = () => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data array
-  const mockDestinations: Destination[] = [
-    {
-      id: "1",
-      description: "Things to do in ",
-      place: "United States",
-      city: "New York",
-      slug: "new-york",
-      image: cityImageMap["New York"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "2",
-      description: "Things to do in ",
-      place: "United Kingdom",
-      city: "London",
-      slug: "london",
-      image: cityImageMap["London"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "3",
-      description: "Things to do in ",
-      place: "United Arab Emirates",
-      city: "Dubai",
-      slug: "dubai",
-      image: cityImageMap["Dubai"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "4",
-      description: "Things to do in ",
-      place: "Italy",
-      city: "Rome",
-      slug: "rome",
-      image: cityImageMap["Rome"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "5",
-      description: "Things to do in ",
-      place: "France",
-      city: "Paris",
-      slug: "paris",
-      image: cityImageMap["Paris"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "6",
-      description: "Things to do in ",
-      place: "Singapore",
-      city: "Singapore",
-      slug: "singapore",
-      image: cityImageMap["Singapore"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "7",
-      description: "Things to do in Vegas",
-      place: "United States",
-      city: "Las Vegas",
-      slug: "las-vegas",
-      image: cityImageMap["Las Vegas"] || "/images/d1.jpg.avif",
-    },
-    {
-      id: "8",
-      description: "Things to do in ",
-      place: "Japan",
-      city: "Tokyo",
-      slug: "tokyo",
-      image: "/images/d1.jpg.avif",
-    },
-    {
-      id: "9",
-      description: "Things to do in ",
-      place: "Spain",
-      city: "Barcelona",
-      slug: "barcelona",
-      image: "/images/d1.jpg.avif",
-    },
-    {
-      id: "10",
-      description: "Things to do in ",
-      place: "Australia",
-      city: "Sydney",
-      slug: "sydney",
-      image: "/images/d1.jpg.avif",
-    },
-  ];
-
+  // Fetch cities from API - same pattern as cities route
   useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setDestinations(mockDestinations);
-      setLoading(false);
-    }, 500);
+    const loadCities = async () => {
+      try {
+        setLoading(true);
+        const cities = await fetchCities();
+        console.log("cities", cities);
+        const transformedDestinations = transformCityData(cities);
+        console.log("transformedDestinations", transformedDestinations);
+        setDestinations(transformedDestinations);
+      } catch (err) {
+        console.error('Error loading cities:', err);
+        setError('Failed to load cities.');
+        // Keep empty array instead of fallback data
+        setDestinations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    loadCities();
   }, []);
 
   const scrollLeft = () => {

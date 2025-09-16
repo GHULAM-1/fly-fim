@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 
 interface CarouselCardProps {
-  image: string;
+  image: string | string[];
   place: string;
   rating: number;
   reviews: number;
@@ -71,7 +71,7 @@ const CarouselCard = ({
         <div className="w-full group cursor-pointer">
           <div className="relative mb-2">
             <img
-              src={image}
+              src={Array.isArray(image) ? image[0] : image}
               alt={description}
               className="w-full h-44 object-cover rounded-sm"
             />
@@ -146,15 +146,17 @@ const CarouselCard = ({
                 }}
                 className="absolute inset-0 w-full h-full pagination-on-hover"
               >
-                <SwiperSlide>
-                  <img src={image} className="w-full h-full object-cover" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src={image} className="w-full h-full object-cover" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src={image} className="w-full h-full object-cover" />
-                </SwiperSlide>
+                {Array.isArray(image) ? (
+                  image.map((img, index) => (
+                    <SwiperSlide key={index}>
+                      <img src={img} className="w-full h-full object-cover" />
+                    </SwiperSlide>
+                  ))
+                ) : (
+                  <SwiperSlide>
+                    <img src={image} className="w-full h-full object-cover" />
+                  </SwiperSlide>
+                )}
               </Swiper>
               
               {/* Navigation Buttons */}
@@ -255,15 +257,17 @@ const CarouselCard = ({
             }}
             className="mySwiper w-full rounded overflow-hidden mb-4 relative pagination-on-hover"
           >
-            <SwiperSlide>
-              <img src={image} className="w-full object-cover rounded-[4px]" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src={image} className="w-full object-cover rounded-[4px]" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src={image} className="w-full object-cover rounded-[4px]" />
-            </SwiperSlide>
+            {Array.isArray(image) ? (
+              image.map((img, index) => (
+                <SwiperSlide key={index}>
+                  <img src={img} className="w-full object-cover rounded-[4px]" />
+                </SwiperSlide>
+              ))
+            ) : (
+              <SwiperSlide>
+                <img src={image} className="w-full object-cover rounded-[4px]" />
+              </SwiperSlide>
+            )}
           </Swiper>
         </div>
         <div className="flex justify-between items-center -mt-2">

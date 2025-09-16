@@ -9,14 +9,20 @@ import {
 import { Star, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import TestimonialsViewer from "./testimonials-viewer";
 
+import { Review } from "@/types/things-to-do/things-to-do-types";
+
 interface TestimonialsProps {
   variant: "things-to-do" | "default";
+  reviewsData?: Review[]; // API reviews data with proper typing
 }
 
-const Testimonials = ({ variant }: TestimonialsProps) => {
+const Testimonials = ({ variant, reviewsData }: TestimonialsProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+  // Debug logging
+  console.log('Testimonials - reviewsData:', reviewsData);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -36,97 +42,24 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
     }
   };
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sara",
-      country: "Italy",
-      date: "Jul 2025",
-      avatar: "/images/t1.jpeg",
-      images: [
-        "/images/d4.jpg.avif",
-        "/images/d3.jpg.avif",
-        "/images/d3.jpg.avif",
-        "/images/d3.jpg.avif",
-      ],
-      rating: 5,
-      review:
-        "Very positive experience. To change the digital tickets, just go to the cashiers (the attendants will show you the correct way) and you will be given the paper tickets. Audio guide well done and very interesting tour of the castle",
-      originalLanguage: "Italian",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-    {
-      id: 2,
-      name: "Sarah",
-      country: "United States",
-      date: "Jul 2025",
-      avatar: "/images/t2.jpeg",
-      images: ["/images/d1.jpg.avif", "/images/d2.jpg.avif"],
-      rating: 5,
-      review:
-        "Absolutely fantastic trip! Everything was perfectly planned and executed. The attention to detail was remarkable and exceeded all expectations. The guide was knowledgeable and friendly throughout the entire experience.",
-      originalLanguage: "English",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-    {
-      id: 3,
-      name: "Marco",
-      country: "Spain",
-      date: "Jul 2025",
-      avatar: "/images/t3.jpeg",
-      images: ["/images/d5.jpg.avif", "/images/d6.jpeg.avif"],
-      rating: 4,
-      review:
-        "Great value for money! The booking process was smooth and the experience was memorable. Would definitely book again for my next trip. The staff was helpful and the facilities were clean and well-maintained.",
-      originalLanguage: "Spanish",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-    {
-      id: 4,
-      name: "Emma",
-      country: "Australia",
-      date: "Jul 2025",
-      avatar: "/images/t1.jpeg",
-      images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
-      rating: 5,
-      review:
-        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
-      originalLanguage: "English",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-    {
-      id: 5,
-      name: "Emma",
-      country: "Australia",
-      date: "Jul 2025",
-      avatar: "/images/t1.jpeg",
-      images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
-      rating: 5,
-      review:
-        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
-      originalLanguage: "English",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-    {
-      id: 6,
-      name: "Emma",
-      country: "Australia",
-      date: "Jul 2025",
-      avatar: "/images/t1.jpeg",
-      images: ["/images/d3.jpg.avif", "/images/d4.jpg.avif"],
-      rating: 5,
-      review:
-        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience. Highly recommend this to anyone visiting London for the first time.",
-      originalLanguage: "English",
-      experience:
-        "Villa d'Este & Hadrian's Villa Skip-the-Line Tickets with 3 Days Validity",
-    },
-  ];
+  // Transform API reviews data to testimonials format
+  const transformedTestimonials = reviewsData?.map((review) => ({
+    id: review._id,
+    name: review.userId, // Use userId as name
+    country: "United States", // Hardcoded for now
+    date: new Date(review._creationTime).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    avatar: "/images/t1.jpeg", // Fallback avatar as API doesn't have user avatars
+    images: review.imageUrls, // Use actual review imageUrls from API
+    rating: review.stars,
+    review: review.text,
+    originalLanguage: "English", // API doesn't have language, using default
+    experience: "Popular Experience Location", // Hardcoded location for now
+  }));
+
+  // Use only API data - NO FALLBACK
+  const testimonials = transformedTestimonials || [];
+
+  console.log('Testimonials - final testimonials:', testimonials);
 
   const renderStars = (
     rating: number,
@@ -189,7 +122,7 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className=" bg-white border rounded-xl flex-shrink-0 w-[287px]"
+              className=" bg-white border  rounded-xl flex-col flex-shrink-0 w-[287px] flex h-full min-h-[369.59px]"
             >
               {/* Header with avatar, name, country and rating */}
               <div className="flex justify-between px-4 py-2 gap-1 flex-col items-start mb-0">
@@ -254,7 +187,7 @@ const Testimonials = ({ variant }: TestimonialsProps) => {
               </Link>
 
               {/* Experience name */}
-              <div className="pt-3 px-4 pb-2  bg-gray-50">
+              <div className="pt-3 px-4 pb-2 bg-gray-50 mt-auto">
                 <p className="text-[#444444] w-[70%] text-xs line-clamp-2 font-halyard-text">
                   {testimonial.experience}
                 </p>

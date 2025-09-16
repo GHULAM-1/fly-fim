@@ -1,6 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { fetchSubcategoryPageById } from "@/api/subcategory-page/subcategory-page-api";
+import { SubcategoryPageData } from "@/types/subcategory-page/subcategory-page-types";
+import { fetchCityBycityName } from "@/api/cities/cities-api";
+import { fetchCategoryBycategoryName } from "@/api/category/category-api";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
 import Banner from "@/components/home/Banner";
@@ -36,6 +40,11 @@ export default function SubcategoryPage() {
 
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
+
+  // API state
+  const [subcategoryPageData, setSubcategoryPageData] = useState<SubcategoryPageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const isWorldwideRoute = city === "worldwide";
 
@@ -372,6 +381,25 @@ export default function SubcategoryPage() {
       subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
     },
   ];
+  // Transform API experiences to recommendations format
+  const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
+    if (!apiExperiences || !Array.isArray(apiExperiences)) {
+      return [];
+    }
+    return apiExperiences.map(exp => ({
+      id: exp._id,
+      description: exp.basicInfo?.title || exp.description || '',
+      place: exp.basicInfo?.tagOnCards || exp.place || '',
+      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      price: exp.basicInfo?.price || exp.price || 0,
+      oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
+      off: exp.basicInfo?.sale || exp.off,
+      rating: 4.5, // Default since not in API structure
+      reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews
+      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation"
+    }));
+  };
+
   const guides = [
     {
       id: 1,
@@ -423,15 +451,78 @@ export default function SubcategoryPage() {
     },
   ];
 
+  // API call effect
+  useEffect(() => {
+    const loadSubcategoryPageData = async () => {
+      if (!city || !categoryName || !subcategory) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        console.log('Fetching city and category IDs:', { city, categoryName, subcategory });
+
+        // First, get city ID by city name
+        const cityData = await fetchCityBycityName(city);
+        console.log('City data received:', cityData);
+
+        // Second, get category ID by category name
+        const categoryData = await fetchCategoryBycategoryName(categoryName);
+        console.log('Category data received:', categoryData);
+
+        // Finally, fetch subcategory page data using IDs
+        console.log('Fetching subcategory page data with IDs:', {
+          cityId: cityData._id,
+          categoryId: categoryData._id,
+          subcategory
+        });
+        const response = await fetchSubcategoryPageById(cityData._id, categoryData._id, subcategory);
+        console.log('Subcategory page data received:', response);
+        setSubcategoryPageData(response.data);
+      } catch (err) {
+        console.error('Error loading subcategory page data:', err);
+        setError('Failed to load subcategory page data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSubcategoryPageData();
+  }, [city, categoryName, subcategory]);
+
+  // Show loading state
+  if (loading) {
+    return <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 py-20 text-center">Loading...</div>;
+  }
+
+  // Show error state
+  if (error) {
+    return <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 py-20 text-center text-red-600">{error}</div>;
+  }
+
   return (
     <>
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
         <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
-          <CategoriesDropdown
-            showCategoriesDropdown={showCategoriesDropdown}
-            setShowCategoriesDropdown={setShowCategoriesDropdown}
-            setShowBanner={setShowBanner}
-          />
+          {subcategoryPageData && (
+            <CategoriesDropdown
+              categories={subcategoryPageData.allCategories.map(category => ({
+                categoryName: category.categoryName,
+                subcategories: category.subcategories.map(sub => ({
+                  subcategoryName: sub.subcategoryName
+                }))
+              }))}
+              topExperiences={subcategoryPageData.allCategories
+                .flatMap(category =>
+                  category.subcategories.flatMap(sub => sub.experiences)
+                )
+                .slice(0, 15)
+              }
+              showCategoriesDropdown={showCategoriesDropdown}
+              setShowCategoriesDropdown={setShowCategoriesDropdown}
+              setShowBanner={setShowBanner}
+            />
+          )}
           <div
             className={` transition-all duration-300 origin-top overflow-hidden ${
               showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
@@ -494,10 +585,10 @@ export default function SubcategoryPage() {
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                     <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      4.3
+                      {subcategoryPageData?.reviewStats.averageRating.toFixed(1) || '4.3'}
                     </span>
                     <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      (151,002)
+                      ({subcategoryPageData?.reviewStats.totalReviews.toLocaleString() || '151,002'})
                     </span>
                   </div>
                 </div>
@@ -508,8 +599,9 @@ export default function SubcategoryPage() {
 
               <div className="block mt-5">
                 <SubcategoryNavigation
-                  categoryName={formattedCategoryName}
+                  categoryName={subcategoryPageData?.category.categoryName || decodedCategoryName}
                   currentSubcategory={subcategory}
+                  subcategories={subcategoryPageData?.category.subcategories || []}
                 />
               </div>
             </>
@@ -555,10 +647,10 @@ export default function SubcategoryPage() {
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                     <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      4.3
+                    {subcategoryPageData?.reviewStats.averageRating.toFixed(1) || '4.3'}
                     </span>
                     <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      (151,002)
+                      ({subcategoryPageData?.reviewStats.totalReviews.toLocaleString() || '151,002'})
                     </span>
                   </div>
                 </div>
@@ -570,15 +662,19 @@ export default function SubcategoryPage() {
           )}
           <div className=" mt-0">
             <div className=" mt-0">
-              <CarouselGrid
-                title={`Top experiences in ${formattedCityName}`}
-                variant="pills"
-                pills={false}
-                cityName={formattedCityName}
-                navigationItems={navItems}
-                recommendations={experiences}
-                initialSelectedId={configKey}
-              />
+              {subcategoryPageData?.experiences && subcategoryPageData.experiences.length > 0 ? (
+                <CarouselGrid
+                  title={`Top experiences in ${formattedCityName}`}
+                  variant="pills"
+                  pills={false}
+                  recommendations={transformApiExperiencesToRecommendations(subcategoryPageData.experiences)}
+                />
+              ) : (
+                <div className="text-center py-20">
+                  <h2 className="text-2xl font-semibold text-gray-600 mb-2">Coming Soon...</h2>
+                  <p className="text-gray-500">We're working on adding amazing experiences for this category.</p>
+                </div>
+              )}
             </div>
 
             <div className="mb-10 mt-5">
@@ -591,7 +687,11 @@ export default function SubcategoryPage() {
             <div className="mb-10 mt-10 ">
               <BrowseThemes
                 title="Browse by themes"
-                themes={currentSubCategory.components.themes || []}
+                themes={subcategoryPageData?.category.subcategories.map(sub => ({
+                  icon: Landmark,
+                  text: sub,
+                  href: `/things-to-do/${city}/${categoryName}/${sub.toLowerCase().replace(/\s+/g, '-')}`
+                })) || currentSubCategory.components.themes || []}
               />
             </div>
             {!isWorldwideRoute && (

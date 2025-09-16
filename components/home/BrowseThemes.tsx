@@ -31,23 +31,54 @@ import {
   Flag,
 } from "lucide-react";
 
-type TabKey =
-  | "Tickets"
-  | "Tours"
-  | "Transportation"
-  | "Travel Services"
-  | "Cruises"
-  | "Food & Drink"
-  | "Entertainment"
-  | "Adventure"
-  | "Aerial Sightseeing"
-  | "Wellness"
-  | "Education"
-  | "Sports"
-  | "Photography"
-  | "Nightlife";
+// Remove the restrictive TabKey type since we're using dynamic API categories
+type TabKey = string;
 
-const BrowseThemes = () => {
+interface BrowseThemesProps {
+  categoriesData?: any[];
+  city?: string;
+}
+
+const BrowseThemes = ({ categoriesData, city }: BrowseThemesProps) => {
+  // Debug logging
+  console.log('BrowseThemes - categoriesData:', categoriesData);
+  console.log('BrowseThemes - city:', city);
+
+  // Icon mapping for categories
+  const getIconForCategory = (categoryName: string) => {
+    const name = categoryName.toLowerCase();
+    if (name.includes('ticket') || name.includes('museum') || name.includes('landmark')) return Ticket;
+    if (name.includes('tour') || name.includes('trip') || name.includes('day')) return Flag;
+    if (name.includes('transport') || name.includes('car') || name.includes('bus')) return Car;
+    if (name.includes('travel') || name.includes('service') || name.includes('luggage')) return Luggage;
+    if (name.includes('cruise') || name.includes('boat') || name.includes('water')) return Ship;
+    if (name.includes('food') || name.includes('drink') || name.includes('dining')) return UtensilsCrossed;
+    if (name.includes('entertainment') || name.includes('music') || name.includes('show')) return Music;
+    if (name.includes('adventure') || name.includes('outdoor') || name.includes('mountain')) return Mountain;
+    if (name.includes('wellness') || name.includes('spa') || name.includes('yoga')) return Sparkles;
+    return Ticket; // Default fallback
+  };
+
+  // Transform API data directly - show categories and their subcategories
+  const apiTabs: Record<TabKey, { items: Array<{ icon: any; text: string }>; viewAll: string }> = {};
+
+  if (categoriesData && categoriesData.length > 0) {
+    categoriesData.forEach(category => {
+      const categoryKey = category.categoryName;
+      const items = category.subcategories.map((sub: any) => ({
+        icon: getIconForCategory(sub.subcategoryName),
+        text: sub.subcategoryName
+      }));
+
+      apiTabs[categoryKey] = {
+        items: items,
+        viewAll: `View all ${category.categoryName}`
+      };
+    });
+  }
+
+  console.log('BrowseThemes - apiTabs:', apiTabs);
+
   const [activeTab, setActiveTab] = useState<TabKey>("Tickets");
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -223,7 +254,14 @@ const BrowseThemes = () => {
     },
   };
 
-  const categories: Array<{ key: TabKey; icon: any; label: string }> = [
+  // Create categories from API data or use default fallback
+  const apiCategories = categoriesData?.map(category => ({
+    key: category.categoryName as TabKey,
+    icon: getIconForCategory(category.categoryName),
+    label: category.categoryName
+  }));
+
+  const defaultCategories: Array<{ key: TabKey; icon: any; label: string }> = [
     { key: "Tickets", icon: Ticket, label: "Tickets" },
     { key: "Tours", icon: Flag, label: "Tours" },
     { key: "Transportation", icon: Car, label: "Transportation" },
@@ -240,18 +278,17 @@ const BrowseThemes = () => {
     { key: "Nightlife", icon: Music, label: "Nightlife" },
   ];
 
-  // Additional items that will be combined with tabData items
-  const additionalItems = [
-    { icon: Calendar, text: "Seasonal Events" },
-    { icon: Camera, text: "Photo Spots" },
-    { icon: Users, text: "Group Activities" },
-    { icon: Sparkles, text: "Special Offers" },
-    { icon: MapPin, text: "Local Experiences" },
-    { icon: CreditCard, text: "Gift Cards" },
-  ];
+  const categories = apiCategories && apiCategories.length > 0 ? apiCategories : defaultCategories;
 
-  // Combine tabData items with additional items
-  const combinedItems = [...tabData[activeTab].items, ...additionalItems];
+  // Use only API data - no fallback to hardcoded data
+  const currentTabData = apiTabs[activeTab];
+
+  // Use only API data items (no hardcoded fallback)
+  const combinedItems = currentTabData?.items || [];
+
+  console.log('BrowseThemes - activeTab:', activeTab);
+  console.log('BrowseThemes - currentTabData:', currentTabData);
+  console.log('BrowseThemes - combinedItems:', combinedItems);
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -279,6 +316,13 @@ const BrowseThemes = () => {
       });
     }
   };
+
+  // Set activeTab to first available category when data loads
+  useEffect(() => {
+    if (Object.keys(apiTabs).length > 0) {
+      setActiveTab(Object.keys(apiTabs)[0] as TabKey);
+    }
+  }, [categoriesData]);
 
   useEffect(() => {
     checkScrollButtons();
@@ -377,10 +421,17 @@ const BrowseThemes = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3  md:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-8">
         {combinedItems.map((item, index) => {
           const IconComponent = item.icon;
+
+          // Generate URL structure: /things-to-do/cityname/category/subcategory
+          const citySlug = city || 'worldwide';
+          const categorySlug = activeTab.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, '');
+          const subcategorySlug = item.text.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, '');
+          const subcategoryUrl = `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}`;
+
           return (
             <Link
               key={index}
-              href="#"
+              href={subcategoryUrl}
               className="flex font-halyard-text-light items-center gap-2 group text-[#444444] hover:text-[#7f00fe]"
             >
               <IconComponent
@@ -395,7 +446,7 @@ const BrowseThemes = () => {
           href="#"
           className="cursor-pointer font-halyard-text-light text-sm text-[#444444] hover:text-[#7f00fe] underline"
         >
-          {tabData[activeTab].viewAll}
+          {currentTabData?.viewAll || `View all ${activeTab}`}
         </Link>
       </div>
     </div>

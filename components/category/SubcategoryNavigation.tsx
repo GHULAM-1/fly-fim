@@ -33,11 +33,11 @@ import {
   Anchor,
   Briefcase,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface SubcategoryNavigationProps {
   categoryName: string;
   currentSubcategory?: string;
+  subcategories?: string[];
 }
 
 interface SubcategoryItem {
@@ -50,6 +50,7 @@ interface SubcategoryItem {
 const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
   categoryName,
   currentSubcategory,
+  subcategories,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -64,9 +65,22 @@ const SubcategoryNavigation: React.FC<SubcategoryNavigationProps> = ({
   // Get subcategories based on category
   const getSubcategories = (): SubcategoryItem[] => {
     const baseUrl = `/things-to-do/${city}/${category}`;
-    
+
+    // If API subcategories are provided, use them
+    if (subcategories && subcategories.length > 0) {
+      return [
+        { id: "all", label: "All", url: baseUrl },
+        ...subcategories.map(subcat => ({
+          id: subcat.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, ''),
+          label: subcat,
+          url: `${baseUrl}/${subcat.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '')}`,
+          icon: Landmark // Default icon
+        }))
+      ];
+    }
+
     switch (categoryName.toLowerCase()) {
-case "tours":
+      case "tours":
       return [
         { id: "all", label: "All", url: baseUrl },
         { id: "walking-tours", label: "Rome Walking Tour", url: `${baseUrl}/walking-tours`, icon: Footprints },
@@ -183,15 +197,15 @@ case "tours":
     }
   };
 
-  const subcategories = getSubcategories();
+  const subcategoryItems = getSubcategories();
 
   // Determine the active subcategory
   const getActiveSubcategory = (): string => {
     if (subcategory) {
       // If we're on a subcategory page, find the matching subcategory
       const decodedSubcategory = decodeURIComponent(subcategory.replace(/-/g, ' '));
-      const found = subcategories.find(sub => 
-        sub.id !== "all" && 
+      const found = subcategoryItems.find(sub =>
+        sub.id !== "all" &&
         (sub.id === subcategory || sub.label.toLowerCase() === decodedSubcategory.toLowerCase())
       );
       return found ? found.id : "all";
@@ -279,7 +293,7 @@ case "tours":
           </div>
         )}
 
-        {subcategories.map((subcategoryItem) => {
+        {subcategoryItems.map((subcategoryItem) => {
           const isActive = activeSubcategory === subcategoryItem.id;
           const Icon = subcategoryItem.icon;
           return (
