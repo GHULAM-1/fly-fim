@@ -1,6 +1,5 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import {
   signUpSchema,
@@ -15,6 +14,8 @@ import {
   type OtpInput,
 } from "@/lib/validations/auth";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+
 export async function signUp(data: SignUpInput) {
   const validatedFields = signUpSchema.safeParse(data);
 
@@ -26,30 +27,37 @@ export async function signUp(data: SignUpInput) {
   }
 
   const { name, email, password } = validatedFields.data;
-  const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-      }/auth/callback`,
-      data: {
-        full_name: name,
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    },
-  });
+      credentials: "include",
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
 
-  if (error) {
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: result.error || "Failed to create account",
+      };
+    }
+
     return {
-      error: error.message,
+      success: result.message || "Account created successfully",
+    };
+  } catch (error) {
+    return {
+      error: "Network error occurred",
     };
   }
-
-  return {
-    success: "Check your email to confirm your account",
-  };
 }
 
 export async function signIn(data: SignInInput) {
@@ -63,20 +71,34 @@ export async function signIn(data: SignInInput) {
   }
 
   const { email, password } = validatedFields.data;
-  const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
-  if (error) {
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: result.error || "Invalid email or password",
+      };
+    }
+
+    redirect("/");
+  } catch (error) {
     return {
-      error: error.message,
+      error: "Network error occurred",
     };
   }
-
-  redirect("/");
 }
 
 export async function signInWithMagicLink(email: string) {
@@ -86,68 +108,98 @@ export async function signInWithMagicLink(email: string) {
     };
   }
 
-  const supabase = await createClient();
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/send-magic-link`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email,
+        redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/verify`,
+      }),
+    });
 
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-      }/auth/callback`,
-    },
-  });
+    const result = await response.json();
 
-  if (error) {
+    if (!response.ok) {
+      return {
+        error: result.error || "Failed to send magic link",
+      };
+    }
+
     return {
-      error: error.message,
+      success: result.message || "Check your email for the sign-in link",
+    };
+  } catch (error) {
+    return {
+      error: "Network error occurred",
     };
   }
-
-  return {
-    success: "Check your email for the sign-in link",
-  };
 }
 
-export async function signInWithGoogle() {
-  const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-      }/auth/callback`,
-    },
-  });
 
-  if (error) {
+export async function handleGoogleCallback(code: string, redirectUri?: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        provider: 'google',
+        code,
+        redirectUri: redirectUri || `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: data.error || 'Authentication failed'
+      };
+    }
+
     return {
-      error: error.message,
+      success: 'Signed in successfully',
+      user: data.user
+    };
+
+  } catch (error) {
+    return {
+      error: 'Network error during authentication'
     };
   }
-
-  if (data.url) {
-    redirect(data.url);
-  }
-
-  return {
-    success: "Redirecting to Google...",
-  };
 }
 
 export async function signOut() {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/signout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
 
-  if (error) {
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: result.error || "Failed to sign out",
+      };
+    }
+
+    redirect("/");
+  } catch (error) {
     return {
-      error: error.message,
+      error: "Network error occurred",
     };
   }
-
-  return {
-    success: "Signed out successfully",
-  };
 }
 
 export async function forgotPassword(data: ForgotPasswordInput) {
@@ -161,21 +213,34 @@ export async function forgotPassword(data: ForgotPasswordInput) {
   }
 
   const { email } = validatedFields.data;
-  const supabase = await createClient();
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${
-      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    }/auth/reset-password`,
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email,
+        redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/reset-password`,
+      }),
+    });
 
-  if (error) {
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: result.error || "Failed to send reset email",
+      };
+    }
+
     return {
-      error: error.message,
+      success: result.message || "Check your email for password reset instructions",
+    };
+  } catch (error) {
+    return {
+      error: "Network error occurred",
     };
   }
-
-  return {
-    success: "Check your email for password reset instructions",
-  };
 }

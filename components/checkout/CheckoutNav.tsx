@@ -1,7 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { ExperienceResponse } from "@/types/experience/experience-types";
 
-const CheckoutNav: React.FC = () => {
+interface CheckoutNavProps {
+  experience?: ExperienceResponse | null;
+}
+
+const CheckoutNav: React.FC<CheckoutNavProps> = ({ experience }) => {
   const [active, setActive] = useState(false);
   const [activeFaq, setActiveFaq] = useState<string>("highlights");
   const [barPosition, setBarPosition] = useState({ left: 0, width: 0 });
@@ -10,20 +15,59 @@ const CheckoutNav: React.FC = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const userScrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Define all FAQ sections in order
-  const faqSections = [
-    { id: "highlights", label: "Highlights" },
-    { id: "inclusions", label: "Inclusions" },
-    { id: "itinerary", label: "Itinerary" },
-    { id: "exclusions", label: "Exclusions" },
-    { id: "cancellation-policy", label: "Cancellation Policy" },
-    { id: "your-experience", label: "Your Experience" },
-    { id: "operating-hours", label: "Operating Hours" },
-    { id: "reviews", label: "Reviews" },
-    { id: "know-before-you-go", label: "Know Before You Go" },
-    { id: "my-tickets", label: "My Tickets" },
-    { id: "where", label: "Where?" },
-  ];
+  // Define FAQ sections based only on available experience data
+  const getFaqSections = () => {
+    if (!experience?.data) {
+      return []; // Return empty array if no experience data
+    }
+
+    const sections = [];
+    const data = experience.data;
+
+    // Only add sections that have actual data in the API response
+    if (data.faqSections?.highlights) {
+      sections.push({ id: "highlights", label: "Highlights" });
+    }
+
+    if (data.faqSections?.inclusions) {
+      sections.push({ id: "inclusions", label: "Inclusions" });
+    }
+    if (data.itinerary) {
+      sections.push({ id: "itinerary", label: "Itinerary" });
+    }
+    if (data.faqSections?.exclusions) {
+      sections.push({ id: "exclusions", label: "Exclusions" });
+    }
+
+
+    if (data.faqSections?.cancellationPolicy) {
+      sections.push({ id: "cancellation-policy", label: "Cancellation Policy" });
+    }
+    if (data.faqSections?.yourExperience) {
+      sections.push({ id: "your-experience", label: "Your Experience" });
+    }
+    if (data.operatingHours) {
+      sections.push({ id: "operating-hours", label: "Operating Hours" });
+    }
+    if (data.reviews && data.reviews.length > 0) {
+      sections.push({ id: "reviews", label: "Reviews" });
+    }
+    if (data.faqSections?.knowBeforeYouGo) {
+      sections.push({ id: "know-before-you-go", label: "Know Before You Go" });
+    }
+    if (data.faqSections?.myTickets) {
+      sections.push({ id: "my-tickets", label: "My Tickets" });
+    }
+
+
+    if (data.whereTo && (data.whereTo.address || data.whereTo.lat || data.whereTo.lng)) {
+      sections.push({ id: "where", label: "Where?" });
+    }
+
+    return sections;
+  };
+
+  const faqSections = getFaqSections();
 
   // Initialize desktop check
   useEffect(() => {
@@ -43,7 +87,6 @@ const CheckoutNav: React.FC = () => {
 
   // Handle scroll events - only on desktop
   useEffect(() => {
-    console.log("isDesktop", isDesktop);
     if (!isDesktop) return;
 
     const headerHeight = 76;

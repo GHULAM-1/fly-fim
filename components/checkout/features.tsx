@@ -13,8 +13,9 @@ import {
     DrawerOverlay,
     DrawerPortal,  
 } from "@/components/ui/drawer";
+import { ExperienceResponse } from '@/types/experience/experience-types';
 
-const ExperienceDetails: React.FC = () => {
+const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ experience }) => {
   const [isOperatingHoursOpen, setIsOperatingHoursOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -33,33 +34,41 @@ const ExperienceDetails: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOperatingHoursOpen]);
 
-  const details = [
-    { icon: Clock, title: 'Duration', description: '2 hr', color: 'text-blue-600', bg: 'bg-blue-100' },
-    {
-      icon: Calendar,
-      title: 'Open today',
-      description: '9:30am - 7:00pm',
-      color: 'text-green-600',
-      bg: 'bg-green-100',
-      clickable: true,
-      onClick: () => setIsOperatingHoursOpen(true),
-    },
-    {
-      icon: BadgeCheck,
-      title: 'Free cancellation',
-      description: 'Free cancellation up to 7 days before the start of your experience',
-      color: 'text-red-600',
-      bg: 'bg-red-100',
-    },
-    {
-      icon: CreditCard,
-      title: 'Book now, pay later',
-      description: 'Book now without paying anything. Cancel for free if your plans change',
-      color: 'text-purple-600',
-      bg: 'bg-purple-100',
-    },
-    { icon: Users, title: 'Guided tour', color: 'text-teal-600', bg: 'bg-teal-100' },
-  ];
+  // Generate details array based on features array from API
+  const getDetails = () => {
+    const details: any[] = [];
+    const features = experience?.data?.features || [];
+
+    // Define the mapping for each index
+    const featureMapping = [
+      { icon: Clock, title: 'Duration', color: 'text-blue-600', bg: 'bg-blue-100' },
+      {
+        icon: Calendar,
+        title: 'Open today',
+        color: 'text-green-600',
+        bg: 'bg-green-100',
+        clickable: true,
+        onClick: () => setIsOperatingHoursOpen(true),
+      },
+      { icon: BadgeCheck, title: 'Free cancellation', color: 'text-red-600', bg: 'bg-red-100' },
+      { icon: CreditCard, title: 'Book now, pay later', color: 'text-purple-600', bg: 'bg-purple-100' },
+      { icon: Users, title: 'Guided tour', color: 'text-teal-600', bg: 'bg-teal-100' },
+    ];
+
+    // Only show features that exist in the API response
+    features.forEach((feature, index) => {
+      if (index < featureMapping.length && feature) {
+        details.push({
+          ...featureMapping[index],
+          description: feature as any
+        });
+      }
+    });
+
+    return details as any[];
+  };
+
+  const details = getDetails();
 
   return (
     <>
@@ -128,13 +137,13 @@ const ExperienceDetails: React.FC = () => {
               {/* Hours list */}
               <div className="overflow-y-auto">
                 {[
-                  ['Mon', '9:30am - 7:00pm'],
-                  ['Tue', '9:30am - 7:00pm'],
-                  ['Wed', '9:30am - 7:00pm'],
-                  ['Thu', '9:30am - 7:00pm'], // highlighted
-                  ['Fri', '9:30am - 7:00pm'],
-                  ['Sat', '9:30am - 7:00pm'],
-                  ['Sun', '9:30am - 7:00pm'],
+                  ['Mon', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Tue', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Wed', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Thu', experience?.data?.features?.[1] || '9:30am - 7:00pm'], // highlighted
+                  ['Fri', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Sat', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Sun', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
                 ].map(([day, time], i) => {
                   const isThu = day === 'Thu';
                   return (

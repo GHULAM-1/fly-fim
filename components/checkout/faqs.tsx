@@ -21,6 +21,7 @@ import { Circle } from "lucide-react";
 import ReviewsSection from "./reviews-section";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ExperienceResponse } from "@/types/experience/experience-types";
 function Bullet() {
   return (
     <Circle
@@ -63,9 +64,18 @@ const FaqItem: React.FC<FaqItemProps> = ({
       // Use requestAnimationFrame to ensure smooth animation without scroll interference
       requestAnimationFrame(() => {
         if (contentRef.current) {
-          contentRef.current.style.maxHeight = isOpen
-            ? `${contentRef.current.scrollHeight}px`
-            : "0px";
+          if (isOpen) {
+            // For opening, set a very large maxHeight to allow content to expand naturally
+            contentRef.current.style.maxHeight = "2000px";
+            // After animation completes, remove the height restriction
+            setTimeout(() => {
+              if (contentRef.current) {
+                contentRef.current.style.maxHeight = "none";
+              }
+            }, 300);
+          } else {
+            contentRef.current.style.maxHeight = "0px";
+          }
         }
       });
       
@@ -151,11 +161,68 @@ const FaqItem: React.FC<FaqItemProps> = ({
   );
 };
 
-const FaqSection: React.FC = () => {
+interface FaqSectionProps {
+  experience?: ExperienceResponse | null;
+}
+
+// Reusable HTML content component with proper styling for WYSIWYG content
+const HtmlContent: React.FC<{ html: string }> = ({ html }) => (
+  <div
+    className="font-halyard-text text-[15px] md:text-[17px] leading-relaxed text-[#444444] [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>li]:mb-2 [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:mb-3 [&>h3]:text-gray-900 [&>p]:mb-4 [&>strong]:font-semibold [&>em]:italic"
+    dangerouslySetInnerHTML={{ __html: html }}
+  />
+);
+
+// Special HTML content component for inclusions with tick icons instead of bullets
+const InclusionsContent: React.FC<{ html: string }> = ({ html }) => {
+  // Parse the HTML to extract list items
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const listItems = Array.from(doc.querySelectorAll('li')).map(li => li.textContent || '');
+
+  return (
+    <div className="font-halyard-text text-[15px] md:text-[17px] leading-relaxed text-[#444444]">
+      {listItems.map((item, index) => (
+        <div key={index} className="flex items-start gap-3 mb-2">
+          <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5">
+            <Check className="w-5 h-5 text-green-600" />
+          </div>
+          <span>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Special HTML content component for exclusions with cross icons instead of bullets
+const ExclusionsContent: React.FC<{ html: string }> = ({ html }) => {
+  // Parse the HTML to extract list items
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const listItems = Array.from(doc.querySelectorAll('li')).map(li => li.textContent || '');
+
+  return (
+    <div className="font-halyard-text text-[15px] md:text-[17px] leading-relaxed text-[#444444]">
+      {listItems.map((item, index) => (
+        <div key={index} className="flex items-start gap-3 mb-2">
+          <div className="w-5 h-5 rounded-full flex items-center justify-center mt-0.5">
+            <X className="w-5 h-5 text-red-600" />
+          </div>
+          <span>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
   // Set first four FAQ sections open by default, rest closed
   const defaultOpenFaqs = [""];
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Get FAQ sections from API data
+  const faqData = experience?.data?.faqSections;
 
   // Mobile map states
   const [showMobileMapDrawer, setShowMobileMapDrawer] = useState(false);
@@ -175,6 +242,18 @@ const FaqSection: React.FC = () => {
       mobileMapRef.current = null;
     }
 
+    // Get coordinates from API or use fallback
+    const coordinates: [number, number] = experience?.data?.whereTo
+      ? [experience.data.whereTo.lat, experience.data.whereTo.lng]
+      : [37.3857231, -5.9922638]; // Fallback coordinates
+
+    console.log('Mobile map coordinates:', coordinates);
+    console.log('API whereTo data:', experience?.data?.whereTo);
+    console.log('Full experience data structure:', experience?.data);
+    console.log('Available keys in experience.data:', Object.keys(experience?.data || {}));
+
+    const address = experience?.data?.whereTo?.address || "Meeting Point";
+
     // Fix default markers in Leaflet
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -187,7 +266,7 @@ const FaqSection: React.FC = () => {
     });
 
     const map = L.map(mobileMapContainerRef.current, {
-      center: [37.3857231, -5.9922638], // Seville coordinates
+      center: coordinates,
       zoom: 16,
       zoomControl: false,
       attributionControl: false,
@@ -198,11 +277,11 @@ const FaqSection: React.FC = () => {
     }).addTo(map);
 
     // Add marker for meeting point
-    const marker = L.marker([37.3857231, -5.9922638]).addTo(map);
+    const marker = L.marker(coordinates).addTo(map);
     marker.bindPopup(`
       <div class="p-2">
         <h3 class="font-semibold text-sm">Meeting Point</h3>
-        <p class="text-xs text-gray-600">Plaza del Triunfo, Big statue, Seville</p>
+        <p class="text-xs text-gray-600">${address}</p>
       </div>
     `);
 
@@ -223,7 +302,7 @@ const FaqSection: React.FC = () => {
         initializeMobileMap();
       }, 100);
     }
-  }, [showMobileMapDrawer]);
+  }, [showMobileMapDrawer, experience]); // Add experience as dependency
 
   // Initialize OpenStreetMap
   useEffect(() => {
@@ -241,9 +320,19 @@ const FaqSection: React.FC = () => {
           "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
       });
 
+      // Get coordinates from API or use fallback
+      const coordinates: [number, number] = experience?.data?.whereTo
+        ? [experience.data.whereTo.lat, experience.data.whereTo.lng]
+        : [37.3857231, -5.9922638]; // Fallback coordinates
+      console.log('Full experience data structure:', experience?.data);
+      console.log('Desktop map coordinates:', coordinates);
+      console.log('API whereTo data:', experience?.data?.whereTo);
+
+      const address = experience?.data?.whereTo?.address || "Meeting Point";
+
       // Create map with lazy initialization to prevent layout shifts
       const map = L.map(mapContainerRef.current, {
-        center: [37.3857231, -5.9922638], // Seville coordinates
+        center: coordinates,
         zoom: 15,
         zoomControl: true,
         attributionControl: true,
@@ -257,11 +346,11 @@ const FaqSection: React.FC = () => {
       }).addTo(map);
 
       // Add marker for meeting point
-      const marker = L.marker([37.3857231, -5.9922638]).addTo(map);
+      const marker = L.marker(coordinates).addTo(map);
       marker.bindPopup(`
         <div class="p-2">
           <h3 class="font-semibold text-sm">Meeting Point</h3>
-          <p class="text-xs text-gray-600">Plaza del Triunfo, Big statue, Seville</p>
+          <p class="text-xs text-gray-600">${address}</p>
         </div>
       `);
 
@@ -311,506 +400,167 @@ const FaqSection: React.FC = () => {
         mobileMapRef.current = null;
       }
     };
-  }, []);
+  }, [experience]); // Add experience as dependency to reinitialize when data loads
 
   return (
     <div className="faq-section max-w-4xl font-halyard-text">
       {/* Highlights */}
-      <FaqItem
-        title="Highlights"
-        isOpenByDefault={defaultOpenFaqs.includes("highlights")}
-        id="highlights"
-        onAnimationStateChange={setIsAnyFaqAnimating}
-      >
-        <ul className="space-y-3 font-halyard-text">
-          <li className="flex items-start gap-3 ">
-            <div className="pt-2">
-              <Bullet />
-            </div>
-            <span className="text-[15px] md:text-[17px] leading-relaxed">
-              No queues, just pure discovery step into the magic of the Alcázar
-              in a small group for an intimate, more insightful experience.
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="pt-2">
-              <Bullet />
-            </div>
-            <span className="text-[15px] md:text-[17px] leading-relaxed">
-              Explore some of the key highlights of the Alcazar, including the
-              different sites that backdrop the dreamy Kingdom of Dorne in HBO's
-              Game of Thrones.
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="pt-2">
-              <Bullet />
-            </div>
-            <span className="text-[15px] md:text-[17px] leading-relaxed">
-              Your expert English-speaking guide will offer fascinating insights
-              into the Alcazar's rich history and details about its
-              architectural evolution.
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="pt-2">
-              <Bullet />
-            </div>
-            <span className="text-[15px] md:text-[17px] leading-relaxed">
-              Stroll through seven hectares of lush gardens with peacocks,
-              fountains, and unforgettable gems like the Garden of the Poets and
-              the Fountain of Fame.
-            </span>
-          </li>
-        </ul>
-      </FaqItem>
+      {faqData?.highlights && (
+        <FaqItem
+          title="Highlights"
+          isOpenByDefault={defaultOpenFaqs.includes("highlights")}
+          id="highlights"
+          onAnimationStateChange={setIsAnyFaqAnimating}
+        >
+          <HtmlContent html={faqData.highlights} />
+        </FaqItem>
+      )}
 
       {/* Inclusions */}
-      <FaqItem
-        title="Inclusions"
-        id="inclusions"
-        onAnimationStateChange={setIsAnyFaqAnimating}
-      >
-        <ul className="space-y-3 font-halyard-text">
-          <li className="flex items-start  gap-3">
-            <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Entry to the Alcázar of Seville
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Expert English-speaking guide
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Small group tour (no more than 10 participants)
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Radio device system (if needed)
-            </span>
-          </li>
-        </ul>
-      </FaqItem>
+      {faqData?.inclusions && (
+        <FaqItem
+          title="Inclusions"
+          id="inclusions"
+          onAnimationStateChange={setIsAnyFaqAnimating}
+        >
+          <InclusionsContent html={faqData.inclusions} />
+        </FaqItem>
+      )}
 
       {/* Itinerary */}
-      <FaqItem title="Itinerary" id="itinerary">
-        <ItinerarySection />
-      </FaqItem>
+      {experience?.data?.itinerary && (
+        <FaqItem title="Itinerary" id="itinerary">
+          <ItinerarySection experience={experience}/>
+        </FaqItem>
+      )}
 
       {/* Exclusions */}
-      <FaqItem
-        title="Exclusions"
-        id="exclusions"
-        isOpenByDefault={defaultOpenFaqs.includes("exclusions")}
-      >
-        <ul className="space-y-3 font-halyard-text">
-          <li className="flex items-start gap-3">
-            <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Hotel transfers & transportation
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            <span className="text-[15px] md:text-[17px]">
-              Personal expenses
-            </span>
-          </li>
-        </ul>
-      </FaqItem>
+      {faqData?.exclusions && (
+        <FaqItem
+          title="Exclusions"
+          id="exclusions"
+          isOpenByDefault={defaultOpenFaqs.includes("exclusions")}
+        >
+          <ExclusionsContent html={faqData.exclusions} />
+        </FaqItem>
+      )}
 
       {/* Cancellation Policy */}
-      <FaqItem
-        title="Cancellation Policy"
-        id="cancellation-policy"
-        isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
-      >
-        <p className="mb-3 font-halyard-text text-[15px] md:text-[17px]">
-          You can cancel these tickets up to 7 days before the experience begins
-          and get a full refund.
-        </p>
-      </FaqItem>
+      {faqData?.cancellationPolicy && (
+        <FaqItem
+          title="Cancellation Policy"
+          id="cancellation-policy"
+          isOpenByDefault={defaultOpenFaqs.includes("cancellation-policy")}
+        >
+          <HtmlContent html={faqData.cancellationPolicy} />
+        </FaqItem>
+      )}
 
       {/* Your Experience */}
-      <FaqItem title="Your Experience" id="your-experience" >
-        <div className="space-y-4 font-halyard-text">
-          <p className="font-semibold text-[15px] md:text-[17px] text-gray-900">
-            Skip the lines and step back in time on a small-group guided tour of
-            the Royal Alcázar of Seville, one of Europe's oldest royal palaces
-            still in use. Explore its many highlights with an expert
-            English-speaking guide leading the way.
-          </p>
-
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-2">
-                Getting started
-              </h4>
-              <p className="text-[15px] md:text-[17px] text-gray-700">
-                Meet your guide at the Plaza del Triunfo in Seville to have your
-                tickets validated. Make sure you carry your original passport or
-                ID, and that the name on it matches the name on your ticket.
-                Once your tickets are checked, you'll be escorted into the
-                Alcazar.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-2">
-                What to expect
-              </h4>
-              <p className="text-[15px] md:text-[17px] text-gray-700 mb-3">
-                Wander through the majestic Alcazar of Seville, where Islamic
-                and Christian styles intertwine harmoniously. From Game of
-                Thrones filming locations to the lavish meeting rooms of Spanish
-                royalty and seven hectares of lush gardens, the Alcázar offers a
-                visual and historical feast at every turn.
-              </p>
-
-              <div className="space-y-3">
-                <div>
-                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
-                    Architectural splendor:
-                  </h5>
-                  <p className="text-[15px] md:text-[17px] text-gray-700">
-                    Marvel at the Alcázar's signature mix of Mudéjar, Gothic,
-                    Renaissance, and Baroque elements. Intricate tilework,
-                    carved wooden ceilings, and elegant arches highlight the
-                    confluence of multicultural influences visible today.
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
-                    Legendary courtyards:
-                  </h5>
-                  <p className="text-[15px] md:text-[17px] text-gray-700">
-                    Explore the Courtyard of the Maidens (Patio de las
-                    Doncellas), an emblem of Islamic design with its reflective
-                    pool and colonnades, as well as the charming and
-                    lesser-known Courtyard of the Dolls (Patio de las Muñecas),
-                    famed for its delicate columns and symbolic details.
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
-                    The Hall of Ambassadors:
-                  </h5>
-                  <p className="text-[15px] md:text-[17px] text-gray-700">
-                    Step inside the Alcázar's most iconic chamber, known for its
-                    magnificent domed ceiling, gilded decoration, and historic
-                    importance as the throne room of King Pedro I. This is where
-                    history was shaped and diplomacy reigned.
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
-                    Treasures of the past:
-                  </h5>
-                  <p className="text-[15px] md:text-[17px] text-gray-700">
-                    View priceless works of art including The Virgin of the
-                    Navigators, a tribute to Spain's Age of Exploration, along
-                    with other paintings, furnishings, and tapestries that
-                    chronicle Seville's rich maritime heritage.
-                  </p>
-                </div>
-                <div>
-                  <h5 className="font-medium text-[15px] md:text-[17px] text-gray-900 mb-1">
-                    Lush palace gardens:
-                  </h5>
-                  <p className="text-[15px] md:text-[17px] text-gray-700">
-                    End your tour in serenity as you stroll through the vast
-                    Alcazar Seville gardens. Discover trickling fountains,
-                    exotic flora, maze-like hedges, and colorful peacocks—all
-                    set against the backdrop of centuries-old pavilions.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </FaqItem>
+      {faqData?.yourExperience && (
+        <FaqItem title="Your Experience" id="your-experience">
+          <HtmlContent html={faqData.yourExperience} />
+        </FaqItem>
+      )}
 
       {/* Operating Hours */}
-      <FaqItem title="Operating Hours" id="operating-hours">
-        <OperatingHoursCard
-          title="Alcazar of Seville"
-          operatingHours={[
-            {
-              period: "1st Apr - 30th Sep",
-              hours: [
-                {
-                  day: "Monday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Tuesday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Wednesday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Thursday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Friday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Saturday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-                {
-                  day: "Sunday",
-                  time: "09:30am - 07:00pm",
-                  lastEntry: "06:00pm",
-                },
-              ],
-            },
-            {
-              period: "1st Oct - 31st Mar",
-              hours: [
-                {
-                  day: "Monday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Tuesday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Wednesday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Thursday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Friday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Saturday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-                {
-                  day: "Sunday",
-                  time: "09:30am - 05:00pm",
-                  lastEntry: "04:00pm",
-                },
-              ],
-            },
-          ]}
-        />
-      </FaqItem>
+      {experience?.data?.operatingHours && (
+        <FaqItem title="Operating Hours" id="operating-hours">
+          <OperatingHoursCard
+            title={experience.data.title || "Experience"}
+            operatingHours={experience.data.operatingHours.map(opHours => {
+              // Format the period from startDate and endDate for dropdown to match original UI
+              const startDate = new Date(opHours.startDate);
+              const endDate = new Date(opHours.endDate);
+
+              // Format like "1st Apr - 30th Sep" to match the original design
+              const formatDateForPeriod = (date: Date) => {
+                const day = date.getDate();
+                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const suffix = day === 1 || day === 21 || day === 31 ? 'st' :
+                              day === 2 || day === 22 ? 'nd' :
+                              day === 3 || day === 23 ? 'rd' : 'th';
+                return `${day}${suffix} ${month}`;
+              };
+
+              const period = `${formatDateForPeriod(startDate)} - ${formatDateForPeriod(endDate)}`;
+
+              // Convert 24-hour time to 12-hour AM/PM format
+              const formatTime = (time24: string) => {
+                const [hours, minutes] = time24.split(':');
+                const hour = parseInt(hours);
+                const ampm = hour >= 12 ? 'pm' : 'am';
+                const hour12 = hour % 12 || 12;
+                return `${hour12}:${minutes}${ampm}`;
+              };
+
+              const openTimeFormatted = formatTime(opHours.openTime);
+              const closeTimeFormatted = formatTime(opHours.closeTime);
+              const lastEntryFormatted = formatTime(opHours.lastEntryTime);
+
+              return {
+                period: period,
+                hours: [
+                  {
+                    day: "Monday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Tuesday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Wednesday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Thursday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Friday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Saturday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                  {
+                    day: "Sunday",
+                    time: `${openTimeFormatted} - ${closeTimeFormatted}`,
+                    lastEntry: lastEntryFormatted,
+                  },
+                ],
+              };
+            })}
+          />
+        </FaqItem>
+      )}
 
       {/* Reviews */}
       <FaqItem title="Reviews" id="reviews">
-        <ReviewsSection />
+        <ReviewsSection reviews={experience?.data?.reviews} />
       </FaqItem>
 
       {/* Know Before You Go */}
-      <FaqItem title="Know Before You Go" id="know-before-you-go" >
-        <div className="space-y-6 font-halyard-text">
-          <div>
-            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
-              What to bring
-            </h4>
-            <ul className="space-y-2">
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Bring a valid passport or ID card for entry along with your
-                  ticket.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  You can present your ticket printed or on your mobile.
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
-              What's not allowed
-            </h4>
-            <ul className="space-y-2">
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Food and drinks are not permitted inside the monument (except
-                  for water and food for babies).
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Alcohol, drugs, and intoxicated behavior are strictly
-                  prohibited.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Weapons, sharp objects, and large bags or luggage are not
-                  allowed.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Pets are not permitted, except for guide dogs or emotional
-                  support dogs with valid documentation.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Selfie sticks, flash photography, and tripods are not allowed.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Entering barefoot and bachelor or bachelorette party groups
-                  are not permitted.
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
-              Accessibility
-            </h4>
-            <ul className="space-y-2">
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  The Alcázar of Seville is wheelchair and pram/stroller
-                  accessible.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Guide dogs and emotional support animals are allowed within
-                  the Alcázar, subject to producing the official documentation.
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[15px] md:text-[17px] text-gray-900 mb-3">
-              Additional information
-            </h4>
-            <ul className="space-y-2">
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  You must arrive at the designated entry point 15 minutes
-                  before your scheduled time to complete check-in.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Your guide will only speak English throughout the tour.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Your ticket does not include a visit to the Royal High Room.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  In the event of heavy rain or winds, the management holds the
-                  sole discretion to restrict access to the gardens for security
-                  reasons.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  The monument is vacated at 17:45 from October to March and at
-                  19:45 from April to September.
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  You will have to go through airport-style security screening
-                  while entering the Alcazar (bags included).
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-[15px] md:text-[17px]">
-                  Once you get your tickets validated and enter the Alcázar, you
-                  cannot re-enter the complex.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </FaqItem>
+      {faqData?.knowBeforeYouGo && (
+        <FaqItem title="Know Before You Go" id="know-before-you-go">
+          <HtmlContent html={faqData.knowBeforeYouGo} />
+        </FaqItem>
+      )}
 
       {/* My Tickets */}
-      <FaqItem title="My Tickets" id="my-tickets">
-        <div className="space-y-4 font-halyard-text">
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-[15px] md:text-[17px]">
-                Your voucher will be emailed to you instantly.
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-[15px] md:text-[17px]">
-                Display the voucher on your mobile phone with a valid photo ID
-                at the meeting point.
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-black-600 rounded-full mt-2 flex-shrink-0"></div>
-              <span className="text-[15px] md:text-[17px]">
-                Please arrive at the meeting point 5 minutes before the
-                scheduled time of your visit to avoid any delays.
-              </span>
-            </li>
-          </ul>
-        </div>
-      </FaqItem>
+      {faqData?.myTickets && (
+        <FaqItem title="My Tickets" id="my-tickets">
+          <HtmlContent html={faqData.myTickets} />
+        </FaqItem>
+      )}
 
       {/* Where */}
       <FaqItem title="Where" id="where">
@@ -821,15 +571,15 @@ const FaqSection: React.FC = () => {
             <p
               className="text-[15px] md:block hidden font-halyard-text md:text-[17px] text-[#02819c] hover:cursor-pointer hover:text-[#444444] group-hover:text-[#444444]"
               onClick={() => {
-                if (mapRef.current) {
-                  mapRef.current.setView([37.3857231, -5.9922638], 18, {
+                if (mapRef.current && experience?.data?.whereTo) {
+                  mapRef.current.setView([experience.data.whereTo.lat, experience.data.whereTo.lng], 18, {
                     animate: true,
                     duration: 1.0,
                   });
                 }
               }}
             >
-              Plaza del Triunfo, Big statue, Seville
+              {experience?.data?.whereTo?.address}
             </p>
             <p
               className="text-[15px] md:hidden font-halyard-text md:text-[17px] text-[#02819c] hover:cursor-pointer hover:text-[#444444] group-hover:text-[#444444]"
@@ -837,7 +587,7 @@ const FaqSection: React.FC = () => {
                 setShowMobileMapDrawer(true);
               }}
             >
-              Plaza del Triunfo, Big statue, Seville
+              {experience?.data?.whereTo?.address}
             </p>
           </div>
 
@@ -846,7 +596,7 @@ const FaqSection: React.FC = () => {
             <div className="rounded-lg overflow-hidden">
               <div
                 ref={mapContainerRef}
-                className="w-full h-[300px] md:h-auto rounded-lg relative z-20"
+                className="w-full h-[300px] md:h-auto rounded-lg relative z-0"
                 style={{
                   minHeight: "300px",
                   aspectRatio: "unset",
@@ -899,15 +649,20 @@ const FaqSection: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <h4 className="text-[#444444] text-sm font-halyard-text mb-1">
-                    Plaza del Triunfo, Big statue
+                    {experience?.data?.whereTo?.address || "Meeting Point"}
                   </h4>
                   <button
-                    onClick={() =>
-                      window.open(
-                        "https://maps.google.com/?q=Plaza+del+Triunfo,+Seville,+Spain",
-                        "_blank"
-                      )
-                    }
+                    onClick={() => {
+                      if (experience?.data?.whereTo) {
+                        const { lat, lng } = experience.data.whereTo;
+                        console.log('Google Maps redirect coordinates:', lat, lng);
+                        console.log('Google Maps URL:', `https://maps.google.com/?q=${lat},${lng}`);
+                        window.open(
+                          `https://maps.google.com/?q=${lat},${lng}`,
+                          "_blank"
+                        );
+                      }
+                    }}
                     className="flex items-center justify-end w-full  gap-2 text-[#037b95] text-sm font-medium hover:text-blue-700 transition-colors"
                   >
                     <Map size={16} className="text-[#037b95]" />

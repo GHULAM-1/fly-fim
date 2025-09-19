@@ -10,7 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/lib/hooks/useAuth";
-import type { User } from "@supabase/supabase-js";
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+}
 
 interface UserDropdownProps {
   user: User;
@@ -41,8 +46,7 @@ function CustomAvatar({
 
 export function UserDropdown({ user, scrolled }: UserDropdownProps) {
   const displayName =
-    user.user_metadata?.full_name ||
-    user.user_metadata?.name ||
+    user.name ||
     user.email?.split("@")[0] ||
     "User";
   const email = user.email || "";

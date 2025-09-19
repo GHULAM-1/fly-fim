@@ -16,10 +16,10 @@ const Tabs = () => {
   const city = params.city as string;
   
   const profileImage =
-    user?.user_metadata?.avatar_url ||
-    user?.user_metadata?.picture ||
-    user?.identities?.[0]?.identity_data?.avatar_url ||
-    user?.identities?.[0]?.identity_data?.picture;
+    (user as any)?.user_metadata?.avatar_url ||
+    (user as any)?.user_metadata?.picture ||
+    (user as any)?.identities?.[0]?.identity_data?.avatar_url ||
+    (user as any)?.identities?.[0]?.identity_data?.picture;
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center py-2 px-4 bg-white z-50 border-t">

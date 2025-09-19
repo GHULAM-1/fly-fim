@@ -75,7 +75,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   // Load currency from localStorage on mount
   useEffect(() => {
-    const savedCurrency = localStorage.getItem("preferred-currency");
+    const savedCurrency = localStorage?.getItem("preferred-currency");
     if (savedCurrency) {
       const found = CURRENCIES.find((c) => c.code === savedCurrency);
       if (found) {

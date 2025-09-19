@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import { ChevronRight, Menu, Smartphone } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Category as APICategory } from "@/types/things-to-do/things-to-do-types";
+import PriceDisplay from "../PriceDisplay";
 
 interface DisplayCategory {
   id: number;
@@ -36,15 +37,10 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
 
   // Check if city is undefined or the string "undefined"
   if (!city || city === "undefined") {
-    console.log("city is undefined, setting to worldwide");
     city = "worldwide";
   }
 
   const decodedCity = city ? decodeURIComponent(city) : "worldwide";
-
-  console.log("Final city value:", city);
-  console.log("Decoded city:", decodedCity);
-  
   const formattedCityName = decodedCity
   ? decodedCity.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
@@ -241,7 +237,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                                   {experience.basicInfo.title}
                                 </div>
                                 <div className="text-[12px] font-halyard-text-light text-[#666666]">
-                                  from ${experience.basicInfo.price.toFixed(2)}
+                                  from <PriceDisplay amount={experience.basicInfo.price} />
                                 </div>
                               </div>
                             </div>
@@ -262,7 +258,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                                   {experience.basicInfo.title}
                                 </div>
                                 <div className="text-[12px] font-halyard-text-light text-[#666666]">
-                                  from ${experience.basicInfo.price.toFixed(2)}
+                                  from <PriceDisplay amount={experience.basicInfo.price} />
                                 </div>
                               </div>
                             </div>
@@ -283,7 +279,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                                   {experience.basicInfo.title}
                                 </div>
                                 <div className="text-[12px] font-halyard-text-light text-[#666666]">
-                                  from ${experience.basicInfo.price.toFixed(2)}
+                                  from <PriceDisplay amount={experience.basicInfo.price} />
                                 </div>
                               </div>
                             </div>

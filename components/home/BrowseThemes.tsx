@@ -40,9 +40,6 @@ interface BrowseThemesProps {
 }
 
 const BrowseThemes = ({ categoriesData, city }: BrowseThemesProps) => {
-  // Debug logging
-  console.log('BrowseThemes - categoriesData:', categoriesData);
-  console.log('BrowseThemes - city:', city);
 
   // Icon mapping for categories
   const getIconForCategory = (categoryName: string) => {
@@ -77,7 +74,6 @@ const BrowseThemes = ({ categoriesData, city }: BrowseThemesProps) => {
     });
   }
 
-  console.log('BrowseThemes - apiTabs:', apiTabs);
 
   const [activeTab, setActiveTab] = useState<TabKey>("Tickets");
   const [showLeftButton, setShowLeftButton] = useState(false);
@@ -286,9 +282,6 @@ const BrowseThemes = ({ categoriesData, city }: BrowseThemesProps) => {
   // Use only API data items (no hardcoded fallback)
   const combinedItems = currentTabData?.items || [];
 
-  console.log('BrowseThemes - activeTab:', activeTab);
-  console.log('BrowseThemes - currentTabData:', currentTabData);
-  console.log('BrowseThemes - combinedItems:', combinedItems);
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {

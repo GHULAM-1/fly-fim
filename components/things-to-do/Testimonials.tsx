@@ -21,9 +21,6 @@ const Testimonials = ({ variant, reviewsData }: TestimonialsProps) => {
   const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
-  // Debug logging
-  console.log('Testimonials - reviewsData:', reviewsData);
-
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
@@ -59,7 +56,6 @@ const Testimonials = ({ variant, reviewsData }: TestimonialsProps) => {
   // Use only API data - NO FALLBACK
   const testimonials = transformedTestimonials || [];
 
-  console.log('Testimonials - final testimonials:', testimonials);
 
   const renderStars = (
     rating: number,

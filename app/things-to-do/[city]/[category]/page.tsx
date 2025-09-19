@@ -115,7 +115,6 @@ export default function CategoryPage() {
         index === self.findIndex((exp) => exp._id === experience._id)
     );
   }, [categoryPageData]);
-  console.log("allUniqueExperiences", allUniqueExperiences);
   const mapExperiencesToAttractions = (experiences: any[]) => {
     return experiences.map((experience, index) => ({
       id: index + 1,
@@ -126,9 +125,7 @@ export default function CategoryPage() {
         categoryPageData?.category?.categoryName ||
         formattedCategoryName ||
         "Experience",
-      price: experience.basicInfo?.price
-        ? `from $ ${experience.basicInfo.price.toFixed(2)}`
-        : "from $ 0.00",
+      price: experience.basicInfo?.price || 0,
       image:
         experience.basicInfo?.mainImage?.[0] ||
         experience.basicInfo?.images?.[0] ||
@@ -2330,7 +2327,6 @@ export default function CategoryPage() {
                         (exp) =>
                           exp.relationships?.subcategoryName === item.label
                       );
-                      console.log(`Filtered experiences for ${item.label}:`, filtered);
 
                       const mapped = filtered.map((experience, index) => ({
                         id: index + 1,
@@ -2350,7 +2346,6 @@ export default function CategoryPage() {
                         price: experience.basicInfo?.price || 0,
                       }));
 
-                      console.log(`Mapped experiences for ${item.label}:`, mapped);
                       return mapped.length > 0 ? mapped : [];
                     })()}
                   />

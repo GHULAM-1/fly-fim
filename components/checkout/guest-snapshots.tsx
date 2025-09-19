@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Reviews } from '@/types/reviews/review-types';
 
 interface GuestSnapshot {
   id: string;
@@ -8,74 +9,47 @@ interface GuestSnapshot {
   alt: string;
 }
 
-const GuestSnapshots = () => {
+interface GuestSnapshotsProps {
+  reviews?: any[];
+}
+
+const GuestSnapshots = ({ reviews = [] }: GuestSnapshotsProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [snapshots, setSnapshots] = useState<GuestSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock data array - guest photos
-  const mockSnapshots: GuestSnapshot[] = [
-    {
-      id: "1",
-      image: "/images/d1.jpg.avif",
-      alt: "Guest photo 1"
-    },
-    {
-      id: "2", 
-      image: "/images/d2.jpg.avif",
-      alt: "Guest photo 2"
-    },
-    {
-      id: "3",
-      image: "/images/d3.jpg.avif", 
-      alt: "Guest photo 3"
-    },
-    {
-      id: "4",
-      image: "/images/d4.jpg.avif",
-      alt: "Guest photo 4"
-    },
-    {
-      id: "5",
-      image: "/images/d5.jpg.avif",
-      alt: "Guest photo 5"
-    },
-    {
-      id: "6",
-      image: "/images/d6.jpeg.avif",
-      alt: "Guest photo 6"
-    },
-    {
-      id: "7",
-      image: "/images/d1.jpg.avif",
-      alt: "Guest photo 7"
-    },
-    {
-      id: "8",
-      image: "/images/d2.jpg.avif",
-      alt: "Guest photo 8"
-    },
-    {
-      id: "9",
-      image: "/images/d3.jpg.avif",
-      alt: "Guest photo 9"
-    },
-    {
-      id: "10",
-      image: "/images/d4.jpg.avif",
-      alt: "Guest photo 10"
-    }
-  ];
+  // Convert review images to snapshots format
+  const generateSnapshots = (reviews: Reviews[]): GuestSnapshot[] => {
+    const allImages: GuestSnapshot[] = [];
+
+    reviews.forEach((review, reviewIndex) => {
+      // Use imageUrls if available, otherwise fall back to images array
+      const reviewImages = review.imageUrls?.length > 0 ? review.imageUrls : review.images || [];
+
+      reviewImages.forEach((imageUrl, imageIndex) => {
+        allImages.push({
+          id: `${review._id}-${imageIndex}`,
+          image: imageUrl,
+          alt: `Guest photo from review ${reviewIndex + 1}`
+        });
+      });
+    });
+
+    return allImages;
+  };
 
   useEffect(() => {
-    // Simulate loading delay for better UX
+    // Generate snapshots from review images
     const timer = setTimeout(() => {
-      setSnapshots(mockSnapshots);
+      // Extract actual reviews from nested structure
+      const actualReviews = Array.isArray(reviews?.[0]?.data) ? reviews[0].data : [];
+      const reviewSnapshots = generateSnapshots(actualReviews);
+      setSnapshots(reviewSnapshots);
       setLoading(false);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [reviews]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -103,7 +77,7 @@ const GuestSnapshots = () => {
 
   if (loading) {
     return (
-      <div className="py-4 sm:py-6 max-w-[1200px] mx-auto">
+      <div className="py-4 sm:py-6 mb-2 max-w-[1200px] mx-auto">
         <div className="px-[24px] xl:px-0">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444] max-w-2/3">
             Snapshots from our guests
@@ -124,7 +98,7 @@ const GuestSnapshots = () => {
   }
 
   return (
-    <div className="md:py-4 py-2 max-w-[1200px] mx-auto border-b border-dashed border-gray-200 pb-6">
+    <div className="md:py-4 py-2 mb-2 max-w-[1200px] mx-auto border-b border-dashed border-gray-200 pb-6">
       <div className="flex justify-between items-start">
         <h2 className="text-lg sm:text-[18px] font-heading text-[#444444] max-w-2/3">
           Snapshots from our guests

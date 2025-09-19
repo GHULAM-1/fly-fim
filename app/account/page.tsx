@@ -3,7 +3,7 @@ import React, { useState, useTransition, useEffect } from "react";
 import { ChevronRight, Mail, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { signInWithGoogle, signInWithMagicLink } from "@/lib/actions/auth";
+import { signInWithMagicLink } from "@/lib/actions/auth";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -42,16 +42,25 @@ const AccountPage = () => {
 
   const handleGoogleSignIn = () => {
     setError(null);
-    startTransition(async () => {
-      const result = await signInWithGoogle();
+    console.log("Google sign-in clicked");
 
-      if (result?.error) {
-        setError(result.error);
-      }
-      // Note: If successful, user will be redirected to Google
-    });
-    // toast.success("You have successfully signed in!");
-    // console.log("handleGoogleSignIn");
+    try {
+      const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+      const googleAuthUrl =
+        `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID}&`+
+        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+        `response_type=code&` +
+        `scope=email%20profile&` +
+        `access_type=offline`;
+
+      console.log("Redirect URI:", redirectUri);
+      console.log("Full Google OAuth URL:", googleAuthUrl);
+      window.location.href = googleAuthUrl;
+    } catch (error) {
+      console.error("Error redirecting to Google:", error);
+      setError('Failed to redirect to Google');
+    }
   };
 
   const handleSendMagicLink = () => {
@@ -88,18 +97,18 @@ const AccountPage = () => {
   // If user is signed in, show account management interface
   if (user) {
     const profileImage =
-      user?.user_metadata?.avatar_url ||
-      user?.user_metadata?.picture ||
-      user?.identities?.[0]?.identity_data?.avatar_url ||
-      user?.identities?.[0]?.identity_data?.picture;
+      (user as any)?.user_metadata?.avatar_url ||
+      (user as any)?.user_metadata?.picture ||
+      (user as any)?.identities?.[0]?.identity_data?.avatar_url ||
+      (user as any)?.identities?.[0]?.identity_data?.picture;
 
     return (
       <div className="mt-15 mb-10 min-h-screen bg-gray-50">
         <div className="flex items-center justify-between gap-4 px-6 py-8">
           <div>
             <h1 className="text-lg font-heading text-[#444444]">
-              {user.user_metadata?.full_name ||
-                user.user_metadata?.name ||
+              {(user as any).user_metadata?.full_name ||
+                (user as any).user_metadata?.name ||
                 "User"}
             </h1>
             <p className="text-[#444444] text-sm">{user.email}</p>
@@ -247,7 +256,7 @@ const AccountPage = () => {
             )}
           </Button>
 
-          <Button
+          {/* <Button
             variant="outline"
             className="w-full justify-center shadow-none gap-3 py-6 text-[#444444]"
             onClick={() => {
@@ -263,7 +272,7 @@ const AccountPage = () => {
             <span className="font-heading text-[#444444] tracking-wider text-[16px]">
               Continue with Apple
             </span>
-          </Button>
+          </Button> */}
           <Drawer open={isDrawerOpen} onOpenChange={handleDrawerOpenChange}>
             <DrawerTrigger asChild>
               <Button
@@ -334,7 +343,7 @@ const AccountPage = () => {
                           )}
                         </Button>
 
-                        <Button
+                        {/* <Button
                           variant="outline"
                           className="w-full justify-center gap-3 py-5 text-[#444444] shadow-none"
                         >
@@ -349,7 +358,7 @@ const AccountPage = () => {
                           <span className="font-heading tracking-wider text-[16px] text-[#444444]">
                             Continue with Apple
                           </span>
-                        </Button>
+                        </Button> */}
                       </div>
 
                       {/* OR Divider */}
@@ -482,10 +491,12 @@ const AccountPage = () => {
           <span className="font-halyard-text-light">Chat</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
+        <a href="/help">
         <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
           <span className="font-halyard-text-light">FAQs</span>
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
+        </a>
       </div>
 
       {/* Legal Section */}

@@ -14,12 +14,6 @@ export default function CategoriesCards({
 
     const simpleScrollLeft = () => {
       if (currentPage > 0) {
-        console.log(
-          "Scrolling left from card",
-          currentPage,
-          "to",
-          currentPage - 1
-        );
         setCurrentPage((prev) => prev - 1);
       }
     };
@@ -27,12 +21,6 @@ export default function CategoriesCards({
     const simpleScrollRight = () => {
       const maxCards = Math.max(0, recommendations.length); // Show 3 cards at once
       if (currentPage < maxCards) {
-        console.log(
-          "Scrolling right from card",
-          currentPage,
-          "to",
-          currentPage + 1
-        );
         setCurrentPage((prev) => prev + 1);
       }
     };

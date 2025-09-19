@@ -39,6 +39,11 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "sonner";
+import { fetchExperienceById } from "@/api/expereince/expereince-api";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import PriceDisplay from "@/components/PriceDisplay";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { UserDropdown } from "@/components/UserDropdown";
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -54,27 +59,186 @@ function Bullet() {
   );
 }
 
-const guestDetailsSchema = z
-  .object({
-    fullName: z
+const createGuestDetailsSchema = (adultCount: number, seniorCount: number, isPaymentValidation = false) => {
+  const baseSchema: Record<string, any> = {
+    fullName: isPaymentValidation 
+      ? z
       .string()
       .min(1, { message: "Enter full name as per your valid ID" })
       .refine((name) => name.trim().includes(" "), {
+            message: "Enter full name as per your valid ID",
+          })
+      : z
+          .string()
+          .optional()
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().length > 0; // If not empty, must have content
+          }, {
+            message: "Enter full name as per your valid ID",
+          })
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().includes(" "); // If not empty, must have space
+          }, {
         message: "Enter full name as per your valid ID",
       }),
-    phone: z
+    phone: isPaymentValidation
+      ? z
       .string()
       .min(1, { message: "Phone number is required" })
-      .refine(isValidPhoneNumber, { message: "Enter a valid phone number" }),
-    email: z.string().email({ message: "Enter a valid email address" }),
-    confirmEmail: z.string().email({ message: "Enter a valid email address" }),
-  })
-  .refine((data) => data.email === data.confirmEmail, {
+          .refine(isValidPhoneNumber, { message: "Enter a valid phone number" })
+      : z
+          .string()
+          .optional()
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return phone.trim().length > 0; // If not empty, must have content
+          }, {
+            message: "Phone number is required",
+          })
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return isValidPhoneNumber(phone); // If not empty, must be valid
+          }, {
+            message: "Enter a valid phone number",
+          }),
+    email: isPaymentValidation
+      ? z.string().email({ message: "Enter a valid email address" })
+      : z
+          .string()
+          .optional()
+          .refine((email) => {
+            if (!email || email.trim() === "") return true; // Allow empty
+            return z.string().email().safeParse(email).success; // If not empty, must be valid email
+          }, {
+            message: "Enter a valid email address",
+          }),
+    confirmEmail: isPaymentValidation
+      ? z.string().email({ message: "Enter a valid email address" })
+      : z
+          .string()
+          .optional()
+          .refine((email) => {
+            if (!email || email.trim() === "") return true; // Allow empty
+            return z.string().email().safeParse(email).success; // If not empty, must be valid email
+          }, {
+            message: "Enter a valid email address",
+          }),
+  };
+
+  // Add fields for additional adults (Adult 2, 3, etc.)
+  for (let i = 2; i <= adultCount; i++) {
+    baseSchema[`adult${i}Name`] = isPaymentValidation
+      ? z
+          .string()
+          .min(1, { message: `Enter full name for Adult ${i}` })
+          .refine((name) => name.trim().includes(" "), {
+            message: `Enter full name for Adult ${i}`,
+          })
+      : z
+          .string()
+          .optional()
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().length > 0; // If not empty, must have content
+          }, {
+            message: `Enter full name for Adult ${i}`,
+          })
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().includes(" "); // If not empty, must have space
+          }, {
+            message: `Enter full name for Adult ${i}`,
+          });
+    baseSchema[`adult${i}Phone`] = isPaymentValidation
+      ? z
+          .string()
+          .min(1, { message: `Enter phone number for Adult ${i}` })
+          .refine(isValidPhoneNumber, { message: `Enter a valid phone number for Adult ${i}` })
+      : z
+          .string()
+          .optional()
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return phone.trim().length > 0; // If not empty, must have content
+          }, {
+            message: `Enter phone number for Adult ${i}`,
+          })
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return isValidPhoneNumber(phone); // If not empty, must be valid
+          }, {
+            message: `Enter a valid phone number for Adult ${i}`,
+          });
+  }
+
+  // Add fields for seniors
+  for (let i = 1; i <= seniorCount; i++) {
+    baseSchema[`senior${i}Name`] = isPaymentValidation
+      ? z
+          .string()
+          .min(1, { message: `Enter full name for Senior ${i}` })
+          .refine((name) => name.trim().includes(" "), {
+            message: `Enter full name for Senior ${i}`,
+          })
+      : z
+          .string()
+          .optional()
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().length > 0; // If not empty, must have content
+          }, {
+            message: `Enter full name for Senior ${i}`,
+          })
+          .refine((name) => {
+            if (!name || name.trim() === "") return true; // Allow empty
+            return name.trim().includes(" "); // If not empty, must have space
+          }, {
+            message: `Enter full name for Senior ${i}`,
+          });
+    baseSchema[`senior${i}Phone`] = isPaymentValidation
+      ? z
+          .string()
+          .min(1, { message: `Enter phone number for Senior ${i}` })
+          .refine(isValidPhoneNumber, { message: `Enter a valid phone number for Senior ${i}` })
+      : z
+          .string()
+          .optional()
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return phone.trim().length > 0; // If not empty, must have content
+          }, {
+            message: `Enter phone number for Senior ${i}`,
+          })
+          .refine((phone) => {
+            if (!phone || phone.trim() === "") return true; // Allow empty
+            return isValidPhoneNumber(phone); // If not empty, must be valid
+          }, {
+            message: `Enter a valid phone number for Senior ${i}`,
+          });
+  }
+
+  return z
+    .object(baseSchema)
+    .refine((data) => {
+      if (isPaymentValidation) {
+        // For payment validation, emails must match
+        return data.email === data.confirmEmail;
+      } else {
+        // For regular validation, only validate email matching if both fields have content
+        if (!data.email || !data.confirmEmail || data.email.trim() === "" || data.confirmEmail.trim() === "") {
+          return true; // Allow empty or if only one field has content
+        }
+        return data.email === data.confirmEmail; // If both have content, they must match
+      }
+    }, {
     message: "Enter matching email ID",
     path: ["confirmEmail"],
   });
+};
 
-type GuestDetailsInput = z.infer<typeof guestDetailsSchema>;
+type GuestDetailsInput = z.infer<ReturnType<typeof createGuestDetailsSchema>>;
 
 const ConfirmAndPayPage = () => {
   const searchParams = useSearchParams();
@@ -86,7 +250,10 @@ const ConfirmAndPayPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  
+  const [experience, setExperience] = useState<ExperienceResponse | null>(null);
+  const { user, loading } = useAuth();
+
+
   // Credit card form state
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
@@ -97,6 +264,11 @@ const ConfirmAndPayPage = () => {
 
   const [countryCode, setCountryCode] = useState("+92");
   const [nationalNumber, setNationalNumber] = useState("");
+  
+  // Phone number states for additional adults and seniors
+  const [additionalPhoneNumbers, setAdditionalPhoneNumbers] = useState<{
+    [key: string]: { countryCode: string; nationalNumber: string };
+  }>({});
   
   // Ref for scrolling to form errors
   const formRef = useRef<HTMLDivElement>(null);
@@ -117,8 +289,8 @@ const ConfirmAndPayPage = () => {
   }, [paymentTime]);
 
   const form = useForm<GuestDetailsInput>({
-    resolver: zodResolver(guestDetailsSchema),
-    mode: "onBlur",
+    resolver: zodResolver(createGuestDetailsSchema(adultCount, seniorCount)),
+    mode: "onChange",
     defaultValues: {
       fullName: "",
       phone: "",
@@ -127,11 +299,31 @@ const ConfirmAndPayPage = () => {
     },
   });
 
+  // Update form schema when guest counts change
   useEffect(() => {
-    const fullPhoneNumber = `${countryCode}${nationalNumber}`;
+    form.clearErrors();
+    // Reset form to clear any stale validation state
+    const currentValues = form.getValues();
+    form.reset(currentValues);
+  }, [adultCount, seniorCount, form]);
 
+  // Trigger validation on form load to show any existing errors
+  useEffect(() => {
+    form.trigger();
+  }, [form]);
+
+  useEffect(() => {
+    const fullPhoneNumber = nationalNumber.trim() ? `${countryCode}${nationalNumber}` : "";
     form.setValue("phone", fullPhoneNumber, { shouldValidate: true });
   }, [countryCode, nationalNumber, form]);
+
+  // Sync additional phone numbers with form
+  useEffect(() => {
+    Object.entries(additionalPhoneNumbers).forEach(([key, phoneData]) => {
+      const fullPhoneNumber = phoneData.nationalNumber.trim() ? `${phoneData.countryCode}${phoneData.nationalNumber}` : "";
+      form.setValue(key as any, fullPhoneNumber, { shouldValidate: true });
+    });
+  }, [additionalPhoneNumbers, form]);
 
   const adultPrice = 49.0;
   const seniorPrice = 46.82;
@@ -183,9 +375,56 @@ const ConfirmAndPayPage = () => {
     }
   );
 
-  const itemLink = `/things-to-do/${city}/${category}/${subcategory}/${item}`;
-  const ticketsLink = `/booking?${searchParams.toString()}`;
+  const itemLink = `/things-to-do/${experience?.data?.cityName}/${experience?.data?.categoryName}/${experience?.data?.subcategoryName}/${experience?.data?._id}`;
+  
+  // Structure the URL with proper date format using experience data
+  const constructTicketsLink = () => {
+    const baseUrl = '/booking';
+    
+    // Use experience data only for specific parameters
+    const itemName = experience?.data?._id || searchParams.get("itemName") || "";
+    const city = experience?.data?.cityName || "";
+    const category = experience?.data?.categoryName || "";
+    const subcategory = experience?.data?.subcategoryName || "";
+    const itemId = experience?.data?._id || searchParams.get("itemId") || "";
+    const optionTitle = searchParams.get("optionTitle") || "";
+    const time = searchParams.get("time") || "";
+    
+    // Convert date to ISO format
+    let dateParam = date;
+    if (date && date !== "2025-10-06") {
+      const dateObj = new Date(date);
+      if (!isNaN(dateObj.getTime())) {
+        dateParam = dateObj.toISOString();
+      }
+    }
+    
+    // Build URL manually to avoid URL encoding issues
+    const urlParts = [
+      `itemName=${itemName}`,
+      `city=${city}`,
+      `category=${category}`,
+      `subcategory=${subcategory}`,
+      `itemId=${itemId}`,
+      `date=${dateParam}`,
+      `optionTitle=${optionTitle}`,
+      `time=${time}`
+    ].filter(part => part.split('=')[1]); // Only include params with values
+    
+    return `${baseUrl}?${urlParts.join('&')}`;
+  };
+  
+  const ticketsLink = constructTicketsLink();
+  console.log(ticketsLink);
 
+  useEffect(() => {
+    const fetchExperience = async () => {
+      const experience = await fetchExperienceById(itemName);
+  
+      setExperience(experience);
+    };
+    fetchExperience();
+  }, [itemName]);
   // Credit card formatting functions
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -229,6 +468,18 @@ const ConfirmAndPayPage = () => {
     }));
   };
 
+  // Helper functions for additional phone numbers
+  const updateAdditionalPhone = (key: string, countryCode: string, nationalNumber: string) => {
+    setAdditionalPhoneNumbers(prev => ({
+      ...prev,
+      [key]: { countryCode, nationalNumber }
+    }));
+  };
+
+  const getAdditionalPhone = (key: string) => {
+    return additionalPhoneNumbers[key] || { countryCode: "+92", nationalNumber: "" };
+  };
+
   // Function to scroll to form errors
   const scrollToFormErrors = () => {
     if (formRef.current) {
@@ -246,9 +497,26 @@ const ConfirmAndPayPage = () => {
       return;
     }
 
-    // Validate form first
-    const isValid = await form.trigger();
+    // Create a temporary form with strict validation for payment
+    const paymentSchema = createGuestDetailsSchema(adultCount, seniorCount, true);
+    const paymentForm = useForm<GuestDetailsInput>({
+      resolver: zodResolver(paymentSchema),
+      mode: "onChange",
+      defaultValues: form.getValues(),
+    });
+
+    // Set current values and validate
+    paymentForm.reset(form.getValues());
+    const isValid = await paymentForm.trigger();
+    
     if (!isValid) {
+      // Copy errors from payment form to main form
+      const errors = paymentForm.formState.errors;
+      Object.keys(errors).forEach(key => {
+        if (errors[key as keyof typeof errors]) {
+          form.setError(key as any, errors[key as keyof typeof errors] as any);
+        }
+      });
       scrollToFormErrors();
       return;
     }
@@ -283,11 +551,11 @@ const ConfirmAndPayPage = () => {
         return;
       }
     }
-
-    const formData = form.getValues();
     
     setIsProcessingPayment(true);
     setPaymentError(false);
+
+    const formData = form.getValues();
 
     try {
       const response = await fetch('/api/create-checkout-session', {
@@ -353,7 +621,7 @@ const ConfirmAndPayPage = () => {
     let buttonContent;
     let buttonClasses = "";
     const amountText =
-      paymentTime === "payLater" ? "at $0" : `$${totalPayable.toFixed(2)}`;
+      paymentTime === "payLater" ? "at $0" : <PriceDisplay amount={totalPayable} />;
 
     switch (paymentMethod) {
       case "stripe":
@@ -460,7 +728,7 @@ const ConfirmAndPayPage = () => {
                   href={itemLink}
                   className="text-[#444444] hover:text-purple-600 underline cursor-pointer truncate"
                 >
-                  1. {itemName}
+                  1. {experience?.data?.title}
                 </Link>
                 <ChevronRight size={16} className="shrink-0" />
                 <Link
@@ -483,13 +751,17 @@ const ConfirmAndPayPage = () => {
                 <CircleHelp strokeWidth={1.5} size={18} />
                 <span className="hidden md:inline">Help</span>
               </Link>
-              <Button
-                variant="outline"
-                className="border-gray-300 text-xs px-3 py-1.5 h-auto"
-                onClick={() => setAuthDialogOpen(true)}
-              >
-                Sign in
-              </Button>
+              {user ? (
+                <UserDropdown user={user} scrolled={false} />
+              ) : (
+                <Button
+                  variant="outline"
+                  className="border-gray-300 text-xs px-3 py-1.5 h-auto"
+                  onClick={() => setAuthDialogOpen(true)}
+                >
+                  Sign in
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -530,7 +802,7 @@ const ConfirmAndPayPage = () => {
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
                     <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
-                      ${adultPrice.toFixed(2)}
+                      <PriceDisplay amount={experience?.data?.adultPrice || 0} />
                     </span>
                     <div className="flex items-center gap-4">
                       <Button
@@ -571,7 +843,7 @@ const ConfirmAndPayPage = () => {
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
                     <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
-                      ${seniorPrice.toFixed(2)}
+                      <PriceDisplay amount={experience?.data?.seniorPrice || 0} />
                     </span>
                     <div className="flex items-center gap-4">
                       <Button
@@ -612,7 +884,7 @@ const ConfirmAndPayPage = () => {
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
                     <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
-                      ${childPrice.toFixed(2)}
+                      <PriceDisplay amount={experience?.data?.childPrice || 0} />
                     </span>
                     <div className="flex items-center gap-4">
                       <Button
@@ -657,23 +929,25 @@ const ConfirmAndPayPage = () => {
               </p>
               <Form {...form}>
                 <form className="space-y-8">
+                  {/* First adult gets full form */}
+                  {adultCount > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-halyard-text font-medium text-[#444444]">
+                        Adult 1 details
+                      </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                     <FormField
                       control={form.control}
                       name="fullName"
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
-                          {" "}
                           <FormLabel className="text-lg text-[#444444]">
-                            {" "}
-                            Full Name{" "}
-                          </FormLabel>{" "}
+                                Full Name
+                              </FormLabel>
                           <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
-                            {" "}
-                            Must match ID{" "}
-                          </p>{" "}
+                                Must match ID
+                              </p>
                           <FormControl>
-                            {" "}
                             <div
                               className={`relative mt-2 border rounded-md transition-colors ${
                                 error
@@ -681,23 +955,21 @@ const ConfirmAndPayPage = () => {
                                   : "border-gray-300 focus-within:border-purple-500"
                               }`}
                             >
-                              {" "}
                               <Input
                                 {...field}
                                 className="h-14 w-full border-none bg-transparent px-3 focus:outline-none focus-visible:ring-0"
-                              />{" "}
+                                  />
                               {error && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                  {" "}
                                   <Info
                                     size={20}
                                     className="fill-red-500 text-white"
-                                  />{" "}
+                                      />
                                 </div>
-                              )}{" "}
-                            </div>{" "}
-                          </FormControl>{" "}
-                          <FormMessage className="text-red-500 text-sm mt-1" />{" "}
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-red-500 text-sm mt-1" />
                         </FormItem>
                       )}
                     />
@@ -706,17 +978,13 @@ const ConfirmAndPayPage = () => {
                       name="email"
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
-                          {" "}
                           <FormLabel className="text-lg text-[#444444]">
-                            {" "}
-                            Email address{" "}
-                          </FormLabel>{" "}
+                                Email address
+                              </FormLabel>
                           <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
-                            {" "}
-                            We'll send your tickets here{" "}
-                          </p>{" "}
+                                We'll send tickets here
+                              </p>
                           <FormControl>
-                            {" "}
                             <div
                               className={`relative mt-2 border rounded-md transition-colors ${
                                 error
@@ -724,24 +992,22 @@ const ConfirmAndPayPage = () => {
                                   : "border-gray-300 focus-within:border-purple-500"
                               }`}
                             >
-                              {" "}
                               <Input
                                 {...field}
                                 type="email"
                                 className="h-14 w-full border-none bg-transparent px-3 focus:outline-none focus-visible:ring-0"
-                              />{" "}
+                                  />
                               {error && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                  {" "}
                                   <Info
                                     size={20}
                                     className="fill-red-500 text-white"
-                                  />{" "}
+                                      />
                                 </div>
-                              )}{" "}
-                            </div>{" "}
-                          </FormControl>{" "}
-                          <FormMessage className="text-red-500 text-sm mt-1" />{" "}
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-red-500 text-sm mt-1" />
                         </FormItem>
                       )}
                     />
@@ -752,17 +1018,13 @@ const ConfirmAndPayPage = () => {
                       name="confirmEmail"
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
-                          {" "}
                           <FormLabel className="text-lg text-[#444444]">
-                            {" "}
-                            Confirm email address{" "}
-                          </FormLabel>{" "}
+                                Confirm email address
+                              </FormLabel>
                           <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
-                            {" "}
-                            Just to ensure we've got this right{" "}
-                          </p>{" "}
+                                Just to ensure we've got this right
+                              </p>
                           <FormControl>
-                            {" "}
                             <div
                               className={`relative mt-2 border rounded-md transition-colors ${
                                 error
@@ -770,29 +1032,25 @@ const ConfirmAndPayPage = () => {
                                   : "border-gray-300 focus-within:border-purple-500"
                               }`}
                             >
-                              {" "}
                               <Input
                                 {...field}
                                 type="email"
                                 className="h-14 w-full border-none bg-transparent px-3 focus:outline-none focus-visible:ring-0"
-                              />{" "}
+                                  />
                               {error && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                  {" "}
                                   <Info
                                     size={20}
                                     className="fill-red-500 text-white"
-                                  />{" "}
+                                      />
                                 </div>
-                              )}{" "}
-                            </div>{" "}
-                          </FormControl>{" "}
-                          <FormMessage className="text-red-500 text-sm mt-1" />{" "}
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-red-500 text-sm mt-1" />
                         </FormItem>
                       )}
                     />
-
-                    {/* FIX 3: Replace FormField with a manually controlled component setup */}
                     <FormField
                       control={form.control}
                       name="phone"
@@ -814,7 +1072,7 @@ const ConfirmAndPayPage = () => {
                           >
                             <CountryCodeSelector
                               value={countryCode}
-                              onValueChange={setCountryCode} // Assuming your component has this prop
+                                  onValueChange={setCountryCode}
                             />
                             <div className="relative w-full">
                               <Input
@@ -824,7 +1082,7 @@ const ConfirmAndPayPage = () => {
                                   setNationalNumber(e.target.value)
                                 }
                                 className="h-14 w-full border-none bg-transparent focus:outline-none focus-visible:ring-0"
-                                placeholder="3314261434"
+                                    placeholder="Enter phone number"
                               />
                               {form.formState.errors.phone && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -841,6 +1099,215 @@ const ConfirmAndPayPage = () => {
                       )}
                     />
                   </div>
+                    </div>
+                  )}
+
+                  {/* Additional adults get name and phone only */}
+                  {Array.from({ length: adultCount - 1 }, (_, index) => (
+                    <div key={`adult-${index + 2}`} className="space-y-4">
+                      <h3 className="text-lg font-halyard-text font-medium text-[#444444]">
+                        Adult {index + 2} details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+                        <FormField
+                          control={form.control}
+                          name={`adult${index + 2}Name` as any}
+                          render={({ field, fieldState: { error } }) => (
+                            <FormItem>
+                              <FormLabel className="text-lg text-[#444444]">
+                                Full Name
+                              </FormLabel>
+                              <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
+                                Must match ID
+                              </p>
+                              <FormControl>
+                                <div
+                                  className={`relative mt-2 border rounded-md transition-colors ${
+                                    error
+                                      ? "border-red-500"
+                                      : "border-gray-300 focus-within:border-purple-500"
+                                  }`}
+                                >
+                                  <Input
+                                    {...field}
+                                    className="h-14 w-full border-none bg-transparent px-3 focus:outline-none focus-visible:ring-0"
+                                  />
+                                  {error && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                      <Info
+                                        size={20}
+                                        className="fill-red-500 text-white"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-red-500 text-sm mt-1" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`adult${index + 2}Phone` as any}
+                          render={({ fieldState: { error } }) => {
+                            const phoneKey = `adult${index + 2}Phone`;
+                            const phoneData = getAdditionalPhone(phoneKey);
+                            
+                            return (
+                              <FormItem>
+                                <FormLabel className="text-lg text-[#444444]">
+                                  Phone number
+                                </FormLabel>
+                                <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
+                                  Contact number for this guest
+                                </p>
+                                <FormControl>
+                                  <div
+                                    className={`flex items-center border rounded-md mt-2 transition-colors ${
+                                      error
+                                        ? "border-red-500"
+                                        : "border-gray-300 focus-within:border-purple-500"
+                                    }`}
+                                  >
+                                    <CountryCodeSelector
+                                      value={phoneData.countryCode}
+                                      onValueChange={(code) => 
+                                        updateAdditionalPhone(phoneKey, code, phoneData.nationalNumber)
+                                      }
+                                    />
+                                    <div className="relative w-full">
+                                      <Input
+                                        type="tel"
+                                        value={phoneData.nationalNumber}
+                                        onChange={(e) =>
+                                          updateAdditionalPhone(phoneKey, phoneData.countryCode, e.target.value)
+                                        }
+                                        className="h-14 w-full border-none bg-transparent focus:outline-none focus-visible:ring-0"
+                                        placeholder="Enter phone number"
+                                      />
+                                      {error && (
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                          <Info
+                                            size={20}
+                                            className="fill-red-500 text-white"
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </FormControl>
+                                <FormMessage className="text-red-500 text-sm mt-1" />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Generate forms for each senior */}
+                  {Array.from({ length: seniorCount }, (_, index) => (
+                    <div key={`senior-${index}`} className="space-y-4">
+                      <h3 className="text-lg font-halyard-text font-medium text-[#444444]">
+                        Senior {index + 1} details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+                        <FormField
+                          control={form.control}
+                          name={`senior${index + 1}Name` as any}
+                          render={({ field, fieldState: { error } }) => (
+                            <FormItem>
+                              <FormLabel className="text-lg text-[#444444]">
+                                Full Name
+                              </FormLabel>
+                              <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
+                                Must match ID
+                              </p>
+                              <FormControl>
+                                <div
+                                  className={`relative mt-2 border rounded-md transition-colors ${
+                                    error
+                                      ? "border-red-500"
+                                      : "border-gray-300 focus-within:border-purple-500"
+                                  }`}
+                                >
+                                  <Input
+                                    {...field}
+                                    className="h-14 w-full border-none bg-transparent px-3 focus:outline-none focus-visible:ring-0"
+                                  />
+                                  {error && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                      <Info
+                                        size={20}
+                                        className="fill-red-500 text-white"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-red-500 text-sm mt-1" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`senior${index + 1}Phone` as any}
+                          render={({ fieldState: { error } }) => {
+                            const phoneKey = `senior${index + 1}Phone`;
+                            const phoneData = getAdditionalPhone(phoneKey);
+                            
+                            return (
+                              <FormItem>
+                                <FormLabel className="text-lg text-[#444444]">
+                                  Phone number
+                                </FormLabel>
+                                <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
+                                  Contact number for this guest
+                                </p>
+                                <FormControl>
+                                  <div
+                                    className={`flex items-center border rounded-md mt-2 transition-colors ${
+                                      error
+                                        ? "border-red-500"
+                                        : "border-gray-300 focus-within:border-purple-500"
+                                    }`}
+                                  >
+                                    <CountryCodeSelector
+                                      value={phoneData.countryCode}
+                                      onValueChange={(code) => 
+                                        updateAdditionalPhone(phoneKey, code, phoneData.nationalNumber)
+                                      }
+                                    />
+                                    <div className="relative w-full">
+                                      <Input
+                                        type="tel"
+                                        value={phoneData.nationalNumber}
+                                        onChange={(e) =>
+                                          updateAdditionalPhone(phoneKey, phoneData.countryCode, e.target.value)
+                                        }
+                                        className="h-14 w-full border-none bg-transparent focus:outline-none focus-visible:ring-0"
+                                        placeholder="Enter phone number"
+                                      />
+                                      {error && (
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                          <Info
+                                            size={20}
+                                            className="fill-red-500 text-white"
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </FormControl>
+                                <FormMessage className="text-red-500 text-sm mt-1" />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+
                 </form>
               </Form>
             </div>
@@ -960,7 +1427,7 @@ const ConfirmAndPayPage = () => {
                     </div>{" "}
                     <p className="text-sm font-halyard-text-light text-gray-900">
                       {" "}
-                      We'll charge your card ${totalPayable.toFixed(2)} on{" "}
+                      We'll charge your card <PriceDisplay amount={totalPayable} /> on{" "}
                       {formattedPaymentChargeDate}, 9:00pm. You can cancel for
                       free until {formattedCancellationDate}, 9:00am local time.{" "}
                     </p>{" "}
@@ -1176,12 +1643,12 @@ const ConfirmAndPayPage = () => {
               {paymentTime === "payLater" ? (
                 <div className="flex flex-row gap-2 font-medium font-heading text-2xl">
                   <span>You pay today:</span>
-                  <span>${payTodayAmount.toFixed(2)}</span>
+                  <span><PriceDisplay amount={payTodayAmount} /></span>
                 </div>
               ) : (
                 <div className="flex flex-row gap-2 font-medium font-heading text-2xl">
                   <span>Total payable:</span>
-                  <span>${totalPayable.toFixed(2)}</span>
+                  <span><PriceDisplay amount={totalPayable} /></span>
                 </div>
               )}
 
@@ -1213,13 +1680,13 @@ const ConfirmAndPayPage = () => {
               <div className="bg-white rounded-lg border">
                 <div className="relative">
                   <img
-                    src="/images/r1.jpg.avif"
+                    src={experience?.data?.mainImage[0]}
                     alt={itemName}
-                    className="w-full h-15 object-cover rounded-t-lg"
+                    className="w-full h-20 object-cover rounded-t-lg"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-white font-semibold text-lg break-words">
-                    {itemName}
+                    {experience?.data?.title}
                   </h3>
                 </div>
                 <div className="p-4 space-y-4">
@@ -1275,7 +1742,7 @@ const ConfirmAndPayPage = () => {
                         </span>{" "}
                         <span className="text-[#444444]">
                           {" "}
-                          ${(adultCount * adultPrice).toFixed(2)}{" "}
+                          <PriceDisplay amount={adultCount * (experience?.data?.adultPrice ?? 0)} />
                         </span>{" "}
                       </div>
                     )}
@@ -1288,7 +1755,7 @@ const ConfirmAndPayPage = () => {
                         </span>{" "}
                         <span className="text-[#444444]">
                           {" "}
-                          ${(seniorCount * seniorPrice).toFixed(2)}{" "}
+                          <PriceDisplay amount={seniorCount * (experience?.data?.seniorPrice ?? 0)} />
                         </span>{" "}
                       </div>
                     )}
@@ -1301,7 +1768,7 @@ const ConfirmAndPayPage = () => {
                         </span>{" "}
                         <span className="text-[#444444]">
                           {" "}
-                          ${(childCount * childPrice).toFixed(2)}{" "}
+                          <PriceDisplay amount={childCount * (experience?.data?.childPrice ?? 0)} />
                         </span>{" "}
                       </div>
                     )}
@@ -1311,7 +1778,7 @@ const ConfirmAndPayPage = () => {
 
                   <div className="flex justify-between font-heading text-lg">
                     <span>Total payable</span>
-                    <span>${totalPayable.toFixed(2)}</span>
+                    <span><PriceDisplay amount={totalPayable} /></span>
                   </div>
 
                   {paymentTime === "payLater" ? (
@@ -1322,14 +1789,14 @@ const ConfirmAndPayPage = () => {
                           You pay today
                         </span>
                         <span className=" text-[rgb(2,129,156)]">
-                          ${payTodayAmount.toFixed(2)}
+                          <PriceDisplay amount={payTodayAmount} />
                         </span>
                       </div>
                     </div>
                   ) : (
                     <div className="flex justify-between font-heading text-lg">
                       <span>Total payable</span>
-                      <span>${totalPayable.toFixed(2)}</span>
+                      <span><PriceDisplay amount={totalPayable} /></span>
                     </div>
                   )}
 
@@ -1371,7 +1838,7 @@ const ConfirmAndPayPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <h3 className="absolute bottom-4 left-4 text-white font-semibold text-lg break-words">
-                  {itemName}
+                  {experience?.data?.title}
                 </h3>
               </div>
               <div className="p-4 space-y-4">
@@ -1425,7 +1892,7 @@ const ConfirmAndPayPage = () => {
                       </span>{" "}
                       <span className="text-[#444444]">
                         {" "}
-                        ${(adultCount * adultPrice).toFixed(2)}{" "}
+                        <PriceDisplay amount={adultCount * (experience?.data?.adultPrice ?? 0)} />{" "}
                       </span>{" "}
                     </div>
                   )}
@@ -1438,7 +1905,7 @@ const ConfirmAndPayPage = () => {
                       </span>{" "}
                       <span className="text-[#444444]">
                         {" "}
-                        ${(seniorCount * seniorPrice).toFixed(2)}{" "}
+                        <PriceDisplay amount={seniorCount * (experience?.data?.seniorPrice ?? 0)} />{" "}
                       </span>{" "}
                     </div>
                   )}
@@ -1451,7 +1918,7 @@ const ConfirmAndPayPage = () => {
                       </span>{" "}
                       <span className="text-[#444444]">
                         {" "}
-                        ${(childCount * childPrice).toFixed(2)}{" "}
+                        <PriceDisplay amount={childCount * (experience?.data?.childPrice ?? 0)} />{" "}
                       </span>{" "}
                     </div>
                   )}
@@ -1459,7 +1926,7 @@ const ConfirmAndPayPage = () => {
                   <div className="flex justify-between font-heading text-lg">
 
                     <span>Total payable</span>
-                    <span>${totalPayable.toFixed(2)}</span>
+                    <span><PriceDisplay amount={totalPayable} /></span>
                   </div>
 
                   {paymentTime === "payLater" ? (
@@ -1470,14 +1937,14 @@ const ConfirmAndPayPage = () => {
                           You pay today
                         </span>
                         <span className=" text-[rgb(2,129,156)]">
-                          ${payTodayAmount.toFixed(2)}
+                          <PriceDisplay amount={payTodayAmount} />
                         </span>
                       </div>
                     </div>
                   ) : (
                     <div className="flex justify-between font-heading text-lg">
                       <span>Total payable</span>
-                      <span>${totalPayable.toFixed(2)}</span>
+                      <span><PriceDisplay amount={totalPayable} /></span>
                     </div>
                   )}
                 </div>
@@ -1496,11 +1963,7 @@ const ConfirmAndPayPage = () => {
                 {paymentTime === "payLater" ? "You pay today" : "Total payable"}
               </span>
               <p className="font-bold text-xl text-[#444444]">
-                $
-                {(paymentTime === "payLater"
-                  ? payTodayAmount
-                  : totalPayable
-                ).toFixed(2)}
+                <PriceDisplay amount={paymentTime === "payLater" ? payTodayAmount : totalPayable} />
               </p>
             </div>
             <div className="w-1/2">{renderPaymentButton(true)}</div>

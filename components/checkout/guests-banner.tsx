@@ -1,17 +1,14 @@
 import React from 'react'
+import { Reviews } from '@/types/reviews/review-types';
 
 interface GuestsBannerProps {
-  countries?: string[];
-  totalCountries?: number;
+  reviews?: Reviews[];
 }
 
-const defaultCountries = ["United States", "United Kingdom", "France"];
-const defaultTotalCountries = 94;
-
-export default function GuestsBanner({ 
-  countries = defaultCountries, 
-  totalCountries = defaultTotalCountries 
-}: GuestsBannerProps) {
+export default function GuestsBanner({ reviews = [] }: GuestsBannerProps) {
+  // For now, use default data since we don't have country data in reviews
+  const countries = ["United States", "United Kingdom", "France"];
+  const totalCountries = 94;
   const flags = [
     { src: '/flags/flag1.svg', alt: 'Argentina' },
     { src: '/flags/flag2.svg', alt: 'Romania' },

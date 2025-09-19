@@ -11,6 +11,10 @@ import PickATime from "@/components/booking/PickATime";
 import Stats from "@/components/home/Stats";
 import Footer from "@/components/Footer";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { fetchExperienceById } from "@/api/expereince/expereince-api";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { UserDropdown } from "@/components/UserDropdown";
 
 const BookingPage = () => {
   const searchParams = useSearchParams();
@@ -24,9 +28,10 @@ const BookingPage = () => {
   const category = searchParams.get("category") || "entertainment";
   const subcategory = searchParams.get("subcategory") || "studio-tours";
   const item = searchParams.get("itemId") || "default-item";
+  const { user, loading } = useAuth();
 
   const itemLink = `/things-to-do/${city}/${category}/${subcategory}/${item}`;
-
+  const [experience, setExperience] = useState<ExperienceResponse | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate);
   const [selectedOption, setSelectedOption] = useState<{
     id: string;
@@ -74,7 +79,14 @@ const BookingPage = () => {
       }, 100);
     }
   }, [selectedOption?.id, showTimeSelection]);
-
+  useEffect(() => {
+    const fetchExperience = async () => {
+      const experience = await fetchExperienceById(item);
+  
+      setExperience(experience);
+    };
+    fetchExperience();
+  }, [item]);
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       <header className="fixed top-0 left-0 w-full bg-white z-50 border-b border-gray-200">
@@ -94,8 +106,8 @@ const BookingPage = () => {
                   className="text-[#444444] hover:text-purple-600 hover:underline cursor-pointer truncate"
                   title={itemName}
                 >
-                  1. {itemName.substring(0, 25)}
-                  {itemName.length > 25 ? "..." : ""}
+                  1. {experience?.data?.title?.substring(0, 25)}
+                  {experience?.data?.title && experience?.data?.title?.length > 25 ? "..." : ""}
                 </Link>
                 <ChevronRight size={16} />
                 <span className="font-medium text-gray-900 cursor-default">
@@ -115,13 +127,17 @@ const BookingPage = () => {
                 <CircleHelp strokeWidth={1.5} size={18} />
                 <span className="hidden md:inline">Help</span>
               </Link>
-              <Button
-                variant="outline"
-                className="border-gray-300 text-xs px-3 py-1.5 h-auto"
-                onClick={() => setAuthDialogOpen(true)}
-              >
-                Sign in
-              </Button>
+              {user ? (
+                <UserDropdown user={user} scrolled={false} />
+              ) : (
+                <Button
+                  variant="outline"
+                  className="border-gray-300 text-xs px-3 py-1.5 h-auto"
+                  onClick={() => setAuthDialogOpen(true)}
+                >
+                  Sign in
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -129,12 +145,14 @@ const BookingPage = () => {
 
       <main className="pt-24 md:pt-28 pb-32 max-w-[1200px] mx-auto px-[24px] xl:px-0 py-4 overflow-x-hidden">
         <DateSelection
+          experience={experience || undefined}
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           itemName={itemName}
           city={city}
         />
         <TicketOptions
+          experience={experience || undefined}
           selectedOptionId={selectedOption?.id || null}
           onOptionSelect={handleOptionSelect}
         />
@@ -145,6 +163,7 @@ const BookingPage = () => {
             selectedOptionTitle={selectedOption.title}
             selectedDate={selectedDate}
             formattedDate={formattedDate}
+            experience={experience || undefined}
           />
         )}
       </main>

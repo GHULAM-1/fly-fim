@@ -37,6 +37,14 @@ import WhyHeadout from "@/components/checkout/WhyHeadout";
 import ItinerarySection from "@/components/checkout/ItinerarySection";
 import CheckoutNav from "@/components/checkout/CheckoutNav";
 import Destinations from "@/components/home/Destinations";
+import { fetchExperienceById } from "@/api/expereince/expereince-api";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import { fetchReviewsById } from "@/api/reviews/review-api";
+import { Reviews } from "@/types/reviews/review-types";
+import { fetchCityBycityName } from "@/api/cities/cities-api";
+import { fetchCategoryBycategoryName } from "@/api/category/category-api";
+import { fetchSubcategoryPageById } from "@/api/subcategory-page/subcategory-page-api";
+import { SubcategoryPageData } from "@/types/subcategory-page/subcategory-page-types";
 
 const experiences = [
   {
@@ -169,6 +177,7 @@ const CheckoutPage: React.FC = () => {
   const subcategory = params.subcategory as string;
   const itemId = params.itemId as string;
   const { isModalOpen } = useNavigationStore();
+  const [subcategoryPageData, setSubcategoryPageData] = useState<SubcategoryPageData | null>(null);
 
   const currentExperience = experiences.find((exp) => exp.id === itemId);
 
@@ -177,7 +186,8 @@ const CheckoutPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-
+  const [experience, setExperience] = useState<ExperienceResponse | null>(null);
+  const [reviews, setReviews] = useState<Reviews | null>(null);
   const isWorldwideRoute = city === "worldwide";
 
   const decodedCategoryName = decodeURIComponent(
@@ -236,7 +246,139 @@ const CheckoutPage: React.FC = () => {
       return `${formattedCategoryName} in ${cityFormatted}`;
     }
   };
+  useEffect(() => {
+    const loadSubcategoryPageData = async () => {
+      if (!city || !categoryName || !subcategory) return;
 
+      try {
+        const cityData = await fetchCityBycityName(city)
+        const categoryData = await fetchCategoryBycategoryName(categoryName)
+        const response = await fetchSubcategoryPageById(cityData._id, categoryData._id, subcategory);
+        setSubcategoryPageData(response.data);
+      } catch (err) {
+        console.error('Error loading subcategory page data:', err);
+      }
+    };
+
+    loadSubcategoryPageData();
+  }, [city, categoryName, subcategory]);
+  const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
+    if (!apiExperiences || !Array.isArray(apiExperiences)) {
+      return [];
+    }
+    return apiExperiences.map(exp => ({
+      id: exp._id,
+      description: exp.basicInfo?.title || exp.description || '',
+      place: exp.basicInfo?.tagOnCards || exp.place || '',
+      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      price: exp.basicInfo?.price || exp.price || 0,
+      oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
+      off: exp.basicInfo?.sale || exp.off,
+      rating: 4.5, // Default since not in API structure
+      reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews
+      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation"
+    }));
+  };
+useEffect(() => {
+  const fetchExperience = async () => {
+    const experience = await fetchExperienceById(itemId);
+    const reviews = await fetchReviewsById(itemId);
+
+    // Add HTML FAQ sections to the API response
+    const enhancedExperience = {
+      ...experience,
+      data: {
+        ...experience.data,
+        reviews: reviews ? [reviews] : [],
+        faqSections: {
+          highlights: `
+            <p>Experience the stunning beauty and rich history of Seville's Royal Alcázar on this comprehensive guided tour.</p>
+            <ul>
+              <li>Skip the long entry lines with priority access</li>
+              <li>Explore the magnificent Mudéjar architecture and royal chambers</li>
+              <li>Discover the beautiful gardens and courtyards</li>
+              <li>Learn about centuries of Spanish royal history</li>
+            </ul>
+          `,
+          inclusions: `
+            <ul>
+              <li>Skip-the-line entry to Alcázar of Seville</li>
+              <li>Professional English-speaking guide</li>
+              <li>Small group tour (maximum 20 people)</li>
+              <li>Access to royal chambers and gardens</li>
+            </ul>
+          `,
+          exclusions: `
+            <ul>
+              <li>Hotel pickup and drop-off</li>
+              <li>Food and beverages</li>
+              <li>Gratuities (optional)</li>
+              <li>Access to Royal High Room (additional fee applies)</li>
+            </ul>
+          `,
+          cancellationPolicy: `
+            <p><strong>Free cancellation up to 24 hours before the experience</strong></p>
+            <p>Get a full refund if you cancel at least 24 hours in advance.</p>
+            <p><strong>Cancellation timeline:</strong></p>
+            <ul>
+              <li>24+ hours before: Full refund</li>
+              <li>Less than 24 hours: No refund</li>
+              <li>No-show: No refund</li>
+            </ul>
+            <p><em>Weather-related cancellations by the operator will result in a full refund or alternative date.</em></p>
+          `,
+          yourExperience: `
+            <h3>Step into Spanish Royal History</h3>
+            <p>Begin your journey at the main entrance where your expert guide will meet you with skip-the-line tickets. No waiting in long queues - dive straight into centuries of fascinating history.</p>
+
+            <h3>Explore Magnificent Architecture</h3>
+            <p>Marvel at the intricate Mudéjar architecture as you walk through the royal chambers. Your guide will share stories of the kings and queens who once called this palace home, bringing the walls to life with tales of romance, intrigue, and power.</p>
+
+            <h3>Discover Hidden Gardens</h3>
+            <p>End your tour in the breathtaking gardens, where you'll have time to explore the peaceful courtyards, fountains, and orange groves. Perfect for photos and quiet reflection on this unforgettable experience.</p>
+          `,
+          knowBeforeYouGo: `
+            <h3>What to bring</h3>
+            <ul>
+              <li>Valid passport or ID card for entry verification</li>
+              <li>Comfortable walking shoes (lots of walking involved)</li>
+              <li>Water bottle (especially during summer months)</li>
+              <li>Camera for photos (no flash allowed inside)</li>
+            </ul>
+
+            <h3>What's not allowed</h3>
+            <ul>
+              <li>Large bags or backpacks (storage not available)</li>
+              <li>Flash photography inside the palace</li>
+              <li>Food and drinks (water bottles are permitted)</li>
+              <li>Selfie sticks and tripods</li>
+              <li>Pets (except service animals with documentation)</li>
+            </ul>
+
+            <h3>Accessibility</h3>
+            <p>The Alcázar has limited wheelchair accessibility due to its historical nature. Some areas may be challenging to access. Please contact us in advance if you have mobility concerns.</p>
+          `,
+          myTickets: `
+            <p><strong>Instant Confirmation</strong></p>
+            <p>Your voucher will be emailed to you immediately after booking. Check your spam folder if you don't see it within a few minutes.</p>
+
+            <h3>How to use your ticket</h3>
+            <ol>
+              <li>Show your mobile voucher or printed ticket at the meeting point</li>
+              <li>Present a valid photo ID along with your ticket</li>
+              <li>Arrive 15 minutes before your scheduled time</li>
+            </ol>
+
+            <p><strong>Meeting Point:</strong> Main entrance of the Royal Alcázar, Patio de Banderas. Look for your guide holding a sign with our company logo.</p>
+          `
+        }
+      }
+    };
+
+    setExperience(enhancedExperience);
+  };
+  fetchExperience();
+}, [itemId]);
   const subCategoryConfig = isWorldwideRoute
     ? {
         museums: {
@@ -315,122 +457,8 @@ const CheckoutPage: React.FC = () => {
   if (!currentSubCategory) {
     return <div>Subcategory not found</div>;
   }
-  const recommendations = [
-    {
-      id: 1,
-      description: "Edge Observation Deck Tickets: Timed Entry",
-      place: "Edge NYC",
-      image: "/images/r4.jpg.avif",
-      price: 39.2,
-      off: 3,
-      oldPrice: 42.2,
-      rating: 4.5,
-      reviews: 5897,
-      badge: "Free cancellation",
-    },
-    {
-      id: 2,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      oldPrice: 32.2,
-      off: 3,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 3,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 4,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 5,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 6,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 7,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 8,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 9,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 10,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-  ];
 
-  const images = [
-    "/images/tickets-included-01.avif",
-    "/images/tickets-included-02.avif",
-    "/images/tickets-included-03.avif",
-    "/images/tickets-included-04.avif",
-    "/images/tickets-included-05.avif",
-    "/images/tickets-included-07.avif",
-  ];
+  const images = experience?.data.images || [ ];
 
 
   useEffect(() => {
@@ -438,19 +466,6 @@ const CheckoutPage: React.FC = () => {
     // Simple scroll to top on mount
     window.scrollTo(0, 0);
   }, []);
-
-  // // Separate effect for scroll to top - only run once on mount
-  // useEffect(() => {
-  //   // Ensure page starts at top - only run once
-  //   // Use setTimeout to ensure this runs after any other scroll behavior and DOM is ready
-  //   const timer = setTimeout(() => {
-  //     window.scrollTo({ top: 0, behavior: 'instant' });
-  //   }, 100);
-
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, []); // Empty dependency array means this only runs once
 
   useEffect(() => {
     if (!isClient) return;
@@ -469,7 +484,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 xl:px-0 md:mt-5">
-        <CheckoutNav />
+        <CheckoutNav experience={experience} />
         <div className=" md:pt-[76px]">
           {!isWorldwideRoute ? (
             <>
@@ -514,7 +529,7 @@ const CheckoutPage: React.FC = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666] truncate max-w-[200px]">
-                        {formattedItemName}
+                        {experience?.data.title}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
@@ -645,7 +660,7 @@ const CheckoutPage: React.FC = () => {
                         </div>
 
                         <h2 className="text-[18px] font-bold leading-tight font-halyard-text">
-                          {formattedItemName} in {itemCity}
+                          {experience?.data.title} in {itemCity}
                         </h2>
                       </div>
                     </div>
@@ -669,7 +684,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e] md:text-[15px]">NEW</span>
                   </h1>
                   <h2 className="text-[20px] md:text-[32px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {itemCity}
+                    {experience?.data.title} in {itemCity}
                   </h2>
                 </div>
 
@@ -696,7 +711,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="text-[#e5006e]">NEW</span>
                   </h1>
                   <h2 className="text-[24px] font-semibold text-[#222222] font-halyard-text-bold mt-2 mb-4 leading-tight">
-                    {formattedItemName} in {itemCity}
+                    {experience?.data.title} in {itemCity}
                   </h2>
                 </div>
                 <ImageGallery
@@ -740,7 +755,7 @@ const CheckoutPage: React.FC = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666] truncate max-w-[200px]">
-                        {formattedItemName}
+                        {experience?.data.title}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
@@ -753,11 +768,13 @@ const CheckoutPage: React.FC = () => {
             <div className="md:flex flex-col lg:flex-row gap-8">
               <div className="w-full lg:w-2/3">
                 <div className="mb-8">
-                  <ExperienceDetails />
+                  {experience && (
+                    <ExperienceDetails experience={experience} />
+                  )}
                 </div>
 
                 <div className="bg-white rounded-lg">
-                  <FaqSection />
+                  <FaqSection  experience={experience}/>
                 </div>
               </div>
 
@@ -766,6 +783,7 @@ const CheckoutPage: React.FC = () => {
                   <CheckAvailability
                     itemName={formattedItemName}
                     city={itemCity}
+                    experience={experience || undefined}
                   />
                   <WhyHeadout />
                 </div>
@@ -776,7 +794,7 @@ const CheckoutPage: React.FC = () => {
               <div className="mb-6 md:mb-10 z-0 mt-6 md:mt-10" data-carousel-grid>
                 <CarouselGrid
                   title="Similar experiences you'd love"
-                  recommendations={recommendations}
+                  recommendations={transformApiExperiencesToRecommendations(subcategoryPageData?.experiences || [])}
                   variant="subcategory"
                 />
               </div>
@@ -788,8 +806,11 @@ const CheckoutPage: React.FC = () => {
               <div className="mb-6 md:mb-15 mt-6 md:mt-10">
                 <BrowseThemes
                   title="Browse by themes"
-                  themes={currentSubCategory.components.themes || []}
-                />
+                  themes={subcategoryPageData?.category.subcategories.map(sub => ({
+                    icon: Landmark,
+                    text: sub,
+                    href: `/things-to-do/${city}/${categoryName}/${sub.toLowerCase().replace(/\s+/g, '-')}`
+                  })) || currentSubCategory.components.themes || []}                />
               </div>
 
               {!isWorldwideRoute && (
