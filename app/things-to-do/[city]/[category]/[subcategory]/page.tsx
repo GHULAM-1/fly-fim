@@ -45,6 +45,8 @@ export default function SubcategoryPage() {
   const [subcategoryPageData, setSubcategoryPageData] = useState<SubcategoryPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cityData, setCityData] = useState<any>(null);
+  const [categoryData, setCategoryData] = useState<any>(null);
 
   const isWorldwideRoute = city === "worldwide";
 
@@ -171,92 +173,6 @@ export default function SubcategoryPage() {
     return <div>Subcategory not found</div>;
   }
 
-  const destinations = [
-    {
-      id: 1,
-      description: "Things to do in",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 2,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 3,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 4,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 5,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 6,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-    {
-      id: 7,
-      description: "Things to do in York",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 8,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 9,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 10,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 11,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 12,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-  ];
 
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
@@ -271,123 +187,17 @@ export default function SubcategoryPage() {
       };
     }) || [];
 
-  const experiences = [
-    {
-      id: "seville-cathedral-skip-the-line",
-      image: "/images/d1.jpg.avif",
-      place: "Seville Cathedral",
-      rating: 4.7,
-      reviews: 8123,
-      description: "Skip-the-line entry with optional guided tour",
-      price: 24,
-      off: 10,
-      oldPrice: 64.18,
-      badge: "Free cancellation",
-      cancellation: "Free cancellation",
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "real-alcazar-priority-entrance",
-      image: "/images/d2.jpg.avif",
-      place: "Real Alcázar",
-      rating: 4.8,
-      reviews: 15234,
-      description: "Priority entrance + audio guide",
-      price: 29,
-      off: 10,
-      oldPrice: 32.18,
-      badge: "Free cancellation",
-      cancellation: "Free cancellation",
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "guadalquivir-cruise",
-      image: "/images/d3.jpg.avif",
-      place: "Guadalquivir Cruise",
-      rating: 4.5,
-      reviews: 5210,
-      description: "1‑hour scenic river cruise",
-      price: 18,
-      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
-    },
-    {
-      id: "flamenco-show-tablao",
-      image: "/images/d4.jpg.avif",
-      place: "Flamenco Show",
-      rating: 4.6,
-      reviews: 6632,
-      description: "Authentic tablao experience",
-      price: 25,
-      subcategoryId: navItems[2]?.id ?? "dance-shows",
-    },
-    {
-      id: "city-card-seville",
-      image: "/images/d5.jpg.avif",
-      place: "City Card",
-      rating: 4.3,
-      reviews: 2101,
-      description: "Multi‑attraction pass for 48h",
-      price: 49,
-      subcategoryId: navItems[1]?.id ?? "combo-tickets",
-    },
-    {
-      id: "guided-walking-tour-seville",
-      image: "/images/d6.jpeg.avif",
-      place: "Guided Walking Tour",
-      rating: 4.7,
-      reviews: 3889,
-      description: "Old Town & Jewish Quarter",
-      price: 22,
-      subcategoryId: navItems[2]?.id ?? "guided-tours",
-    },
-    {
-      id: "museum-fine-arts-seville",
-      image: "/images/d2.jpg.avif",
-      place: "Museum of Fine Arts",
-      rating: 4.4,
-      reviews: 980,
-      description: "Entry ticket",
-      price: 12,
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "hop-on-hop-off-bus-seville",
-      image: "/images/d3.jpg.avif",
-      place: "Hop-on Hop-off Bus",
-      rating: 4.2,
-      reviews: 4312,
-      description: "24‑hour ticket with audio guide",
-      price: 30,
-      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
-    },
-    {
-      id: "museum-fine-arts-seville",
-      image: "/images/d2.jpg.avif",
-      place: "Museum of Fine Arts",
-      rating: 4.4,
-      reviews: 980,
-      description: "Entry ticket",
-      price: 12,
-      subcategoryId: navItems[0]?.id ?? "landmarks",
-    },
-    {
-      id: "hop-on-hop-off-bus-seville",
-      image: "/images/d3.jpg.avif",
-      place: "Hop-on Hop-off Bus",
-      rating: 4.2,
-      reviews: 4312,
-      description: "24‑hour ticket with audio guide",
-      price: 30,
-      subcategoryId: navItems[3]?.id ?? "hop-on-hop-off-tours",
-    },
-  ];
   // Transform API experiences to recommendations format
   const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
       return [];
     }
+    console.log(apiExperiences);
     return apiExperiences.map(exp => ({
       id: exp._id,
+      cityId: exp.relationships.cityId,
+      categoryId: exp.relationships.categoryId,
+      subcategoryName: exp.relationships.subcategoryName,
       description: exp.basicInfo?.title || exp.description || '',
       place: exp.basicInfo?.tagOnCards || exp.place || '',
       image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
@@ -459,25 +269,13 @@ export default function SubcategoryPage() {
       try {
         setLoading(true);
         setError(null);
-
-        console.log('Fetching city and category IDs:', { city, categoryName, subcategory });
-
         // First, get city ID by city name
-        const cityData = await fetchCityBycityName(city);
-        console.log('City data received:', cityData);
-
+        const cityResponse = await fetchCityBycityName(city);
+        setCityData(cityResponse);
         // Second, get category ID by category name
-        const categoryData = await fetchCategoryBycategoryName(categoryName);
-        console.log('Category data received:', categoryData);
-
-        // Finally, fetch subcategory page data using IDs
-        console.log('Fetching subcategory page data with IDs:', {
-          cityId: cityData._id,
-          categoryId: categoryData._id,
-          subcategory
-        });
-        const response = await fetchSubcategoryPageById(cityData._id, categoryData._id, subcategory);
-        console.log('Subcategory page data received:', response);
+        const categoryResponse = await fetchCategoryBycategoryName(categoryName);
+        setCategoryData(categoryResponse);
+        const response = await fetchSubcategoryPageById(cityResponse._id, categoryResponse._id, subcategory);
         setSubcategoryPageData(response.data);
       } catch (err) {
         console.error('Error loading subcategory page data:', err);
@@ -667,6 +465,9 @@ export default function SubcategoryPage() {
                   title={`Top experiences in ${formattedCityName}`}
                   variant="pills"
                   pills={false}
+                  cityId={cityData?._id}
+                  categoryId={categoryData?._id}
+                  subcategoryName={subcategory}
                   recommendations={transformApiExperiencesToRecommendations(subcategoryPageData.experiences)}
                 />
               ) : (

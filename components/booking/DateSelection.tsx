@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from "react";
 import { Calendar } from "lucide-react";
 import CalendarModal from "@/components/booking/CalendarModal";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import PriceDisplay from "../PriceDisplay";
 
 interface DateSelectionProps {
   selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
   itemName: string;
   city: string;
+  experience?: ExperienceResponse;
 }
 
 const DateSelection: React.FC<DateSelectionProps> = ({
@@ -15,11 +18,33 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   onDateSelect,
   itemName,
   city,
+  experience,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [weekDisplay, setWeekDisplay] = useState<any[]>([]);
 
   const formatDateKey = (date: Date) => date.toISOString().split("T")[0];
+
+  const getPriceForDate = (date: Date) => {
+    if (!experience?.data) {
+      return experience?.data?.price || 0;
+    }
+
+    const dateTimestamp = date.getTime();
+    const datePriceRange = experience.data.datePriceRange || [];
+    
+    // Find specific price for this date
+    const specificPrice = datePriceRange.find(range => 
+      dateTimestamp >= range.startDate && dateTimestamp <= range.endDate
+    );
+    
+    return specificPrice?.price || experience.data.price || 0;
+  };
+
+  const getOldPriceForDate = (date: Date) => {
+    if (!experience?.data) return 0;
+    return experience.data.oldPrice || 0;
+  };
 
   const generateWeekDays = (centerDate: Date) => {
     const week = [];
@@ -34,6 +59,11 @@ const DateSelection: React.FC<DateSelectionProps> = ({
     for (let i = 0; i < daysToShow; i++) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
+      
+      const price = getPriceForDate(currentDate);
+      const oldPrice = getOldPriceForDate(currentDate);
+      const hasDiscount = oldPrice > 0 && oldPrice > price;
+      
       week.push({
         day: currentDate
           .toLocaleDateString("en-US", { weekday: "short" })
@@ -43,7 +73,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
           day: "numeric",
         }),
         fullDate: currentDate,
-        price: "$39.2",
+        price: price,
       });
     }
     return week;
@@ -52,7 +82,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   useEffect(() => {
     const center = selectedDate || new Date();
     setWeekDisplay(generateWeekDays(center));
-  }, []);
+  }, [experience, selectedDate]);
 
   // Handle window resize to update date display
   useEffect(() => {
@@ -63,7 +93,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [selectedDate]);
+  }, [selectedDate, experience]);
 
   const handleDateSelectFromCalendar = (date: Date) => {
     onDateSelect(date);
@@ -79,7 +109,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
             Select a date
           </h2>
           <p className="text-[12px] text-gray-500 font-halyard-text">
-            All prices are in USD ($)
+            All prices are in {localStorage?.getItem("preferred-currency")}
           </p>
         </div>
 
@@ -114,13 +144,15 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                   >
                     {d.date}
                   </span>
-                  <span
-                    className={`md:text-xs text-[10px] md:mt-1 mt-0.5 font-halyard-text-light ${
-                      isSelected ? "text-purple-800" : "text-gray-500"
-                    }`}
-                  >
-                    {d.price}
-                  </span>
+                  <div className="flex flex-col items-center">
+                    <span
+                      className={`md:text-xs text-[10px] md:mt-1 mt-0.5 font-halyard-text-light ${
+                        isSelected ? "text-purple-800" : "text-gray-500"
+                      }`}
+                    >
+                      <PriceDisplay amount={d.price} />
+                    </span>
+                  </div>
                 </button>
               );
             })}
@@ -148,6 +180,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
         onDateSelect={handleDateSelectFromCalendar}
         itemName={itemName}
         city={city}
+        experience={experience || undefined}
       />
     </>
   );

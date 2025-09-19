@@ -3,29 +3,43 @@ import React, { useState, useEffect, useRef } from "react";
 import { Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import PriceDisplay from "../PriceDisplay";
 
 interface PickATimeProps {
   type: "timed" | "flex";
   selectedOptionTitle: string | null;
   selectedDate: Date | null;
   formattedDate: string;
+  experience?: ExperienceResponse;
 }
 
-const timeSlots = [
-  { time: "9:00am", closes: "11:00pm", price: 71.68 },
-  { time: "9:20am", closes: "11:00pm", price: 71.68 },
-  { time: "9:30am", closes: "11:00pm", price: 71.68 },
-  { time: "9:50am", closes: "11:00pm", price: 71.68 },
-  { time: "10:00am", closes: "11:00pm", price: 71.68 },
-  { time: "10:20am", closes: "11:00pm", price: 71.68 },
-  { time: "10:30am", closes: "11:00pm", price: 71.68 },
-  { time: "7:50pm", price: 57.71 },
-  { time: "8:00pm", price: 57.71 },
-  { time: "8:20pm", price: 39.2 },
-];
+// Generate time slots from experience data
+const generateTimeSlots = (experience?: ExperienceResponse) => {
+  if (!experience?.data?.packageType?.timePriceSlots) {
+    // Fallback to default time slots
+    return [
+    ];
+  }
+
+  return experience.data.packageType.timePriceSlots.map((slot, index) => ({
+    time: formatTime(slot.openTime),
+    closes: formatTime(slot.closeTime),
+    price: slot.price,
+  }));
+};
+
+// Format time from 24h to 12h format
+const formatTime = (time24: string) => {
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? 'pm' : 'am';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes}${ampm}`;
+};
 
 const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
-  ({ type, selectedOptionTitle, selectedDate, formattedDate }, ref) => {
+  ({ type, selectedOptionTitle, selectedDate, formattedDate, experience }, ref) => {
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
     const [isOpen, setIsOpen] = useState(true);
@@ -33,6 +47,9 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
+    
+    // Generate time slots from experience data
+    const timeSlots = generateTimeSlots(experience);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -75,7 +92,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
           date: selectedDate ? selectedDate.toISOString() : new Date().toISOString(),
           optionTitle: selectedOptionTitle || "",
           time: selectedTime || "Anytime",
-          price: `$${(selectedPrice || 0).toFixed(2)}`,
+          price: (selectedPrice || 0).toString(),
         });
 
         router.push(`/booking/confirm?${query.toString()}`);
@@ -87,7 +104,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
         <div ref={ref} className="pt-10 max-w-[855px] ">
           <div className="bg-orange-50 text-orange-900 p-4 font-halyard-text-light rounded-lg flex flex-row text-sm mb-6">
             <Clock size={16} className="mr-2" />
-            Enter anytime within operating hours: 9:00am - 9:00pm
+            Enter anytime within operating hours: {timeSlots.length > 0 ? `${timeSlots[0].time} - ${timeSlots[0].closes}` : "9:00am - 9:00pm"}
           </div>
           <div className="bg-gray-200 h-[1px] w-full"></div>
           <div className="flex items-center justify-between p-4 rounded-lg">
@@ -158,7 +175,7 @@ const PickATime = React.forwardRef<HTMLDivElement, PickATimeProps>(
                       )}
                     </div>
                     <span className="text-[#444444] font-halyard-light">
-                      ${slot.price}
+                      <PriceDisplay amount={slot.price} />
                     </span>
                   </div>
                 ))}

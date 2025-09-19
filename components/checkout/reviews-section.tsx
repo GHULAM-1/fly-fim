@@ -1,7 +1,8 @@
 import React from 'react'
 import GuestsBanner from './guests-banner'
-import GuestSnapshots from './guest-snapshots'
+import GuestSnapshots from './guest-snapshots';
 import ReviewsList from './reviews-list';
+import { Reviews } from '@/types/reviews/review-types';
 
 interface ReviewData {
   totalRatings: number;
@@ -14,22 +15,59 @@ interface ReviewData {
 }
 
 interface ReviewsSectionProps {
-  data?: ReviewData;
+  reviews?: any[];
 }
 
-const defaultData: ReviewData = {
-  totalRatings: 19408,
-  averageRating: 4.4,
-  ratingBreakdown: [
-    { stars: 5, count: 12900, percentage: 66.5 },
-    { stars: 4, count: 3700, percentage: 19.1 },
-    { stars: 3, count: 1200, percentage: 6.2 },
-    { stars: 2, count: 663, percentage: 3.4 },
-    { stars: 1, count: 945, percentage: 4.9 }
-  ]
-}
+const calculateReviewStats = (reviews: Reviews[]): ReviewData => {
+  if (!reviews || reviews.length === 0) {
+    return {
+      totalRatings: 0,
+      averageRating: 0,
+      ratingBreakdown: [
+        { stars: 5, count: 0, percentage: 0 },
+        { stars: 4, count: 0, percentage: 0 },
+        { stars: 3, count: 0, percentage: 0 },
+        { stars: 2, count: 0, percentage: 0 },
+        { stars: 1, count: 0, percentage: 0 }
+      ]
+    };
+  }
 
-export default function ReviewsSection({ data = defaultData }: ReviewsSectionProps) {
+  const totalRatings = reviews.length;
+  const totalScore = reviews.reduce((sum, review) => sum + review.stars, 0);
+  const averageRating = totalScore / totalRatings;
+
+  // Count ratings by star level
+  const starCounts = [1, 2, 3, 4, 5].map(starLevel => {
+    const count = reviews.filter(review => review.stars === starLevel).length;
+    const percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0;
+    return { stars: starLevel, count, percentage };
+  }).reverse(); // Reverse to show 5 stars first
+
+  return {
+    totalRatings,
+    averageRating: isNaN(averageRating) ? 0 : Math.round(averageRating * 10) / 10,
+    ratingBreakdown: starCounts
+  };
+};
+
+export default function ReviewsSection({ reviews = [] }: ReviewsSectionProps) {
+  console.log('ReviewsSection received reviews:', reviews);
+  console.log('Reviews length:', reviews?.length);
+
+  // Extract actual reviews from nested structure
+  const actualReviews = Array.isArray(reviews?.[0]?.data) ? reviews[0].data : [];
+  console.log('Actual reviews:', actualReviews);
+
+  // Don't render if no reviews
+  if (!actualReviews || actualReviews.length === 0) {
+    console.log('Early return - no actual reviews');
+    return null;
+  }
+
+  const data = calculateReviewStats(actualReviews);
+  console.log('Calculated review data:', data);
+
   const formatCount = (count: number) => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}K`;
@@ -103,14 +141,14 @@ export default function ReviewsSection({ data = defaultData }: ReviewsSectionPro
 
       {/* Guests Banner - Full width on mobile */}
       <div className="md:mx-0 -mx-4 md:mt-0 mt-4">
-        <GuestsBanner />
+        <GuestsBanner reviews={reviews} />
       </div>
 
       {/* Guest Snapshots */}
-      <GuestSnapshots />
+      <GuestSnapshots reviews={reviews} />
 
       {/* Reviews List */}
-      <ReviewsList />
+      <ReviewsList reviews={reviews} />
     </div>
   )
 }

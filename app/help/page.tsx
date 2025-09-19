@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
+import { Category } from "@/types/not-found/not-found-types";
+import { fetchNotFound } from "@/api/not-found/not-found-api";
 
 export default function Help() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -9,7 +11,25 @@ export default function Help() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchNotFound();
+        setCategories(data.data);
+      } catch (err) {
+        console.error('Error loading cities:', err);
+        setError('Failed to load cities.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadData();
+  }, []);
   // Mock search data
   const mockSearchData = [
     "Flyfim in different languages & currencies",
@@ -52,6 +72,8 @@ export default function Help() {
     <div className="">
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
           <CategoriesDropdown
+            topExperiences={[]}
+            categories={categories}
             showCategoriesDropdown={showCategoriesDropdown}
             setShowCategoriesDropdown={setShowCategoriesDropdown}
             setShowBanner={setShowBanner}

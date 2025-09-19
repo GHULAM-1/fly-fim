@@ -1,15 +1,19 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import PriceDisplay from "../PriceDisplay";
 
 interface TicketOptionsProps {
   selectedOptionId: string | null;
   onOptionSelect: (id: string, title: string, type: "timed" | "flex") => void;
+  experience?: ExperienceResponse;
 }
 
 const TicketOptions: React.FC<TicketOptionsProps> = ({
   selectedOptionId,
   onOptionSelect,
+  experience,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -18,70 +22,36 @@ const TicketOptions: React.FC<TicketOptionsProps> = ({
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
 
-  const options = [
+  // Generate options from experience data
+  const generateFeaturesFromPoints = (points: any[]) => {
+    if (!points) return { features: ["All access pass"], subFeatures: [] };
+    
+    const features: string[] = [];
+    const subFeatures: string[] = [];
+    
+    points.forEach(point => {
+      if (point.subpoints && point.subpoints.length > 0) {
+        // Add colon to title if it has subpoints
+        features.push(point.title + ":");
+        // Add subpoints without bullets
+        subFeatures.push(...point.subpoints);
+      } else {
+        features.push(point.title);
+      }
+    });
+    
+    return { features, subFeatures };
+  };
+
+  const options = experience?.data?.packageType ? [
     {
-      id: "timed",
-      title: "General Admission: Timed Entry",
-      price: "$39.20",
+      id: "base",
+      title: experience.data.packageType.name || "Standard Admission",
+      price: experience.data.packageType.price || 0,
       type: "timed" as "timed" | "flex",
-      features: [
-        "Entry to Edge Observatory Deck at the time slot selected",
-        "Access to:",
-      ],
-      subFeatures: [
-        "Indoor observation deck on Level 100",
-        "Outdoor sky deck with angled walls",
-        "Glass Floor, Skyline Steps, and Eastern Point",
-      ],
-    },
-    {
-      id: "champagne",
-      title: "General Admission: Timed Entry + Champagne Experience",
-      price: "$61.88",
-      type: "timed" as "timed" | "flex",
-      features: [
-        "A glass of bubbly",
-        "Entry to Edge Observatory Deck at the time slot selected",
-        "Access to:",
-      ],
-      subFeatures: [
-        "Indoor observation deck on Level 100",
-        "Outdoor sky deck with angled walls",
-        "Glass Floor, Skyline Steps, and Eastern Point",
-      ],
-    },
-    {
-      id: "flex",
-      title: "Flex Pass: Enter Anytime",
-      price: "$78.39",
-      type: "flex" as "timed" | "flex",
-      features: [
-        "Entry to Edge Observatory Deck anytime within operating hours",
-        "Access to:",
-      ],
-      subFeatures: [
-        "Indoor observation deck on Level 100",
-        "Outdoor sky deck with angled walls",
-        "Glass Floor, Skyline Steps, and Eastern Point",
-      ],
-    },
-    {
-      id: "express",
-      title: "Express Pass: Skip-the-Line & Enter Anytime",
-      price: "$100.17",
-      type: "flex" as "timed" | "flex",
-      features: [
-        "Priority elevator access",
-        "Priority entry to Edge Observatory Deck anytime within operating hours",
-        "Access to:",
-      ],
-      subFeatures: [
-        "Indoor observation deck on Level 100",
-        "Outdoor sky deck with angled walls",
-        "Glass Floor, Skyline Steps, and Eastern Point",
-      ],
-    },
-  ];
+      ...generateFeaturesFromPoints(experience.data.packageType.points),
+    }
+  ] : [];
    const checkScrollPosition = () => {
      if (scrollContainerRef.current) {
        const { scrollLeft, scrollWidth, clientWidth } =
@@ -160,7 +130,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
           </div>
         </div>
         <div className="relative max-w-[790px]">
-           {!isAtStart && (
+           {options.length > 3 && !isAtStart && (
                       <button
                         onClick={() => scroll("left")}
                         className="absolute -left-12 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -233,9 +203,13 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                     <span className="text-xs text-gray-500 font-halyard-text-light">
                       from
                     </span>
-                    <p className="text-lg text-[#444444] font-halyard-text">
-                      {option.price}
-                    </p>
+                    <div className="text-lg text-[#444444] font-halyard-text">
+                      {typeof option.price === 'number' ? (
+                        <PriceDisplay amount={option.price} />
+                      ) : (
+                        option.price
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={() => handleSelectOption(option)}
@@ -246,7 +220,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                     }`}
                   >
                     {selectedOptionId === option.id ? (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex hover:cursor-pointer items-center justify-center gap-1">
                         <Check size={16} /> Selected
                       </span>
                     ) : (
@@ -256,7 +230,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                 </div>
                 <div className="mt-4 border-t border-gray-200 pt-4 flex-grow">
                   <ul className="space-y-2 text-sm text-gray-600 font-halyard-text-light">
-                    {option.features.map((feature, i) => (
+                    {option.features.map((feature: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-gray-500 mt-1">&#8226;</span>
                         {feature}
@@ -264,7 +238,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
                     ))}
                     {option.subFeatures && (
                       <ul className="ml-6 space-y-1 text-xs">
-                        {option.subFeatures.map((sub, i) => (
+                        {option.subFeatures.map((sub: string, i: number) => (
                           <li key={i}>{sub}</li>
                         ))}
                       </ul>
@@ -275,7 +249,7 @@ const handleSelectOption = (option: (typeof options)[0]) => {
             ))}
           </div>
 
-           {!isAtEnd && (
+           {options.length > 3 && !isAtEnd && (
                      <button
                        onClick={() => scroll("right")}
                        className="absolute -right-12 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10 hidden sm:flex items-center justify-center hover:bg-gray-50 transition-colors"

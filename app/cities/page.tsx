@@ -24,7 +24,6 @@ const transformCityData = (response: any): TransformedCity[] => {
   }
   
   return cities.map((city) => {
-    console.log('Individual city:', city); // Debug log for each city
     return {
       id: city._id,
       description: "Things to do in", // Default description
@@ -48,9 +47,7 @@ const Cities = () => {
       try {
         setLoading(true);
         const cities = await fetchCities();
-        console.log("cities", cities);
         const transformedCities = transformCityData(cities);
-        console.log("transformedCities", transformedCities);
         setAllCities(transformedCities);
       } catch (err) {
         console.error('Error loading cities:', err);

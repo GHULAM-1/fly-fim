@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CarouselCard from "../cards/CarouselCard";
+import PriceDisplay from "../PriceDisplay";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Check } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,7 +15,6 @@ import { StarIcon } from "lucide-react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import PriceDisplay from "../PriceDisplay";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { useCalendarState } from "@/lib/hooks/useCalendarState";
 import { CategoryResponseItem } from "@/types/category-page/category-page-types";
+import { fetchFilteredSubcategoryExperiences } from "@/api/subcategory-page/subcategory-page-api";
+import { SubcategoryPageResponse } from "@/types/subcategory-page/subcategory-page-types";
 
 const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -86,6 +88,10 @@ interface CarouselGridProps {
   cityName?: string;
   initialSelectedId?: string;
   categories?: CategoryResponseItem[];
+  cityId?: string;
+  categoryId?: string;
+  subcategoryName?: string;
+  onDataUpdate?: (data: any[]) => void;
 }
 
 const CarouselGrid = ({
@@ -97,6 +103,10 @@ const CarouselGrid = ({
   initialSelectedId,
   cityName,
   categories,
+  cityId,
+  categoryId,
+  subcategoryName,
+  onDataUpdate,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
@@ -123,10 +133,20 @@ const CarouselGrid = ({
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false);
+  const [apiRecommendations, setApiRecommendations] = useState<any[]>([]);
+  const [isLoadingApiData, setIsLoadingApiData] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Initialize API call for pills variant when API props are provided
+  useEffect(() => {
+    if (variant === "pills" && cityId && categoryId && subcategoryName) {
+      fetchFilteredData(getSortApiValue(sortBy));
+    }
+  }, [variant, cityId, categoryId, subcategoryName]);
 
   // Prevent interaction with CarouselGrid when calendar is open
   useEffect(() => {
@@ -276,6 +296,45 @@ const CarouselGrid = ({
     "Price (high to low)",
   ];
 
+  // Map sort options to API values
+  const getSortApiValue = (sortOption: string): string => {
+    switch (sortOption) {
+      case "Picked for you":
+        return "popular";
+      case "Most popular":
+        return "popular";
+      case "Price (low to high)":
+        return "price_low_high";
+      case "Price (high to low)":
+        return "price_high_low";
+      default:
+        return "popular";
+    }
+  };
+
+  // Transform API experiences to recommendations format
+  const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
+    if (!apiExperiences || !Array.isArray(apiExperiences)) {
+      return [];
+    }
+    return apiExperiences.map(exp => ({
+      id: exp._id,
+      cityId: exp.relationships?.cityId,
+      categoryId: exp.relationships?.categoryId,
+      subcategoryName: exp.relationships?.subcategoryName,
+      type: exp.relationships?.subcategoryName,
+      description: exp.basicInfo?.title || exp.description || '',
+      place: exp.basicInfo?.tagOnCards || exp.place || '',
+      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      price: exp.basicInfo?.price || exp.price || 0,
+      oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
+      off: exp.basicInfo?.sale || exp.off,
+      rating: 4.5, // Default since not in API structure
+      reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews
+      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation"
+    }));
+  };
+
   const handleSortChange = (option: string) => {
     if (isCalendarOpen) {
       // Scroll up to show calendar if CarouselGrid is in view
@@ -283,7 +342,7 @@ const CarouselGrid = ({
       if (carouselElement) {
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-        
+
         // Disabled auto-scroll to prevent unwanted scrolling behavior
         // if (isInView) {
         //   const scrollPosition = Math.max(0, window.scrollY - 200);
@@ -294,6 +353,43 @@ const CarouselGrid = ({
     }
     setSortBy(option);
     setIsSortDrawerOpen(false);
+
+    // For pills variant, trigger API call when sort changes
+    if (variant === "pills" && cityId && categoryId && subcategoryName) {
+      fetchFilteredData(getSortApiValue(option));
+    }
+  };
+
+  // Fetch filtered data from API
+  const fetchFilteredData = async (sortByValue: string) => {
+    if (!cityId || !categoryId || !subcategoryName) return;
+
+    try {
+      setIsLoadingApiData(true);
+      setApiError(null);
+
+      const response = await fetchFilteredSubcategoryExperiences(
+        cityId,
+        categoryId,
+        subcategoryName,
+        sortByValue
+      );
+
+      if (response.success && response.data.experiences) {
+        const transformedData = transformApiExperiencesToRecommendations(response.data.experiences);
+        setApiRecommendations(transformedData);
+
+        // Notify parent component if callback provided
+        if (onDataUpdate) {
+          onDataUpdate(transformedData);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching filtered data:', error);
+      setApiError('Failed to fetch filtered data');
+    } finally {
+      setIsLoadingApiData(false);
+    }
   };
 
   const handleShowMore = () => {
@@ -434,16 +530,19 @@ const CarouselGrid = ({
 
     // Optimize filtering with useMemo to prevent unnecessary re-computations
     const filteredRecommendations = useMemo(() => {
+      // Use API data if available, otherwise fall back to props recommendations
+      const dataSource = apiRecommendations.length > 0 ? apiRecommendations : recommendations;
+
       if (selectedPills.length === 0) {
-        return recommendations;
+        return dataSource;
       }
 
       // Filter by subcategory name from relationships
-      return recommendations.filter((rec) => {
+      return dataSource.filter((rec) => {
         const subcategorySlug = rec.type?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
         return selectedPillsSet.has(subcategorySlug);
       });
-    }, [recommendations, selectedPills, selectedPillsSet]);
+    }, [recommendations, apiRecommendations, selectedPills, selectedPillsSet]);
 
     // Optimize pill toggle with useCallback to prevent unnecessary re-renders
     const handlePillToggle = useCallback((pillId: string) => {
@@ -808,26 +907,47 @@ const CarouselGrid = ({
         <div
           className={`mt-4 ${pills ? "sm:mt-8" : "sm:mt-2"} grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 gap-y-4 gap-x-4`}
         >
-          {filteredRecommendations
-            .slice(0, visibleCards)
-            .map((recommendation) => (
-              <CarouselCard
-                variant="recommendation"
-                image={recommendation.image}
-                place={recommendation.place}
-                rating={recommendation.rating}
-                reviews={recommendation.reviews}
-                description={recommendation.description}
-                price={recommendation.price}
-                off={recommendation.off}
-                oldPrice={recommendation.oldPrice}
-                badge={recommendation.badge}
-                city={cityStr}
-                category={categoryStr}
-                subcategory={subcategoryStr}
-                itemId={recommendation.id}
-              />
-            ))}
+          {isLoadingApiData ? (
+            // Loading state for API data
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="bg-gray-200 rounded-lg h-48 mb-4"></div>
+                <div className="bg-gray-200 h-4 rounded mb-2"></div>
+                <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+              </div>
+            ))
+          ) : filteredRecommendations.length > 0 ? (
+            filteredRecommendations
+              .slice(0, visibleCards)
+              .map((recommendation) => (
+                <CarouselCard
+                  key={recommendation.id}
+                  variant="recommendation"
+                  image={recommendation.image}
+                  place={recommendation.place}
+                  rating={recommendation.rating}
+                  reviews={recommendation.reviews}
+                  description={recommendation.description}
+                  price={recommendation.price}
+                  off={recommendation.off}
+                  oldPrice={recommendation.oldPrice}
+                  badge={recommendation.badge}
+                  city={cityStr}
+                  category={categoryStr}
+                  subcategory={subcategoryStr}
+                  itemId={recommendation.id}
+                />
+              ))
+          ) : (
+            <div className="col-span-full text-center py-20">
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                {apiError ? "Error loading experiences" : "No experiences found"}
+              </h3>
+              <p className="text-gray-500">
+                {apiError || "Try adjusting your filters or check back later."}
+              </p>
+            </div>
+          )}
         </div>
 
         {visibleCards < filteredRecommendations.length && (
@@ -971,7 +1091,7 @@ const CarouselGrid = ({
                           </p>
                         )}
                       </div>
-                      <div className="text-lg font-bold">${museum.price}</div>
+                      <div className="text-lg font-bold"><PriceDisplay amount={museum.price} /></div>
                     </div>
                   </div>
                 </div>
@@ -1041,7 +1161,7 @@ const CarouselGrid = ({
                             {museum.description}
                           </p>
                           <div className="text-lg font-bold">
-                            ${museum.price}
+                            <PriceDisplay amount={museum.price} />
                           </div>
                         </div>
                       </div>

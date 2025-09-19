@@ -35,14 +35,13 @@ const transformCityData = (response: any): Destination[] => {
   }
 
   return cities.map((city) => {
-    console.log('Individual city:', city); // Debug log for each city
     return {
       id: city._id,
       description: "Things to do in ", // Default description
       place: city.countryName,
       city: city.cityName,
       slug: city.cityName.toLowerCase().replace(/\s+/g, '-'),
-      image: city.imageUrl || city.image || cityImageMap[city.cityName] || "/images/d1.jpg.avif", // Fallback to default image
+      image: city.imageUrl || city.image
     };
   });
 };
@@ -60,9 +59,7 @@ const Destinations = () => {
       try {
         setLoading(true);
         const cities = await fetchCities();
-        console.log("cities", cities);
         const transformedDestinations = transformCityData(cities);
-        console.log("transformedDestinations", transformedDestinations);
         setDestinations(transformedDestinations);
       } catch (err) {
         console.error('Error loading cities:', err);

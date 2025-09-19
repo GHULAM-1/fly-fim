@@ -48,7 +48,10 @@ const CarouselCard = ({
   const { t } = useTranslation();
   const swiperRef = useRef<any>(null);
 
-  const discountedPrice = off ? price * (1 - off / 100) : price;
+  // Calculate discount percentage automatically
+  const calculatedOff = oldPrice && price && oldPrice > price 
+    ? Math.round(((oldPrice - price) / oldPrice) * 100) 
+    : off || 0;
 
   const generateLink = () => {
     const slugify = (text: string) =>
@@ -62,7 +65,7 @@ const CarouselCard = ({
     const subcategorySlug = slugify(subcategory);
     const itemSlug = slugify(description);
 
-    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemSlug}-${itemId}`;
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemId}`;
   };
 
   if (variant === "full") {
@@ -95,12 +98,14 @@ const CarouselCard = ({
             </h3>
             <div className="mt-2">
               <div className="flex flex-row items-center  gap-2">
-                <span className="text-xs text-[#444444]">from</span>
                 {oldPrice && (
+                <>
+                <span className="text-xs text-[#444444]">from</span>
                   <PriceDisplay
                     amount={oldPrice}
                     className="text-[12px] line-through text-[#666666]"
                   />
+                  </>
                 )}
               </div>
               <div className="flex flex-row items-center  gap-2">
@@ -108,9 +113,9 @@ const CarouselCard = ({
                   amount={price}
                   className="font-heading text-[16px] text-[#444444]"
                 />
-                {off && (
+                {oldPrice && calculatedOff > 0 && (
                   <span className="bg-[#087F29] text-white text-[11px] font-halyard-text px-1 py-0 rounded">
-                    {off}% off
+                    {calculatedOff}% off
                   </span>
                 )}
               </div>
@@ -205,20 +210,20 @@ const CarouselCard = ({
               <span className="text-xs font-text text-[#666666]">
                 {t("recommendations.from")}
               </span>
-              {typeof oldPrice === "number" && oldPrice > discountedPrice && (
+              {typeof oldPrice === "number" && oldPrice > price && (
                 <span className="text-xs line-through text-[#666666]">
-                  ${oldPrice.toFixed(2)}
+                  <PriceDisplay amount={oldPrice} />
                 </span>
               )}
             </div>
             <div className="flex items-center gap-2 mt-1">
               <PriceDisplay
                 className="text-[#444444]"
-                amount={discountedPrice}
+                amount={price}
               />
-              {off && (
+              {calculatedOff > 0 && (
                 <span className="bg-[#088229] text-white text-[11px] font-halyard-text px-2 py-[2px] rounded">
-                  {off}% off
+                  {calculatedOff}% off
                 </span>
               )}
             </div>
@@ -284,22 +289,22 @@ const CarouselCard = ({
           {description}
         </p>
         <div className="font-heading text-[#444444] mt-2 max-w-32">
-          {off ? (
+          {calculatedOff > 0 ? (
             <>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-text text-[#666666]">
                   {t("recommendations.from")}
                 </span>
                 <span className="text-xs line-through text-[#666666]">
-                  ${price.toFixed(2)}
+                  <PriceDisplay amount={oldPrice || 0} />
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[#444444]">
-                  ${discountedPrice.toFixed(2)}
+                  <PriceDisplay amount={price} />
                 </span>
                 <span className="bg-[#088229] text-white text-[11px] font-halyard-text px-1 py-0 rounded">
-                  {off}% off
+                  {calculatedOff}% off
                 </span>
               </div>
             </>

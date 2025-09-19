@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 import { toast } from "@/components/toast";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+}
 
 // Global flag to prevent duplicate toasts
 let hasShownSignInToast = false;
@@ -12,81 +19,110 @@ let hasShownSignOutToast = false;
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+
+  // Check authentication status
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData.user || userData);
+
+        // Show sign in toast if user was previously null
+        if (!user && userData.user && !hasShownSignInToast) {
+          hasShownSignInToast = true;
+          toast.success("You have successfully signed in!");
+          setTimeout(() => {
+            hasShownSignInToast = false;
+          }, 2000);
+        }
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Auth check error:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
-    };
+    checkAuth();
 
-    getInitialSession();
+    // Check for auth success in URL parameters (magic link return)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auth') === 'success') {
+      // User returned from magic link verification
+      // Remove the query parameter from URL without page reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('auth');
+      window.history.replaceState({}, document.title, url.toString());
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // Refresh auth state to get the updated user
+      setTimeout(() => {
+        checkAuth();
+      }, 100);
+    }
 
-      // Show success toast on successful sign in (only once)
-      if (event === "SIGNED_IN" && session?.user && !hasShownSignInToast) {
-        hasShownSignInToast = true;
-        toast.success("You have successfully signed in!");
-        // Reset flag after a delay to allow for future sign-ins
-        setTimeout(() => {
-          hasShownSignInToast = false;
-        }, 2000);
-      }
+    // Set up periodic auth check (optional)
+    const interval = setInterval(checkAuth, 5 * 60 * 1000); // Check every 5 minutes
 
-      // If user signed out, ensure we clear the state immediately
-      if (event === "SIGNED_OUT" && !hasShownSignOutToast) {
-        setUser(null);
-        hasShownSignOutToast = true;
-        toast.success("Signed out successfully");
-        // Reset flag after a delay
-        setTimeout(() => {
-          hasShownSignOutToast = false;
-        }, 2000);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSignOut = async () => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signOut();
 
-      if (error) {
-        console.error("Sign out error:", error);
+      const response = await fetch(`${API_BASE_URL}/auth/signout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok && !hasShownSignOutToast) {
+        hasShownSignOutToast = true;
+        toast.success("Signed out successfully");
+        setTimeout(() => {
+          hasShownSignOutToast = false;
+        }, 2000);
       }
 
-      // Ensure immediate state update
+      // Clear user state regardless of response
       setUser(null);
       setLoading(false);
 
-      // Force page reload as backup
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
+      // Redirect to home page
+      window.location.href = "/";
     } catch (error) {
       console.error("Sign out error:", error);
       setUser(null);
       setLoading(false);
-      window.location.reload();
+
+      // Force redirect even on error
+      window.location.href = "/";
     }
+  };
+
+  // Function to refresh user data after login
+  const refreshUser = () => {
+    checkAuth();
   };
 
   return {
     user,
     loading,
     signOut: handleSignOut,
+    refreshUser,
   };
 }

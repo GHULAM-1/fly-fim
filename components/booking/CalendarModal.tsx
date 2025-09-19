@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { useCalendarState } from "@/lib/hooks/useCalendarState";
+import { ExperienceResponse } from "@/types/experience/experience-types";
+import PriceDisplay from "../PriceDisplay";
 
 const getMonthName = (monthIndex: number) => {
   const monthNames = [
@@ -35,6 +37,7 @@ interface CalendarGridProps {
   selectedDate: Date | null;
   today: Date;
   onDateSelect: (date: Date) => void;
+  experience?: ExperienceResponse;
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -42,6 +45,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   selectedDate,
   today,
   onDateSelect,
+  experience,
 }) => {
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -63,7 +67,30 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         if (!date) return <div key={`empty-${index}`} className="h-14"></div>;
         const isPastDate = date < today;
         const isSelected = selectedDate?.toDateString() === date.toDateString();
-        const price = date.getDay() === 3 ? 49.0 : 39.2;
+        // Get price from datePriceRange based on selected date
+        const getPriceForDate = (date: Date) => {
+          if (!experience?.data?.datePriceRange || experience.data.datePriceRange.length === 0) {
+            return experience?.data?.price || 0;
+          }
+
+          // Create date at start of day for comparison
+          const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+          const dateTime = dateOnly.getTime();
+
+          const priceRange = experience.data.datePriceRange.find(range => {
+            // Convert timestamps to date-only for comparison
+            const startDate = new Date(range.startDate);
+            const endDate = new Date(range.endDate);
+            const startTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()).getTime();
+            const endTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()).getTime();
+
+            return dateTime >= startTime && dateTime <= endTime;
+          });
+
+          return priceRange ? priceRange.price : null;
+        };
+
+        const price = getPriceForDate(date);
 
         return (
           <button
@@ -80,14 +107,14 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             )}
           >
             <span>{date.getDate()}</span>
-            {!isPastDate && (
+            {!isPastDate && price !== null && (
               <span
                 className={cn(
                   "text-xs mt-1",
                   isSelected ? "text-purple-700" : "text-green-600"
                 )}
               >
-                ${price.toFixed(2)}
+                <PriceDisplay amount={price} />
               </span>
             )}
           </button>
@@ -105,6 +132,7 @@ interface CalendarModalProps {
   itemName?: string;
   city?: string;
   position?: "center" | "top";
+  experience?: ExperienceResponse;
 }
 
 const CalendarModal: React.FC<CalendarModalProps> = ({
@@ -115,6 +143,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   itemName,
   city,
   position = "center",
+  experience,
 }) => {
   const router = useRouter();
   const { setCalendarOpen } = useCalendarState();
@@ -178,7 +207,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
           bgClass="bg-white"
           className="h-[65vh] mt-0 rounded-4xl flex flex-col"
         >
-          <div className="sticky top-0 bg-gray-1100 z-10 p-2 border-b">
+          <div className="sticky top-0 bg-gray-1100 z-20 p-2 border-b">
             <div className="grid grid-cols-7 gap-1">
               {dayNames.map((day) => (
                 <div
@@ -202,13 +231,14 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   selectedDate={selectedDate}
                   today={today}
                   onDateSelect={handleDateSelect}
+                  experience={experience}
                 />
               </div>
             ))}
           </div>
 
           <div className="p-4 border-t text-center text-xs text-gray-700">
-            All prices are in United States Dollar (US$)
+            All prices are in {localStorage?.getItem("preferred-currency")}
           </div>
         </DrawerContent>
       </Drawer>
@@ -284,6 +314,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   selectedDate={selectedDate}
                   today={today}
                   onDateSelect={handleDateSelect}
+                  experience={experience}
                 />
               </div>
               <div className="px-2">
@@ -314,6 +345,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
                   selectedDate={selectedDate}
                   today={today}
                   onDateSelect={handleDateSelect}
+                  experience={experience}
                 />
               </div>
             </div>
@@ -321,7 +353,7 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
 
           <div className="mt-auto p-4 border-t sticky bottom-0 bg-white z-10">
             <p className="text-xs text-gray-500 text-center">
-              All prices are in USD ($)
+              All prices are in {localStorage?.getItem("preferred-currency")}
             </p>
           </div>
         </div>

@@ -13,7 +13,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { signInWithMagicLink, signInWithGoogle } from "@/lib/actions/auth";
+import { signInWithMagicLink } from "@/lib/actions/auth";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 interface AuthDialogProps {
@@ -52,17 +52,28 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
       }
     });
   };
-
+ 
   const handleGoogleSignIn = () => {
     setError(null);
-    startTransition(async () => {
-      const result = await signInWithGoogle();
+    console.log("Google sign-in clicked");
 
-      if (result?.error) {
-        setError(result.error);
-      }
-      // Note: If successful, user will be redirected to Google
-    });
+    try {
+      const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+      const googleAuthUrl =
+        `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID}&`+
+        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+        `response_type=code&` +
+        `scope=email%20profile&` +
+        `access_type=offline`;
+
+      console.log("Redirect URI:", redirectUri);
+      console.log("Full Google OAuth URL:", googleAuthUrl);
+      window.location.href = googleAuthUrl;
+    } catch (error) {
+      console.error("Error redirecting to Google:", error);
+      setError('Failed to redirect to Google');
+    }
   };
 
   const resetDialog = () => {
@@ -79,7 +90,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         if (!open) resetDialog();
       }}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" style={{zIndex: 1000}}>
         {mode === "welcome" && (
           <>
             <DialogHeader>

@@ -33,7 +33,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/store/navigationStore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   motion,
   useScroll,
@@ -72,8 +72,10 @@ const ThingsToDo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [faqsData, setFaqsData] = useState<Faq[]>([]);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const params = useParams();
+  const router = useRouter();
   const city = params.city as string;
 
   // Create consolidated array of all unique experiences
@@ -94,7 +96,6 @@ const ThingsToDo = () => {
       index === self.findIndex(exp => exp._id === experience._id)
     );
 
-    console.log("City page allUniqueExperiences:", uniqueExperiences);
     return uniqueExperiences;
   }, [thingsToDoData]);
 
@@ -152,20 +153,32 @@ const ThingsToDo = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching city data for city name:', city);
-
         // First, get city ID by city name
         const cityData = await fetchCityBycityName(city);
-        console.log('City data received:', cityData);
+
+        // Check if city data is empty or invalid
+        if (!cityData || !cityData._id) {
+          setIsRedirecting(true);
+          router.push('/not-found');
+          return;
+        }
 
         // Then, fetch things to do data using city ID
-        console.log('Fetching things to do data for city ID:', cityData._id);
         const data = await fetchThingsToDoByCityId(cityData._id);
-        console.log('Things to do data received:', data);
+
+        // Check if things to do data is empty
+        if (!data || (data.categories?.length === 0 && data.topExperiences?.length === 0 && data.mainCards?.length === 0)) {
+          setIsRedirecting(true);
+          router.push('/not-found');
+          return;
+        }
+
         setThingsToDoData(data);
       } catch (err) {
         console.error('Error loading things to do data:', err);
-        setError('Failed to load things to do data');
+        // Redirect to 404 on any error
+        setIsRedirecting(true);
+        router.push('/not-found');
       } finally {
         setLoading(false);
       }
@@ -702,6 +715,20 @@ const ThingsToDo = () => {
       badge: "Free cancellation",
     },
   ];
+
+  // Show loading or blank screen while checking data or redirecting
+  if (loading || isRedirecting) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  // Don't render if there's an error or no data
+  if (error || !thingsToDoData) {
+    return null;
+  }
 
   return (
     <div className="relative min-h-screen">

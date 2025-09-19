@@ -36,6 +36,7 @@ interface FullScreenMapProps {
   onClose: () => void;
   itineraryData: ItineraryItem[];
   tripTitle: string;
+  experience?: any; // Add experience data for coordinates
 }
 
 const FullScreenMap: React.FC<FullScreenMapProps> = ({
@@ -43,6 +44,7 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
   onClose,
   itineraryData,
   tripTitle,
+  experience,
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
@@ -53,11 +55,9 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
   const initializeMap = () => {
     if (!mapContainerRef.current) return;
 
-    console.log("Initializing full-screen map...");
 
     // Clean up existing map if it exists
     if (mapRef.current) {
-      console.log("Cleaning up existing map...");
       if ((mapRef.current as any).routingControl) {
         try {
           (mapRef.current as any).routingControl.remove();
@@ -95,7 +95,24 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
             "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         });
 
-        // Create map - centered to show Italy region like in the second image
+        // Determine map center from API data
+        let mapCenter: [number, number] = [41.5, 13.0]; // Default fallback
+        let mapZoom = 7;
+
+        if (experience?.data?.whereTo) {
+          // Use main experience location
+          mapCenter = [experience.data.whereTo.lat, experience.data.whereTo.lng];
+          mapZoom = 13; // Closer zoom for specific location
+        } else if (experience?.data?.itinerary?.startPoint?.location) {
+          // Use itinerary start point
+          mapCenter = [
+            experience.data.itinerary.startPoint.location.lat,
+            experience.data.itinerary.startPoint.location.lng
+          ];
+          mapZoom = 10; // Medium zoom for itinerary
+        }
+
+        // Create map with API-based center
         const map = L.map(mapContainerRef.current, {
           zoomControl: false,
           scrollWheelZoom: true,
@@ -104,12 +121,11 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
           boxZoom: true,
           keyboard: true,
           dragging: true,
-          center: [41.5, 13.0], // Centered to show central/southern Italy
-          zoom: 7, // Zoom level to show the region like in the second image
+          center: mapCenter,
+          zoom: mapZoom,
           attributionControl: true,
         });
 
-        console.log("Map created successfully");
 
         // Add OpenStreetMap tiles
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -117,18 +133,48 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
           maxZoom: 18,
         }).addTo(map);
 
-        console.log("Tiles added to map");
 
-        // Add markers and route for itinerary locations
-        const locationCoordinates: { [key: string]: [number, number] } = {
-          "Central Rome": [41.9022, 12.4823],
-          "Cassino, Italy": [41.4928, 13.83],
-          "Pompeii, Italy": [40.7489, 14.5038],
-          "Sorrento, Italy": [40.6263, 14.3754],
-          "Positano, Italy": [40.6281, 14.4844],
-          "Amalfi, Italy": [40.634, 14.6027],
-          "Naples, Italy": [40.8518, 14.2681],
-        };
+        // Add markers and route for itinerary locations using API coordinates
+        const locationCoordinates: { [key: string]: [number, number] } = {};
+
+        // Build coordinates from API data
+        if (experience?.data?.itinerary) {
+          const itinerary = experience.data.itinerary;
+
+          // Add start point
+          if (itinerary.startPoint?.location) {
+            locationCoordinates[itinerary.startPoint.location.address] = [
+              itinerary.startPoint.location.lat,
+              itinerary.startPoint.location.lng
+            ];
+          }
+
+          // Add intermediate points
+          itinerary.points?.forEach((point: any) => {
+            if (point.location) {
+              locationCoordinates[point.location.address] = [
+                point.location.lat,
+                point.location.lng
+              ];
+            }
+          });
+
+          // Add end point
+          if (itinerary.endPoint?.location) {
+            locationCoordinates[itinerary.endPoint.location.address] = [
+              itinerary.endPoint.location.lat,
+              itinerary.endPoint.location.lng
+            ];
+          }
+        }
+
+        // Fallback to experience whereTo location if no itinerary
+        if (Object.keys(locationCoordinates).length === 0 && experience?.data?.whereTo) {
+          locationCoordinates[experience.data.whereTo.address] = [
+            experience.data.whereTo.lat,
+            experience.data.whereTo.lng
+          ];
+        }
 
         // Collect coordinates for route line
         const routeCoordinates: [number, number][] = [];
@@ -305,13 +351,11 @@ const FullScreenMap: React.FC<FullScreenMapProps> = ({
         setMapLoaded(true);
         setMapError(false);
 
-        console.log("Full-screen map initialization complete");
 
         // Invalidate size after a short delay
         setTimeout(() => {
           if (mapRef.current) {
             mapRef.current.invalidateSize();
-            console.log("Map invalidateSize called");
           }
         }, 100);
       } catch (error) {

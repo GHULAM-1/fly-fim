@@ -7,9 +7,6 @@ export async function POST(req: NextRequest) {
   const origin = headersList.get("origin") || "";
   const { buildID, buildName, bill } = await req.json();
   
-  console.log("------------------------------");
-  console.log(buildID, buildName);
-  
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],

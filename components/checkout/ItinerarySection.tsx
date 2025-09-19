@@ -20,6 +20,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import FullScreenMap from "./FullScreenMap";
+import { ExperienceResponse } from "@/types/experience/experience-types";
 
 interface ItineraryItem {
   id: string;
@@ -31,10 +32,13 @@ interface ItineraryItem {
   description: string;
   image?: string;
   location?: string;
+  lat?: number;        // Add latitude from API
+  lng?: number;        // Add longitude from API
   locationLink?: string;
   attractions?: number;
   ticketsIncluded?: boolean;
   highlights?: string[];
+  order?: number;      // Add order from API
   thingsToDo?: Array<{
     title: string;
     category: string;
@@ -54,8 +58,95 @@ interface ItineraryData {
   items: ItineraryItem[];
 }
 
-const ItinerarySection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("pompeii-sorrento");
+interface ItinerarySectionProps {
+  experience?: ExperienceResponse | null;
+}
+
+const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
+  // Transform new Itinerary structure to existing component format
+  const transformItineraryData = (): ItineraryData[] => {
+    if (!experience?.data?.itinerary) {
+      return []; // Return empty array if no itinerary data
+    }
+
+    const itinerary = experience.data.itinerary;
+    const transformedData: ItineraryData = {
+      id: "api-itinerary",
+      title: itinerary.title,
+      totalDuration: itinerary.totalDuration || "Duration not specified",
+      modeOfTransfer: itinerary.modeOfTransport || "Transport not specified",
+      items: []
+    };
+
+    // Add start point
+    transformedData.items.push({
+      id: "start",
+      title: itinerary.startPoint.name,
+      type: "start",
+      duration: itinerary.startPoint.duration,
+      description: itinerary.startPoint.description || "",
+      image: itinerary.startPoint.image,
+      location: itinerary.startPoint.location.address,
+      lat: itinerary.startPoint.location.lat,
+      lng: itinerary.startPoint.location.lng,
+      locationLink: `https://maps.google.com/?q=${itinerary.startPoint.location.lat},${itinerary.startPoint.location.lng}`,
+      highlights: itinerary.startPoint.highlights,
+      thingsToDo: itinerary.startPoint.thingsToDo?.map(item => ({ title: item, category: "Activity" })),
+      nearbyThings: itinerary.startPoint.nearbyThingsToDo?.map(item => ({
+        title: item.name,
+        image: item.image || "/mob-banner.jpg"
+      })),
+    });
+
+    // Add intermediate points
+    itinerary.points.forEach((point, index) => {
+      transformedData.items.push({
+        id: `point-${index}`,
+        title: point.name,
+        type: "stop",
+        duration: point.duration,
+        distance: point.distance,
+        time: point.travelTime,
+        description: point.description || "",
+        image: point.image || "/mob-banner.jpg", // Add image with fallback
+        location: point.location.address,
+        lat: point.location.lat,
+        lng: point.location.lng,
+        locationLink: `https://maps.google.com/?q=${point.location.lat},${point.location.lng}`,
+        attractions: point.attractions,
+        ticketsIncluded: point.ticketsIncluded,
+        highlights: point.highlights,
+        order: point.order, // Add order from API
+        thingsToDo: point.thingsToDo?.map(item => ({ title: item, category: "Activity" })),
+        nearbyThings: point.nearbyThingsToDo?.map(item => ({
+          title: item.name,
+          image: item.image || "/mob-banner.jpg"
+        })),
+      });
+    });
+
+    // Add end point
+    transformedData.items.push({
+      id: "end",
+      title: itinerary.endPoint.name,
+      type: "end",
+      description: itinerary.endPoint.description || "",
+      location: itinerary.endPoint.location.address,
+      lat: itinerary.endPoint.location.lat,
+      lng: itinerary.endPoint.location.lng,
+      locationLink: `https://maps.google.com/?q=${itinerary.endPoint.location.lat},${itinerary.endPoint.location.lng}`,
+    });
+
+    return [transformedData];
+  };
+
+  // Initialize activeTab based on available data
+  const [activeTab, setActiveTab] = useState(() => {
+    if (experience?.data?.itinerary) {
+      return "api-itinerary";
+    }
+    return ""; // no fallback
+  });
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [expandedHighlights, setExpandedHighlights] = useState<Set<string>>(
     new Set()
@@ -77,6 +168,7 @@ const ItinerarySection: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const drawerMapRef = useRef<L.Map | null>(null);
   const drawerMapContainerRef = useRef<HTMLDivElement>(null);
+  const timelineContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize drawer map
   const initializeDrawerMap = () => {
@@ -105,11 +197,9 @@ const ItinerarySection: React.FC = () => {
   const initializeMap = () => {
     if (!mapContainerRef.current) return;
 
-    console.log("Initializing map...");
 
     // Clean up existing map if it exists
     if (mapRef.current) {
-      console.log("Cleaning up existing map...");
 
       // Clean up routing control if it exists
       if ((mapRef.current as any).routingControl) {
@@ -191,7 +281,6 @@ const ItinerarySection: React.FC = () => {
           map.removeControl(map.attributionControl);
         }
 
-        console.log("Map created successfully");
 
         // Prevent map from interfering with page scroll
         const mapContainer = mapContainerRef.current;
@@ -208,32 +297,18 @@ const ItinerarySection: React.FC = () => {
           maxZoom: 18,
         }).addTo(map);
 
-        console.log("Tiles added to map");
-
         // Add markers and route for itinerary locations
         const currentItinerary = itineraryData.find(
           (data) => data.id === activeTab
         );
         if (currentItinerary) {
-          // Define coordinates for known locations
-          const locationCoordinates: { [key: string]: [number, number] } = {
-            "Central Rome": [41.9022, 12.4823],
-            "Cassino, Italy": [41.4928, 13.83],
-            "Pompeii, Italy": [40.7489, 14.5038],
-            "Sorrento, Italy": [40.6263, 14.3754],
-            "Positano, Italy": [40.6281, 14.4844],
-            "Amalfi, Italy": [40.634, 14.6027],
-            "Naples, Italy": [40.8518, 14.2681],
-          };
-
           // Collect coordinates for route line (start to last point before end)
           const routeCoordinates: [number, number][] = [];
           const markers: L.Marker[] = [];
-          let stopCounter = 1; // Counter for numbered stops
 
           currentItinerary.items.forEach((item, index) => {
-            if (item.location && locationCoordinates[item.location]) {
-              const coords = locationCoordinates[item.location];
+            if (item.lat !== undefined && item.lng !== undefined) {
+              const coords: [number, number] = [item.lat, item.lng];
 
               // Add to route coordinates only if it's not the end point
               if (item.type !== "end") {
@@ -284,11 +359,11 @@ const ItinerarySection: React.FC = () => {
                     border: 4px solid #8B5CF6;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
                   ">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right">
-  <path d="M5 12h14"/>
-  <path d="m12 5 7 7-7 7"/>
-</svg>
-
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                  </svg>
+                  </svg>
                   </div>
                 `,
                   iconSize: [28, 28],
@@ -314,14 +389,13 @@ const ItinerarySection: React.FC = () => {
                     color: #8B5CF6;
                     font-size: 14px;
                   ">
-                    ${stopCounter}
+                    ${item.order || (index + 1)}
                   </div>
                 `,
                   iconSize: [32, 32],
                   iconAnchor: [16, 16],
                 });
                 marker = L.marker(coords, { icon: stopIcon });
-                stopCounter++; // Increment for next stop
               }
 
               marker.addTo(map);
@@ -411,7 +485,6 @@ const ItinerarySection: React.FC = () => {
         setMapError(false);
         setMapInitializing(false);
 
-        console.log("Map initialization complete");
       } catch (error) {
         console.error("Map initialization failed:", error);
         setMapError(true);
@@ -443,7 +516,6 @@ const ItinerarySection: React.FC = () => {
       // Simple approach - wait for DOM to be ready
       const initMap = () => {
         if (mapContainerRef.current) {
-          console.log("Attempting to initialize map...");
           // Ensure container is visible
           mapContainerRef.current.style.display = "block";
           mapContainerRef.current.style.visibility = "visible";
@@ -455,7 +527,6 @@ const ItinerarySection: React.FC = () => {
       setTimeout(initMap, 300);
     } else if (viewMode !== "map" && mapRef.current) {
       // Clean up map when switching away from map view
-      console.log("Cleaning up map...");
       mapRef.current.remove();
       mapRef.current = null;
       setMapLoaded(false);
@@ -508,25 +579,15 @@ const ItinerarySection: React.FC = () => {
         (data) => data.id === activeTab
       );
       if (currentItinerary) {
-        const locationCoordinates: { [key: string]: [number, number] } = {
-          "Central Rome": [41.9022, 12.4823],
-          "Cassino, Italy": [41.4928, 13.83],
-          "Pompeii, Italy": [40.7489, 14.5038],
-          "Sorrento, Italy": [40.6263, 14.3754],
-          "Positano, Italy": [40.6281, 14.4844],
-          "Amalfi, Italy": [40.634, 14.6027],
-          "Naples, Italy": [40.8518, 14.2681],
-        };
-
         const selectedItem = currentItinerary.items.find(
           (item) => item.id === selectedLocation
         );
         if (
           selectedItem &&
-          selectedItem.location &&
-          locationCoordinates[selectedItem.location]
+          selectedItem.lat !== undefined &&
+          selectedItem.lng !== undefined
         ) {
-          const coords = locationCoordinates[selectedItem.location];
+          const coords: [number, number] = [selectedItem.lat, selectedItem.lng];
           mapRef.current.setView(coords, 15, {
             animate: false,
           });
@@ -555,167 +616,15 @@ const ItinerarySection: React.FC = () => {
     };
   }, []);
 
-  const itineraryData: ItineraryData[] = [
-    {
-      id: "pompeii-sorrento",
-      title: "Pompeii & Sorrento Day Trip From Rome",
-      totalDuration: "12 hours",
-      modeOfTransfer: "A/C Bus",
-      items: [
-        {
-          id: "start-rome",
-          title: "Central Rome",
-          type: "start",
-          duration: "2 hours",
-          distance: "140 kms",
-          time: "2 hours",
-          description:
-            "Meet at one of the bustling squares in central Rome to join your travel mates and expert tour leader aboard a spacious AC vehicle.",
-          image: "/mob-banner.jpg",
-          location: "Central Rome",
-          locationLink: "#",
-        },
-        {
-          id: "cassino",
-          title: "Cassino",
-          type: "stop",
-          duration: "20 minutes",
-          distance: "115 kms",
-          time: "60 minutes",
-          description:
-            "Take a short break at a commune in the foothills of Mount Cassino beside Rapido River.",
-          image: "/mob-banner.jpg",
-          location: "Cassino, Italy",
-          locationLink: "https://maps.google.com/?q=Cassino,Italy",
-        },
-        {
-          id: "pompeii",
-          title: "Pompeii",
-          type: "stop",
-          duration: "2 hours",
-          distance: "80 kms",
-          time: "90 minutes",
-          description:
-            "Enjoy a guided tour and free time to explore the forums, public baths, and bakeries at an ancient town preserved as it was 2,000 years ago by Mt. Vesuvius' eruption.",
-          image: "/mob-banner.jpg",
-          location: "Pompeii, Italy",
-          locationLink: "https://maps.google.com/?q=Pompeii,Italy",
-          attractions: 1,
-          ticketsIncluded: true,
-          highlights: ["Building of Eumachia"],
-        },
-        {
-          id: "sorrento",
-          title: "Sorrento",
-          type: "stop",
-          duration: "2 hours 30 minutes",
-          distance: "30 kms",
-          time: "45 minutes",
-          description:
-            "Head to the clifftop Sorrento in the north of the peninsula and get free time to discover its pottery stores, churches, and coastal paths at your whims, before stopping by a distillery for a sweet and tangy local drink!",
-          image: "/mob-banner.jpg",
-          location: "Sorrento, Italy",
-          locationLink: "https://maps.google.com/?q=Sorrento,Italy",
-          attractions: 1,
-          thingsToDo: [
-            {
-              title: "Limoncello tasting",
-              category: "Drinks",
-              icon: "wine",
-            },
-          ],
-          nearbyThings: [
-            {
-              title: "Tasso Square",
-              image: "/mob-banner.jpg",
-            },
-          ],
-        },
-        {
-          id: "cassino-return",
-          title: "Cassino",
-          type: "stop",
-          duration: "20 minutes",
-          distance: "139 kms",
-          time: "90 minutes",
-          description:
-            "Take another short break on the way back at this hilly commune, and snap pictures of the Abbey of Montecassino.",
-          image: "/mob-banner.jpg",
-        },
-        {
-          id: "end-rome",
-          title: "Central Rome",
-          type: "end",
-          description: "",
-          location: "Central Rome",
-          locationLink: "#",
-        },
-      ],
-    },
-    {
-      id: "pompeii-positano",
-      title: "Pompeii & Positano Day Trip From Rome",
-      totalDuration: "12 hours",
-      modeOfTransfer: "A/C Bus",
-      items: [
-        {
-          id: "start-rome-2",
-          title: "Central Rome",
-          type: "start",
-          duration: "2 hours",
-          distance: "140 kms",
-          time: "2 hours",
-          description:
-            "Check your voucher to find your final meeting point details in central Rome, and join your travel mates and expert tour leader aboard a comfortable AC vehicle.",
-          image: "/mob-banner.jpg",
-          location: "Central Rome",
-          locationLink: "#",
-        },
-        {
-          id: "cassino-2",
-          title: "Cassino",
-          type: "stop",
-          duration: "20 minutes",
-          distance: "115 kms",
-          time: "60 minutes",
-          description:
-            "Take a short break at a commune in the foothills of Mount Cassino beside Rapido River.",
-          image: "/mob-banner.jpg",
-          location: "Cassino, Italy",
-          locationLink: "https://maps.google.com/?q=Cassino,Italy",
-        },
-        {
-          id: "pompeii-2",
-          title: "Pompeii",
-          type: "stop",
-          duration: "2 hours",
-          distance: "80 kms",
-          time: "90 minutes",
-          description:
-            "Explore the ancient ruins of Pompeii, frozen in time by the eruption of Mount Vesuvius in 79 AD.",
-          image: "/mob-banner.jpg",
-          location: "Pompeii, Italy",
-          locationLink: "https://maps.google.com/?q=Pompeii,Italy",
-        },
-        {
-          id: "positano",
-          title: "Positano",
-          type: "stop",
-          duration: "2 hours",
-          distance: "25 kms",
-          time: "40 minutes",
-          description:
-            "Discover the charming cliffside village of Positano with its colorful houses and stunning Amalfi Coast views.",
-          image: "/mob-banner.jpg",
-          location: "Positano, Italy",
-          locationLink: "https://maps.google.com/?q=Positano,Italy",
-        },
-      ],
-    },
-  ];
+  // Get the transformed itinerary data
+  const itineraryData = transformItineraryData();
 
-  const currentData =
-    itineraryData.find((data) => data.id === activeTab) || itineraryData[0];
+  // If no itinerary data, don't render anything
+  if (itineraryData.length === 0) {
+    return null;
+  }
+
+  const currentData = itineraryData.find((data) => data.id === activeTab) || itineraryData[0];
 
   // Handle sliding bar animation
   useEffect(() => {
@@ -834,36 +743,38 @@ const ItinerarySection: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg pt-3">
-      {/* Tabs */}
-      <div className="relative mb-6">
-        <div
-          ref={tabsRef}
-          className="flex gap-6 border-b overflow-x-auto scrollbar-hide border-gray-200 pb-1"
-        >
-          {itineraryData.map((data) => (
-            <button
-              key={data.id}
-              data-tab-id={data.id}
-              onClick={() => setActiveTab(data.id)}
-              className={`pb-2 font-halyard-text hover:cursor-pointer text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
-                activeTab === data.id
-                  ? "text-[#444444]"
-                  : "text-gray-500 hover:text-[#444444]"
-              }`}
-            >
-              {data.title}
-            </button>
-          ))}
+      {/* Tabs - Only show if multiple itineraries */}
+      {itineraryData.length > 1 && (
+        <div className="relative mb-6">
+          <div
+            ref={tabsRef}
+            className="flex gap-6 border-b overflow-x-auto scrollbar-hide border-gray-200 pb-1"
+          >
+            {itineraryData.map((data) => (
+              <button
+                key={data.id}
+                data-tab-id={data.id}
+                onClick={() => setActiveTab(data.id)}
+                className={`pb-2 font-halyard-text hover:cursor-pointer text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                  activeTab === data.id
+                    ? "text-[#444444]"
+                    : "text-gray-500 hover:text-[#444444]"
+                }`}
+              >
+                {data.title}
+              </button>
+            ))}
+          </div>
+          {/* Sliding Bar */}
+          <div
+            className="absolute bottom-0 h-[0.8px] bg-[#444444] transition-all duration-300"
+            style={{
+              left: `${barPosition.left}px`,
+              width: `${barPosition.width}px`,
+            }}
+          />
         </div>
-        {/* Sliding Bar */}
-        <div
-          className="absolute bottom-0 h-[0.8px] bg-[#444444] transition-all duration-300"
-          style={{
-            left: `${barPosition.left}px`,
-            width: `${barPosition.width}px`,
-          }}
-        />
-      </div>
+      )}
 
       {/* Trip Overview */}
       <div className="flex md:gap-32 gap-6 mb-6">
@@ -1078,7 +989,7 @@ const ItinerarySection: React.FC = () => {
               {/* Vertical Line */}
               <div
                 className="absolute left-3 top-0 w-0.5 bg-purple-600 z-0"
-                style={{ height: "calc(100% - 3rem)" }}
+                style={{ height: "calc(100% - 2rem)" }}
               ></div>
 
               <div className="space-y-4 font-halyard-text">
@@ -1224,11 +1135,11 @@ const ItinerarySection: React.FC = () => {
         </div>
       ) : (
         /* Timeline View */
-        <div className="relative z-0">
-          {/* Vertical Line - stops at the last item */}
+        <div className="relative z-0" ref={timelineContainerRef}>
+          {/* Vertical Line - extends to the last item */}
           <div
             className="absolute left-3 top-0 w-0.5 bg-purple-600 z-0"
-            style={{ height: "calc(100% - 7rem)" }}
+            style={{ height: "calc(100% - 1rem)" }}
           ></div>
 
           {currentData.items.map((item, index) => (
@@ -1513,6 +1424,7 @@ const ItinerarySection: React.FC = () => {
         onClose={() => setShowFullScreenMap(false)}
         itineraryData={currentData.items}
         tripTitle={currentData.title}
+        experience={experience}
       />
 
       {/* Map Drawer - Full Screen Overlay */}
