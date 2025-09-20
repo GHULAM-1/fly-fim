@@ -270,7 +270,7 @@ const CheckoutPage: React.FC = () => {
       id: exp._id,
       description: exp.basicInfo?.title || exp.description || '',
       place: exp.basicInfo?.tagOnCards || exp.place || '',
-      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      image: exp.basicInfo?.images || exp.image || "/images/default.jpg",
       price: exp.basicInfo?.price || exp.price || 0,
       oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
       off: exp.basicInfo?.sale || exp.off,
