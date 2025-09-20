@@ -985,8 +985,7 @@ const CarouselGrid = ({
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
               style={{
-                transform: `translateX(-${currentMuseumIndex * 27}%)`,
-                width: `${recommendations.length * 27}%`,
+                transform: `translateX(-${currentMuseumIndex * (260 + 16)}px)`,
               }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -996,7 +995,7 @@ const CarouselGrid = ({
                 const active = index === currentMuseumIndex;
 
                 return (
-                  <div key={museum.id} className="w-[27%] shrink-0">
+                  <div key={museum.id} className="w-[260px] shrink-0">
                     <div className="relative h-[334px] rounded-lg overflow-hidden shadow-lg">
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
@@ -1041,7 +1040,7 @@ const CarouselGrid = ({
                             {museum.description}
                           </p>
                           <div className="text-lg font-bold">
-                            ${museum.price}
+                            <PriceDisplay amount={typeof museum.price === 'string' ? parseFloat(museum.price.replace(/[^0-9.]/g, '')) || 0 : museum.price || 0} />
                           </div>
                         </div>
                       </div>

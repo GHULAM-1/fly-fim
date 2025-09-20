@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, notFound } from "next/navigation";
 import { fetchSubcategoryPageById } from "@/api/subcategory-page/subcategory-page-api";
 import { SubcategoryPageData } from "@/types/subcategory-page/subcategory-page-types";
 import { fetchCityBycityName } from "@/api/cities/cities-api";
@@ -34,6 +34,7 @@ import Destinations from "@/components/home/Destinations";
 
 export default function SubcategoryPage() {
   const params = useParams();
+  const router = useRouter();
   const city = params.city as string;
   const categoryName = params.category as string;
   const subcategory = params.subcategory as string;
@@ -171,92 +172,6 @@ export default function SubcategoryPage() {
     return <div>Subcategory not found</div>;
   }
 
-  const destinations = [
-    {
-      id: 1,
-      description: "Things to do in",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 2,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 3,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 4,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 5,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 6,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-    {
-      id: 7,
-      description: "Things to do in York",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 8,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 9,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 10,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 11,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 12,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-  ];
 
   const navItems =
     (currentSubCategory.components.themes || []).map((t: any) => {
@@ -390,13 +305,11 @@ export default function SubcategoryPage() {
       id: exp._id,
       description: exp.basicInfo?.title || exp.description || '',
       place: exp.basicInfo?.tagOnCards || exp.place || '',
-      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      image: exp.basicInfo?.images || exp.image || "/images/default.jpg",
       price: exp.basicInfo?.price || exp.price || 0,
       oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
       off: exp.basicInfo?.sale || exp.off,
-      rating: 4.5, // Default since not in API structure
-      reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews
-      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation"
+      badge: exp.basicInfo?.tagOnCards || exp.badge
     }));
   };
 
@@ -490,9 +403,118 @@ export default function SubcategoryPage() {
     loadSubcategoryPageData();
   }, [city, categoryName, subcategory]);
 
+  // Skeleton components
+  const HeaderSkeleton = () => (
+    <div className="animate-pulse">
+      <div className="mb-[34px] md:block hidden">
+        <div className="flex items-center space-x-2">
+          <div className="h-4 bg-gray-200 rounded w-12"></div>
+          <div className="h-4 bg-gray-200 rounded w-1"></div>
+          <div className="h-4 bg-gray-200 rounded w-20"></div>
+          <div className="h-4 bg-gray-200 rounded w-1"></div>
+          <div className="h-4 bg-gray-200 rounded w-24"></div>
+          <div className="h-4 bg-gray-200 rounded w-1"></div>
+          <div className="h-4 bg-gray-200 rounded w-16"></div>
+        </div>
+      </div>
+      <div className="block mt-0">
+        <div className="flex items-center gap-2 mb-0">
+          <div className="flex items-center gap-1">
+            <div className="w-5 h-5 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded w-8"></div>
+            <div className="h-4 bg-gray-200 rounded w-16"></div>
+          </div>
+        </div>
+        <div className="h-8 bg-gray-200 rounded w-80 mt-2"></div>
+      </div>
+    </div>
+  );
+
+  const NavigationSkeleton = () => (
+    <div className="animate-pulse mt-5">
+      <div className="flex gap-4 overflow-x-auto">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="h-10 bg-gray-200 rounded-full w-24 flex-shrink-0"></div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const CarouselSkeleton = () => (
+    <div className="animate-pulse py-4">
+      <div className="h-6 bg-gray-200 rounded w-64 mb-6"></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="space-y-3">
+            <div className="h-48 bg-gray-200 rounded"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const GuidesSkeleton = () => (
+    <div className="animate-pulse py-4">
+      <div className="h-6 bg-gray-200 rounded w-80 mb-6"></div>
+      <div className="hidden md:flex gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="w-1/4 space-y-3">
+            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-3 bg-gray-200 rounded"></div>
+            <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+          </div>
+        ))}
+      </div>
+      <div className="md:hidden space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex gap-4 border-b border-gray-200 pb-4">
+            <div className="w-2/5 h-20 bg-gray-200 rounded"></div>
+            <div className="w-3/5 space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-3 bg-gray-200 rounded"></div>
+              <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const ThemesSkeleton = () => (
+    <div className="animate-pulse py-4">
+      <div className="h-6 bg-gray-200 rounded w-48 mb-6"></div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="flex items-center gap-3 p-4 border rounded">
+            <div className="w-6 h-6 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded flex-1"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   // Show loading state
   if (loading) {
-    return <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 py-20 text-center">Loading...</div>;
+    return (
+      <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 md:mt-20">
+        <div className="pt-[76px]">
+          <HeaderSkeleton />
+          <NavigationSkeleton />
+          <div className="mt-8">
+            <CarouselSkeleton />
+            <GuidesSkeleton />
+            <ThemesSkeleton />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Show error state
@@ -500,38 +522,48 @@ export default function SubcategoryPage() {
     return <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 py-20 text-center text-red-600">{error}</div>;
   }
 
+  // Redirect to 404 if no data or no experiences found
+  if (subcategoryPageData) {
+    if (!subcategoryPageData.experiences || subcategoryPageData.experiences.length === 0 || !subcategoryPageData.allCategories) {
+      console.log("No experiences found for this category or missing data");
+      router.push('/not-found');
+      return null;
+    }
+    console.log("Experiences found for this category");
+  }
+
   return (
     <>
-      <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
-        <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
-          {subcategoryPageData && (
+      {subcategoryPageData && (
+        <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
+          <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0">
             <CategoriesDropdown
-              categories={subcategoryPageData.allCategories.map(category => ({
+              categories={subcategoryPageData?.allCategories?.map(category => ({
                 categoryName: category.categoryName,
-                subcategories: category.subcategories.map(sub => ({
+                subcategories: (category.subcategories || []).map(sub => ({
                   subcategoryName: sub.subcategoryName
                 }))
-              }))}
-              topExperiences={subcategoryPageData.allCategories
-                .flatMap(category =>
-                  category.subcategories.flatMap(sub => sub.experiences)
+              })) || []}
+              topExperiences={subcategoryPageData?.allCategories
+                ?.flatMap(category =>
+                  (category.subcategories || []).flatMap(sub => sub.experiences || [])
                 )
-                .slice(0, 15)
+                ?.slice(0, 15) || []
               }
               showCategoriesDropdown={showCategoriesDropdown}
               setShowCategoriesDropdown={setShowCategoriesDropdown}
               setShowBanner={setShowBanner}
             />
-          )}
-          <div
-            className={` transition-all duration-300 origin-top overflow-hidden ${
-              showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
-            }`}
-          >
-            <Banner />
+            <div
+              className={` transition-all duration-300 origin-top overflow-hidden ${
+                showBanner ? "scale-y-100 h-auto" : "scale-y-0 h-0"
+              }`}
+            >
+              <Banner />
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="max-w-[1200px] mx-auto px-[24px] xl:px-0 md:mt-20 ">
         <div className="pt-[76px]">
           {!isWorldwideRoute ? (
@@ -575,35 +607,39 @@ export default function SubcategoryPage() {
                 </Breadcrumb>
               </div>
               <div className="block mt-0">
-                <div className="flex items-center gap-2 mb-0">
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="w-5 h-5  text-[#e5006e] text-[17px]"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      {subcategoryPageData?.reviewStats.averageRating.toFixed(1) || '4.3'}
-                    </span>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      ({subcategoryPageData?.reviewStats.totalReviews.toLocaleString() || '151,002'})
-                    </span>
+                {subcategoryPageData?.reviewStats && (
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                      <svg
+                        className="w-5 h-5  text-[#e5006e] text-[17px]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        {subcategoryPageData.reviewStats.averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        ({subcategoryPageData.reviewStats.totalReviews.toLocaleString()})
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
                 <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
                   {getDynamicHeading()}
                 </h1>
               </div>
 
-              <div className="block mt-5">
-                <SubcategoryNavigation
-                  categoryName={subcategoryPageData?.category.categoryName || decodedCategoryName}
-                  currentSubcategory={subcategory}
-                  subcategories={subcategoryPageData?.category.subcategories || []}
-                />
-              </div>
+              {subcategoryPageData?.category && (
+                <div className="block mt-5">
+                  <SubcategoryNavigation
+                    categoryName={subcategoryPageData.category.categoryName}
+                    currentSubcategory={subcategory}
+                    subcategories={subcategoryPageData.category.subcategories}
+                  />
+                </div>
+              )}
             </>
           ) : (
             <div>
@@ -637,23 +673,25 @@ export default function SubcategoryPage() {
                 </Breadcrumb>
               </div>
               <div className="md:block hidden mt-0">
-                <div className="flex items-center gap-2 mb-0">
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="w-5 h-5  text-[#e5006e] text-[17px]"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                    {subcategoryPageData?.reviewStats.averageRating.toFixed(1) || '4.3'}
-                    </span>
-                    <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                      ({subcategoryPageData?.reviewStats.totalReviews.toLocaleString() || '151,002'})
-                    </span>
+                {subcategoryPageData?.reviewStats && (
+                  <div className="flex items-center gap-2 mb-0">
+                    <div className="flex items-center gap-1">
+                      <svg
+                        className="w-5 h-5  text-[#e5006e] text-[17px]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        {subcategoryPageData.reviewStats.averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                        ({subcategoryPageData.reviewStats.totalReviews.toLocaleString()})
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
                 <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
                   {currentSubCategory.heading}
                 </h1>
@@ -684,16 +722,18 @@ export default function SubcategoryPage() {
                 recommendations={guides}
               />
             </div>
-            <div className="mb-10 mt-10 ">
-              <BrowseThemes
-                title="Browse by themes"
-                themes={subcategoryPageData?.category.subcategories.map(sub => ({
-                  icon: Landmark,
-                  text: sub,
-                  href: `/things-to-do/${city}/${categoryName}/${sub.toLowerCase().replace(/\s+/g, '-')}`
-                })) || currentSubCategory.components.themes || []}
-              />
-            </div>
+            {subcategoryPageData?.category?.subcategories && subcategoryPageData.category.subcategories.length > 0 && (
+              <div className="mb-10 mt-10 ">
+                <BrowseThemes
+                  title="Browse by themes"
+                  themes={subcategoryPageData.category.subcategories.map(sub => ({
+                    icon: Landmark,
+                    text: sub,
+                    href: `/things-to-do/${city}/${categoryName}/${sub.toLowerCase().replace(/\s+/g, '-')}`
+                  }))}
+                />
+              </div>
+            )}
             {!isWorldwideRoute && (
               <div className="mb-15 mt-5">
                 <Destinations />

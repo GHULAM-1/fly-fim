@@ -14,6 +14,8 @@ export default function NotFound() {
     <div className=" flex items-center justify-center px-4">
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
         <CategoriesDropdown
+          categories={[]}
+          topExperiences={[]}
           showCategoriesDropdown={showCategoriesDropdown}
           setShowCategoriesDropdown={setShowCategoriesDropdown}
           setShowBanner={setShowBanner}

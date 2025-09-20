@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, ThumbsUp } from "lucide-react";
+import PriceDisplay from "../PriceDisplay";
 
 interface PopularAttraction {
   id: number;
@@ -438,7 +439,7 @@ const PopularThings: React.FC<PopularThingsProps> = ({
                   {/* Price - fixed at bottom with background to mask content */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 z-10 text-white">
                     <div className="text-lg font-bold bg-gradient-to-t from-[rgb(21,1,42)] via-[rgb(21,1,42)] to-transparent -mx-4 px-4 pt-2 pb-4 -mb-4">
-                      {card.price}
+                      <PriceDisplay amount={typeof card.price === 'string' ? parseFloat(card.price.replace(/[^0-9.]/g, '')) || 0 : card.price || 0} />
                     </div>
                   </div>
 
