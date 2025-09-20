@@ -90,7 +90,6 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
 
   const handleCurrencySelect = (curr: (typeof CURRENCIES)[0]) => {
     setCurrency(curr);
-    console.log(curr);
     setIsCurrencyDrawerOpen(false);
     setSearchQuery("");
   };

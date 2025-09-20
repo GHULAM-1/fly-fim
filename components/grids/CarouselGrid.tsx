@@ -16,7 +16,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -110,8 +110,8 @@ const CarouselGrid = ({
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
+  const router = useRouter();
   const { isCalendarOpen } = useCalendarState();
-
   const cityStr = city ? (Array.isArray(city) ? city[0] : city) : "";
   const categoryStr = category
     ? Array.isArray(category)
@@ -136,7 +136,7 @@ const CarouselGrid = ({
   const [apiRecommendations, setApiRecommendations] = useState<any[]>([]);
   const [isLoadingApiData, setIsLoadingApiData] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -331,7 +331,10 @@ const CarouselGrid = ({
       off: exp.basicInfo?.sale || exp.off,
       rating: 4.5, // Default since not in API structure
       reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews
-      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation"
+      badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation",
+      city: exp.relationships?.cityName,
+      category: exp.relationships?.categoryName,
+      subcategory: exp.relationships?.subcategoryName
     }));
   };
 
@@ -933,8 +936,8 @@ const CarouselGrid = ({
                   oldPrice={recommendation.oldPrice}
                   badge={recommendation.badge}
                   city={cityStr}
-                  category={categoryStr}
-                  subcategory={subcategoryStr}
+                  category={recommendation.category}
+                  subcategory={recommendation.subcategory}
                   itemId={recommendation.id}
                 />
               ))
@@ -1018,7 +1021,6 @@ const CarouselGrid = ({
         handleNavigate("prev");
       }
     };
-
     return (
       <div className="py-4 max-w-screen-[1200px] mx-auto 2xl:px-0">
         <div className="flex justify-between items-center mb-8">
@@ -1054,11 +1056,26 @@ const CarouselGrid = ({
             className="flex gap-6 overflow-x-scroll h-[369px] scrollbar-hide"
             ref={scrollContainerRef}
           >
-            {recommendations.map((museum) => (
-              <div
-                key={museum.id}
-                className="flex-shrink-0 cursor-pointer group w-[calc(24%-10px)] h-[354px] relative"
-              >
+            {recommendations.map((museum) => {
+              const generateMuseumLink = () => {
+                const slugify = (text: string) =>
+                  text
+                    ?.toLowerCase()
+                    ?.replace(/\s+/g, "-")
+                    .replace(/[^\w-]+/g, "");
+
+                const citySlug = slugify(museum.city || cityStr);
+                const categorySlug = slugify(museum.category || "");
+                const subcategorySlug = slugify(museum.subcategory || "");
+                return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${museum.id}`;
+              };
+
+              return (
+                <div
+                  key={museum.id}
+                  className="flex-shrink-0 cursor-pointer group w-[calc(24%-10px)] h-[354px] relative"
+                  onClick={() => router.push(generateMuseumLink())}
+                >
                 <div className="flex justify-center relative h-[15px] items-center flex-col ">
                   <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
                   <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
@@ -1095,8 +1112,9 @@ const CarouselGrid = ({
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1114,9 +1132,26 @@ const CarouselGrid = ({
             >
               {recommendations.map((museum, index) => {
                 const active = index === currentMuseumIndex;
+                const generateMuseumLink = () => {
+                  const slugify = (text: string) =>
+                    text
+                      ?.toLowerCase()
+                      ?.replace(/\s+/g, "-")
+                      .replace(/[^\w-]+/g, "");
+
+                  const citySlug = slugify(museum.city || cityStr);
+                  const categorySlug = slugify(museum.category || "museums");
+                  const subcategorySlug = slugify(museum.subcategory || "art-museums");
+
+                  return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${museum.id}`;
+                };
 
                 return (
-                  <div key={museum.id} className="w-[27%] shrink-0">
+                  <div
+                    key={museum.id}
+                    className="w-[27%] shrink-0"
+                    onClick={() => router.push(generateMuseumLink())}
+                  >
                     <div className="relative h-[334px] rounded-lg overflow-hidden shadow-lg">
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
@@ -1490,8 +1525,8 @@ const CarouselGrid = ({
                 oldPrice={recommendation.oldPrice}
                 badge={recommendation.badge}
                 city={cityStr}
-                category={categoryStr}
-                subcategory={subcategoryStr}
+                category={recommendation.category}
+                subcategory={recommendation.subcategory}
                 itemId={recommendation.id}
               />
             </div>

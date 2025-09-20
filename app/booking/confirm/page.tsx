@@ -415,7 +415,6 @@ const ConfirmAndPayPage = () => {
   };
   
   const ticketsLink = constructTicketsLink();
-  console.log(ticketsLink);
 
   useEffect(() => {
     const fetchExperience = async () => {

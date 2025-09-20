@@ -25,7 +25,6 @@ const AvailabilityChecker: React.FC<AvailabilityCheckerProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Calculate discount percentage automatically
-  console.log(experience);
   const price = experience?.data?.price || 0;
   const oldPrice = experience?.data?.oldPrice || 0;
   const calculatedOff =

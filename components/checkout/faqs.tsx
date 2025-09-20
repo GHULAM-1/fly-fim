@@ -247,11 +247,6 @@ const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
       ? [experience.data.whereTo.lat, experience.data.whereTo.lng]
       : [37.3857231, -5.9922638]; // Fallback coordinates
 
-    console.log('Mobile map coordinates:', coordinates);
-    console.log('API whereTo data:', experience?.data?.whereTo);
-    console.log('Full experience data structure:', experience?.data);
-    console.log('Available keys in experience.data:', Object.keys(experience?.data || {}));
-
     const address = experience?.data?.whereTo?.address || "Meeting Point";
 
     // Fix default markers in Leaflet
@@ -324,9 +319,6 @@ const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
       const coordinates: [number, number] = experience?.data?.whereTo
         ? [experience.data.whereTo.lat, experience.data.whereTo.lng]
         : [37.3857231, -5.9922638]; // Fallback coordinates
-      console.log('Full experience data structure:', experience?.data);
-      console.log('Desktop map coordinates:', coordinates);
-      console.log('API whereTo data:', experience?.data?.whereTo);
 
       const address = experience?.data?.whereTo?.address || "Meeting Point";
 
@@ -655,8 +647,6 @@ const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
                     onClick={() => {
                       if (experience?.data?.whereTo) {
                         const { lat, lng } = experience.data.whereTo;
-                        console.log('Google Maps redirect coordinates:', lat, lng);
-                        console.log('Google Maps URL:', `https://maps.google.com/?q=${lat},${lng}`);
                         window.open(
                           `https://maps.google.com/?q=${lat},${lng}`,
                           "_blank"

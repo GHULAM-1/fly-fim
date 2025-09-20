@@ -192,7 +192,6 @@ export default function SubcategoryPage() {
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
       return [];
     }
-    console.log(apiExperiences);
     return apiExperiences.map(exp => ({
       id: exp._id,
       cityId: exp.relationships.cityId,
