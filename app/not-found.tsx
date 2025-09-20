@@ -35,11 +35,11 @@ export default function NotFound() {
     <div className=" flex items-center justify-center px-4">
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
         <CategoriesDropdown
+          topExperiences={[]}
           showCategoriesDropdown={showCategoriesDropdown}
           setShowCategoriesDropdown={setShowCategoriesDropdown}
           setShowBanner={setShowBanner}
           categories={categories}
-          topExperiences={[]}
         />
       </div>
       <div className="max-w-[1200px] w-full md:mt-74 mt-24"> 

@@ -325,7 +325,7 @@ const CarouselGrid = ({
       type: exp.relationships?.subcategoryName,
       description: exp.basicInfo?.title || exp.description || '',
       place: exp.basicInfo?.tagOnCards || exp.place || '',
-      image: exp.basicInfo?.mainImage?.[0] || exp.image || "/images/default.jpg",
+      image: exp.basicInfo?.images || exp.image || "/images/default.jpg",
       price: exp.basicInfo?.price || exp.price || 0,
       oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
       off: exp.basicInfo?.sale || exp.off,
@@ -1123,8 +1123,7 @@ const CarouselGrid = ({
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
               style={{
-                transform: `translateX(-${currentMuseumIndex * 27}%)`,
-                width: `${recommendations.length * 27}%`,
+                transform: `translateX(-${currentMuseumIndex * (260 + 16)}px)`,
               }}
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
@@ -1147,11 +1146,7 @@ const CarouselGrid = ({
                 };
 
                 return (
-                  <div
-                    key={museum.id}
-                    className="w-[27%] shrink-0"
-                    onClick={() => router.push(generateMuseumLink())}
-                  >
+                  <div key={museum.id} className="w-[260px] shrink-0">
                     <div className="relative h-[334px] rounded-lg overflow-hidden shadow-lg">
                       <div className="flex justify-center relative h-[15px] items-center flex-col z-10">
                         <div
@@ -1196,7 +1191,7 @@ const CarouselGrid = ({
                             {museum.description}
                           </p>
                           <div className="text-lg font-bold">
-                            <PriceDisplay amount={museum.price} />
+                            <PriceDisplay amount={typeof museum.price === 'string' ? parseFloat(museum.price.replace(/[^0-9.]/g, '')) || 0 : museum.price || 0} />
                           </div>
                         </div>
                       </div>
