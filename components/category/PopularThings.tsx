@@ -1,16 +1,22 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, ThumbsUp } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import PriceDisplay from "../PriceDisplay";
 
 interface PopularAttraction {
   id: number;
   title: string;
   description: string;
   category: string;
-  price: string;
+  price: number | string;
   image: string;
   audience: string[];
   rating?: number;
+  city?: string;
+  subcategory?: string;
+  itemId?: string;
 }
 
 interface PopularThingsProps {
@@ -78,6 +84,24 @@ const PopularThings: React.FC<PopularThingsProps> = ({
   ],
   title = "Popular things to do",
 }) => {
+  const router = useRouter();
+
+  // URL generation function
+  const generateLink = (attraction: PopularAttraction) => {
+    const slugify = (text: string) =>
+      text
+        ?.toLowerCase()
+        ?.replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "");
+
+    const citySlug = slugify(attraction.city || "");
+    const categorySlug = slugify(attraction.category || "");
+    const subcategorySlug = slugify(attraction.subcategory || "");
+    const itemId = attraction.itemId;
+
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemId}`;
+  };
+
   // ===== State =====
   const VISIBLE_DESKTOP = 3;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -248,6 +272,7 @@ const PopularThings: React.FC<PopularThingsProps> = ({
                   }`}
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => router.push(generateLink(attraction))}
                   style={{
                     transform: !isVisible ? "scale(0.8)" : "scale(1)",
                   }}
@@ -347,7 +372,7 @@ const PopularThings: React.FC<PopularThingsProps> = ({
 
                     {/* Price */}
                     <div className="text-white font-bold text-[16px] font-halyard-text">
-                      {attraction.price}
+                      <PriceDisplay amount={typeof attraction.price === 'string' ? parseFloat(attraction.price.replace(/[^0-9.]/g, '')) || 0 : attraction.price || 0} />
                     </div>
                   </div>
                 </div>
@@ -371,7 +396,8 @@ const PopularThings: React.FC<PopularThingsProps> = ({
               <div
                 key={card.id}
                 data-card-index={i}
-                className="w-[65%] relative shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px]"
+                className="w-[65%] relative shrink-0 snap-center pr-2 first:ml-[24px] last:mr-[24px] cursor-pointer"
+                onClick={() => router.push(generateLink(card))}
               >
                 <div className="absolute top-0 left-4 z-20">
                   <div className="card-rank-tag bg-[rgb(229,0,110)] text-white px-[14px] py-1 font-bold text-sm relative flex items-center justify-center">
@@ -438,7 +464,7 @@ const PopularThings: React.FC<PopularThingsProps> = ({
                   {/* Price - fixed at bottom with background to mask content */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 z-10 text-white">
                     <div className="text-lg font-bold bg-gradient-to-t from-[rgb(21,1,42)] via-[rgb(21,1,42)] to-transparent -mx-4 px-4 pt-2 pb-4 -mb-4">
-                      {card.price}
+                      <PriceDisplay amount={typeof card.price === 'string' ? parseFloat(card.price.replace(/[^0-9.]/g, '')) || 0 : card.price || 0} />
                     </div>
                   </div>
 

@@ -8,13 +8,15 @@ import "swiper/css/pagination";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "../ui/input";
 import { Search, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 interface HeroProps {
   city?: string;
   images?: string[];
+  experiences?: any[];
 }
 
-const Hero: React.FC<HeroProps> = ({ city, images }) => {
+const Hero: React.FC<HeroProps> = ({ city, images, experiences }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -305,6 +307,21 @@ const Hero: React.FC<HeroProps> = ({ city, images }) => {
     }
   }, [isCustomDrawerOpen]);
 
+  // Function to generate URL for experiences
+  const generateExperienceUrl = (experience: any) => {
+    const slugify = (text: string) =>
+      text
+        ?.toLowerCase()
+        ?.replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+
+    const citySlug = slugify(experience.relationships?.cityName || "");
+    const categorySlug = slugify(experience.relationships?.categoryName || "");
+    const subcategorySlug = slugify(experience.relationships?.subcategoryName || "");
+    const experienceId = experience._id;
+
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${experienceId}`;
+  };
 
   return (
     <>
@@ -390,7 +407,22 @@ const Hero: React.FC<HeroProps> = ({ city, images }) => {
             className="mySwiper w-full h-[45vh] md:h-[60vh] lg:max-h-[500px] lg:h-full rounded-2xl overflow-hidden"
             onSlideChange={handleSlideChange}
           >
-            {images?.map((image, index) => (
+            {(experiences || []).length > 0 ?
+              experiences?.flatMap((experience) =>
+                (experience.basicInfo?.mainImage || experience.basicInfo?.images || []).map((image: any, imageIndex: any) => (
+                  <SwiperSlide key={`${experience._id}-${imageIndex}`} className="rounded-2xl">
+                    <Link href={generateExperienceUrl(experience)} target="_blank">
+                      <div className="relative w-full h-full cursor-pointer">
+                        <img
+                          src={image}
+                          className="w-full h-full object-cover rounded-2xl"
+                          alt={experience.basicInfo?.title || `Hero slide`}
+                        />
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                ))
+              ) : images?.map((image, index) => (
               <SwiperSlide key={index} className="rounded-2xl">
                 <div className="relative w-full h-full">
                   <img

@@ -71,6 +71,14 @@ import { fetchCategoryBycategoryName } from "@/api/category/category-api";
 import { fetchCategoryPageById } from "@/api/category-page/category-page-api";
 import { CategoryPageData } from "@/types/category-page/category-page-types";
 import { Category as APICategory } from "@/types/things-to-do/things-to-do-types";
+import {
+  CategoryPageHeaderSkeleton,
+  CategoryNavigationSkeleton,
+  CategoryPopularThingsSkeleton,
+  CategoryCarouselGridSkeleton,
+  CategoryBrowseThemesSkeleton,
+  CategoryTestimonialsSkeleton,
+} from "@/components/skeletons/CategoryPageSkeletons";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -118,6 +126,7 @@ export default function CategoryPage() {
   const mapExperiencesToAttractions = (experiences: any[]) => {
     return experiences.map((experience, index) => ({
       id: index + 1,
+      itemId: experience._id,
       title: experience.basicInfo?.title || `Experience ${index + 1}`,
       description:
         experience.basicInfo?.description || "Discover an amazing experience",
@@ -125,6 +134,8 @@ export default function CategoryPage() {
         categoryPageData?.category?.categoryName ||
         formattedCategoryName ||
         "Experience",
+      city: experience.relationships?.cityName,
+      subcategory: experience.relationships?.subcategoryName,
       price: experience.basicInfo?.price || 0,
       image:
         experience.basicInfo?.mainImage?.[0] ||
@@ -153,7 +164,7 @@ export default function CategoryPage() {
           ?.replace(/[&]/g, "") || "general";
 
       return {
-        id: index + 1,
+        id: experience._id,
         itemId: experience._id || `exp-${index + 1}`,
         description:
           experience.basicInfo?.title || `Top Experience ${index + 1}`,
@@ -165,6 +176,8 @@ export default function CategoryPage() {
         image: experience.basicInfo?.images || ["/images/r1.jpg.avif"],
         price: price,
         oldPrice: oldPrice,
+        category: experience.relationships?.categoryName,
+        subcategory: experience.relationships?.subcategoryName,
         off: off,
         rating: 4.5,
         reviews: Math.floor(Math.random() * 4000) + 1000, // Random reviews between 1000-5000
@@ -173,114 +186,6 @@ export default function CategoryPage() {
       };
     });
   };
-
-  const recommendations = [
-    {
-      id: 1,
-      description: "Edge Observation Deck Tickets: Timed Entry",
-      place: "Edge NYC",
-      image: "/images/r4.jpg.avif",
-      price: 39.2,
-      off: 3,
-      oldPrice: 42.2,
-      rating: 4.5,
-      reviews: 5897,
-      badge: "Free cancellation",
-    },
-    {
-      id: 2,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      oldPrice: 32.2,
-      off: 3,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 3,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 4,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 5,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 6,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 7,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 8,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 9,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 10,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-  ];
 
   const categoryName = params.category as string;
   const city = params.city as string;
@@ -2016,159 +1921,166 @@ export default function CategoryPage() {
       </div>
       <div className="max-w-[1200px] mx-auto xl:px-0 md:mt-20 ">
         <div className="pt-[76px]">
-          <div className="px-[24px] xl:px-0">
-            {!isWorldwideRoute ? (
-              <>
-                <div className="mb-[34px] md:block hidden">
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      <BreadcrumbItem>
-                        <BreadcrumbLink
-                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                          href="/"
-                        >
-                          Home
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                      <BreadcrumbSeparator />
-                      <BreadcrumbItem>
-                        <BreadcrumbLink
-                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                          href={`/things-to-do/${city}`}
-                        >
-                          {formattedCityName}
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                      <BreadcrumbSeparator />
-                      <BreadcrumbItem>
-                        <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                          {formattedCategoryName}
-                        </BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </BreadcrumbList>
-                  </Breadcrumb>
-                </div>
-                <div className="block mt-0">
-                  <div className="flex items-center gap-2 mb-0">
-                    <div className="flex items-center gap-1">
-                      <svg
-                        className="w-5 h-5  text-[#e5006e] text-[17px]"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        {categoryPageData?.reviews ?
-                          (categoryPageData.reviews.reduce((acc, review) => acc + review.stars, 0) / categoryPageData.reviews.length).toFixed(1)
-                          : '4.3'}
-                      </span>
-                      <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        ({categoryPageData?.reviews ? categoryPageData.reviews.length.toLocaleString() : '151,002'})
-                      </span>
-                    </div>
+          {loading ? (
+            <CategoryPageHeaderSkeleton />
+          ) : (
+            <div className="px-[24px] xl:px-0">
+              {!isWorldwideRoute ? (
+                <>
+                  <div className="mb-[34px] md:block hidden">
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem>
+                          <BreadcrumbLink
+                            className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                            href="/"
+                          >
+                            Home
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbLink
+                            className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                            href={`/things-to-do/${city}`}
+                          >
+                            {formattedCityName}
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                            {formattedCategoryName}
+                          </BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
                   </div>
-                  <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
-                    {currentCategory.heading}
-                  </h1>
-                </div>
-              </>
-            ) : (
-              <div>
-                <div className="mb-[24px]">
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      <BreadcrumbItem>
-                        <BreadcrumbLink
-                          className="text-[14px] underline font-halyard-text-light text-[#666666]"
-                          href="/"
+                  <div className="block mt-0">
+                    <div className="flex items-center gap-2 mb-0">
+                      <div className="flex items-center gap-1">
+                        <svg
+                          className="w-5 h-5  text-[#e5006e] text-[17px]"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
                         >
-                          Home
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                      <BreadcrumbSeparator />
-                      <BreadcrumbItem>
-                        <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
-                          {formattedCategoryName}
-                        </BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </BreadcrumbList>
-                  </Breadcrumb>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div>
-                    <h1 className="text-[21px] font-halyard-text text-[#444444] font-semibold">
-                      {formattedCategoryName} Worldwide
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                          {categoryPageData?.reviews ?
+                            (categoryPageData.reviews.reduce((acc, review) => acc + review.stars, 0) / categoryPageData.reviews.length).toFixed(1)
+                            : '4.3'}
+                        </span>
+                        <span className="text-[#e5006e] text-[17px] font-halyard-text">
+                          ({categoryPageData?.reviews ? categoryPageData.reviews.length.toLocaleString() : '151,002'})
+                        </span>
+                      </div>
+                    </div>
+                    <h1 className="text-[21px] md:text-[30px] font-bold text-[#444444] font-halyard-text">
+                      {currentCategory.heading}
                     </h1>
                   </div>
-                  <div className="flex items-center pt-[6px]">
-                    <Drawer
-                      open={isMobileDrawerOpen}
-                      onOpenChange={setIsMobileDrawerOpen}
-                    >
-                      <DrawerTrigger asChild>
-                        <button>
-                          <ChevronDown size={26} className="text-gray-600" />
-                        </button>
-                      </DrawerTrigger>
-                    </Drawer>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="md:hidden flex justify-center mb-4">
-              <Drawer
-                open={isMobileDrawerOpen}
-                onOpenChange={setIsMobileDrawerOpen}
-              >
-                <DrawerContent className="max-h-[85vh]">
-                  <DrawerHeader className="text-start">
-                    <DrawerTitle className="text-[18px] border-b-[1px] pb-4 font-medium font-halyard-text text-[#444444]">
-                      Categories Worldwide
-                    </DrawerTitle>
-                  </DrawerHeader>
-                  <div className="px-4 pb-6">
-                    <div className="grid grid-cols-2 gap-3">
-                      {categories.map((item) => {
-                        return (
-                          <button
-                            key={item.id}
-                            onClick={() => {
-                              scrollToSection(item.id.toString());
-                              setIsMobileDrawerOpen(false);
-                            }}
-                            className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
+                </>
+              ) : (
+                <div>
+                  <div className="mb-[24px]">
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem>
+                          <BreadcrumbLink
+                            className="text-[14px] underline font-halyard-text-light text-[#666666]"
+                            href="/"
                           >
-                            <a
-                              href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
-                              className="text-sm font-halyard-text-light text-[#444444] leading-tight"
-                            >
-                              {item.name}
-                            </a>
+                            Home
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage className="text-[14px] font-halyard-text-light text-[#666666]">
+                            {formattedCategoryName}
+                          </BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h1 className="text-[21px] font-halyard-text text-[#444444] font-semibold">
+                        {formattedCategoryName} Worldwide
+                      </h1>
+                    </div>
+                    <div className="flex items-center pt-[6px]">
+                      <Drawer
+                        open={isMobileDrawerOpen}
+                        onOpenChange={setIsMobileDrawerOpen}
+                      >
+                        <DrawerTrigger asChild>
+                          <button>
+                            <ChevronDown size={26} className="text-gray-600" />
                           </button>
-                        );
-                      })}
+                        </DrawerTrigger>
+                      </Drawer>
                     </div>
                   </div>
-                </DrawerContent>
-              </Drawer>
+                </div>
+              )}
             </div>
+          )}
+
+          <div className="md:hidden flex justify-center mb-4">
+            <Drawer
+              open={isMobileDrawerOpen}
+              onOpenChange={setIsMobileDrawerOpen}
+            >
+              <DrawerContent className="max-h-[85vh]">
+                <DrawerHeader className="text-start">
+                  <DrawerTitle className="text-[18px] border-b-[1px] pb-4 font-medium font-halyard-text text-[#444444]">
+                    Categories Worldwide
+                  </DrawerTitle>
+                </DrawerHeader>
+                <div className="px-4 pb-6">
+                  <div className="grid grid-cols-2 gap-3">
+                    {categories.map((item) => {
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            scrollToSection(item.id.toString());
+                            setIsMobileDrawerOpen(false);
+                          }}
+                          className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
+                        >
+                          <a
+                            href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
+                            className="text-sm font-halyard-text-light text-[#444444] leading-tight"
+                          >
+                            {item.name}
+                          </a>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </DrawerContent>
+            </Drawer>
           </div>
-          <div
-            ref={navigationRef}
-            data-navigation
-            className={`${
-              (formattedCategoryName.toLowerCase() === "ticket" ||
-              formattedCategoryName.toLowerCase() === "tickets"
-                ? "bordered"
-                : currentCategory.style) === "simple"
-                ? "relative"
-                : "sticky md:top-30 top-15"
-            } w-full bg-white z-30 py-4 transition-all duration-500 transform ${
-              isCarouselVisible ? "translate-y-0" : "-translate-y-full"
-            }`}
-          >
+          {loading ? (
+            <CategoryNavigationSkeleton />
+          ) : (
+            <div
+              ref={navigationRef}
+              data-navigation
+              className={`${
+                (formattedCategoryName.toLowerCase() === "ticket" ||
+                formattedCategoryName.toLowerCase() === "tickets"
+                  ? "bordered"
+                  : currentCategory.style) === "simple"
+                  ? "relative"
+                  : "sticky md:top-30 top-15"
+              } w-full bg-white z-30 py-4 transition-all duration-500 transform ${
+                isCarouselVisible ? "translate-y-0" : "-translate-y-full"
+              }`}
+            >
             <div className="relative">
               <div
                 ref={scrollContainerRef}
@@ -2260,16 +2172,22 @@ export default function CategoryPage() {
               )}
             </div>
           </div>
+          )}
           <div className="md:mt-10 mt-0">
-            {!isWorldwideRoute &&
-              categoryPageData?.popularExperiences &&
-              categoryPageData.popularExperiences.length > 0 && (
-                <PopularThings
-                  attractions={mapExperiencesToAttractions(
-                    categoryPageData.popularExperiences
-                  )}
-                />
-              )}
+            {!isWorldwideRoute && (
+              loading ? (
+                <CategoryPopularThingsSkeleton />
+              ) : (
+                categoryPageData?.popularExperiences &&
+                categoryPageData.popularExperiences.length > 0 && (
+                  <PopularThings
+                    attractions={mapExperiencesToAttractions(
+                      categoryPageData.popularExperiences
+                    )}
+                  />
+                )
+              )
+            )}
           </div>
           <div className="">
             {currentCategory.components.popular && isWorldwideRoute && (
@@ -2280,37 +2198,37 @@ export default function CategoryPage() {
             )}
           </div>
           <div>
-            {isWorldwideRoute ? (
-              <div className="border-b-[1px]  pb-10 mb-10 px-[24px] xl:px-0">
-                <CarouselGrid
-                  title={`Top experiences`}
-                  variant="pills"
-                  pills={false}
-                  recommendations={
-                    categoryPageData?.topExperiences &&
-                    categoryPageData.topExperiences.length > 0
-                      ? mapTopExperiencesToRecommendations(
-                          categoryPageData.topExperiences
-                        )
-                      : recommendations
-                  }
-                />
-              </div>
+            {loading ? (
+              <CategoryCarouselGridSkeleton title="Top experiences" />
             ) : (
-              <div className="px-[24px] xl:px-0">
-                <CarouselGrid
-                  title={`Top experiences in ${formattedCityName}`}
-                  variant="pills"
-                  recommendations={
-                    categoryPageData?.topExperiences &&
-                    categoryPageData.topExperiences.length > 0
-                      ? mapTopExperiencesToRecommendations(
-                          categoryPageData.topExperiences
-                        )
-                      : recommendations
-                  }
-                />
-              </div>
+              isWorldwideRoute ? (
+                categoryPageData?.topExperiences &&
+                categoryPageData.topExperiences.length > 0 && (
+                  <div className="border-b-[1px]  pb-10 mb-10 px-[24px] xl:px-0">
+                    <CarouselGrid
+                      title={`Top experiences`}
+                      variant="pills"
+                      pills={false}
+                      recommendations={mapTopExperiencesToRecommendations(
+                        categoryPageData.topExperiences
+                      )}
+                    />
+                  </div>
+                )
+              ) : (
+                categoryPageData?.topExperiences &&
+                categoryPageData.topExperiences.length > 0 && (
+                  <div className="px-[24px] xl:px-0">
+                    <CarouselGrid
+                      title={`Top experiences in ${formattedCityName}`}
+                      variant="pills"
+                      recommendations={mapTopExperiencesToRecommendations(
+                        categoryPageData.topExperiences
+                      )}
+                    />
+                  </div>
+                )
+              )
             )}
             {currentCategory.components.stack &&
               (dynamicNavigationItems.length > 0 ? dynamicNavigationItems : currentCategory.navigationItems).map((item) => (
@@ -2329,7 +2247,7 @@ export default function CategoryPage() {
                       );
 
                       const mapped = filtered.map((experience, index) => ({
-                        id: index + 1,
+                        id: experience._id,
                         name:
                           experience.basicInfo?.title ||
                           `Experience ${index + 1}`,
@@ -2344,6 +2262,9 @@ export default function CategoryPage() {
                           experience.basicInfo?.description ||
                           `Discover ${experience.basicInfo?.title}`,
                         price: experience.basicInfo?.price || 0,
+                        city: experience.relationships?.cityName,
+                        category: experience.relationships?.categoryName,
+                        subcategory: experience.relationships?.subcategoryName
                       }));
 
                       return mapped.length > 0 ? mapped : [];
@@ -2381,22 +2302,26 @@ export default function CategoryPage() {
           )}
 
           <div className="mb-10 px-[24px] xl:px-0">
-            <BrowseThemes
-              title="Browse by themes"
-              themes={
-                categoryPageData?.categories
-                  ? categoryPageData.categories.flatMap((category) =>
-                      category.subcategories.map((subcategory) => ({
-                        icon: getIconForSubcategory(
-                          subcategory.subcategoryName
-                        ),
-                        text: subcategory.subcategoryName,
-                        href: `/things-to-do/${formattedCityName}/${formattedCategoryName}/${subcategory.subcategoryName.toLowerCase().replace(/\s+/g, "-").replace(/[&]/g, "")}`,
-                      }))
-                    )
-                  : currentCategory.components.themes || []
-              }
-            />
+            {loading ? (
+              <CategoryBrowseThemesSkeleton />
+            ) : (
+              <BrowseThemes
+                title="Browse by themes"
+                themes={
+                  categoryPageData?.categories
+                    ? categoryPageData.categories.flatMap((category) =>
+                        category.subcategories.map((subcategory) => ({
+                          icon: getIconForSubcategory(
+                            subcategory.subcategoryName
+                          ),
+                          text: subcategory.subcategoryName,
+                          href: `/things-to-do/${formattedCityName}/${formattedCategoryName}/${subcategory.subcategoryName.toLowerCase().replace(/\s+/g, "-").replace(/[&]/g, "")}`,
+                        }))
+                      )
+                    : currentCategory.components.themes || []
+                }
+              />
+            )}
           </div>
           {!isWorldwideRoute && (
             <div className="mb-10 px-[24px] xl:px-0 md:mb-20">
@@ -2409,7 +2334,13 @@ export default function CategoryPage() {
           </div>
           {currentCategory.components.testimonials && !isWorldwideRoute && (
             <div className="mb-10 px-[24px] xl:px-0">
-              <Testimonials variant="default" reviewsData={categoryPageData?.reviews} />
+              {loading ? (
+                <CategoryTestimonialsSkeleton />
+              ) : (
+                categoryPageData?.reviews && (
+                  <Testimonials variant="default" reviewsData={categoryPageData.reviews} />
+                )
+              )}
             </div>
           )}
           <div className="mb-10 px-[24px] xl:px-0">

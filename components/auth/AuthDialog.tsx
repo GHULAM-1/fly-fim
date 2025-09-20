@@ -55,7 +55,6 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
  
   const handleGoogleSignIn = () => {
     setError(null);
-    console.log("Google sign-in clicked");
 
     try {
       const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
@@ -67,8 +66,6 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         `scope=email%20profile&` +
         `access_type=offline`;
 
-      console.log("Redirect URI:", redirectUri);
-      console.log("Full Google OAuth URL:", googleAuthUrl);
       window.location.href = googleAuthUrl;
     } catch (error) {
       console.error("Error redirecting to Google:", error);

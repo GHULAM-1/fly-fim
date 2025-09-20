@@ -41,6 +41,15 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import {
+  ThingsToDoHeroSkeleton,
+  ThingsToDoNavigationSkeleton,
+  ThingsToDoCarouselSkeleton,
+  ThingsToDoMustDoSkeleton,
+  ThingsToDoBrowseThemesSkeleton,
+  ThingsToDoTestimonialsSkeleton,
+  ThingsToDoFaqsSkeleton,
+} from "@/components/skeletons/ThingsToDoSkeletons";
 
 const ThingsToDo = () => {
   const {
@@ -392,13 +401,17 @@ const ThingsToDo = () => {
       id: exp._id,
       description: exp.basicInfo.title,
       place: exp.basicInfo.tagOnCards || "",
-      image: exp.basicInfo.mainImage[0] || "/images/default.jpg",
+      image: exp.basicInfo.images || "/images/default.jpg",
       price: exp.basicInfo.price,
       oldPrice: exp.basicInfo.oldPrice,
       off: exp.basicInfo.sale,
       rating: 4.5, // Default since not in API
       reviews: Math.floor(Math.random() * 5000) + 1000, // Random reviews for variety
-      badge: exp.basicInfo.tagOnCards
+      badge: exp.basicInfo.tagOnCards,
+      city: exp.relationships?.cityName,
+      category: exp.relationships?.categoryName,
+      subcategory: exp.relationships?.subcategoryName,
+      itemId: exp._id
     }));
   };
 
@@ -608,113 +621,6 @@ const ThingsToDo = () => {
     checkScrollButtons();
   }, []);
 
-  const recommendations = [
-    {
-      id: 1,
-      description: "Edge Observation Deck Tickets: Timed Entry",
-      place: "Edge NYC",
-      image: "/images/r4.jpg.avif",
-      price: 39.2,
-      off: 3,
-      oldPrice: 42.2,
-      rating: 4.5,
-      reviews: 5897,
-      badge: "Free cancellation",
-    },
-    {
-      id: 2,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      oldPrice: 32.2,
-      off: 3,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 3,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 4,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 5,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 6,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 7,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-    {
-      id: 8,
-      description: "The Museum of Modern Art (MoMA) Tickets",
-      place: "Museum of Modern Art (MoMA)",
-      image: "/images/r3.jpg.avif",
-      price: 30,
-      off: 3,
-      oldPrice: 32.2,
-      rating: 4.4,
-      reviews: 4489,
-    },
-    {
-      id: 9,
-      description: "NYC Helicopter Tour from Downtown Manhattan",
-      place: "Helicopter Tours",
-      image: "/images/r2.jpg.avif",
-      price: 259,
-      rating: 4.5,
-      reviews: 7792,
-      badge: "Free cancellation",
-    },
-    {
-      id: 10,
-      description: "Go City New York Explorer Pass: Choose 2 to 10 Attractions",
-      place: "City Cards",
-      image: "/images/r1.jpg.avif",
-      price: 89,
-      rating: 4.5,
-      reviews: 2110,
-      badge: "Free cancellation",
-    },
-  ];
 
   // Show loading or blank screen while checking data or redirecting
   if (loading || isRedirecting) {
@@ -792,7 +698,11 @@ const ThingsToDo = () => {
         </div>
 
         <div className="max-w-[1200px] relative mx-auto px-[24px] xl:px-0 ">
-          <Hero city={city} images={thingsToDoData?.mainCards.flatMap((card) => card.basicInfo.mainImage)} />
+          {loading ? (
+            <ThingsToDoHeroSkeleton />
+          ) : (
+            <Hero city={city} images={thingsToDoData?.mainCards.flatMap((card) => card.basicInfo.mainImage)}  experiences={thingsToDoData?.mainCards}/>
+          )}
           <div className="md:hidden px-3 mt-[-30px] pb-2  relative z-40">
             <button
               className="pl-2 w-full flex items-center bg-white gap-2 rounded-md p-1 shadow-lg text-sm cursor-pointer"
@@ -809,110 +719,146 @@ const ThingsToDo = () => {
           </div>
         </div>
 
-        <div
-          ref={navigationRef}
-          data-navigation
-          className={`block sticky w-full bg-white z-20 py-4 md:top-30 top-16 ${
-            isSectionActive ? "shadow-lg" : ""
-          }`}
-        >
-          <div className="relative">
-            <div
-              ref={scrollContainerRef}
-              className="flex relative gap-2 overflow-x-auto scrollbar-hide z-20 max-w-[1200px] mx-auto px-[24px] xl:px-0"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {showLeftButton && (
-                <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center flex">
-                  <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
-                    <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                      <ChevronLeft
-                        size={16}
-                        className="text-[#444444]"
-                        onClick={scrollLeft}
-                      />
+        {loading ? (
+          <ThingsToDoNavigationSkeleton />
+        ) : (
+          <div
+            ref={navigationRef}
+            data-navigation
+            className={`block sticky w-full bg-white z-20 py-4 md:top-30 top-16 ${
+              isSectionActive ? "shadow-lg" : ""
+            }`}
+          >
+            <div className="relative">
+              <div
+                ref={scrollContainerRef}
+                className="flex relative gap-2 overflow-x-auto scrollbar-hide z-20 max-w-[1200px] mx-auto px-[24px] xl:px-0"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {showLeftButton && (
+                  <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center flex">
+                    <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
+                      <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                        <ChevronLeft
+                          size={16}
+                          className="text-[#444444]"
+                          onClick={scrollLeft}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {uniqueSubcategories.map((subcategory, index) => {
-                const sectionId = subcategory.sectionId;
-                const IconComponent = getIconForCategory(subcategory.subcategoryName);
+                {uniqueSubcategories.map((subcategory, index) => {
+                  const sectionId = subcategory.sectionId;
+                  const IconComponent = getIconForCategory(subcategory.subcategoryName);
 
-                return (
-                  <button
-                    key={index}
-                    data-section={sectionId}
-                    onClick={() => scrollToSection(sectionId)}
-                    className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
-                      activeSection === sectionId
-                        ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
-                        : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
-                    }`}
-                  >
-                    <IconComponent strokeWidth={1} />
-                    {subcategory.subcategoryName}
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={index}
+                      data-section={sectionId}
+                      onClick={() => scrollToSection(sectionId)}
+                      className={`font-halyard-text hover:cursor-pointer flex items-center text-sm sm:text-base gap-2 py-[11px] px-[15px] border rounded-[4px] whitespace-nowrap transition-all duration-200 ${
+                        activeSection === sectionId
+                          ? "bg-purple-600/10 text-purple-600 border-purple-600/20"
+                          : "text-[#444444] border-gray-200 hover:bg-purple-600/10 hover:text-purple-600"
+                      }`}
+                    >
+                      <IconComponent strokeWidth={1} />
+                      {subcategory.subcategoryName}
+                    </button>
+                  );
+                })}
 
-              {showRightButton && (
-                <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
-                  <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
-                    <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                      <ChevronRight
-                        size={16}
-                        className="text-[#444444]"
-                        onClick={scrollRight}
-                      />
+                {showRightButton && (
+                  <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
+                    <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
+                      <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                        <ChevronRight
+                          size={16}
+                          className="text-[#444444]"
+                          onClick={scrollRight}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
-          <CarouselGrid
-            title={`Top experiences in ${city?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`}
-            recommendations={thingsToDoData?.topExperiences ? transformExperiencesToRecommendations(thingsToDoData.topExperiences) : recommendations}
-            variant="subcategory"
-          />
+          {loading ? (
+            <ThingsToDoCarouselSkeleton title={`Top experiences in ${city?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`} />
+          ) : thingsToDoData?.topExperiences && thingsToDoData.topExperiences.length > 0 ? (
+            <CarouselGrid
+              title={`Top experiences in ${city?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`}
+              recommendations={transformExperiencesToRecommendations(thingsToDoData.topExperiences)}
+              variant="subcategory"
+            />
+          ) : null}
         </div>
         <div className="  xl:px-0 pb-10">
           <Activities />
         </div>
         <div className="max-w-[1200px] px-[24px] xl:px-0 mx-auto pb-10">
-          {uniqueSubcategories.map((subcategory, index) => {
-            const sectionId = subcategory.sectionId;
-            const transformedRecommendations = transformExperiencesToRecommendations(subcategory.experiences);
+          {loading ? (
+            Array.from({ length: 5 }).map((_, index) => (
+              <ThingsToDoCarouselSkeleton key={index} />
+            ))
+          ) : (
+            uniqueSubcategories.map((subcategory, index) => {
+              const sectionId = subcategory.sectionId;
+              const transformedRecommendations = transformExperiencesToRecommendations(subcategory.experiences);
 
-            return (
-              <div key={index} id={sectionId}>
-                <CarouselGrid
-                  title={subcategory.subcategoryName}
-                  recommendations={transformedRecommendations.length > 0 ? transformedRecommendations : recommendations}
-                  variant="subcategory"
-                />
-              </div>
-            );
-          })}
+              return transformedRecommendations.length > 0 ? (
+                <div key={index} id={sectionId}>
+                  <CarouselGrid
+                    title={subcategory.subcategoryName}
+                    recommendations={transformedRecommendations}
+                    variant="subcategory"
+                  />
+                </div>
+              ) : null;
+            })
+          )}
         </div>
       </section>
 
       <div className="max-w-[1200px] mx-auto mt-10 pb-10 px-[24px] xl:px-0">
-        <MustDo mustDoData={thingsToDoData?.mustDoExperiences} city={city} />
+        {loading ? (
+          <ThingsToDoMustDoSkeleton />
+        ) : thingsToDoData?.mustDoExperiences && thingsToDoData.mustDoExperiences.length > 0 ? (
+          <MustDo mustDoData={thingsToDoData.mustDoExperiences} city={city} />
+        ) : null}
+
         <div className="mb-7">
           <TravelGuide />
         </div>
-        <div className="mb-10">
-          <BrowseThemes categoriesData={thingsToDoData?.categories} city={city} />
-        </div>
-        <Testimonials variant="default" reviewsData={thingsToDoData?.reviews} />
+
+        {loading ? (
+          <ThingsToDoBrowseThemesSkeleton />
+        ) : categoriesFromExperiences && categoriesFromExperiences.length > 0 ? (
+          <div className="mb-10">
+            <BrowseThemes categoriesData={categoriesFromExperiences} city={city} />
+          </div>
+        ) : null}
+
+        {loading ? (
+          <ThingsToDoTestimonialsSkeleton />
+        ) : thingsToDoData?.reviews && thingsToDoData.reviews.length > 0 ? (
+          <Testimonials variant="default" reviewsData={thingsToDoData.reviews} />
+        ) : null}
+
         <Destinations />
-        <Faqs faqsData={faqsData} />
+
+        {loading ? (
+          <ThingsToDoFaqsSkeleton />
+        ) : faqsData && faqsData.length > 0 ? (
+          <Faqs faqsData={faqsData} />
+        ) : null}
+
         <Banner />
         <Stats />
       </div>

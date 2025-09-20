@@ -39,8 +39,6 @@ import { SubcategoryPageResponse } from "@/types/subcategory-page/subcategory-pa
   ): Promise<SubcategoryPageResponse> => {
     try {
       const url = `${BASE_URL}/subcategory-page/filtered/${cityId}/${categoryId}/${subcategoryName}?sortBy=${sortBy}`;
-      console.log('API URL:', url);
-      console.log('API Parameters:', { cityId, categoryId, subcategoryName, sortBy });
       
       const response = await fetch(url, {
         method: 'GET',
@@ -49,15 +47,12 @@ import { SubcategoryPageResponse } from "@/types/subcategory-page/subcategory-pa
         },
       });
 
-      console.log('API Response status:', response.status);
-      console.log('API Response ok:', response.ok);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data: SubcategoryPageResponse = await response.json();
-      console.log('API Response data:', data);
       
       if (!data.success) {
         throw new Error(data.message || 'Failed to fetch filtered subcategory experiences');

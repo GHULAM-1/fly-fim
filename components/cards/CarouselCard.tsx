@@ -40,14 +40,13 @@ const CarouselCard = ({
   oldPrice,
   banner,
   variant,
-  city = "london",
-  category = "entertainment",
-  subcategory = "studio-tours",
+  city,
+  category,
+  subcategory,
   itemId,
 }: CarouselCardProps) => {
   const { t } = useTranslation();
   const swiperRef = useRef<any>(null);
-
   // Calculate discount percentage automatically
   const calculatedOff = oldPrice && price && oldPrice > price 
     ? Math.round(((oldPrice - price) / oldPrice) * 100) 
@@ -60,11 +59,10 @@ const CarouselCard = ({
         ?.replace(/\s+/g, "-")
         .replace(/[^\w-]+/g, "");
 
-    const citySlug = slugify(city);
-    const categorySlug = slugify(category);
-    const subcategorySlug = slugify(subcategory);
-    const itemSlug = slugify(description);
-
+    const citySlug = slugify(city || "");
+    const categorySlug = slugify(category || "");
+    const subcategorySlug = slugify(subcategory || "");
+    const itemSlug = slugify(description || "");
     return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${itemId}`;
   };
 

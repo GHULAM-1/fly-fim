@@ -52,21 +52,16 @@ const calculateReviewStats = (reviews: Reviews[]): ReviewData => {
 };
 
 export default function ReviewsSection({ reviews = [] }: ReviewsSectionProps) {
-  console.log('ReviewsSection received reviews:', reviews);
-  console.log('Reviews length:', reviews?.length);
 
   // Extract actual reviews from nested structure
   const actualReviews = Array.isArray(reviews?.[0]?.data) ? reviews[0].data : [];
-  console.log('Actual reviews:', actualReviews);
 
   // Don't render if no reviews
   if (!actualReviews || actualReviews.length === 0) {
-    console.log('Early return - no actual reviews');
     return null;
   }
 
   const data = calculateReviewStats(actualReviews);
-  console.log('Calculated review data:', data);
 
   const formatCount = (count: number) => {
     if (count >= 1000) {
