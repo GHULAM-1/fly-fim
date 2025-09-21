@@ -137,38 +137,38 @@ export interface BasicInfo {
   }
   
   // Category Page Subcategory Structure
-  export interface CategoryPageSubcategory {
+  export interface WorldwideCategoryPageSubcategory {
     subcategoryName: string;
     experiences: StructuredExperience[];
   }
   
   // Category Page Category Structure
-  export interface CategoryPageCategory {
+  export interface WorldwideCategoryPageCategory {
     categoryName: string;
-    subcategories: CategoryPageSubcategory[];
+    subcategories: WorldwideCategoryPageSubcategory[];
   }
   
   // Categories Response Structure
-  export interface CategoryResponse {
-    categories: CategoryResponseItem[];
+  export interface WorldwideCategoryResponse {
+    categories: WorldwideCategoryResponseItem[];
   }
 
-  export interface CategoryResponseItem {
+  export interface WorldwideCategoryResponseItem {
     categoryName: string;
-    subcategories: SubcategoryResponseItem[];
+    subcategories: WorldwideSubcategoryResponseItem[];
   }
 
-  export interface SubcategoryResponseItem {
+  export interface WorldwideSubcategoryResponseItem {
     subcategoryName: string;
   }
 
   // Main Category Page Data Structure
-  export interface CategoryPageData {
-    category: CategoryPageCategory;
+  export interface WorldwideCategoryPageData {
+    category: WorldwideCategoryPageCategory;
     topExperiences: StructuredExperience[];
     popularExperiences: StructuredExperience[];
     reviews: ReviewWithImageUrls[];
-    categories: CategoryResponseItem[];
+    categories: WorldwideCategoryResponseItem[];
     allCategories: AllCategory[];
   }
   export interface AllCategory {
@@ -184,7 +184,7 @@ export interface BasicInfo {
   
   // Filtered Category Page Data Structure
   export interface FilteredCategoryPageData {
-    category: CategoryPageCategory;
+    category: WorldwideCategoryPageCategory;
     experiences: StructuredExperience[];
     reviews: ReviewWithImageUrls[];
   }
@@ -207,14 +207,14 @@ export interface BasicInfo {
   }
   
   // API Response Types
-  export interface CategoryPageResponse {
+  export interface WorldwideCategoryPageResponse {
     success: boolean;
-    data?: CategoryPageData;
+    data?: WorldwideCategoryPageData;
     message: string;
     error?: string;
   }
   
-  export interface FilteredCategoryPageResponse {
+  export interface FilteredWorldwideCategoryPageResponse {
     success: boolean;
     data?: FilteredCategoryPageData;
     message: string;
@@ -229,8 +229,8 @@ export interface BasicInfo {
   }
   
   // Combined Response Types
-  export type CategoryPageApiResponse = CategoryPageResponse | CategoryPageErrorResponse;
-  export type FilteredCategoryPageApiResponse = FilteredCategoryPageResponse | CategoryPageErrorResponse;
+  export type CategoryPageApiResponse = WorldwideCategoryPageResponse | CategoryPageErrorResponse;
+  export type FilteredCategoryPageApiResponse = FilteredWorldwideCategoryPageResponse | CategoryPageErrorResponse;
   
   // Request Handler Types (for Express)
   export interface CategoryPageRequest {

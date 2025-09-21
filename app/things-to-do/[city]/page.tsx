@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/store/navigationStore";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -41,6 +42,8 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import { searchApi } from "@/api/search/search-api";
+import { SearchResponse, SearchCity, SearchExperience } from "@/types/search/search-types";
 import {
   ThingsToDoHeroSkeleton,
   ThingsToDoNavigationSkeleton,
@@ -82,10 +85,29 @@ const ThingsToDo = () => {
   const [error, setError] = useState<string | null>(null);
   const [faqsData, setFaqsData] = useState<Faq[]>([]);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResponse | null>(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   const params = useParams();
   const router = useRouter();
   const city = params.city as string;
+
+  // URL generation functions
+  const generateDestinationUrl = (dest: SearchCity) => {
+    const slugify = (text: string) =>
+      text?.toLowerCase()?.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const citySlug = slugify(dest.cityName || dest.slug);
+    return `/things-to-do/${citySlug}`;
+  };
+
+  const generateActivityUrl = (activity: SearchExperience) => {
+    const slugify = (text: string) =>
+      text?.toLowerCase()?.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const citySlug = slugify(activity.cityName);
+    const categorySlug = slugify(activity.categoryName);
+    const subcategorySlug = slugify(activity.subcategoryName);
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${activity._id}`;
+  };
 
   // Create consolidated array of all unique experiences
   const allUniqueExperiences = useMemo(() => {
@@ -229,65 +251,9 @@ const ThingsToDo = () => {
     "tours",
   ];
 
-  const topDestinations = [
-    {
-      id: 1,
-      name: "Dubai",
-      country: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-    },
-    {
-      id: 2,
-      name: "Abu Dhabi",
-      country: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-    },
-    {
-      id: 3,
-      name: "Chiang Mai",
-      country: "Thailand",
-      image: "/images/d3.jpg.avif",
-    },
-  ];
-
-  const topActivities = [
-    {
-      id: 1,
-      title: "London Theatre Tickets",
-      location: "London, United Kingdom",
-      image: "/images/a1.jpg.avif",
-    },
-    {
-      id: 2,
-      title: "Dubai Desert Safari Tours",
-      location: "Dubai, United Arab Emirates",
-      image: "/images/a2.jpg.avif",
-    },
-    {
-      id: 3,
-      title: "Vatican Museums",
-      location: "Rome, Italy",
-      image: "/images/a3.png.avif",
-    },
-    {
-      id: 4,
-      title: "Disneyland® Paris Tickets",
-      location: "Paris, France",
-      image: "/images/a4.jpg.avif",
-    },
-  ];
-
-  const filteredDestinations = topDestinations.filter(
-    (dest) =>
-      dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      dest.country.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredActivities = topActivities.filter(
-    (activity) =>
-      activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      activity.location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Get search results from API
+  const displayDestinations = searchResults ? searchResults.data.cities : [];
+  const displayActivities = searchResults ? searchResults.data.experiences : [];
 
   useEffect(() => {
     if (!isMounted) return;
@@ -336,6 +302,43 @@ const ThingsToDo = () => {
       }, 300);
     }
   }, [isCustomDrawerOpen]);
+
+  // Search API call effect
+  useEffect(() => {
+    const performSearch = async () => {
+      setIsSearchLoading(true);
+      try {
+        const results = await searchApi(searchQuery.trim());
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults(null);
+      } finally {
+        setIsSearchLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(performSearch, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  // Initial load with empty params
+  useEffect(() => {
+    const loadInitialData = async () => {
+      setIsSearchLoading(true);
+      try {
+        const results = await searchApi('');
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Initial data load error:', error);
+        setSearchResults(null);
+      } finally {
+        setIsSearchLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []);
 
   const AnimatedPlaceholder = ({ prefix = "Search for" }) => (
     <div className="absolute inset-0 flex items-center pointer-events-none text-[#666666]">
@@ -917,141 +920,160 @@ const ThingsToDo = () => {
                 </div>
               </div>
               <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
-                {!searchQuery ? (
+                {isSearchLoading ? (
+                  <div className="text-center py-8">
+                    <div className="text-[#666666]">Loading...</div>
+                  </div>
+                ) : !searchQuery ? (
                   <>
-                    <div className="mb-4">
-                      <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
-                        Top destinations near you
-                      </h3>
-                      <div className="space-y-0">
-                        {topDestinations.map((dest) => (
-                          <div
-                            key={dest.id}
-                            className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            <div className="w-10 h-10 rounded overflow-hidden">
-                              <img
-                                src={dest.image}
-                                alt={dest.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-semibold text-[#444444] text-sm">
-                                {dest.name}
-                              </div>
-                              <div className="text-[#666666] text-xs">
-                                {dest.country}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
-                        Top things to do worldwide
-                      </h3>
-                      <div className="space-y-0">
-                        {topActivities.map((activity) => (
-                          <div
-                            key={activity.id}
-                            className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
-                          >
-                            <div className="relative w-10 h-10">
-                              <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <div className="font-semibold text-[#444444] text-sm">
-                                {activity.title}
-                              </div>
-                              <div className="text-[#666666] text-xs">
-                                {activity.location}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {filteredDestinations.length > 0 && (
+                    {displayDestinations.length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
-                          Destinations ({filteredDestinations.length})
+                          Top destinations near you
                         </h3>
-                        <div className="space-y-0">
-                          {filteredDestinations.map((dest) => (
-                            <div
+                        <div className="space-y-0 max-h-40 overflow-y-auto">
+                          {displayDestinations.map((dest: any) => (
+                            <Link
                               key={dest.id}
+                              href={generateDestinationUrl(dest)}
                               className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
                             >
                               <div className="w-10 h-10 rounded overflow-hidden">
                                 <img
-                                  src={dest.image}
-                                  alt={dest.name}
+                                  src={dest.imageUrl || dest.image}
+                                  alt={dest.cityName || dest.name}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
                               <div>
                                 <div className="font-semibold text-[#444444] text-sm">
-                                  {dest.name}
+                                  {dest.cityName || dest.name}
                                 </div>
                                 <div className="text-[#666666] text-xs">
-                                  {dest.country}
+                                  {dest.countryName || dest.country}
                                 </div>
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>
                     )}
-                    {filteredActivities.length > 0 && (
+                    {displayActivities.length > 0 && (
                       <div className="mb-4">
                         <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
-                          Activities ({filteredActivities.length})
+                          Top things to do worldwide
                         </h3>
-                        <div className="space-y-0">
-                          {filteredActivities.map((activity) => (
-                            <div
+                        <div className="space-y-0 max-h-48 overflow-y-auto">
+                          {displayActivities.map((activity: any) => (
+                            <Link
                               key={activity.id}
+                              href={generateActivityUrl(activity)}
                               className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
                             >
-                              <div className="w-10 h-10 rounded overflow-hidden">
-                                <img
-                                  src={activity.image}
-                                  alt={activity.title}
-                                  className="w-full h-full object-cover"
-                                />
+                              <div className="relative w-10 h-10">
+                                <div className="relative border-white border w-10 h-10 rounded overflow-hidden">
+                                  <img
+                                    src={activity.imageUrls?.[0] || activity.imageUrl?.[0] || activity.image}
+                                    alt={activity.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <div className="font-semibold text-[#444444] text-sm">
                                   {activity.title}
                                 </div>
                                 <div className="text-[#666666] text-xs">
-                                  {activity.location}
+                                  {activity.cityName}
                                 </div>
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>
                     )}
-                    {filteredDestinations.length === 0 &&
-                      filteredActivities.length === 0 && (
-                        <div className="text-center py-8">
-                          <div className="text-[#666666]">
-                            No results found for "{searchQuery}"
+                  </>
+                ) : (
+                  <>
+                    {isSearchLoading ? (
+                      <div className="text-center py-8">
+                        <div className="text-[#666666]">Searching...</div>
+                      </div>
+                    ) : (
+                      <>
+                        {displayDestinations.length > 0 && (
+                          <div className="mb-4">
+                            <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
+                              Destinations ({displayDestinations.length})
+                            </h3>
+                            <div className="space-y-0 max-h-40 overflow-y-auto">
+                              {displayDestinations.map((dest: any) => (
+                                <Link
+                                  key={dest.id}
+                                  href={generateDestinationUrl(dest)}
+                                  className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                                >
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={dest.imageUrl || dest.image}
+                                      alt={dest.cityName || dest.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-[#444444] text-sm">
+                                      {dest.cityName || dest.name}
+                                    </div>
+                                    <div className="text-[#666666] text-xs">
+                                      {dest.countryName || dest.country}
+                                    </div>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                        {displayActivities.length > 0 && (
+                          <div className="mb-4">
+                            <h3 className="text-xs font-medium text-[#444444] mb-2 px-2">
+                              Activities ({displayActivities.length})
+                            </h3>
+                            <div className="space-y-0 max-h-48 overflow-y-auto">
+                              {displayActivities.map((activity: any) => (
+                                <Link
+                                  key={activity.id}
+                                  href={generateActivityUrl(activity)}
+                                  className="flex items-center gap-2 py-3 px-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                                >
+                                  <div className="w-10 h-10 rounded overflow-hidden">
+                                    <img
+                                      src={activity.imageUrls?.[0] || activity.imageUrl?.[0] || activity.image}
+                                      alt={activity.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-[#444444] text-sm">
+                                      {activity.title}
+                                    </div>
+                                    <div className="text-[#666666] text-xs">
+                                      {activity.cityName}
+                                    </div>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {displayDestinations.length === 0 && displayActivities.length === 0 && (
+                          <div className="text-center py-8">
+                            <div className="text-[#666666]">
+                              No results found for "{searchQuery}"
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </>
                 )}
               </div>

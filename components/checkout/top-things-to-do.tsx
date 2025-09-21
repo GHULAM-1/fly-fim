@@ -1,17 +1,69 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+
+import { useTranslation } from "react-i18next";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { fetchHomePage } from "@/api/worldwide/worlwide-home-api";
+import { WorldwideResponse } from "@/types/worldwide/worldwide-home-types";
 
 interface ActivitiesProps {
   title: string;
   className?: string;
 }
-import { useTranslation } from "react-i18next";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+
+interface Activity {
+  _id: string;
+  title: string;
+  mainImage: string; 
+  cityName: string;
+  categoryName: string;
+  subcategoryName: string;
+}
 export default function Activities({ title, className }: ActivitiesProps) {
   const { t } = useTranslation();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<WorldwideResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const apiData = await fetchHomePage();
+        setData(apiData);
+        console.log(apiData);
+        if (apiData?.data?.experiences) {
+          // Map experiences to activities
+          const mappedActivities: Activity[] = apiData.data.experiences.slice(0, 20).map((exp) => ({
+            _id: exp._id,
+            title: exp.title,
+            mainImage: exp.imageUrls[0] || "",
+            cityName: exp.cityName,
+            categoryName: exp.categoryName,
+            subcategoryName: exp.subcategoryName,
+          }));
+          
+          setActivities(mappedActivities);
+        } else {
+          // No experiences available
+          setActivities([]);
+        }
+      } catch (err) {
+        console.error('Error loading activities:', err);
+        setError('Failed to load activities.');
+        // Set empty array on error
+        setActivities([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -31,57 +83,6 @@ export default function Activities({ title, className }: ActivitiesProps) {
       });
     }
   };
-
-  const activities = [
-    {
-      id: 1,
-      description: "London Theatre Tickets",
-      place: "London",
-      image: "/images/a6.jpg.avif",
-    },
-    {
-      id: 2,
-      description: "Dubai Desert Safari Tours",
-      place: "Dubai",
-      image: "/images/a5.jpg.avif",
-    },
-    {
-      id: 3,
-      description: "Vatican Museums",
-      place: "Rome",
-      image: "/images/a4.jpg.avif",
-    },
-    {
-      id: 4,
-      description: "Disneyland® Paris Tickets",
-      place: "Paris",
-      image: "/images/a3.png.avif",
-    },
-    {
-      id: 5,
-      description: "Sydney Opera House Tours",
-      place: "Sydney",
-      image: "/images/a2.jpg.avif",
-    },
-    {
-      id: 6,
-      description: "Eiffel Tower Tickets",
-      place: "Paris",
-      image: "/images/a1.jpg.avif",
-    },
-    {
-      id: 7,
-      description: "Eiffel Tower Tickets",
-      place: "Paris",
-      image: "/images/a1.jpg.avif",
-    },
-    {
-      id: 8,
-      description: "Eiffel Tower Tickets",
-      place: "Paris",
-      image: "/images/a1.jpg.avif",
-    },
-  ];
 
   return (
     <div className="py-8 sm:py-10 bg-transparent">
@@ -118,18 +119,18 @@ export default function Activities({ title, className }: ActivitiesProps) {
           {activities.map((activity) => (
             <Link
               href="#"
-              key={activity.id}
+              key={activity._id}
               className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px]  md:w-[200px]"
             >
               <img
-                src={activity.image}
-                alt={activity.description}
+                src={activity.mainImage}
+                alt={activity.title}
                 className="rounded w-[156px] h-[208px] md:w-[220px] md:h-[240px]"
               />
               <p className="text-[17px] font-heading text-[#444444] leading-tight mt-2">
-                {activity.description}
+                {activity.title}
               </p>
-              <p className="text-sm font-lightText text-[#666666] mt-1">{activity.place}</p>
+              <p className="text-sm font-lightText text-[#666666] mt-1">{activity.cityName}</p>
             </Link>
           ))}
         </div>

@@ -106,6 +106,7 @@ export interface ExperienceBasicInfo {
   // Review Structure
   export interface Review {
     _id: string;
+    userName: string;
     _creationTime: number;
     userId: string;
     experienceId: string;

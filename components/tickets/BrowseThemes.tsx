@@ -13,6 +13,7 @@ interface BrowseThemesProps {
 }
 
 const BrowseThemes = ({ title = "Browse by themes", themes }: BrowseThemesProps) => {
+  console.log(themes);
   return (
     <div className="">
         <h2 className="text-lg sm:text-2xl font-heading text-[#444444] mb-4 md:mb-6">

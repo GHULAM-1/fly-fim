@@ -34,7 +34,7 @@ const transformCityData = (response: any): Destination[] => {
     return [];
   }
 
-  return cities.map((city) => {
+  return cities.slice(0, 15).map((city) => {
     return {
       id: city._id,
       description: "Things to do in ", // Default description

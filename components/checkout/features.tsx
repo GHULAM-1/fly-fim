@@ -20,6 +20,56 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
   const [isMobile, setIsMobile] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  // Helper function to calculate last entry time (1 hour before closing)
+  const calculateLastEntry = (timeString: string): string => {
+    try {
+      if (!timeString || timeString.toLowerCase().includes('closed')) {
+        return 'N/A';
+      }
+
+      // Extract closing time from string like "9:30am - 7:00pm"
+      const parts = timeString.split(' - ');
+      if (parts.length !== 2) return '06:00pm'; // fallback
+
+      const closingTime = parts[1].trim();
+
+      // Parse time like "7:00pm"
+      const timeMatch = closingTime.match(/(\d{1,2}):(\d{2})(am|pm)/i);
+      if (!timeMatch) return '06:00pm'; // fallback
+
+      let hours = parseInt(timeMatch[1]);
+      const minutes = parseInt(timeMatch[2]);
+      const period = timeMatch[3].toLowerCase();
+
+      // Convert to 24-hour format
+      if (period === 'pm' && hours !== 12) hours += 12;
+      if (period === 'am' && hours === 12) hours = 0;
+
+      // Subtract 1 hour
+      hours -= 1;
+
+      // Handle edge case (if it goes below 0)
+      if (hours < 0) hours = 23;
+
+      // Convert back to 12-hour format
+      let displayHours = hours;
+      let displayPeriod = 'am';
+
+      if (hours === 0) {
+        displayHours = 12;
+      } else if (hours >= 12) {
+        displayPeriod = 'pm';
+        if (hours > 12) displayHours = hours - 12;
+      }
+
+      // Format the result
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      return `${displayHours}:${formattedMinutes}${displayPeriod}`;
+    } catch (error) {
+      return '06:00pm'; // fallback on any error
+    }
+  };
+
   // Handle click outside modal (desktop/web only)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -117,7 +167,7 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
 
               {/* Header */}
               <div className="relative px-4 pt-1 pb-3">
-                <div className="text-[13px] text-gray-500 font-halyard-text">Alcazar of Seville</div>
+                <div className="text-[13px] text-gray-500 font-halyard-text">{experience?.data?.title}</div>
                 <div className="flex items-center">
                   <DrawerTitle asChild>
                     <h3 className="text-[16px] font-semibold text-gray-900 font-halyard-text">Operating hours</h3>
@@ -143,7 +193,7 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
                   ['Thu', experience?.data?.features?.[1] || '9:30am - 7:00pm'], // highlighted
                   ['Fri', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
                   ['Sat', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
-                  ['Sun', experience?.data?.features?.[1] || '9:30am - 7:00pm'],
+                  ['Sun', 'Closed'],
                 ].map(([day, time], i) => {
                   const isThu = day === 'Thu';
                   return (
@@ -165,10 +215,10 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
                     <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500"></span>
                     <span className="font-halyard-text">Timings are displayed in the venue&apos;s time zone.</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  {/* <li className="flex items-start gap-2">
                     <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500"></span>
                     <span className="font-halyard-text">Closed on 25th Dec 2025, 1st Jan 2026 and 6th Jan 2026.</span>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </DrawerContent>
@@ -176,7 +226,7 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
         </div>
       )}
 
-      {/* ===== DESKTOP / WEB MODAL (unchanged) ===== */}
+      {/* ===== DESKTOP / WEB MODAL ===== */}
       {isOperatingHoursOpen && (
         <div className="hidden md:block fixed inset-0 bg-[rgba(0,0,0,0.2)] z-50 animate-fade-in">
           <div className="flex items-center justify-center min-h-screen p-4">
@@ -186,16 +236,16 @@ const ExperienceDetails: React.FC<{ experience: ExperienceResponse }> = ({ exper
             >
             <div className="p-6">
               <OperatingHoursCard
-                title="Alcazar of Seville"
+                title={experience?.data?.title || "Experience"}
                 operatingHours={[
                   {
                     hours: [
-                      { day: 'Monday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
-                      { day: 'Tuesday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
-                      { day: 'Wednesday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
-                      { day: 'Thursday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
-                      { day: 'Friday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
-                      { day: 'Saturday', time: '09:30am - 07:00pm', lastEntry: '06:00pm' },
+                      { day: 'Monday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
+                      { day: 'Tuesday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
+                      { day: 'Wednesday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
+                      { day: 'Thursday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
+                      { day: 'Friday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
+                      { day: 'Saturday', time: experience?.data?.features?.[1] || '09:30am - 07:00pm', lastEntry: calculateLastEntry(experience?.data?.features?.[1] || '09:30am - 07:00pm') },
                       { day: 'Sunday', time: 'Closed', lastEntry: 'N/A' },
                     ],
                   },

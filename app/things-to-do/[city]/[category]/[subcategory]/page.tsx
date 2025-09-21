@@ -31,6 +31,7 @@ import CarouselGrid from "@/components/grids/CarouselGrid";
 import BrowseThemes from "@/components/tickets/BrowseThemes";
 import Stats from "@/components/home/Stats";
 import Destinations from "@/components/home/Destinations";
+import { fetchWorldwideSubcategoryPageById } from "@/api/worldwide/worldwide-subcategory-api";
 
 export default function SubcategoryPage() {
   const params = useParams();
@@ -49,7 +50,7 @@ export default function SubcategoryPage() {
   const [cityData, setCityData] = useState<any>(null);
   const [categoryData, setCategoryData] = useState<any>(null);
 
-  const isWorldwideRoute = city === "worldwide";
+  const isWorldwideRoute = city === "worldwide" || city === "Worldwide";
 
   const decodedCategoryName = decodeURIComponent(
     categoryName ? categoryName.split("-").join(" ") : ""
@@ -175,19 +176,6 @@ export default function SubcategoryPage() {
   }
 
 
-  const navItems =
-    (currentSubCategory.components.themes || []).map((t: any) => {
-      const id = (t.text || "")
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9\-]/g, "");
-      return {
-        id,
-        label: t.text,
-        icon: t.icon,
-      };
-    }) || [];
-
   // Transform API experiences to recommendations format
   const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
@@ -263,19 +251,30 @@ export default function SubcategoryPage() {
   // API call effect
   useEffect(() => {
     const loadSubcategoryPageData = async () => {
-      if (!city || !categoryName || !subcategory) return;
+      if (!categoryName || !subcategory) return;
+      if (!isWorldwideRoute && !city) return;
 
       try {
         setLoading(true);
         setError(null);
-        // First, get city ID by city name
-        const cityResponse = await fetchCityBycityName(city);
-        setCityData(cityResponse);
-        // Second, get category ID by category name
-        const categoryResponse = await fetchCategoryBycategoryName(categoryName);
-        setCategoryData(categoryResponse);
-        const response = await fetchSubcategoryPageById(cityResponse._id, categoryResponse._id, subcategory);
-        setSubcategoryPageData(response.data);
+
+        if (isWorldwideRoute) {
+          // For worldwide routes, only get category ID and call worldwide subcategory API
+          const categoryResponse = await fetchCategoryBycategoryName(categoryName);
+          setCategoryData(categoryResponse);
+          // TODO: Call worldwide subcategory API here
+          const response = await fetchWorldwideSubcategoryPageById(categoryResponse._id, subcategory);
+          setSubcategoryPageData(response.data);
+          console.log('Worldwide subcategory API call needed for category:', categoryResponse._id, 'subcategory:', subcategory);
+        } else {
+          // For regular routes, get both city and category IDs
+          const cityResponse = await fetchCityBycityName(city);
+          setCityData(cityResponse);
+          const categoryResponse = await fetchCategoryBycategoryName(categoryName);
+          setCategoryData(categoryResponse);
+          const response = await fetchSubcategoryPageById(cityResponse._id, categoryResponse._id, subcategory);
+          setSubcategoryPageData(response.data);
+        }
       } catch (err) {
         console.error('Error loading subcategory page data:', err);
         setError('Failed to load subcategory page data');
@@ -285,7 +284,7 @@ export default function SubcategoryPage() {
     };
 
     loadSubcategoryPageData();
-  }, [city, categoryName, subcategory]);
+  }, [city, categoryName, subcategory, isWorldwideRoute]);
 
   // Skeleton components
   const HeaderSkeleton = () => (
@@ -568,10 +567,10 @@ export default function SubcategoryPage() {
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                       <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        {subcategoryPageData.reviewStats.averageRating.toFixed(1)}
+                        {subcategoryPageData?.reviewStats?.averageRating?.toFixed(1)}
                       </span>
                       <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                        ({subcategoryPageData.reviewStats.totalReviews.toLocaleString()})
+                        ({subcategoryPageData?.reviewStats?.totalReviews?.toLocaleString()})
                       </span>
                     </div>
                   </div>
@@ -589,6 +588,8 @@ export default function SubcategoryPage() {
                   title={`Top experiences in ${formattedCityName}`}
                   variant="pills"
                   pills={false}
+                  isWorldwideRoute={isWorldwideRoute}
+                  isSubcategoryPage={true}
                   cityId={cityData?._id}
                   categoryId={categoryData?._id}
                   subcategoryName={subcategory}

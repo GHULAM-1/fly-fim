@@ -6,5 +6,6 @@ export interface Reviews {
   images: string[];
   stars: number;
   text: string;
+  userName: string;
   userId: string;
 }
