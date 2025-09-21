@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 
+export const dynamic = 'force-static';
+
 export default function AuthCodeError() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

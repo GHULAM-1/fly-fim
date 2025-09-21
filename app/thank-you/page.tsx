@@ -1,32 +1,10 @@
-"use client";
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+
+export const dynamic = 'force-static';
 
 export default function ThankYouPage() {
-  const [countdown, setCountdown] = useState(3);
-
-  useEffect(() => {
-    // Show success toast when page loads
-    toast.success("Payment Successful!", {
-      description: "Your booking has been confirmed. You will receive an email confirmation shortly.",
-    });
-    
-    // Countdown timer
-    const countdownTimer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          window.location.href = '/';
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(countdownTimer);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -38,9 +16,6 @@ export default function ThankYouPage() {
           </h1>
           <p className="text-gray-600">
             Your booking has been confirmed. You will receive an email confirmation shortly.
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Redirecting to home page in {countdown} seconds...
           </p>
         </div>
         
