@@ -1,17 +1,10 @@
-"use client";
-import React, { useEffect } from "react";
 import Link from "next/link";
 import { XCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+
+export const dynamic = 'force-static';
 
 export default function PurchaseFailedPage() {
-  useEffect(() => {
-    // Show error toast when page loads
-    toast.error("Payment Failed", {
-      description: "There was an issue processing your payment. Please try again.",
-    });
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
