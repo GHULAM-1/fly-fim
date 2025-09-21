@@ -103,7 +103,7 @@ export default function MobPopularThings({
               <div className=" relative flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 pr-2 rounded-lg">
                 <div>
                   <img
-                    src={recommendation.image}
+                    src={recommendation.imageUrls}
                     alt={recommendation.description}
                     className="rounded h-[200px] md:w-full w-full"
                   />

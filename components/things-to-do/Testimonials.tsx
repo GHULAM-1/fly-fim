@@ -42,7 +42,7 @@ const Testimonials = ({ variant, reviewsData }: TestimonialsProps) => {
   // Transform API reviews data to testimonials format
   const transformedTestimonials = reviewsData?.map((review) => ({
     id: review._id,
-    name: review.userId, // Use userId as name
+    name: review.userName, // Use userId as name
     country: "United States", // Hardcoded for now
     date: new Date(review._creationTime).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
     avatar: "/images/t1.jpeg", // Fallback avatar as API doesn't have user avatars

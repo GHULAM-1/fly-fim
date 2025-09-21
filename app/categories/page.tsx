@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import CategoriesCards from "@/components/categories/categories";
 import {
@@ -16,192 +16,76 @@ import {
   Heart,
   Star,
 } from "lucide-react";
+import { fetchHomePage } from "@/api/worldwide/worlwide-home-api";
+import { WorldwideResponse } from "@/types/worldwide/worldwide-home-types";
 
 export default function Categories() {
+  const [data, setData] = useState<WorldwideResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const loadData = async () => {
+        try {
+          setLoading(true);
+          const data = await fetchHomePage();
+          setData(data);
+        } catch (err) {
+          console.error('Error loading cities:', err);
+          setError('Failed to load cities.');
+          // Keep empty array instead of fallback data
+          setData(null);  
+        } finally {
+          setLoading(false);
+        }
+      };
   
-  const destinations = [
-    {
-      id: 1,
-      description: "Things to do in",
-      place: "United States",
-      price: "from $10.0",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 2,
-      description: "Things to do in",
-      place: "United Kingdom",
-      price: "from $10.0",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 3,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      price: "from $10.0",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 4,
-      description: "Things to do in",
-      place: "Italy",
-      price: "from $10.0",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 5,
-      description: "Things to do in",
-      place: "France",
-      price: "from $10.0",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 6,
-      description: "Things to do in",
-      place: "Singapore",
-      price: "from $10.0",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-    {
-      id: 7,
-      description: "Things to do in York",
-      place: "United States",
-      price: "from $10.0",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 8,
-      description: "Things to do in",
-      place: "United Kingdom",
-      price: "from $10.0",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 9,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      price: "from $10.0",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 10,
-      description: "Things to do in",
-      place: "Italy",
-      price: "from $10.0",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 11,
-      description: "Things to do in",
-      place: "France",
-      price: "from $10.0",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 12,
-      description: "Things to do in",
-      place: "Singapore",
-      price: "from $10.0",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
+      loadData();
+    }, []);
+  
+  // Hardcoded categories array with icons and styling
+  const hardcodedCategories = [
+    { name: "Tickets", icon: Ticket, color: "gray" },
+    { name: "Tours", icon: Flag, color: "gray" },
+    { name: "Transportation", icon: Bus, color: "gray" },
+    { name: "Travel Services", icon: Briefcase, color: "gray" },
+    { name: "Cruises", icon: Ship, color: "gray" },
+    { name: "Food & Drink", icon: Utensils, color: "gray" },
+    { name: "Entertainment", icon: Tv, color: "gray" },
+    { name: "Adventure", icon: Backpack, color: "gray" },
+    { name: "Water Sports", icon: Waves, color: "gray" },
+    { name: "Wellness", icon: Heart, color: "gray" },
+    { name: "Specials", icon: Star, color: "purple" },
+    { name: "Museums", icon: Ticket, color: "gray" },
+    { name: "Attractions", icon: Flag, color: "gray" },
+    { name: "Activities", icon: Backpack, color: "gray" },
   ];
-  const categories = [
-    {
-      id: 2,
-      name: "Tickets",
-      color: "gray",
-      url: `/things-to-do/worldwide/tickets`,
-      icon: Ticket,
-    },
-    { 
-      id: 3, 
-      name: "Tours", 
-      color: "gray", 
-      url: `/things-to-do/worldwide/tours`,
-      icon: Flag,
-    },
-    {
-      id: 4,
-      name: "Transportation",
-      color: "gray",
-      url: `/things-to-do/worldwide/transportation`,
-      icon: Bus,
-    },
-    {
-      id: 5,
-      name: "Travel Services",
-      color: "gray",
-      url: `/things-to-do/worldwide/travel-services`,
-      icon: Briefcase,
-    },
-    {
-      id: 6,
-      name: "Cruises",
-      color: "gray",
-      url: `/things-to-do/worldwide/cruises`,
-      icon: Ship,
-    },
-    {
-      id: 7,
-      name: "Food & Drink",
-      color: "gray",
-      url: `/things-to-do/worldwide/food-drink`,
-      icon: Utensils,
-    },
-    {
-      id: 8,
-      name: "Entertainment",
-      color: "gray",
-      url: `/things-to-do/worldwide/entertainment`,
-      icon: Tv,
-    },
-    {
-      id: 9,
-      name: "Adventure",
-      color: "gray",
-      url: `/things-to-do/worldwide/adventure`,
-      icon: Backpack,
-    },
-    {
-      id: 10,
-      name: "Water Sports",
-      color: "gray",
-      url: `/things-to-do/worldwide/water-sports`,
-      icon: Waves,
-    },
-    {
-      id: 11,
-      name: "Wellness",
-      color: "gray",
-      url: `/things-to-do/worldwide/wellness`,
-      icon: Heart,
-    },
-    {
-      id: 12,
-      name: "Specials",
-      color: "gray",
-      url: `/things-to-do/worldwide/specials`,
-      icon: Star,
-    },
-  ];
+
+  // Function to map only API categories with hardcoded styling
+  const getRestructuredCategories = () => {
+    if (!data?.data?.categories) return [];
+    
+    return data.data.categories
+      .map(apiCategory => {
+        // Find matching hardcoded category for styling
+        const hardcodedCategory = hardcodedCategories.find(
+          hardcoded => hardcoded.name.toLowerCase() === apiCategory.categoryName.toLowerCase()
+        );
+        
+        return {
+          name: apiCategory.categoryName,
+          icon: hardcodedCategory?.icon || Backpack, // fallback icon
+          color: hardcodedCategory?.color || "gray", // fallback color
+          apiData: apiCategory, // Include original API data
+        };
+      })
+      .filter(category => category); // Remove any null/undefined entries
+  };
   return (
     <div className="px-4">
              <div className="mt-18">
          <CategoriesCards
            title={"Things to do worldwide"}
-           recommendations={destinations}
+           recommendations={data?.data?.experiences || []}
          />
        </div>
        <div className="mt-10 mb-10">
@@ -209,12 +93,12 @@ export default function Categories() {
            Categories
          </h1>
         <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((category) => {
+          {getRestructuredCategories().map((category) => {
             const IconComponent = category.icon;
             return (
               <a
-                key={category.id}
-                href={category.url}
+                key={category.name}
+                href={`/things-to-do/worldwide/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
                 className={`flex flex-row items-center justify-start gap-2 py-[14px] px-[12px] bg-white rounded-[4px] border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200 cursor-pointer ${
                   category.color === "purple" 
                     ? "border-purple-200 bg-purple-50" 

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
+import PriceDisplay from "../PriceDisplay";
 
 export default function CategoriesCards({
     title,
@@ -73,7 +74,7 @@ export default function CategoriesCards({
           {/* Mobile: Free scrolling */}
           <div className="block md:hidden overflow-x-auto scrollbar-hide">
             <div className="flex gap-3">
-              {recommendations.map((recommendation) => (
+              {recommendations.slice(0, 15).map((recommendation) => (
                 <Link
                   key={recommendation.id}
                   href={`/things-to-do/${recommendation.city}`}
@@ -82,17 +83,17 @@ export default function CategoriesCards({
                   <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
                     <div>
                       <img
-                        src={recommendation.image}
+                        src={recommendation.imageUrls[0]}
                         alt={recommendation.description}
                         className="rounded w-[156px] h-[210px]"
                       />
                     </div>
                     <div className="min-w-0">
                       <p className="font-text text-[#444444] leading-tight text-[17px] break-words">
-                        {recommendation.place}{" "}
+                        {recommendation.title}{" "}
                       </p>
                       <p className="text-[#666666] font-halyard-text-light text-[14px] mt-1 break-words">
-                        {recommendation.price}
+                       from <PriceDisplay amount={recommendation.price} />
                       </p>
                     </div>
                   </div>
@@ -112,7 +113,7 @@ export default function CategoriesCards({
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
-            {recommendations.map((recommendation) => (
+            {recommendations.slice(0, 15).map((recommendation) => (
               <Link
                 key={recommendation.id}
                 href={`/things-to-do/${recommendation.city}`}
@@ -121,17 +122,17 @@ export default function CategoriesCards({
                 <div className="flex flex-col gap-2 transition-all duration-500 ease-out transform hover:-translate-y-1 rounded-lg">
                   <div>
                     <img
-                      src={recommendation.image}
+                      src={recommendation.imageUrls[0]}
                       alt={recommendation.description}
                       className="rounded w-full h-[210px]"
                     />
                   </div>
                   <div className="min-w-0">
                     <p className="font-text text-[#444444] mt-2 leading-tight text-base break-words">
-                      {recommendation.place}{" "}
+                      {recommendation.title}{" "}
                     </p>
                     <p className="text-[#666666] font-halyard-text-light text-sm mt-1 break-words">
-                      {recommendation.price}
+                      from <PriceDisplay amount={recommendation.price} />
                     </p>
                   </div>
                 </div>

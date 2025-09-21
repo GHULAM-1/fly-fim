@@ -3,8 +3,9 @@ import { t } from "i18next";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
 import React, { useRef, useState, useEffect } from "react";
+import { WorldwideData } from "@/types/worldwide/worldwide-home-types";
 
-const Testimonials = () => {
+const Testimonials = ({ data }: { data?: WorldwideData }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -46,56 +47,17 @@ const Testimonials = () => {
     }
   };
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Danish Amjad",
-      country: "United Kingdom",
-      avatar: "D",
-      avatarColor: "bg-purple-500",
-      image: "/FLY-REVIEW.jpg",
-      rating: 5,
-      review:
-        "Amazing experience! The tour was well organized and our guide was incredibly knowledgeable. Highly recommend this to anyone visiting the city.",
-      experience: "Back to the future",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      country: "United States",
-      avatar: "S",
-      avatarColor: "bg-blue-500",
-      image: "/images/t2.jpeg",
-      rating: 5,
-      review:
-        "Absolutely fantastic trip! Everything was perfectly planned and executed. The attention to detail was remarkable and exceeded all expectations.",
-      experience: "Museum of Natural History",
-    },
-    {
-      id: 3,
-      name: "Marco Rodriguez",
-      country: "Spain",
-      avatar: "M",
-      avatarColor: "bg-green-500",
-      image: "/images/t3.jpeg",
-      rating: 4,
-      review:
-        "Great value for money! The booking process was smooth and the experience was memorable. Would definitely book again for my next trip.",
-      experience: "City Walking Tour",
-    },
-    {
-      id: 4,
-      name: "Emma Chen",
-      country: "Australia",
-      avatar: "E",
-      avatarColor: "bg-pink-500",
-      image: "/images/t1.jpeg",
-      rating: 5,
-      review:
-        "Outstanding service from start to finish. The team was professional, friendly, and made sure we had an unforgettable experience.",
-      experience: "Harbor Cruise",
-    },
-  ];
+  // Map reviews from API data
+  const testimonials = data?.reviews?.slice(0, 15).map((review, index) => ({
+    id: review._id || index + 1,
+    name: review.userName || "Anonymous",
+    avatar: (review.userName || "A").charAt(0).toUpperCase(),
+    avatarColor: `bg-${['purple', 'blue', 'green', 'pink', 'yellow', 'indigo', 'red', 'teal'][index % 8]}-500`,
+    image: review.imageUrls[0] || "/FLY-REVIEW.jpg",
+    rating: review.stars || 5,
+    review: review.text || "Great experience!",
+    experience: review.experienceTitle || "Amazing Experience",
+  })) || [];
 
   const renderStars = (rating: any) => {
     return Array.from({ length: 5 }, (_, index) => (
@@ -202,10 +164,10 @@ const Testimonials = () => {
                         {testimonial.name}
                       </h2>
                       <div className="flex items-center gap-1">
-                        <img src="/flag.png" alt="" className="w-4 h-4" />
-                        <p className="text-xs sm:text-sm text-[#C4C4C4] font-lightText">
+                        {/* <img src="/flag.png" alt="" className="w-4 h-4" /> */}
+                        {/* <p className="text-xs sm:text-sm text-[#C4C4C4] font-lightText">
                           {testimonial.country}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   </div>

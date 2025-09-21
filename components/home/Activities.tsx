@@ -3,6 +3,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
+import { WorldwideResponse } from "@/types/worldwide/worldwide-home-types";
+import { fetchHomePage } from "@/api/worldwide/worlwide-home-api";
 
 
 interface Activity {
@@ -10,86 +12,53 @@ interface Activity {
   title: string;
   mainImage: string; 
   cityName: string;
+  categoryName: string;
+  subcategoryName: string;
 }
-
-
-const originalImages = [
-  "/images/a6.jpg.avif",
-  "/images/a5.jpg.avif",
-  "/images/a4.jpg.avif",
-  "/images/a3.png.avif",
-  "/images/a2.jpg.avif",
-  "/images/a1.jpg.avif",
-  "/images/a6.jpg.avif",
-  "/images/a5.jpg.avif",
-];
 
 const Activities = () => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Mock data array
-  const mockActivities: Activity[] = [
-    {
-      _id: "1",
-      title: "Museum Tours",
-      mainImage: "/images/a1.jpg.avif",
-      cityName: "Paris",
-    },
-    {
-      _id: "2",
-      title: "Food & Drink",
-      mainImage: "/images/a2.jpg.avif",
-      cityName: "Tokyo",
-    },
-    {
-      _id: "3",
-      title: "Adventure Sports",
-      mainImage: "/images/a3.png.avif",
-      cityName: "Dubai",
-    },
-    {
-      _id: "4",
-      title: "Cultural Experiences",
-      mainImage: "/images/a4.jpg.avif",
-      cityName: "Rome",
-    },
-    {
-      _id: "5",
-      title: "Nightlife & Shows",
-      mainImage: "/images/a5.jpg.avif",
-      cityName: "Las Vegas",
-    },
-    {
-      _id: "6",
-      title: "Nature & Wildlife",
-      mainImage: "/images/a6.jpg.avif",
-      cityName: "Singapore",
-    },
-    {
-      _id: "7",
-      title: "Shopping & Markets",
-      mainImage: "/images/a1.jpg.avif",
-      cityName: "London",
-    },
-    {
-      _id: "8",
-      title: "Historical Sites",
-      mainImage: "/images/a2.jpg.avif",
-      cityName: "New York",
-    },
-  ];
+  const [data, setData] = useState<WorldwideResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
 
   useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setActivities(mockActivities.sort(() => 0.5 - Math.random()));
-      setLoading(false);
-    }, 500);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const apiData = await fetchHomePage();
+        setData(apiData);
+        console.log(apiData);
+        if (apiData?.data?.experiences) {
+          // Map experiences to activities
+          const mappedActivities: Activity[] = apiData.data.experiences.slice(0, 20).map((exp) => ({
+            _id: exp._id,
+            title: exp.title,
+            mainImage: exp.imageUrls[0] || "",
+            cityName: exp.cityName,
+            categoryName: exp.categoryName,
+            subcategoryName: exp.subcategoryName,
+          }));
+          
+          setActivities(mappedActivities);
+        } else {
+          // No experiences available
+          setActivities([]);
+        }
+      } catch (err) {
+        console.error('Error loading activities:', err);
+        setError('Failed to load activities.');
+        // Set empty array on error
+        setActivities([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    loadData();
   }, []);
 
   const scrollLeft = () => {
@@ -108,6 +77,20 @@ const Activities = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const generateLink = (activity: Activity) => {
+    const slugify = (text: string) =>
+      text
+        ?.toLowerCase()
+        ?.replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "");
+
+    const citySlug = slugify(activity.cityName || "");
+    const categorySlug = slugify(activity.categoryName || "");
+    const subcategorySlug = slugify(activity.subcategoryName || "");
+    const itemSlug = slugify(activity.title || "");
+    return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${activity._id}`;
   };
 
    if (loading) {
@@ -167,13 +150,12 @@ const Activities = () => {
         >
           {activities.map((activity, index) => (
             <Link
-              href="#"
+              href={generateLink(activity)}
               key={activity._id}
               className="pl-4 hover:-translate-y-2 transition-all duration-300 pt-2 flex-shrink-0 w-[170px] md:w-[200px]"
             >
               <img
                 src={
-                  originalImages[index % originalImages.length] ||
                   activity.mainImage
                 } 
                 alt={activity.title}

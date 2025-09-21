@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import CategoriesDropdown from "@/components/category/CategoriesDropdown";
 import SubcategoryNavigation from "@/components/category/SubcategoryNavigation";
 import Banner from "@/components/home/Banner";
@@ -89,6 +89,7 @@ import {
 } from "@/components/ui/drawer";
 import { ChevronDown } from "lucide-react";
 import Destinations from "@/components/home/Destinations";
+import { fetchWorldwideCategoryPage } from "@/api/worldwide/wordlwide-category-api";
 
 export default function CategoryPage() {
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -101,10 +102,12 @@ export default function CategoryPage() {
     useState<CategoryPageData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentCategoryId, setCurrentCategoryId] = useState<string>("");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
+  const router = useRouter();
   const { activeSection, setActiveSection } = useNavigationStore();
 
   // Create consolidated array of all unique experiences
@@ -208,7 +211,9 @@ export default function CategoryPage() {
   const formattedCityName = decodedCity
     ? decodedCity
         .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
         .join(" ")
     : "City";
 
@@ -1550,6 +1555,27 @@ export default function CategoryPage() {
     }
   };
 
+  const handleNavigation = (item: any) => {
+    // Special case for "All" button - always scroll to top for both routes
+    if (item.id === "all" || item.label === "All") {
+      scrollToSection("all");
+      return;
+    }
+
+    if (isWorldwideRoute) {
+      // For worldwide routes, redirect to new URL
+      const subcategorySlug = item.label
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[&]/g, "");
+      const categorySlug = formattedCategoryName.toLowerCase();
+      router.push(`/things-to-do/worldwide/${categorySlug}/${subcategorySlug}`);
+    } else {
+      // For regular routes, scroll to section
+      scrollToSection(item.id);
+    }
+  };
+
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
@@ -1664,19 +1690,34 @@ export default function CategoryPage() {
       setCategoryPageData(null);
 
       try {
-        const cityData = await fetchCityBycityName(city);
-        const categoryData = await fetchCategoryBycategoryName(categoryName);
-        const categoryPageResponse = await fetchCategoryPageById(
-          cityData._id,
-          categoryData._id
-        );
-
-        if (categoryPageResponse.success && categoryPageResponse.data) {
-          setCategoryPageData(categoryPageResponse.data);
-        } else {
-          setError(
-            categoryPageResponse.message || "Failed to fetch category page data"
+        if (!isWorldwideRoute) {
+          const cityData = await fetchCityBycityName(city);
+          const categoryData = await fetchCategoryBycategoryName(categoryName);
+          const categoryPageResponse = await fetchCategoryPageById(
+            cityData._id,
+            categoryData._id
           );
+
+          if (categoryPageResponse.success && categoryPageResponse.data) {
+            setCategoryPageData(categoryPageResponse.data);
+          } else {
+            setError(
+              categoryPageResponse.message ||
+                "Failed to fetch category page data"
+            );
+          }
+        } else {
+          const categoryData = await fetchCategoryBycategoryName(categoryName);
+          setCurrentCategoryId(categoryData._id);
+          const categoryPageResponse = await fetchWorldwideCategoryPage(
+            categoryData._id
+          );
+
+          if (categoryPageResponse.success && categoryPageResponse.data) {
+            setCategoryPageData(categoryPageResponse.data);
+          } else {
+            setError(categoryPageResponse.message || "Failed to fetch category page data");
+          }
         }
       } catch (err) {
         const errorMessage =
@@ -1876,24 +1917,6 @@ export default function CategoryPage() {
       city: "New York",
     },
   ];
-  const categories = [
-    { id: 1, name: "Tickets" },
-    { id: 2, name: "Tours" },
-    { id: 3, name: "Transportation" },
-    { id: 4, name: "Cruises" },
-    { id: 5, name: "Entertainment" },
-    { id: 6, name: "Aerial Sightseeing" },
-    { id: 7, name: "Nature & Wildlife" },
-    { id: 8, name: "Classes" },
-    { id: 9, name: "Staycations" },
-    { id: 10, name: "Travel Services" },
-    { id: 11, name: "Food & Drink" },
-    { id: 12, name: "Adventure" },
-    { id: 13, name: "Water Sports" },
-    { id: 14, name: "Wellness" },
-    { id: 15, name: "Specials" },
-    { id: 16, name: "Sports" },
-  ];
   return (
     <>
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
@@ -1902,12 +1925,14 @@ export default function CategoryPage() {
             showCategoriesDropdown={showCategoriesDropdown}
             setShowCategoriesDropdown={setShowCategoriesDropdown}
             setShowBanner={setShowBanner}
-            categories={categoryPageData?.allCategories?.map(category => ({
-              categoryName: category.categoryName,
-              subcategories: category.subcategories.map(sub => ({
-                subcategoryName: sub.subcategoryName
-              }))
-            })) || []}
+            categories={
+              categoryPageData?.allCategories?.map((category) => ({
+                categoryName: category.categoryName,
+                subcategories: category.subcategories.map((sub) => ({
+                  subcategoryName: sub.subcategoryName,
+                })),
+              })) || []
+            }
             topExperiences={categoryPageData?.topExperiences || []}
           />
           <div
@@ -1967,12 +1992,21 @@ export default function CategoryPage() {
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                         <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                          {categoryPageData?.reviews ?
-                            (categoryPageData.reviews.reduce((acc, review) => acc + review.stars, 0) / categoryPageData.reviews.length).toFixed(1)
-                            : '4.3'}
+                          {categoryPageData?.reviews
+                            ? (
+                                categoryPageData.reviews.reduce(
+                                  (acc, review) => acc + review.stars,
+                                  0
+                                ) / categoryPageData.reviews.length
+                              ).toFixed(1)
+                            : "4.3"}
                         </span>
                         <span className="text-[#e5006e] text-[17px] font-halyard-text">
-                          ({categoryPageData?.reviews ? categoryPageData.reviews.length.toLocaleString() : '151,002'})
+                          (
+                          {categoryPageData?.reviews
+                            ? categoryPageData.reviews.length.toLocaleString()
+                            : "151,002"}
+                          )
                         </span>
                       </div>
                     </div>
@@ -2040,21 +2074,21 @@ export default function CategoryPage() {
                 </DrawerHeader>
                 <div className="px-4 pb-6">
                   <div className="grid grid-cols-2 gap-3">
-                    {categories.map((item) => {
+                    {categoryPageData?.allCategories?.map((item) => {
                       return (
                         <button
-                          key={item.id}
+                          key={item.categoryName}
                           onClick={() => {
-                            scrollToSection(item.id.toString());
+                            scrollToSection(item.categoryName);
                             setIsMobileDrawerOpen(false);
                           }}
                           className="py-[8px] rounded-[4px] px-[12px] border-[1px] border-[#e2e2e2] transition-all duration-200 text-start"
                         >
                           <a
-                            href={`/things-to-do/${formattedCityName}/${item.name.toLowerCase()}`}
+                            href={`/things-to-do/${formattedCityName}/${item.categoryName.toLowerCase().replace(/\s+/g, '-')}`}
                             className="text-sm font-halyard-text-light text-[#444444] leading-tight"
                           >
-                            {item.name}
+                            {item.categoryName}
                           </a>
                         </button>
                       );
@@ -2081,101 +2115,101 @@ export default function CategoryPage() {
                 isCarouselVisible ? "translate-y-0" : "-translate-y-full"
               }`}
             >
-            <div className="relative">
-              <div
-                ref={scrollContainerRef}
-                className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
-                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-              >
-                {showLeftButton && (
-                  <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center md:flex hidden">
-                    <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
-                      <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                        <ChevronLeft
-                          size={16}
-                          className="text-[#444444]"
-                          onClick={scrollLeft}
-                        />
+              <div className="relative">
+                <div
+                  ref={scrollContainerRef}
+                  className="flex relative gap-2 overflow-x-auto scrollbar-hide z-10 max-w-[1200px] mx-auto px-[24px] xl:px-0"
+                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
+                  {showLeftButton && (
+                    <div className="absolute left-3.5 top-0 z-10 bottom-0 items-center md:flex hidden">
+                      <div className="bg-gradient-to-r from-white via-white/50 to-transparent w-20 h-full flex items-center justify-start">
+                        <div className="bg-white shadow-sm shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                          <ChevronLeft
+                            size={16}
+                            className="text-[#444444]"
+                            onClick={scrollLeft}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
+                  {(formattedCategoryName.toLowerCase() === "ticket" ||
+                  formattedCategoryName.toLowerCase() === "tickets"
+                    ? "bordered"
+                    : currentCategory.style) === "simple" && (
+                    <div className="relative">
+                      <Button
+                        variant="default"
+                        onClick={() => scrollToSection("all")}
+                        className={getButtonStyles(
+                          { id: "all", label: "All" },
+                          activeSection === "all" || !activeSection
+                        )}
+                      >
+                        All
+                      </Button>
+                      {(activeSection === "all" || !activeSection) && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
+                      )}
+                    </div>
+                  )}
+                  {(dynamicNavigationItems.length > 0
+                    ? dynamicNavigationItems
+                    : currentCategory.navigationItems
+                  ).map((item) => {
+                    const IconComponent = item.icon;
+                    const isActive = activeSection === item.id;
+                    return (
+                      <div key={item.id} className="relative">
+                        <Button
+                          variant="default"
+                          onClick={() => handleNavigation(item)}
+                          className={getButtonStyles(item, isActive)}
+                        >
+                          {(formattedCategoryName.toLowerCase() === "ticket" ||
+                          formattedCategoryName.toLowerCase() === "tickets"
+                            ? "bordered"
+                            : currentCategory.style) === "simple" &&
+                          isActive ? null : (
+                            <IconComponent
+                              strokeWidth={1}
+                              className=" md:w-5 md:h-5 w-5 h-5"
+                            />
+                          )}
+                          {item.label}
+                        </Button>
+                      </div>
+                    );
+                  })}
+
+                  {showRightButton && (
+                    <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
+                      <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
+                        <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
+                          <ChevronRight
+                            size={16}
+                            className="text-[#444444]"
+                            onClick={scrollRight}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {(formattedCategoryName.toLowerCase() === "ticket" ||
                 formattedCategoryName.toLowerCase() === "tickets"
                   ? "bordered"
                   : currentCategory.style) === "simple" && (
-                  <div className="relative">
-                    <Button
-                      variant="default"
-                      onClick={() => scrollToSection("all")}
-                      className={getButtonStyles(
-                        { id: "all", label: "All" },
-                        activeSection === "all" || !activeSection
-                      )}
-                    >
-                      All
-                    </Button>
-                    {(activeSection === "all" || !activeSection) && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
-                    )}
-                  </div>
-                )}
-                {(dynamicNavigationItems.length > 0
-                  ? dynamicNavigationItems
-                  : currentCategory.navigationItems
-                ).map((item) => {
-                  const IconComponent = item.icon;
-                  const isActive = activeSection === item.id;
-                  return (
-                    <div key={item.id} className="relative">
-                      <Button
-                        variant="default"
-                        onClick={() => scrollToSection(item.id)}
-                        className={getButtonStyles(item, isActive)}
-                      >
-                        {(formattedCategoryName.toLowerCase() === "ticket" ||
-                        formattedCategoryName.toLowerCase() === "tickets"
-                          ? "bordered"
-                          : currentCategory.style) === "simple" &&
-                        isActive ? null : (
-                          <IconComponent
-                            strokeWidth={1}
-                            className=" md:w-5 md:h-5 w-5 h-5"
-                          />
-                        )}
-                        {item.label}
-                      </Button>
-                    </div>
-                  );
-                })}
-
-                {showRightButton && (
-                  <div className="absolute right-0 top-0 bottom-0 z-10 md:flex hidden items-center">
-                    <div className="bg-gradient-to-l from-white via-white to-transparent w-20 h-full flex items-center justify-end">
-                      <div className="bg-white shadow-2xl shadow-white border border-gray-200 rounded-full p-1.5 cursor-pointer hover:border-gray-400">
-                        <ChevronRight
-                          size={16}
-                          className="text-[#444444]"
-                          onClick={scrollRight}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
                 )}
               </div>
-              {(formattedCategoryName.toLowerCase() === "ticket" ||
-              formattedCategoryName.toLowerCase() === "tickets"
-                ? "bordered"
-                : currentCategory.style) === "simple" && (
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
-              )}
             </div>
-          </div>
           )}
           <div className="md:mt-10 mt-0">
-            {!isWorldwideRoute && (
-              loading ? (
+            {!isWorldwideRoute &&
+              (loading ? (
                 <CategoryPopularThingsSkeleton />
               ) : (
                 categoryPageData?.popularExperiences &&
@@ -2186,52 +2220,62 @@ export default function CategoryPage() {
                     )}
                   />
                 )
-              )
-            )}
+              ))}
           </div>
           <div className="">
-            {currentCategory.components.popular && isWorldwideRoute && (
+            {currentCategory.components.popular && isWorldwideRoute && categoryPageData?.popularExperiences && categoryPageData.popularExperiences.length > 0 && (
               <MobPopularThings
                 title="Popular things to do"
-                recommendations={destinations}
+                recommendations={categoryPageData.popularExperiences.map((exp, index) => ({
+                  id: exp._id,
+                  imageUrls: exp.basicInfo.mainImage[0] || exp.basicInfo.images[0] || "",
+                  description: exp.basicInfo.title,
+                  city: exp.relationships.cityName,
+                  place: exp.relationships.categoryName,
+                }))}
               />
             )}
           </div>
           <div>
             {loading ? (
               <CategoryCarouselGridSkeleton title="Top experiences" />
+            ) : isWorldwideRoute ? (
+              categoryPageData?.topExperiences &&
+              categoryPageData.topExperiences.length > 0 && (
+                <div className="border-b-[1px]  pb-10 mb-10 px-[24px] xl:px-0">
+                  <CarouselGrid
+                    title={`Top experiences`}
+                    variant="pills"
+                    isWorldwideRoute={true}
+                    isSubcategoryPage={false}
+                    pills={false}
+                    categoryId={currentCategoryId}
+                    subcategoryName={categoryName}
+                    recommendations={mapTopExperiencesToRecommendations(
+                      categoryPageData.topExperiences
+                    )}
+                  />
+                </div>
+              )
             ) : (
-              isWorldwideRoute ? (
-                categoryPageData?.topExperiences &&
-                categoryPageData.topExperiences.length > 0 && (
-                  <div className="border-b-[1px]  pb-10 mb-10 px-[24px] xl:px-0">
-                    <CarouselGrid
-                      title={`Top experiences`}
-                      variant="pills"
-                      pills={false}
-                      recommendations={mapTopExperiencesToRecommendations(
-                        categoryPageData.topExperiences
-                      )}
-                    />
-                  </div>
-                )
-              ) : (
-                categoryPageData?.topExperiences &&
-                categoryPageData.topExperiences.length > 0 && (
-                  <div className="px-[24px] xl:px-0">
-                    <CarouselGrid
-                      title={`Top experiences in ${formattedCityName}`}
-                      variant="pills"
-                      recommendations={mapTopExperiencesToRecommendations(
-                        categoryPageData.topExperiences
-                      )}
-                    />
-                  </div>
-                )
+              categoryPageData?.topExperiences &&
+              categoryPageData.topExperiences.length > 0 && (
+                <div className="px-[24px] xl:px-0">
+                  <CarouselGrid
+                    title={`Top experiences in ${formattedCityName}`}
+                    variant="pills"
+                    recommendations={mapTopExperiencesToRecommendations(
+                      categoryPageData.topExperiences
+                    )}
+                  />
+                </div>
               )
             )}
             {currentCategory.components.stack &&
-              (dynamicNavigationItems.length > 0 ? dynamicNavigationItems : currentCategory.navigationItems).map((item) => (
+              (dynamicNavigationItems.length > 0
+                ? dynamicNavigationItems
+                : currentCategory.navigationItems
+              ).map((item) => (
                 <div
                   key={item.id}
                   className="mb-5 md:mb-10 px-[24px] xl:px-0"
@@ -2255,16 +2299,14 @@ export default function CategoryPage() {
                           experience.basicInfo?.images?.[0] ||
                           experience.basicInfo?.mainImage?.[0] ||
                           "/images/default.jpg",
-                        place:
-                          experience.basicInfo?.title ||
-                          item.label,
+                        place: experience.basicInfo?.title || item.label,
                         description:
                           experience.basicInfo?.description ||
                           `Discover ${experience.basicInfo?.title}`,
                         price: experience.basicInfo?.price || 0,
                         city: experience.relationships?.cityName,
                         category: experience.relationships?.categoryName,
-                        subcategory: experience.relationships?.subcategoryName
+                        subcategory: experience.relationships?.subcategoryName,
                       }));
 
                       return mapped.length > 0 ? mapped : [];
@@ -2338,7 +2380,10 @@ export default function CategoryPage() {
                 <CategoryTestimonialsSkeleton />
               ) : (
                 categoryPageData?.reviews && (
-                  <Testimonials variant="default" reviewsData={categoryPageData.reviews} />
+                  <Testimonials
+                    variant="default"
+                    reviewsData={categoryPageData.reviews}
+                  />
                 )
               )}
             </div>

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import CarouselCard from "../cards/CarouselCard";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
+import { WorldwideData } from "@/types/worldwide/worldwide-home-types";
 
 interface Experience {
   _id: string;
@@ -12,156 +13,56 @@ interface Experience {
   price: number;
   oldPrice?: number;
   sale?: number;
-  mainImage: string;
+  mainImage: string[];
   tagOnCards?: string;
   rating: number;
   reviews: number;
   cityName: string;
   countryName: string;
+  categoryName: string;
+  subcategoryName: string;
 }
 
-const originalImages = [
-  "/images/r4.jpg.avif",
-  "/images/r3.jpg.avif",
-  "/images/r2.jpg.avif",
-  "/images/r1.jpg.avif",
-  "/images/r4.jpg.avif",
-  "/images/r3.jpg.avif",
-  "/images/r2.jpg.avif",
-  "/images/r1.jpg.avif",
-];
 
-const Recommendations = () => {
+const Recommendations = ({ data }: { data?: WorldwideData }) => {
   const { t } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [recommendations, setRecommendations] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Mock data array
-  const mockRecommendations: Experience[] = [
-    {
-      _id: "1",
-      title: "Skip-the-Line Eiffel Tower Summit Access",
-      description: "Experience the iconic Eiffel Tower with priority access to the summit",
-      price: 45,
-      oldPrice: 60,
-      sale: 25,
-      mainImage: "/images/r1.jpg.avif",
-      tagOnCards: "Bestseller",
-      rating: 4.8,
-      reviews: 2847,
-      cityName: "Paris",
-      countryName: "France",
-    },
-    {
-      _id: "2",
-      title: "London Eye Fast Track Entry",
-      description: "Skip the queues and enjoy panoramic views of London",
-      price: 32,
-      oldPrice: 40,
-      sale: 20,
-      mainImage: "/images/r2.jpg.avif",
-      tagOnCards: "Popular",
-      rating: 4.6,
-      reviews: 1923,
-      cityName: "London",
-      countryName: "United Kingdom",
-    },
-    {
-      _id: "3",
-      title: "Dubai Desert Safari with BBQ Dinner",
-      description: "Experience the magic of the Arabian desert with traditional entertainment",
-      price: 85,
-      oldPrice: 120,
-      sale: 29,
-      mainImage: "/images/r3.jpg.avif",
-      tagOnCards: "Limited Time",
-      rating: 4.9,
-      reviews: 3421,
-      cityName: "Dubai",
-      countryName: "United Arab Emirates",
-    },
-    {
-      _id: "4",
-      title: "Colosseum Underground & Arena Floor Tour",
-      description: "Explore the hidden areas of Rome's most famous amphitheater",
-      price: 55,
-      oldPrice: 70,
-      sale: 21,
-      mainImage: "/images/r4.jpg.avif",
-      tagOnCards: "Exclusive",
-      rating: 4.7,
-      reviews: 2156,
-      cityName: "Rome",
-      countryName: "Italy",
-    },
-    {
-      _id: "5",
-      title: "Times Square Food Tour",
-      description: "Taste the best of New York's diverse culinary scene",
-      price: 75,
-      oldPrice: 95,
-      sale: 21,
-      mainImage: "/images/r1.jpg.avif",
-      tagOnCards: "Foodie Favorite",
-      rating: 4.5,
-      reviews: 1834,
-      cityName: "New York",
-      countryName: "United States",
-    },
-    {
-      _id: "6",
-      title: "Singapore Night Safari",
-      description: "Discover nocturnal wildlife in the world's first night zoo",
-      price: 48,
-      oldPrice: 60,
-      sale: 20,
-      mainImage: "/images/r2.jpg.avif",
-      tagOnCards: "Family Friendly",
-      rating: 4.4,
-      reviews: 1657,
-      cityName: "Singapore",
-      countryName: "Singapore",
-    },
-    {
-      _id: "7",
-      title: "Las Vegas Strip Helicopter Tour",
-      description: "Soar above the dazzling lights of the Las Vegas Strip",
-      price: 125,
-      oldPrice: 150,
-      sale: 17,
-      mainImage: "/images/r3.jpg.avif",
-      tagOnCards: "Thrilling",
-      rating: 4.8,
-      reviews: 987,
-      cityName: "Las Vegas",
-      countryName: "United States",
-    },
-    {
-      _id: "8",
-      title: "Tokyo Robot Restaurant Show",
-      description: "Experience the futuristic entertainment of Tokyo's robot show",
-      price: 65,
-      oldPrice: 80,
-      sale: 19,
-      mainImage: "/images/r4.jpg.avif",
-      tagOnCards: "Unique Experience",
-      rating: 4.3,
-      reviews: 1234,
-      cityName: "Tokyo",
-      countryName: "Japan",
-    },
-  ];
+  console.log(data);
 
   useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setRecommendations(mockRecommendations);
+    if (data?.experiences) {
+      // Map SimplifiedExperience to Experience format
+      const mappedExperiences: Experience[] = data.experiences.slice(0, 15).map((exp) => ({
+        _id: exp._id,
+        title: exp.title,
+        description: exp.title, // Using title as description since SimplifiedExperience doesn't have description
+        price: exp.price,
+        oldPrice: exp.oldPrice,
+        sale: exp.oldPrice ? Math.round(((exp.oldPrice - exp.price) / exp.oldPrice) * 100) : undefined,
+        mainImage: (exp.imageUrls || exp.images || []).filter((img): img is string => img !== null),
+        tagOnCards: exp.tagOnCards,
+        rating: 4.5, // Default rating since not in SimplifiedExperience
+        reviews: Math.floor(Math.random() * 2000) + 500, // Random reviews since not in SimplifiedExperience
+        cityName: exp.cityName,
+        countryName: exp.cityName, // Using cityName as countryName since not available
+        categoryName: exp.categoryName,
+        subcategoryName: exp.subcategoryName,
+      }));
+      
+      setRecommendations(mappedExperiences);
       setLoading(false);
-    }, 500);
+    } else {
+      // Fallback to mock data if no API data
+      const timer = setTimeout(() => {
+        setRecommendations([]);
+        setLoading(false);
+      }, 500);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+  }, [data]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -233,7 +134,9 @@ const Recommendations = () => {
             <CarouselCard
               variant="recommendation"
               image={
-                originalImages[index % originalImages.length] || rec.mainImage
+                rec.mainImage && rec.mainImage.length > 0 
+                  ? rec.mainImage
+                  : ["/images/r1.jpg.avif"]
               }
               place={rec.cityName || "Top Destination"}
               rating={rec.rating}
@@ -244,8 +147,8 @@ const Recommendations = () => {
               off={rec.sale}
               badge={rec.tagOnCards}
               city={rec.cityName}
-              category="tours"
-              subcategory="generic"
+              category={rec.categoryName}
+              subcategory={rec.subcategoryName}
               itemId={rec._id}
             />
           </div>

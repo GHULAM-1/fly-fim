@@ -29,6 +29,8 @@ import { useCalendarState } from "@/lib/hooks/useCalendarState";
 import { CategoryResponseItem } from "@/types/category-page/category-page-types";
 import { fetchFilteredSubcategoryExperiences } from "@/api/subcategory-page/subcategory-page-api";
 import { SubcategoryPageResponse } from "@/types/subcategory-page/subcategory-page-types";
+import { fetchFilteredCategoryExperiences } from "@/api/worldwide/wordlwide-category-api";
+import { fetchFilteredWorldwideSubcategoryExperiences, fetchWorldwideSubcategoryPageById } from "@/api/worldwide/worldwide-subcategory-api";
 
 const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -92,6 +94,8 @@ interface CarouselGridProps {
   categoryId?: string;
   subcategoryName?: string;
   onDataUpdate?: (data: any[]) => void;
+  isWorldwideRoute?: boolean;
+  isSubcategoryPage?: boolean;
 }
 
 const CarouselGrid = ({
@@ -107,6 +111,8 @@ const CarouselGrid = ({
   categoryId,
   subcategoryName,
   onDataUpdate,
+  isWorldwideRoute = false,
+  isSubcategoryPage = false,
 }: CarouselGridProps) => {
   const { t } = useTranslation();
   const { city, category, subcategory } = useParams();
@@ -143,10 +149,10 @@ const CarouselGrid = ({
 
   // Initialize API call for pills variant when API props are provided
   useEffect(() => {
-    if (variant === "pills" && cityId && categoryId && subcategoryName) {
+    if (variant === "pills" && categoryId && subcategoryName && (isWorldwideRoute || cityId)) {
       fetchFilteredData(getSortApiValue(sortBy));
     }
-  }, [variant, cityId, categoryId, subcategoryName]);
+  }, [variant, cityId, categoryId, subcategoryName, isWorldwideRoute]);
 
   // Prevent interaction with CarouselGrid when calendar is open
   useEffect(() => {
@@ -358,33 +364,62 @@ const CarouselGrid = ({
     setIsSortDrawerOpen(false);
 
     // For pills variant, trigger API call when sort changes
-    if (variant === "pills" && cityId && categoryId && subcategoryName) {
+    if (variant === "pills" && categoryId && subcategoryName && (isWorldwideRoute || cityId)) {
+
       fetchFilteredData(getSortApiValue(option));
     }
   };
 
   // Fetch filtered data from API
   const fetchFilteredData = async (sortByValue: string) => {
-    if (!cityId || !categoryId || !subcategoryName) return;
+    if (!categoryId || !subcategoryName || (!isWorldwideRoute && !cityId)) return;
 
     try {
       setIsLoadingApiData(true);
       setApiError(null);
+      console.log("isWorldwideRoute", isWorldwideRoute, "isSubcategoryPage", isSubcategoryPage);
 
-      const response = await fetchFilteredSubcategoryExperiences(
-        cityId,
-        categoryId,
-        subcategoryName,
-        sortByValue
-      );
+      let response;
+      if (isWorldwideRoute && isSubcategoryPage) {
+        // Worldwide subcategory page - call worldwide subcategory API
+        response = await fetchFilteredWorldwideSubcategoryExperiences(categoryId, subcategoryName, sortByValue);
+      } else if (isWorldwideRoute && !isSubcategoryPage) {
+        // Worldwide category page - call worldwide category API
+        response = await fetchFilteredCategoryExperiences(
+          categoryId,
+          sortByValue
+        );
+      } else {
+        // Regular city routes - call regular subcategory API
+        response = await fetchFilteredSubcategoryExperiences(
+          cityId || "",
+          categoryId,
+          subcategoryName,
+          sortByValue
+        );
+      }
 
-      if (response.success && response.data.experiences) {
-        const transformedData = transformApiExperiencesToRecommendations(response.data.experiences);
-        setApiRecommendations(transformedData);
+      if (response.success && response.data) {
+        let experiences;
+        if (isWorldwideRoute && isSubcategoryPage) {
+          // For worldwide subcategory pages
+          experiences = (response.data as any).experiences;
+        } else if (isWorldwideRoute && !isSubcategoryPage) {
+          // For worldwide category pages
+          experiences = (response.data as any).topExperiences;
+        } else {
+          // For regular routes
+          experiences = (response.data as any).experiences;
+        }
+        
+        if (experiences) {
+          const transformedData = transformApiExperiencesToRecommendations(experiences);
+          setApiRecommendations(transformedData);
 
-        // Notify parent component if callback provided
-        if (onDataUpdate) {
-          onDataUpdate(transformedData);
+          // Notify parent component if callback provided
+          if (onDataUpdate) {
+            onDataUpdate(transformedData);
+          }
         }
       }
     } catch (error) {
@@ -935,7 +970,7 @@ const CarouselGrid = ({
                   off={recommendation.off}
                   oldPrice={recommendation.oldPrice}
                   badge={recommendation.badge}
-                  city={cityStr}
+                  city={isWorldwideRoute ? recommendation.city : cityStr}
                   category={recommendation.category}
                   subcategory={recommendation.subcategory}
                   itemId={recommendation.id}

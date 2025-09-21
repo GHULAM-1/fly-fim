@@ -119,7 +119,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
 
 
   return (
-    <div className="flex justify-between items-center max-w-[1200px] mx-auto  px-[24px] xl:px-0">
+    <div className="flex justify-between items-center max-w-[1200px] mx-auto ">
     <ul className="flex gap-3 lg:gap-8 text-xs lg:text-[15px] font-halyard-text-light text-[#444444] font-light">
       <li 
         className="relative flex hover:cursor-pointer items-center group gap-1 hover:text-[#8000ff] transition-colors duration-200"
@@ -216,7 +216,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                   if (hoveredCategory === 1) {
                     // Get top 15 experiences from topExperiences prop
                     const topExperiencesToShow = topExperiences.slice(0, 15);
-
+                    console.log("topExperiencesToShow", topExperiencesToShow);
                     // Split into 3 columns
                     const col1 = topExperiencesToShow.slice(0, 5);
                     const col2 = topExperiencesToShow.slice(5, 10);
@@ -228,7 +228,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                           {col1.map((experience) => (
                             <div key={experience._id} className="flex items-center space-x-3">
                               <img
-                                src={experience.basicInfo.mainImage[0] || "/images/a1.jpg.avif"}
+                                src={experience.basicInfo.images[0] || "/images/a1.jpg.avif"}
                                 alt={experience.basicInfo.title}
                                 className="w-12 h-12 object-cover rounded"
                               />
@@ -249,7 +249,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                           {col2.map((experience) => (
                             <div key={experience._id} className="flex items-center space-x-3">
                               <img
-                                src={experience.basicInfo.mainImage[0] || "/images/a2.jpg.avif"}
+                                src={experience.basicInfo.images[0] || "/images/a2.jpg.avif"}
                                 alt={experience.basicInfo.title}
                                 className="w-12 h-12 object-cover rounded"
                               />
@@ -270,7 +270,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                           {col3.map((experience) => (
                             <div key={experience._id} className="flex items-center space-x-3">
                               <img
-                                src={experience.basicInfo.mainImage[0] || "/images/a3.jpg.avif"}
+                                src={experience.basicInfo.images[0] || "/images/a3.jpg.avif"}
                                 alt={experience.basicInfo.title}
                                 className="w-12 h-12 object-cover rounded"
                               />

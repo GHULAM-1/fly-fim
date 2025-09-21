@@ -75,7 +75,7 @@ const ReviewsList = ({ reviews = [] }: ReviewsListProps) => {
               <div className="flex items-start gap-4">
                 {/* User Avatar */}
                 <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold text-sm">
-                  {(review.userId || 'A').charAt(0).toUpperCase()}
+                  {(review.userName || 'A').charAt(0).toUpperCase()}
                 </div>
 
                 <div className="flex-1">
@@ -83,7 +83,7 @@ const ReviewsList = ({ reviews = [] }: ReviewsListProps) => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-900 text-sm font-halyard-text">
-                        {review.userId || 'Anonymous'}
+                        {review.userName || 'Anonymous'}
                       </span>
                       <div className="flex items-center gap-1">
                         <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
