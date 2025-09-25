@@ -1,5 +1,7 @@
 import React from "react";
 import ProductHeader from "@/components/detail/ProductHeader";
+
+export const dynamic = 'force-static';
 import ImageGallery from "@/components/detail/ImageGallery";
 import KeyFeatures from "@/components/detail/KeyFeatures";
 import TicketPreference from "@/components/detail/TicketPreference";

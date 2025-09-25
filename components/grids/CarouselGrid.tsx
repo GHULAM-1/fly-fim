@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +36,11 @@ import { CategoryResponseItem } from "@/types/category-page/category-page-types"
 import { fetchFilteredSubcategoryExperiences } from "@/api/subcategory-page/subcategory-page-api";
 import { SubcategoryPageResponse } from "@/types/subcategory-page/subcategory-page-types";
 import { fetchFilteredCategoryExperiences } from "@/api/worldwide/wordlwide-category-api";
-import { fetchFilteredWorldwideSubcategoryExperiences, fetchWorldwideSubcategoryPageById } from "@/api/worldwide/worldwide-subcategory-api";
+import {
+  fetchFilteredWorldwideSubcategoryExperiences,
+  fetchWorldwideSubcategoryPageById,
+} from "@/api/worldwide/worldwide-subcategory-api";
+import { getBlogPostBySlug } from "@/lib/sanity/queries";
 
 const SortIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -142,14 +152,42 @@ const CarouselGrid = ({
   const [apiRecommendations, setApiRecommendations] = useState<any[]>([]);
   const [isLoadingApiData, setIsLoadingApiData] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  console.log("recommendations", recommendations);
   useEffect(() => {
     setIsClient(true);
   }, []);
+  // Fetch blog posts from Sanity using the provided slugs
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      if (recommendations.length === 0) {
+        return;
+      }
 
+      try {
+        const posts = await Promise.all(
+          recommendations.map((slug) => getBlogPostBySlug(slug))
+        );
+        // Filter out null results and use all available posts
+        const validPosts = posts.filter((post) => post !== null);
+        setBlogPosts(validPosts);
+        console.log("Blog Posts:", validPosts);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+        setBlogPosts([]);
+      }
+    };
+
+    fetchBlogPosts();
+  }, [recommendations]);
   // Initialize API call for pills variant when API props are provided
   useEffect(() => {
-    if (variant === "pills" && categoryId && subcategoryName && (isWorldwideRoute || cityId)) {
+    if (
+      variant === "pills" &&
+      categoryId &&
+      subcategoryName &&
+      (isWorldwideRoute || cityId)
+    ) {
       fetchFilteredData(getSortApiValue(sortBy));
     }
   }, [variant, cityId, categoryId, subcategoryName, isWorldwideRoute]);
@@ -160,13 +198,13 @@ const CarouselGrid = ({
       // Close any open dropdowns/drawers
       setShowCategoriesDropdown(false);
       setIsSortDrawerOpen(false);
-      
+
       // Check if CarouselGrid is in view and scroll up if needed
-      const carouselElement = document.querySelector('[data-carousel-grid]');
+      const carouselElement = document.querySelector("[data-carousel-grid]");
       if (carouselElement) {
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-        
+
         // Disabled auto-scroll to prevent unwanted scrolling behavior
         // if (isInView) {
         //   // Scroll up to show calendar (scroll to a position that shows the calendar area)
@@ -182,11 +220,11 @@ const CarouselGrid = ({
     if (!isCalendarOpen) return;
 
     const handleScroll = () => {
-      const carouselElement = document.querySelector('[data-carousel-grid]');
+      const carouselElement = document.querySelector("[data-carousel-grid]");
       if (carouselElement) {
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-        
+
         // Disabled auto-scroll to prevent unwanted scrolling behavior
         // if (isInView) {
         //   // Scroll up to show calendar
@@ -196,8 +234,8 @@ const CarouselGrid = ({
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [isCalendarOpen]);
 
   useEffect(() => {
@@ -245,38 +283,6 @@ const CarouselGrid = ({
     };
   }, [showCategoriesDropdown]);
 
-  const handleCheckboxChange = (itemId: string) => {
-    setCheckedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-      } else {
-        newSet.add(itemId);
-      }
-      return newSet;
-    });
-  };
-
-  const handleCategoriesClick = () => {
-    if (isCalendarOpen) {
-      // Scroll up to show calendar if CarouselGrid is in view
-      const carouselElement = document.querySelector('[data-carousel-grid]');
-      if (carouselElement) {
-        const rect = carouselElement.getBoundingClientRect();
-        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        // Disabled auto-scroll to prevent unwanted scrolling behavior
-        // if (isInView) {
-        //   const scrollPosition = Math.max(0, window.scrollY - 200);
-        //   window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-        // }
-      }
-      return;
-    }
-    const newState = !showCategoriesDropdown;
-    setShowCategoriesDropdown(newState);
-  };
-
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
@@ -323,14 +329,14 @@ const CarouselGrid = ({
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
       return [];
     }
-    return apiExperiences.map(exp => ({
+    return apiExperiences.map((exp) => ({
       id: exp._id,
       cityId: exp.relationships?.cityId,
       categoryId: exp.relationships?.categoryId,
       subcategoryName: exp.relationships?.subcategoryName,
       type: exp.relationships?.subcategoryName,
-      description: exp.basicInfo?.title || exp.description || '',
-      place: exp.basicInfo?.tagOnCards || exp.place || '',
+      description: exp.basicInfo?.title || exp.description || "",
+      place: exp.basicInfo?.tagOnCards || exp.place || "",
       image: exp.basicInfo?.images || exp.image || "/images/default.jpg",
       price: exp.basicInfo?.price || exp.price || 0,
       oldPrice: exp.basicInfo?.oldPrice || exp.oldPrice,
@@ -340,14 +346,14 @@ const CarouselGrid = ({
       badge: exp.basicInfo?.tagOnCards || exp.badge || "Free cancellation",
       city: exp.relationships?.cityName,
       category: exp.relationships?.categoryName,
-      subcategory: exp.relationships?.subcategoryName
+      subcategory: exp.relationships?.subcategoryName,
     }));
   };
 
   const handleSortChange = (option: string) => {
     if (isCalendarOpen) {
       // Scroll up to show calendar if CarouselGrid is in view
-      const carouselElement = document.querySelector('[data-carousel-grid]');
+      const carouselElement = document.querySelector("[data-carousel-grid]");
       if (carouselElement) {
         const rect = carouselElement.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight && rect.bottom > 0;
@@ -364,25 +370,39 @@ const CarouselGrid = ({
     setIsSortDrawerOpen(false);
 
     // For pills variant, trigger API call when sort changes
-    if (variant === "pills" && categoryId && subcategoryName && (isWorldwideRoute || cityId)) {
-
+    if (
+      variant === "pills" &&
+      categoryId &&
+      subcategoryName &&
+      (isWorldwideRoute || cityId)
+    ) {
       fetchFilteredData(getSortApiValue(option));
     }
   };
 
   // Fetch filtered data from API
   const fetchFilteredData = async (sortByValue: string) => {
-    if (!categoryId || !subcategoryName || (!isWorldwideRoute && !cityId)) return;
+    if (!categoryId || !subcategoryName || (!isWorldwideRoute && !cityId))
+      return;
 
     try {
       setIsLoadingApiData(true);
       setApiError(null);
-      console.log("isWorldwideRoute", isWorldwideRoute, "isSubcategoryPage", isSubcategoryPage);
+      console.log(
+        "isWorldwideRoute",
+        isWorldwideRoute,
+        "isSubcategoryPage",
+        isSubcategoryPage
+      );
 
       let response;
       if (isWorldwideRoute && isSubcategoryPage) {
         // Worldwide subcategory page - call worldwide subcategory API
-        response = await fetchFilteredWorldwideSubcategoryExperiences(categoryId, subcategoryName, sortByValue);
+        response = await fetchFilteredWorldwideSubcategoryExperiences(
+          categoryId,
+          subcategoryName,
+          sortByValue
+        );
       } else if (isWorldwideRoute && !isSubcategoryPage) {
         // Worldwide category page - call worldwide category API
         response = await fetchFilteredCategoryExperiences(
@@ -411,9 +431,10 @@ const CarouselGrid = ({
           // For regular routes
           experiences = (response.data as any).experiences;
         }
-        
+
         if (experiences) {
-          const transformedData = transformApiExperiencesToRecommendations(experiences);
+          const transformedData =
+            transformApiExperiencesToRecommendations(experiences);
           setApiRecommendations(transformedData);
 
           // Notify parent component if callback provided
@@ -423,8 +444,8 @@ const CarouselGrid = ({
         }
       }
     } catch (error) {
-      console.error('Error fetching filtered data:', error);
-      setApiError('Failed to fetch filtered data');
+      console.error("Error fetching filtered data:", error);
+      setApiError("Failed to fetch filtered data");
     } finally {
       setIsLoadingApiData(false);
     }
@@ -555,21 +576,27 @@ const CarouselGrid = ({
     // Extract unique subcategories from recommendations
     const subcategoriesFromRecommendations = useMemo(() => {
       const subcategoryNames = recommendations
-        ?.map(rec => rec.type)
+        ?.map((rec) => rec.type)
         .filter((name, index, self) => name && self.indexOf(name) === index);
 
-      return subcategoryNames?.map(name => ({
-        subcategoryName: name
-      })) || [];
+      return (
+        subcategoryNames?.map((name) => ({
+          subcategoryName: name,
+        })) || []
+      );
     }, [recommendations]);
 
     // Memoize the selectedPills Set for better performance
-    const selectedPillsSet = useMemo(() => new Set(selectedPills), [selectedPills]);
+    const selectedPillsSet = useMemo(
+      () => new Set(selectedPills),
+      [selectedPills]
+    );
 
     // Optimize filtering with useMemo to prevent unnecessary re-computations
     const filteredRecommendations = useMemo(() => {
       // Use API data if available, otherwise fall back to props recommendations
-      const dataSource = apiRecommendations.length > 0 ? apiRecommendations : recommendations;
+      const dataSource =
+        apiRecommendations.length > 0 ? apiRecommendations : recommendations;
 
       if (selectedPills.length === 0) {
         return dataSource;
@@ -577,7 +604,10 @@ const CarouselGrid = ({
 
       // Filter by subcategory name from relationships
       return dataSource.filter((rec) => {
-        const subcategorySlug = rec.type?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+        const subcategorySlug = rec.type
+          ?.toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/&/g, "");
         return selectedPillsSet.has(subcategorySlug);
       });
     }, [recommendations, apiRecommendations, selectedPills, selectedPillsSet]);
@@ -665,9 +695,9 @@ const CarouselGrid = ({
     }, [showDropdown]);
 
     return (
-      <div 
+      <div
         data-carousel-grid
-        className={`py-4 max-w-screen-2xl mx-auto xl:px-0 ${isCalendarOpen ? 'pointer-events-none opacity-50' : ''}`}
+        className={`py-4 max-w-screen-2xl mx-auto xl:px-0 ${isCalendarOpen ? "pointer-events-none opacity-50" : ""}`}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
@@ -682,149 +712,159 @@ const CarouselGrid = ({
             className="mt-4 sm:mt-5 flex gap-2 overflow-x-auto scrollbar-hide"
             ref={scrollContainerRef}
           >
-            {(subcategoriesFromRecommendations.length > 5) && (
-            <div className="relative">
-              <div
-                data-categories-button
-                className={`flex items-center gap-1 px-[12px] py-[6px] border-[1px] hover:border-[#444] border-[#e2e2e2]  rounded-full whitespace-nowrap cursor-pointer transition-colors text-[#444444] ${
-                  selectedPills.length > 0 ? "bg-[#f0f0f0] border-[#222]" : ""
-                }`}
-                onClick={handleDropdownClick}
-              >
-                {selectedPills.length > 0 && (
-                  <div className="w-5 h-5 text-white bg-[#000c] rounded-full flex items-center justify-center text-xs font-bold">
-                    {selectedPills.length}
+            {subcategoriesFromRecommendations.length > 5 && (
+              <div className="relative">
+                <div
+                  data-categories-button
+                  className={`flex items-center gap-1 px-[12px] py-[6px] border-[1px] hover:border-[#444] border-[#e2e2e2]  rounded-full whitespace-nowrap cursor-pointer transition-colors text-[#444444] ${
+                    selectedPills.length > 0 ? "bg-[#f0f0f0] border-[#222]" : ""
+                  }`}
+                  onClick={handleDropdownClick}
+                >
+                  {selectedPills.length > 0 && (
+                    <div className="w-5 h-5 text-white bg-[#000c] rounded-full flex items-center justify-center text-xs font-bold">
+                      {selectedPills.length}
+                    </div>
+                  )}
+                  <span className="text-sm font-halyard-text">Categories</span>
+                  <svg
+                    width="12"
+                    height="8"
+                    viewBox="0 0 12 8"
+                    fill="none"
+                    className="ml-1"
+                  >
+                    <path
+                      d="M1 1.5L6 6.5L11 1.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+                {showDropdown && buttonRect && (
+                  <div
+                    data-categories-dropdown
+                    className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[230px] max-h-[300px] overflow-y-auto"
+                    style={{
+                      top:
+                        dropdownPosition === "top"
+                          ? `${Math.max(10, buttonRect.top - 300)}px`
+                          : `${buttonRect.bottom + 8}px`,
+                      left: `${Math.max(10, Math.min(buttonRect.left, window.innerWidth - 250))}px`,
+                      // On mobile, add extra bottom margin to avoid bottom navbar
+                      ...(window.innerWidth < 768 &&
+                        dropdownPosition === "bottom" && {
+                          maxHeight: `${Math.min(300, window.innerHeight - buttonRect.bottom - 80)}px`,
+                        }),
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-2">
+                      {subcategoriesFromRecommendations.map(
+                        (subcategory, index) => {
+                          const subId = subcategory.subcategoryName
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")
+                            .replace(/&/g, "");
+                          const isSelected = selectedPills.includes(subId);
+
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-center gap-3 px-3 py-2 pb-4 hover:bg-gray-50 rounded cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePillToggle(subId);
+                              }}
+                            >
+                              <span className="text-[14px] font-halyard-text text-[#222222] flex-1">
+                                {subcategory.subcategoryName}
+                              </span>
+                              <div
+                                className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
+                                  isSelected
+                                    ? "bg-purple-600 border-purple-600"
+                                    : "border-gray-300"
+                                }`}
+                              >
+                                {isSelected && (
+                                  <svg
+                                    width="20"
+                                    height="12"
+                                    viewBox="0 0 10 8"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M1 4L3.5 6.5L9 1"
+                                      stroke="white"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
                   </div>
                 )}
-                <span className="text-sm font-halyard-text">Categories</span>
-                <svg
-                  width="12"
-                  height="8"
-                  viewBox="0 0 12 8"
-                  fill="none"
-                  className="ml-1"
-                >
-                  <path
-                    d="M1 1.5L6 6.5L11 1.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
               </div>
-
-              {showDropdown && buttonRect && (
-                <div
-                  data-categories-dropdown
-                  className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[230px] max-h-[300px] overflow-y-auto"
-                  style={{
-                    top:
-                      dropdownPosition === "top"
-                        ? `${Math.max(10, buttonRect.top - 300)}px`
-                        : `${buttonRect.bottom + 8}px`,
-                    left: `${Math.max(10, Math.min(buttonRect.left, window.innerWidth - 250))}px`,
-                    // On mobile, add extra bottom margin to avoid bottom navbar
-                    ...(window.innerWidth < 768 &&
-                      dropdownPosition === "bottom" && {
-                        maxHeight: `${Math.min(300, window.innerHeight - buttonRect.bottom - 80)}px`,
-                      }),
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="p-2">
-                    {subcategoriesFromRecommendations.map((subcategory, index) => {
-                      const subId = subcategory.subcategoryName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
-                      const isSelected = selectedPills.includes(subId);
-
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 px-3 py-2 pb-4 hover:bg-gray-50 rounded cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePillToggle(subId);
-                          }}
-                        >
-                          <span className="text-[14px] font-halyard-text text-[#222222] flex-1">
-                            {subcategory.subcategoryName}
-                          </span>
-                          <div
-                            className={`w-5 h-5 border-[1px] rounded-[3px] flex items-center justify-center ${
-                              isSelected
-                                ? "bg-purple-600 border-purple-600"
-                                : "border-gray-300"
-                            }`}
-                          >
-                            {isSelected && (
-                              <svg
-                                width="20"
-                                height="12"
-                                viewBox="0 0 10 8"
-                                fill="none"
-                              >
-                                <path
-                                  d="M1 4L3.5 6.5L9 1"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
             )}
-            {subcategoriesFromRecommendations.slice(0, 5).map((subcategory, index) => {
-              const subId = subcategory.subcategoryName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
-              const isSelected = selectedPills.includes(subId);
+            {subcategoriesFromRecommendations
+              .slice(0, 5)
+              .map((subcategory, index) => {
+                const subId = subcategory.subcategoryName
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(/&/g, "");
+                const isSelected = selectedPills.includes(subId);
 
-              return (
-                <div
-                  key={index}
-                  onClick={() => handlePillToggle(subId)}
-                  className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
-                    isSelected
-                      ? "bg-[#f0f0f0] text-[#444444] border-[#222]"
-                      : "bg-white text-[#444444] border-[#e2e2e2] hover:border-[#444]"
-                  }`}
-                >
-                  <span className="text-sm font-halyard-text">
-                    {subcategory.subcategoryName}
-                  </span>
-                  {isSelected && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePillToggle(subId);
-                      }}
-                      className="ml-1 hover:cursor-pointer w-4 h-4 flex items-center justify-center text-gray-500 hover:text-[#444444]"
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
+                return (
+                  <div
+                    key={index}
+                    onClick={() => handlePillToggle(subId)}
+                    className={`flex items-center gap-1 px-[12px] py-[6px] border rounded-full whitespace-nowrap cursor-pointer transition-colors ${
+                      isSelected
+                        ? "bg-[#f0f0f0] text-[#444444] border-[#222]"
+                        : "bg-white text-[#444444] border-[#e2e2e2] hover:border-[#444]"
+                    }`}
+                  >
+                    <span className="text-sm font-halyard-text">
+                      {subcategory.subcategoryName}
+                    </span>
+                    {isSelected && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePillToggle(subId);
+                        }}
+                        className="ml-1 hover:cursor-pointer w-4 h-4 flex items-center justify-center text-gray-500 hover:text-[#444444]"
                       >
-                        <path
-                          d="M9 3L3 9M3 3L9 9"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              );
-            })}
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                        >
+                          <path
+                            d="M9 3L3 9M3 3L9 9"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
           </div>
         ) : (
           <div className="flex justify-between items-center mb-0">
@@ -916,27 +956,29 @@ const CarouselGrid = ({
                   </button>
                 </div>
 
-                 <div className="space-y-2">
-                   {sortOptions.map((option) => (
-                     <button
-                       key={option}
-                       onClick={() => handleSortChange(option)}
-                       className={`w-full flex items-center justify-between rounded-lg text-left transition-colors text-[#666666] font-halyard-text font-[15px]`}
-                     >
-                       <span className="font-halyard-text font-[15px] text-[#444444]">{option}</span>
-                       {/* Radio Button Indicator - Right Aligned */}
-                       <div className="flex-shrink-0">
-                         {sortBy === option ? (
-                           <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
-                             <div className="w-[8px] h-[8px] rounded-full bg-white"></div>
-                           </div>
-                         ) : (
-                           <div className="w-5 h-5 rounded-full border-2 border-gray-300"></div>
-                         )}
-                       </div>
-                     </button>
-                   ))}
-                 </div>
+                <div className="space-y-2">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => handleSortChange(option)}
+                      className={`w-full flex items-center justify-between rounded-lg text-left transition-colors text-[#666666] font-halyard-text font-[15px]`}
+                    >
+                      <span className="font-halyard-text font-[15px] text-[#444444]">
+                        {option}
+                      </span>
+                      {/* Radio Button Indicator - Right Aligned */}
+                      <div className="flex-shrink-0">
+                        {sortBy === option ? (
+                          <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
+                            <div className="w-[8px] h-[8px] rounded-full bg-white"></div>
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -979,7 +1021,9 @@ const CarouselGrid = ({
           ) : (
             <div className="col-span-full text-center py-20">
               <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                {apiError ? "Error loading experiences" : "No experiences found"}
+                {apiError
+                  ? "Error loading experiences"
+                  : "No experiences found"}
               </h3>
               <p className="text-gray-500">
                 {apiError || "Try adjusting your filters or check back later."}
@@ -1111,42 +1155,44 @@ const CarouselGrid = ({
                   className="flex-shrink-0 cursor-pointer group w-[calc(24%-10px)] h-[354px] relative"
                   onClick={() => router.push(generateMuseumLink())}
                 >
-                <div className="flex justify-center relative h-[15px] items-center flex-col ">
-                  <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
-                  <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
-                </div>
-                <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
-                  <div className="relative h-full overflow-hidden">
-                    <img
-                      src={museum.image}
-                      alt={museum.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="flex justify-center relative h-[15px] items-center flex-col ">
+                    <div className="w-[89%] h-[12px] border-t-[1px] border-l-[1px] border-r-[1px] border-[#cacaca] bg-[#f8f8f8] rounded-t-lg z-0 group-hover:h-[12px] transition-all duration-150 group-hover:mb-[-6px] ease-in-out"></div>
+                    <div className="w-[92%] h-[12px] bg-white border-[1px] border-[#cacaca] rounded-t-lg  z-0 group-hover:mb-[-6px] group-hover:h-[12px] transition-all duration-100 ease-in-out"></div>
+                  </div>
+                  <div className="relative h-full rounded-lg overflow-hidden shadow-lg z-10 group">
+                    <div className="relative h-full overflow-hidden">
+                      <img
+                        src={museum.image}
+                        alt={museum.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                    <div
-                      className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
-                      }}
-                    />
+                      <div
+                        className="absolute bottom-0 left-0 right-0 h-[35%] transition-all duration-500 ease-in-out group-hover:h-[50%] group-hover:bottom-0"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, rgba(21, 1, 42, 0) 0%, rgba(21, 1, 42, 0.3) 20%, rgba(21, 1, 42, 0.7) 60%, rgb(21, 1, 42) 100%)",
+                        }}
+                      />
 
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                      <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
-                        <h3 className="text-lg font-halyard-text mb-1">
-                          {museum.place}
-                        </h3>
-                        {museum.description && (
-                          <p className="text-sm font-halyard-text-light text-gray-200 mb-2 line-clamp-2">
-                            {museum.description}
-                          </p>
-                        )}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <div className="max-h-[25px] group-hover:max-h-[200px] transition-all duration-700 ease-in-out overflow-hidden">
+                          <h3 className="text-lg font-halyard-text mb-1">
+                            {museum.place}
+                          </h3>
+                          {museum.description && (
+                            <p className="text-sm font-halyard-text-light text-gray-200 mb-2 line-clamp-2">
+                              {museum.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-lg font-bold">
+                          <PriceDisplay amount={museum.price} />
+                        </div>
                       </div>
-                      <div className="text-lg font-bold"><PriceDisplay amount={museum.price} /></div>
                     </div>
                   </div>
-                </div>
                 </div>
               );
             })}
@@ -1175,7 +1221,9 @@ const CarouselGrid = ({
 
                   const citySlug = slugify(museum.city || cityStr);
                   const categorySlug = slugify(museum.category || "museums");
-                  const subcategorySlug = slugify(museum.subcategory || "art-museums");
+                  const subcategorySlug = slugify(
+                    museum.subcategory || "art-museums"
+                  );
 
                   return `/things-to-do/${citySlug}/${categorySlug}/${subcategorySlug}/${museum.id}`;
                 };
@@ -1226,7 +1274,15 @@ const CarouselGrid = ({
                             {museum.description}
                           </p>
                           <div className="text-lg font-bold">
-                            <PriceDisplay amount={typeof museum.price === 'string' ? parseFloat(museum.price.replace(/[^0-9.]/g, '')) || 0 : museum.price || 0} />
+                            <PriceDisplay
+                              amount={
+                                typeof museum.price === "string"
+                                  ? parseFloat(
+                                      museum.price.replace(/[^0-9.]/g, "")
+                                    ) || 0
+                                  : museum.price || 0
+                              }
+                            />
                           </div>
                         </div>
                       </div>
@@ -1325,7 +1381,7 @@ const CarouselGrid = ({
     };
 
     return (
-      <div className="py-4 px-[24px] xl:px-0">
+      <div className="py-4  xl:px-0">
         <div className="flex justify-between items-center  max-w-[1200px] mx-auto">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">
             {title}
@@ -1350,47 +1406,57 @@ const CarouselGrid = ({
           className="mt-2 sm:mt-4 flex md:flex-row flex-col gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
         >
-          {recommendations.map((guide, index) => (
-            <div
+          {blogPosts.map((guide, index) => (
+            <Link
+              href={`/blog/${guide.slug?.current || guide.slug || "#"}`}
               key={guide.id}
-              className="w-[25%] md:block hidden md:w-[24%] flex-shrink-0"
+              className="w-[25%] hover:cursor-pointer md:block hidden md:w-[24%] flex-shrink-0"
             >
-              <img
-                src={guide.image}
-                alt={guide.heading}
-                className="w-[96%] mb-2 object-cover rounded-lg"
-              />
-              <div className="text-[#444444]">
-                <h3 className="font-semibold font-halyard-text text-[17px]">
-                  {guide.heading}
-                </h3>
-                <p className="text-sm mt-1 font-halyard-text-light line-clamp-3">
-                  {guide.description}
-                </p>
-              </div>
-            </div>
-          ))}
-          {recommendations.map((guide, index) => (
-            <div
-              key={guide.id}
-              className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
-            >
-              <div className="w-[40%]">
+              <div
+                key={guide.id}
+              >
                 <img
-                  src={guide.image}
+                  src={guide.heroImage.asset.url || guide.cardImage.asset.url}
                   alt={guide.heading}
-                  className="w-full h-[84px] object-cover rounded-lg"
+                  className="w-[96%] mb-2 object-cover rounded-lg"
                 />
+                <div className="text-[#444444]">
+                  <h3 className="font-semibold font-halyard-text text-[17px]">
+                    {guide.title}
+                  </h3>
+                  <p className="text-sm mt-1 font-halyard-text-light line-clamp-3">
+                    {guide.introduction}
+                  </p>
+                </div>
               </div>
-              <div className="text-[#444444] w-[60%]">
-                <h3 className="font-semibold font-halyard-text text-[14px]">
-                  {guide.heading}
-                </h3>
-                <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
-                  {guide.description}
-                </p>
+            </Link>
+          ))}
+          {blogPosts.map((guide, index) => (
+            <Link
+              href={`/blog/${guide.slug?.current || guide.slug || "#"}`}
+              key={guide.id}
+            >
+              <div
+                key={guide.id}
+                className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
+              >
+                <div className="w-[40%]">
+                  <img
+                    src={guide.heroImage.asset.url || guide.cardImage.asset.url}
+                    alt={guide.heading}
+                    className="w-full h-[84px] object-cover rounded-lg"
+                  />
+                </div>
+                <div className="text-[#444444] w-[60%]">
+                  <h3 className="font-semibold font-halyard-text text-[14px]">
+                    {guide.title}
+                  </h3>
+                  <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
+                    {guide.introduction}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -1455,51 +1521,64 @@ const CarouselGrid = ({
           className="mt-2 sm:mt-8 flex md:flex-row flex-col gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
           ref={scrollContainerRef}
         >
-          {recommendations.map((guide, index) => (
-            <div
+          {blogPosts.map((guide, index) => (
+            <Link
+              href={`/blog/${guide.slug?.current || guide.slug || "#"}`}
               key={guide.id}
-              className={`w-[25%] hidden md:block md:w-[49%] flex-shrink-0`}
+              className={`w-[25%] hover:cursor-pointer hidden md:block md:w-[49%] flex-shrink-0`}
             >
-              <div className="flex gap-4">
-                <div className="w-[30%]">
+              <div
+                key={guide.id}
+              >
+                <div className="flex gap-4">
+                  <div className="w-[30%]">
+                    <img
+                      src={
+                        guide?.heroImage?.asset.url ||
+                        guide?.cardImage?.asset.url
+                      }
+                      alt={guide?.heading}
+                      className="w-full h-full object-cover rounded-sm"
+                    />
+                  </div>
+                  <div className="text-[#444444] w-[60%]">
+                    <h3 className="font-semibold font-halyard-text text-[17px]">
+                      {guide?.title}
+                    </h3>
+                    <p className="text-[14px] mt-1 font-halyard-text-light line-clamp-3">
+                      {guide.introduction}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+          {blogPosts.map((guide, index) => (
+            <Link
+              href={`/blog/${guide.slug?.current || guide.slug || "#"}`}
+              key={guide.id}
+            >
+              <div
+                key={guide.id}
+                className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
+              >
+                <div className="w-[40%]">
                   <img
-                    src={guide.image}
+                    src={guide.heroImage.asset.url || guide.cardImage.asset.url}
                     alt={guide.heading}
-                    className="w-full h-full object-cover rounded-sm"
+                    className="w-full h-[84px] object-cover rounded-lg"
                   />
                 </div>
                 <div className="text-[#444444] w-[60%]">
-                  <h3 className="font-semibold font-halyard-text text-[17px]">
-                    {guide.heading}
+                  <h3 className="font-semibold font-halyard-text text-[14px]">
+                    {guide.title}
                   </h3>
-                  <p className="text-[14px] mt-1 font-halyard-text-light line-clamp-3">
-                    {guide.description}
+                  <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
+                    {guide.introduction}
                   </p>
                 </div>
               </div>
-            </div>
-          ))}
-          {recommendations.map((guide, index) => (
-            <div
-              key={guide.id}
-              className={`flex md:hidden mt-2 gap-4 ${index < recommendations.length - 1 ? "border-b border-gray-200 pb-4 mb-4" : ""}`}
-            >
-              <div className="w-[40%]">
-                <img
-                  src={guide.image}
-                  alt={guide.heading}
-                  className="w-full h-[84px] object-cover rounded-lg"
-                />
-              </div>
-              <div className="text-[#444444] w-[60%]">
-                <h3 className="font-semibold font-halyard-text text-[14px]">
-                  {guide.heading}
-                </h3>
-                <p className="text-[12px] mt-1 font-halyard-text-light line-clamp-3">
-                  {guide.description}
-                </p>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -1507,9 +1586,9 @@ const CarouselGrid = ({
   }
   if (variant === "subcategory") {
     return (
-      <div 
+      <div
         data-carousel-grid
-        className={`py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0 ${isCalendarOpen ? 'pointer-events-none opacity-50' : ''}`}
+        className={`py-4 sm:py-10 max-w-[1200px] mx-auto 2xl:px-0 ${isCalendarOpen ? "pointer-events-none opacity-50" : ""}`}
       >
         <div className="flex justify-between items-center  xl:px-0">
           <h2 className="text-lg sm:text-2xl font-heading text-[#444444]">

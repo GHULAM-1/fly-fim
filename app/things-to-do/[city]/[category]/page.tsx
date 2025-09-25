@@ -126,6 +126,17 @@ export default function CategoryPage() {
         index === self.findIndex((exp) => exp._id === experience._id)
     );
   }, [categoryPageData]);
+
+  // Get 6 random blog slugs from API response
+  const getRandomBlogSlugs = useMemo(() => {
+    console.log("allUniqueExperiences", allUniqueExperiences);
+    const allBlogSlugs = allUniqueExperiences
+      .map(exp => exp.flags?.blogSlug)
+      .filter(slug => slug && slug.trim() !== '');
+
+    const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 6);
+  }, [allUniqueExperiences]);
   const mapExperiencesToAttractions = (experiences: any[]) => {
     return experiences.map((experience, index) => ({
       id: index + 1,
@@ -1556,13 +1567,16 @@ export default function CategoryPage() {
   };
 
   const handleNavigation = (item: any) => {
+    console.log("item", item);
     // Special case for "All" button - always scroll to top for both routes
     if (item.id === "all" || item.label === "All") {
+      console.log("true 1", item);
       scrollToSection("all");
       return;
     }
 
     if (isWorldwideRoute) {
+      console.log("true 2", item);
       // For worldwide routes, redirect to new URL
       const subcategorySlug = item.label
         .toLowerCase()
@@ -1571,8 +1585,14 @@ export default function CategoryPage() {
       const categorySlug = formattedCategoryName.toLowerCase();
       router.push(`/things-to-do/worldwide/${categorySlug}/${subcategorySlug}`);
     } else {
+      console.log("true 3", item);
+      const subcategorySlug = item.label
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[&]/g, "");
+      const categorySlug = formattedCategoryName.toLowerCase();
       // For regular routes, scroll to section
-      scrollToSection(item.id);
+      router.push(`/things-to-do/${city}/${categorySlug}/${subcategorySlug}`);
     }
   };
 
@@ -1731,192 +1751,6 @@ export default function CategoryPage() {
     fetchCategoryPageData();
   }, [city, categoryName]);
 
-  const destinations = [
-    {
-      id: 1,
-      description: "Things to do in",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 2,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 3,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 4,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 5,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 6,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-    {
-      id: 7,
-      description: "Things to do in York",
-      place: "United States",
-      image: "/images/d6.jpeg.avif",
-      city: "New York",
-    },
-    {
-      id: 8,
-      description: "Things to do in",
-      place: "United Kingdom",
-      image: "/images/d5.jpg.avif",
-      city: "London",
-    },
-    {
-      id: 9,
-      description: "Things to do in",
-      place: "United Arab Emirates",
-      image: "/images/d4.jpg.avif",
-      city: "Dubai",
-    },
-    {
-      id: 10,
-      description: "Things to do in",
-      place: "Italy",
-      image: "/images/d3.jpg.avif",
-      city: "Rome",
-    },
-    {
-      id: 11,
-      description: "Things to do in",
-      place: "France",
-      image: "/images/d2.jpg.avif",
-      city: "Paris",
-    },
-    {
-      id: 12,
-      description: "Things to do in",
-      place: "Singapore",
-      image: "/images/d1.jpg.avif",
-      city: "Singapore",
-    },
-  ];
-  const guides = [
-    {
-      id: 1,
-      description:
-        "Vatican City is a special place. It may not be the biggest in size but what it holds within its walls is truly unrivalled in scale and significance. From the breathtaking Sistine Chapel to the vast collections of the Vatican Museums, every corner tells a story of art, history, and faith.",
-      heading: "Explore the best of Vatican with these guided tours and tips",
-      image: "/images/van.avif",
-      city: "Vatican City",
-    },
-    {
-      id: 2,
-      description:
-        "Discover the hidden gems and iconic landmarks that make Rome the eternal city. From the ancient Colosseum to the romantic Trevi Fountain, experience the perfect blend of history, culture, and modern Italian life.",
-      heading: "Uncover the secrets of Rome with expert local guides",
-      image: "/images/van.avif",
-      city: "Rome",
-    },
-    {
-      id: 3,
-      description:
-        "Experience the magic of Paris through carefully curated tours that reveal the city's artistic soul. From the Louvre's masterpieces to the charming streets of Montmartre, discover why Paris continues to captivate visitors.",
-      heading: "Experience the magic of Paris through curated tours and tips",
-      image: "/images/van.avif",
-      city: "Paris",
-    },
-    {
-      id: 4,
-      description:
-        "Immerse yourself in the rich cultural heritage of London with guided experiences that bring history to life. From the Tower of London to Buckingham Palace, explore the stories behind Britain's most iconic landmarks.",
-      heading: "Immerse yourself in London's rich cultural heritage",
-      image: "/images/van.avif",
-      city: "London",
-    },
-    {
-      id: 5,
-      description:
-        "Discover the perfect blend of tradition and innovation in Tokyo. From ancient temples to cutting-edge technology, experience the unique culture that makes Japan's capital a must-visit destination.",
-      heading: "Discover Tokyo's perfect blend of tradition and innovation",
-      image: "/images/van.avif",
-      city: "Tokyo",
-    },
-    {
-      id: 6,
-      description:
-        "Explore the vibrant energy of New York City through guided tours that showcase its diverse neighborhoods, world-class museums, and iconic skyline. Experience the city that never sleeps like a true New Yorker.",
-      heading: "Explore New York City's vibrant energy and diversity",
-      image: "/images/van.avif",
-      city: "New York",
-    },
-  ];
-  const guides2 = [
-    {
-      id: 1,
-      description:
-        "Vatican City is a special place. It may not be the biggest in size but what it holds within its walls is truly unrivalled in scale and significance. From the breathtaking Sistine Chapel to the vast collections of the Vatican Museums, every corner tells a story of art, history, and faith.",
-      heading: "Explore the best of Vatican with these guided tours and tips",
-      image: "/images/image.avif",
-      city: "Vatican City",
-    },
-    {
-      id: 2,
-      description:
-        "Discover the hidden gems and iconic landmarks that make Rome the eternal city. From the ancient Colosseum to the romantic Trevi Fountain, experience the perfect blend of history, culture, and modern Italian life.",
-      heading: "Uncover the secrets of Rome with expert local guides",
-      image: "/images/image.avif",
-      city: "Rome",
-    },
-    {
-      id: 3,
-      description:
-        "Experience the magic of Paris through carefully curated tours that reveal the city's artistic soul. From the Louvre's masterpieces to the charming streets of Montmartre, discover why Paris continues to captivate visitors.",
-      heading: "Experience the magic of Paris through curated tours and tips",
-      image: "/images/image.avif",
-      city: "Paris",
-    },
-    {
-      id: 4,
-      description:
-        "Immerse yourself in the rich cultural heritage of London with guided experiences that bring history to life. From the Tower of London to Buckingham Palace, explore the stories behind Britain's most iconic landmarks.",
-      heading: "Immerse yourself in London's rich cultural heritage",
-      image: "/images/image.avif",
-      city: "London",
-    },
-    {
-      id: 5,
-      description:
-        "Discover the perfect blend of tradition and innovation in Tokyo. From ancient temples to cutting-edge technology, experience the unique culture that makes Japan's capital a must-visit destination.",
-      heading: "Discover Tokyo's perfect blend of tradition and innovation",
-      image: "/images/image.avif",
-      city: "Tokyo",
-    },
-    {
-      id: 6,
-      description:
-        "Explore the vibrant energy of New York City through guided tours that showcase its diverse neighborhoods, world-class museums, and iconic skyline. Experience the city that never sleeps like a true New Yorker.",
-      heading: "Explore New York City's vibrant energy and diversity",
-      image: "/images/image.avif",
-      city: "New York",
-    },
-  ];
   return (
     <>
       <div className="hidden md:block fixed md:top-19 bg-[#fff] w-full py-3 z-40 border-b">
@@ -2315,7 +2149,7 @@ export default function CategoryPage() {
                 </div>
               ))}
           </div>
-          {currentCategory?.components?.guides && (
+          {currentCategory?.components?.guides && getRandomBlogSlugs.length > 0 && (
             <div className="mb-10 px-[24px] xl:px-0">
               <CarouselGrid
                 title={currentCategory.components.guides.title}
@@ -2324,12 +2158,12 @@ export default function CategoryPage() {
                     | "tours"
                     | "transport"
                 }
-                recommendations={guides2}
+                recommendations={getRandomBlogSlugs as any[]}
               />
             </div>
           )}
 
-          {currentCategory?.components?.transport && (
+          {currentCategory?.components?.transport && getRandomBlogSlugs.length > 0 && (
             <div className="mb-10 px-[24px] xl:px-0">
               <CarouselGrid
                 title={(currentCategory.components.transport as any).title}
@@ -2338,7 +2172,7 @@ export default function CategoryPage() {
                     | "tours"
                     | "transport"
                 }
-                recommendations={guides}
+                recommendations={getRandomBlogSlugs as any[]}
               />
             </div>
           )}
