@@ -90,18 +90,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   // Check for specific routes to hide default layout components
   const isDashboard = pathname?.startsWith("/dashboard");
   const isBookingPage = pathname?.startsWith("/booking");
+  const isBlogPage = pathname?.startsWith("/blog");
 
   return (
     <>
       {/* Splash Screen - shows on every route change */}
-      <SplashScreen isVisible={showSplash} />
+      {/* <SplashScreen isVisible={showSplash} /> */}
       
       {/* Main App Content */}
       <div className={`transition-opacity duration-300 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
-        {!isDashboard && !isBookingPage && <Navbar />}
+        {!isDashboard && !isBookingPage && !isBlogPage && <Navbar />}
         {children}
         {!isDashboard && !isBookingPage && pathname !== "/account" && <Footer />}
-        {!isDashboard && !isBookingPage && <Tabs />}
+        {!isDashboard && !isBookingPage && !isBlogPage && <Tabs />}
       </div>
     </>
   );

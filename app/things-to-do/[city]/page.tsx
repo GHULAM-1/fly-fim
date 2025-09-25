@@ -172,6 +172,21 @@ const ThingsToDo = () => {
     }));
   }, [allUniqueExperiences]);
 
+  // Get 3 random blog slugs from experiences data
+  const getRandomBlogSlugs = useMemo(() => {
+    if (!thingsToDoData) return [];
+
+    const allBlogSlugs = allUniqueExperiences
+      .map(exp => exp.flags?.blogSlug)
+      .filter(slug => slug && slug.trim() !== ''); // Filter out empty/null slugs
+
+    if (allBlogSlugs.length === 0) return [];
+
+    // Shuffle and get 3 random slugs
+    const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
+  }, [allUniqueExperiences, thingsToDoData]);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -837,7 +852,9 @@ const ThingsToDo = () => {
         ) : null}
 
         <div className="mb-7">
-          <TravelGuide />
+          {getRandomBlogSlugs.length > 0 && (
+          <TravelGuide blogSlugs={getRandomBlogSlugs as string[]} city={city} />
+          )}
         </div>
 
         {loading ? (

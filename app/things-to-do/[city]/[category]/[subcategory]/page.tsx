@@ -176,6 +176,23 @@ export default function SubcategoryPage() {
   }
 
 
+  // Get 6 random blog slugs from API response
+  const getRandomBlogSlugs = React.useMemo(() => {
+    // Get all experiences from the subcategory
+    const allExperiences = subcategoryPageData?.experiences || [];
+
+    // Extract blog slugs from experiences
+    const allBlogSlugs = allExperiences
+      .map(exp => exp.flags?.blogSlug)
+      .filter(slug => slug && slug.trim() !== '');
+
+    console.log("All blog slugs from subcategory experiences:", allBlogSlugs);
+
+    // Shuffle and get 6 random slugs
+    const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 6);
+  }, [subcategoryPageData?.experiences]);
+
   // Transform API experiences to recommendations format
   const transformApiExperiencesToRecommendations = (apiExperiences: any[]) => {
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
@@ -603,13 +620,15 @@ export default function SubcategoryPage() {
               )}
             </div>
 
+              {getRandomBlogSlugs.length > 0 && (
             <div className="mb-10 mt-5">
               <CarouselGrid
                 title={`Travel Guide and Tips for ${formattedCityName}`}
                 variant="transport"
-                recommendations={guides}
-              />
-            </div>
+                  recommendations={getRandomBlogSlugs as any[]}
+                />
+              </div>
+            )}
             {subcategoryPageData?.category?.subcategories && subcategoryPageData.category.subcategories.length > 0 && (
               <div className="mb-10 mt-10 ">
                 <BrowseThemes
