@@ -75,22 +75,12 @@ export default function Hero({ onSearchResults, clearTrigger }: HeroProps) {
 
     setIsSearching(true);
     try {
-      console.log("Searching with:", { searchQuery, selectedCityId, selectedCity });
 
       // Test: Get all blog posts first
       const allPosts = await getAllBlogPostsForTesting();
-      console.log("All blog posts (first 5):", allPosts);
-
-      // Debug: Show all available cities and their IDs
-      console.log("Available cities in dropdown:", cities);
-      console.log("Blog post cities vs dropdown cities:");
-
       // Search with city filter only if city is selected AND not "Select city"
       const shouldFilterByCity = selectedCity && selectedCity !== "Select city";
       const results = await searchBlogPosts(searchQuery, shouldFilterByCity ? selectedCity : undefined);
-      console.log("Search results:", results);
-      console.log("Results length:", results?.length || 0);
-      console.log("City filter applied:", shouldFilterByCity);
       if (onSearchResults) {
         onSearchResults(results || [], searchQuery, selectedCity !== "Select city" ? selectedCity : undefined);
       }

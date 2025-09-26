@@ -1,9 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export const dynamic = 'force-static';
+function AuthCodeErrorContent() {
+  const searchParams = useSearchParams();
+  const error = searchParams?.get('error');
 
-export default function AuthCodeError() {
+  const defaultMessage = "Sorry, we couldn't sign you in. The link may have expired or already been used.";
+  const errorMessage = error ? decodeURIComponent(error) : defaultMessage;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
@@ -16,8 +24,7 @@ export default function AuthCodeError() {
         </h1>
 
         <p className="text-gray-600 mb-6">
-          Sorry, we couldn't sign you in. The link may have expired or already
-          been used.
+          {errorMessage}
         </p>
 
         <div className="space-y-3">
@@ -34,5 +41,13 @@ export default function AuthCodeError() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthCodeError() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <AuthCodeErrorContent />
+    </Suspense>
   );
 }

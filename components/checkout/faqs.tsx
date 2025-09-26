@@ -222,7 +222,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   // Get FAQ sections from API data
-  const faqData = experience?.data?.faqSections;
+  const faqData = experience?.data;
 
   // Mobile map states
   const [showMobileMapDrawer, setShowMobileMapDrawer] = useState(false);
@@ -555,7 +555,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ experience }) => {
       )}
 
       {/* Where */}
-      <FaqItem title="Where" id="where">
+      <FaqItem title="Where?" id="where">
         <div className="space-y-4 font-halyard-text">
           {/* Meeting Point */}
           <div className="flex items-center gap-2 group">

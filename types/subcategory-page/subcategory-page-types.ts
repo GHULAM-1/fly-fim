@@ -155,7 +155,7 @@ export interface SubcategoryPageResponse {
   export interface TicketPrice {
     adultPrice: number;
     childPrice: number;
-    seniorPrice: number;
+    infantPrice: number;
     totalLimit: number;
   }
   

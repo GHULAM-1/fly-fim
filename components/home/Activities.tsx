@@ -31,7 +31,6 @@ const Activities = () => {
         setLoading(true);
         const apiData = await fetchHomePage();
         setData(apiData);
-        console.log(apiData);
         if (apiData?.data?.experiences) {
           // Map experiences to activities
           const mappedActivities: Activity[] = apiData.data.experiences.slice(0, 20).map((exp) => ({

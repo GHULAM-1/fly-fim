@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense, useRef } from "react";
+import React, { useState, useEffect, Suspense, useRef, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -45,6 +45,39 @@ import PriceDisplay from "@/components/PriceDisplay";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { UserDropdown } from "@/components/UserDropdown";
 
+// Helper functions for booking data
+const generateSessionId = () => {
+  return `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+const extractAdditionalAdults = (formData: any, adultCount: number) => {
+  const additionalAdults = [];
+  for (let i = 2; i <= adultCount; i++) {
+    const name = formData[`adult${i}Name`];
+    const phone = formData[`adult${i}Phone`];
+    if (name) {
+      additionalAdults.push({
+        fullName: name,
+        phoneNumber: phone || ""
+      });
+    }
+  }
+  return additionalAdults;
+};
+
+const extractChildren = (formData: any, childCount: number) => {
+  const children = [];
+  for (let i = 1; i <= childCount; i++) {
+    const name = formData[`child${i}Name`];
+    if (name) {
+      children.push({
+        fullName: name
+      });
+    }
+  }
+  return children;
+};
+
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -59,7 +92,7 @@ function Bullet() {
   );
 }
 
-const createGuestDetailsSchema = (adultCount: number, seniorCount: number, isPaymentValidation = false) => {
+const createGuestDetailsSchema = (adultCount: number, infantCount: number, childCount: number, isPaymentValidation = false) => {
   const baseSchema: Record<string, any> = {
     fullName: isPaymentValidation 
       ? z
@@ -173,14 +206,14 @@ const createGuestDetailsSchema = (adultCount: number, seniorCount: number, isPay
           });
   }
 
-  // Add fields for seniors
-  for (let i = 1; i <= seniorCount; i++) {
-    baseSchema[`senior${i}Name`] = isPaymentValidation
+  // Add fields for children (6-12 years) - only names, no phone numbers
+  for (let i = 1; i <= childCount; i++) {
+    baseSchema[`child${i}Name`] = isPaymentValidation
       ? z
           .string()
-          .min(1, { message: `Enter full name for Senior ${i}` })
+          .min(1, { message: `Enter full name for Child ${i}` })
           .refine((name) => name.trim().includes(" "), {
-            message: `Enter full name for Senior ${i}`,
+            message: `Enter full name for Child ${i}`,
           })
       : z
           .string()
@@ -189,35 +222,18 @@ const createGuestDetailsSchema = (adultCount: number, seniorCount: number, isPay
             if (!name || name.trim() === "") return true; // Allow empty
             return name.trim().length > 0; // If not empty, must have content
           }, {
-            message: `Enter full name for Senior ${i}`,
+            message: `Enter full name for Child ${i}`,
           })
           .refine((name) => {
             if (!name || name.trim() === "") return true; // Allow empty
             return name.trim().includes(" "); // If not empty, must have space
           }, {
-            message: `Enter full name for Senior ${i}`,
+            message: `Enter full name for Child ${i}`,
           });
-    baseSchema[`senior${i}Phone`] = isPaymentValidation
-      ? z
-          .string()
-          .min(1, { message: `Enter phone number for Senior ${i}` })
-          .refine(isValidPhoneNumber, { message: `Enter a valid phone number for Senior ${i}` })
-      : z
-          .string()
-          .optional()
-          .refine((phone) => {
-            if (!phone || phone.trim() === "") return true; // Allow empty
-            return phone.trim().length > 0; // If not empty, must have content
-          }, {
-            message: `Enter phone number for Senior ${i}`,
-          })
-          .refine((phone) => {
-            if (!phone || phone.trim() === "") return true; // Allow empty
-            return isValidPhoneNumber(phone); // If not empty, must be valid
-          }, {
-            message: `Enter a valid phone number for Senior ${i}`,
-          });
+    // No phone number field for children
   }
+
+  // No form fields for infants - they are just counted for pricing
 
   return z
     .object(baseSchema)
@@ -243,7 +259,7 @@ type GuestDetailsInput = z.infer<ReturnType<typeof createGuestDetailsSchema>>;
 const ConfirmAndPayPage = () => {
   const searchParams = useSearchParams();
   const [adultCount, setAdultCount] = useState(1);
-  const [seniorCount, setSeniorCount] = useState(0);
+  const [infantCount, setInfantCount] = useState(0);
   const [childCount, setChildCount] = useState(0);
   const [showPromo, setShowPromo] = useState(false);
   const [paymentTime, setPaymentTime] = useState("payNow");
@@ -265,7 +281,7 @@ const ConfirmAndPayPage = () => {
   const [countryCode, setCountryCode] = useState("+92");
   const [nationalNumber, setNationalNumber] = useState("");
   
-  // Phone number states for additional adults and seniors
+  // Phone number states for additional adults
   const [additionalPhoneNumbers, setAdditionalPhoneNumbers] = useState<{
     [key: string]: { countryCode: string; nationalNumber: string };
   }>({});
@@ -288,15 +304,33 @@ const ConfirmAndPayPage = () => {
     }
   }, [paymentTime]);
 
-  const form = useForm<GuestDetailsInput>({
-    resolver: zodResolver(createGuestDetailsSchema(adultCount, seniorCount)),
-    mode: "onChange",
-    defaultValues: {
+  // Create comprehensive default values for all possible fields
+  const createDefaultValues = useMemo(() => {
+    const defaults: any = {
       fullName: "",
       phone: "",
       email: "",
       confirmEmail: "",
-    },
+    };
+
+    // Add default values for additional adults
+    for (let i = 2; i <= Math.max(adultCount, 10); i++) {
+      defaults[`adult${i}Name`] = "";
+      defaults[`adult${i}Phone`] = "";
+    }
+
+    // Add default values for children
+    for (let i = 1; i <= Math.max(childCount, 10); i++) {
+      defaults[`child${i}Name`] = "";
+    }
+
+    return defaults;
+  }, [adultCount, childCount]);
+
+  const form = useForm<GuestDetailsInput>({
+    resolver: zodResolver(createGuestDetailsSchema(adultCount, infantCount, childCount)),
+    mode: "onChange",
+    defaultValues: createDefaultValues,
   });
 
   // Update form schema when guest counts change
@@ -304,8 +338,11 @@ const ConfirmAndPayPage = () => {
     form.clearErrors();
     // Reset form to clear any stale validation state
     const currentValues = form.getValues();
-    form.reset(currentValues);
-  }, [adultCount, seniorCount, form]);
+
+    // Merge current values with new defaults
+    const mergedValues = { ...createDefaultValues, ...currentValues };
+    form.reset(mergedValues);
+  }, [adultCount, infantCount, childCount, createDefaultValues, form]);
 
   // Trigger validation on form load to show any existing errors
   useEffect(() => {
@@ -325,15 +362,19 @@ const ConfirmAndPayPage = () => {
     });
   }, [additionalPhoneNumbers, form]);
 
-  const adultPrice = 49.0;
-  const seniorPrice = 46.82;
-  const childPrice = 43.55;
+  const adultPrice = experience?.data?.adultPrice || 0;
+  const infantPrice = experience?.data?.infantPrice || 0;
+  const childPrice = experience?.data?.childPrice || 0;
 
   const totalPayable =
     adultCount * adultPrice +
-    seniorCount * seniorPrice +
+    infantCount * infantPrice +
     childCount * childPrice;
   const payTodayAmount = paymentTime === "payNow" ? totalPayable : 0;
+
+  // Calculate total tickets and check against limit
+  const totalTickets = adultCount + infantCount + childCount;
+  const totalLimit = experience?.data?.totalLimit || 50; // Default limit if not specified
 
   const itemName =
     searchParams.get("itemName") || "Edge Observation Deck Ticket";
@@ -496,65 +537,42 @@ const ConfirmAndPayPage = () => {
       return;
     }
 
-    // Create a temporary form with strict validation for payment
-    const paymentSchema = createGuestDetailsSchema(adultCount, seniorCount, true);
-    const paymentForm = useForm<GuestDetailsInput>({
-      resolver: zodResolver(paymentSchema),
-      mode: "onChange",
-      defaultValues: form.getValues(),
-    });
-
-    // Set current values and validate
-    paymentForm.reset(form.getValues());
-    const isValid = await paymentForm.trigger();
-    
-    if (!isValid) {
-      // Copy errors from payment form to main form
-      const errors = paymentForm.formState.errors;
-      Object.keys(errors).forEach(key => {
-        if (errors[key as keyof typeof errors]) {
-          form.setError(key as any, errors[key as keyof typeof errors] as any);
-        }
-      });
-      scrollToFormErrors();
+    // Check if experience data is loaded
+    if (!experience?.data?._id) {
+      toast.error("Experience data not loaded. Please refresh the page.");
       return;
     }
 
-    // Validate credit card information only if card payment is selected or payLater
-    if (paymentMethod === "card" || paymentTime === "payLater") {
-      if (!cardDetails.cardNumber || !cardDetails.expiryDate || !cardDetails.cvv || !cardDetails.cardholderName) {
-        toast.error("Please fill in all credit card details");
-        scrollToFormErrors();
-        return;
-      }
-      
-      // Basic validation for card number (should have 16 digits)
-      const cardNumberDigits = cardDetails.cardNumber.replace(/\s/g, '');
-      if (cardNumberDigits.length !== 16) {
-        toast.error("Please enter a valid 16-digit card number");
-        scrollToFormErrors();
-        return;
-      }
-      
-      // Basic validation for expiry date (should be MM/YY format)
-      if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiryDate)) {
-        toast.error("Please enter expiry date in MM/YY format");
-        scrollToFormErrors();
-        return;
-      }
-      
-      // Basic validation for CVV (should be 3-4 digits)
-      if (!/^\d{3,4}$/.test(cardDetails.cvv)) {
-        toast.error("Please enter a valid CVV");
+    // Validate form data manually for payment
+    const formData = form.getValues();
+    const paymentSchema = createGuestDetailsSchema(adultCount, infantCount, childCount, true);
+
+    try {
+      // Parse the form data against the strict schema
+      paymentSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set form errors from validation
+        error.errors.forEach(err => {
+          const fieldName = err.path.join('.');
+          form.setError(fieldName as any, {
+            type: 'manual',
+            message: err.message
+          });
+        });
         scrollToFormErrors();
         return;
       }
     }
+
+    // No need to validate card details - Stripe Checkout handles this
     
     setIsProcessingPayment(true);
     setPaymentError(false);
 
-    const formData = form.getValues();
+    // Extract additional guests data
+    const additionalAdults = extractAdditionalAdults(formData, adultCount);
+    const children = extractChildren(formData, childCount);
 
     try {
       const response = await fetch('/api/create-checkout-session', {
@@ -563,26 +581,24 @@ const ConfirmAndPayPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          buildID: item,
-          buildName: itemName,
+          buildID: experience?.data?._id || item,
+          buildName: experience?.data?.title || itemName,
           bill: totalPayable,
           guestDetails: {
             fullName: formData.fullName,
             email: formData.email,
             phone: formData.phone,
             adultCount,
-            seniorCount,
+            infantCount,
             childCount,
             date,
             time,
-            optionTitle
-          },
-          cardDetails: (paymentMethod === "card" || paymentTime === "payLater") ? {
-            cardNumber: cardDetails.cardNumber,
-            expiryDate: cardDetails.expiryDate,
-            cvv: cardDetails.cvv,
-            cardholderName: cardDetails.cardholderName
-          } : null
+            optionTitle,
+            paymentTime,
+            additionalAdults,
+            children,
+            userId: user?.id || null
+          }
         }),
       });
 
@@ -790,6 +806,14 @@ const ConfirmAndPayPage = () => {
                   the venue and enter.
                 </span>
               </div>
+              {totalTickets >= totalLimit && (
+                <div className="bg-orange-50 border border-orange-200 p-3 flex flex-row items-start sm:items-center gap-3 rounded-lg text-sm font-halyard-text-light mb-6">
+                  <AlertTriangle size={16} className="text-orange-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-orange-700">
+                    Maximum {totalLimit} tickets allowed per booking. You've reached the limit.
+                  </span>
+                </div>
+              )}
               <div className="space-y-4">
                 {/* Guest Counters */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -825,8 +849,13 @@ const ConfirmAndPayPage = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="w-9 h-9 rounded-full bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 transition-colors cursor-pointer"
-                        onClick={() => setAdultCount((prev) => prev + 1)}
+                        className={`w-9 h-9 rounded-full transition-colors ${
+                          totalTickets < totalLimit
+                            ? "bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 cursor-pointer"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
+                        onClick={() => setAdultCount((prev) => totalTickets < totalLimit ? prev + 1 : prev)}
+                        disabled={totalTickets >= totalLimit}
                       >
                         <Plus size={16} />
                       </Button>
@@ -835,39 +864,44 @@ const ConfirmAndPayPage = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div className="mb-2 sm:mb-0">
-                    <p className="font-medium text-[#444444] text-lg">Senior</p>
+                    <p className="font-medium text-[#444444] text-lg">Infant</p>
                     <p className="text-sm text-[#444444] font-halyard-text-light">
-                      62 yrs and above
+                      Under 5 years
                     </p>
                   </div>
                   <div className="flex items-center gap-4 sm:gap-12 w-full sm:w-auto justify-between">
                     <span className="font-semibold text-[#444444] sm:w-20 text-left sm:text-right">
-                      <PriceDisplay amount={experience?.data?.seniorPrice || 0} />
+                      <PriceDisplay amount={experience?.data?.infantPrice || 0} />
                     </span>
                     <div className="flex items-center gap-4">
                       <Button
                         variant="outline"
                         size="icon"
                         className={`w-9 h-9 rounded-full transition-colors ${
-                          seniorCount > 0
+                          infantCount > 0
                             ? "bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 cursor-pointer"
                             : "bg-gray-100 text-gray-400"
                         }`}
                         onClick={() =>
-                          setSeniorCount((prev) => Math.max(0, prev - 1))
+                          setInfantCount((prev) => Math.max(0, prev - 1))
                         }
-                        disabled={seniorCount <= 0}
+                        disabled={infantCount <= 0}
                       >
                         <Minus size={16} />
                       </Button>
                       <span className="w-10 text-center font-medium">
-                        {seniorCount}
+                        {infantCount}
                       </span>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="w-9 h-9 rounded-full bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 transition-colors cursor-pointer"
-                        onClick={() => setSeniorCount((prev) => prev + 1)}
+                        className={`w-9 h-9 rounded-full transition-colors ${
+                          totalTickets < totalLimit
+                            ? "bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 cursor-pointer"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
+                        onClick={() => setInfantCount((prev) => totalTickets < totalLimit ? prev + 1 : prev)}
+                        disabled={totalTickets >= totalLimit}
                       >
                         <Plus size={16} />
                       </Button>
@@ -907,8 +941,13 @@ const ConfirmAndPayPage = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="w-9 h-9 rounded-full bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 transition-colors cursor-pointer"
-                        onClick={() => setChildCount((prev) => prev + 1)}
+                        className={`w-9 h-9 rounded-full transition-colors ${
+                          totalTickets < totalLimit
+                            ? "bg-purple-100 text-purple-600 border-purple-200 hover:bg-purple-200 cursor-pointer"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
+                        onClick={() => setChildCount((prev) => totalTickets < totalLimit ? prev + 1 : prev)}
+                        disabled={totalTickets >= totalLimit}
                       >
                         <Plus size={16} />
                       </Button>
@@ -1204,23 +1243,23 @@ const ConfirmAndPayPage = () => {
                     </div>
                   ))}
 
-                  {/* Generate forms for each senior */}
-                  {Array.from({ length: seniorCount }, (_, index) => (
-                    <div key={`senior-${index}`} className="space-y-4">
+                  {/* Generate forms for each child (name only, no phone) */}
+                  {Array.from({ length: childCount }, (_, index) => (
+                    <div key={`child-${index}`} className="space-y-4">
                       <h3 className="text-lg font-halyard-text font-medium text-[#444444]">
-                        Senior {index + 1} details
+                        Child {index + 1} details
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                         <FormField
                           control={form.control}
-                          name={`senior${index + 1}Name` as any}
+                          name={`child${index + 1}Name` as any}
                           render={({ field, fieldState: { error } }) => (
                             <FormItem>
                               <FormLabel className="text-lg text-[#444444]">
                                 Full Name
                               </FormLabel>
                               <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
-                                Must match ID
+                                Child's name
                               </p>
                               <FormControl>
                                 <div
@@ -1248,64 +1287,12 @@ const ConfirmAndPayPage = () => {
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name={`senior${index + 1}Phone` as any}
-                          render={({ fieldState: { error } }) => {
-                            const phoneKey = `senior${index + 1}Phone`;
-                            const phoneData = getAdditionalPhone(phoneKey);
-                            
-                            return (
-                              <FormItem>
-                                <FormLabel className="text-lg text-[#444444]">
-                                  Phone number
-                                </FormLabel>
-                                <p className="text-sm text-gray-500 font-halyard-text-light mt-1 h-8">
-                                  Contact number for this guest
-                                </p>
-                                <FormControl>
-                                  <div
-                                    className={`flex items-center border rounded-md mt-2 transition-colors ${
-                                      error
-                                        ? "border-red-500"
-                                        : "border-gray-300 focus-within:border-purple-500"
-                                    }`}
-                                  >
-                                    <CountryCodeSelector
-                                      value={phoneData.countryCode}
-                                      onValueChange={(code) => 
-                                        updateAdditionalPhone(phoneKey, code, phoneData.nationalNumber)
-                                      }
-                                    />
-                                    <div className="relative w-full">
-                                      <Input
-                                        type="tel"
-                                        value={phoneData.nationalNumber}
-                                        onChange={(e) =>
-                                          updateAdditionalPhone(phoneKey, phoneData.countryCode, e.target.value)
-                                        }
-                                        className="h-14 w-full border-none bg-transparent focus:outline-none focus-visible:ring-0"
-                                        placeholder="Enter phone number"
-                                      />
-                                      {error && (
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                          <Info
-                                            size={20}
-                                            className="fill-red-500 text-white"
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </FormControl>
-                                <FormMessage className="text-red-500 text-sm mt-1" />
-                              </FormItem>
-                            );
-                          }}
-                        />
+                        {/* No phone number field for children */}
                       </div>
                     </div>
                   ))}
+
+                  {/* No form details collected for infants - they are just counted for pricing */}
 
                 </form>
               </Form>
@@ -1745,16 +1732,16 @@ const ConfirmAndPayPage = () => {
                         </span>{" "}
                       </div>
                     )}
-                    {seniorCount > 0 && (
+                    {infantCount > 0 && (
                       <div className="flex justify-between">
                         {" "}
                         <span className="text-gray-600">
                           {" "}
-                          {seniorCount} Senior{seniorCount > 1 ? "s" : ""}{" "}
+                          {infantCount} Child{infantCount > 1 ? "ren" : ""} (Under 5){" "}
                         </span>{" "}
                         <span className="text-[#444444]">
                           {" "}
-                          <PriceDisplay amount={seniorCount * (experience?.data?.seniorPrice ?? 0)} />
+                          <PriceDisplay amount={infantCount * (experience?.data?.infantPrice ?? 0)} />
                         </span>{" "}
                       </div>
                     )}
@@ -1895,16 +1882,16 @@ const ConfirmAndPayPage = () => {
                       </span>{" "}
                     </div>
                   )}
-                  {seniorCount > 0 && (
+                  {infantCount > 0 && (
                     <div className="flex justify-between">
                       {" "}
                       <span className="text-gray-600">
                         {" "}
-                        {seniorCount} Senior{seniorCount > 1 ? "s" : ""}{" "}
+                        {infantCount} Child{infantCount > 1 ? "ren" : ""} (Under 5){" "}
                       </span>{" "}
                       <span className="text-[#444444]">
                         {" "}
-                        <PriceDisplay amount={seniorCount * (experience?.data?.seniorPrice ?? 0)} />{" "}
+                        <PriceDisplay amount={infantCount * (experience?.data?.infantPrice ?? 0)} />{" "}
                       </span>{" "}
                     </div>
                   )}

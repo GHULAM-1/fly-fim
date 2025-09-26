@@ -153,7 +153,6 @@ const CarouselGrid = ({
   const [isLoadingApiData, setIsLoadingApiData] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
-  console.log("recommendations", recommendations);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -171,7 +170,6 @@ const CarouselGrid = ({
         // Filter out null results and use all available posts
         const validPosts = posts.filter((post) => post !== null);
         setBlogPosts(validPosts);
-        console.log("Blog Posts:", validPosts);
       } catch (error) {
         console.error("Error fetching blog posts:", error);
         setBlogPosts([]);
@@ -388,12 +386,6 @@ const CarouselGrid = ({
     try {
       setIsLoadingApiData(true);
       setApiError(null);
-      console.log(
-        "isWorldwideRoute",
-        isWorldwideRoute,
-        "isSubcategoryPage",
-        isSubcategoryPage
-      );
 
       let response;
       if (isWorldwideRoute && isSubcategoryPage) {

@@ -25,25 +25,25 @@ const CheckoutNav: React.FC<CheckoutNavProps> = ({ experience }) => {
     const data = experience.data;
 
     // Only add sections that have actual data in the API response
-    if (data.faqSections?.highlights) {
+    if (data?.highlights) {
       sections.push({ id: "highlights", label: "Highlights" });
     }
 
-    if (data.faqSections?.inclusions) {
+    if (data?.inclusions) {
       sections.push({ id: "inclusions", label: "Inclusions" });
     }
     if (data.itinerary) {
       sections.push({ id: "itinerary", label: "Itinerary" });
     }
-    if (data.faqSections?.exclusions) {
+    if (data?.exclusions) {
       sections.push({ id: "exclusions", label: "Exclusions" });
     }
 
 
-    if (data.faqSections?.cancellationPolicy) {
+    if (data?.cancellationPolicy) {
       sections.push({ id: "cancellation-policy", label: "Cancellation Policy" });
     }
-    if (data.faqSections?.yourExperience) {
+    if (data?.yourExperience) {
       sections.push({ id: "your-experience", label: "Your Experience" });
     }
     if (data.operatingHours) {
@@ -52,10 +52,10 @@ const CheckoutNav: React.FC<CheckoutNavProps> = ({ experience }) => {
     if (data.reviews && data.reviews.length > 0) {
       sections.push({ id: "reviews", label: "Reviews" });
     }
-    if (data.faqSections?.knowBeforeYouGo) {
+    if (data?.knowBeforeYouGo) {
       sections.push({ id: "know-before-you-go", label: "Know Before You Go" });
     }
-    if (data.faqSections?.myTickets) {
+    if (data?.myTickets) {
       sections.push({ id: "my-tickets", label: "My Tickets" });
     }
 

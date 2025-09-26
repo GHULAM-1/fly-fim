@@ -298,7 +298,6 @@ const Navbar = () => {
   // Get search results from API
   const displayDestinations = searchResults ? searchResults.data.cities : [];
   const displayActivities = searchResults ? searchResults.data.experiences : [];
-console.log( displayActivities);
   // Check if we're on a checkout page (itemId page with 6 path segments)
   // Example: /things-to-do/new-york/tickets/colosseum-tickets/skip-the-line-entry = 6 segments
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
@@ -527,7 +526,7 @@ console.log( displayActivities);
 
               {loading ? (
                 // Loading state
-                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                <div className="w-8 h-8 hover:cursor-pointer bg-gray-200 rounded-full animate-pulse" />
               ) : user ? (
                 // Authenticated state - show user dropdown
                 <UserDropdown user={user} scrolled={isNavSolid} />

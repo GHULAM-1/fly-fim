@@ -56,7 +56,7 @@ export function UserDropdown({ user, scrolled }: UserDropdownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center space-x-2 hover:opacity-80 transition-opacity focus:outline-none"
+          className="flex items-center hover:cursor-pointer space-x-2 hover:opacity-80 transition-opacity focus:outline-none"
           aria-label="User menu"
         >
           <CustomAvatar user={user} size="small" scrolled={scrolled} />
@@ -79,19 +79,19 @@ export function UserDropdown({ user, scrolled }: UserDropdownProps) {
             </div>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuItem>Booking</DropdownMenuItem>
-        <DropdownMenuItem>Credits</DropdownMenuItem>
-        <DropdownMenuItem>Saved Cards</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer">Booking</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer">Credits</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer">Saved Cards</DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <a href="/dashboard" className="flex items-center">
+          <a href="/dashboard" className="flex items-center hover:cursor-pointer">
             <Settings className="w-4 h-4 mr-2" />
             Dashboard
           </a>
         </DropdownMenuItem>
-        <DropdownMenuItem>Delete Account</DropdownMenuItem>
+        <DropdownMenuItem className="hover:cursor-pointer">Delete Account</DropdownMenuItem>
         <DropdownMenuItem
           onClick={signOut}
-          className="text-red-600 focus:text-red-600"
+          className="text-red-600 focus:text-red-600 hover:cursor-pointer"
         >
           Sign out
         </DropdownMenuItem>

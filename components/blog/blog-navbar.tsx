@@ -67,16 +67,13 @@ export default function BlogNavbar() {
     const fetchCitiesData = async () => {
       try {
         const response = await fetchCities();
-        console.log("Full API Response:", response);
 
         // Handle the response structure: response might be City[] or {data: City[]}
         const cities = Array.isArray(response) ? response : (response as any)?.data || [];
         const cityNames = cities.map((city: City) => city.cityName).filter(Boolean);
-        console.log("Extracted city names:", cityNames);
         setCities(cityNames);
         setNavItems(getNavItems(cityNames));
       } catch (error) {
-        console.error("Error fetching cities:", error);
         // Fallback to original hardcoded items if API fails
         setCities([]);
         setNavItems([]);
@@ -133,7 +130,6 @@ export default function BlogNavbar() {
   // Determine if we're on a blog post page or main blog page
   const isBlogPostPage = pathname?.startsWith("/blog/") && pathname !== "/blog";
   const isMainBlogPage = pathname === "/blog";
-  console.log(isBlogPostPage);
   useEffect(() => {
     const handleScroll = () => {
       const heroSection = document.querySelector("[data-hero-section]");

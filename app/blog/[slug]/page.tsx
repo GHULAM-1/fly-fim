@@ -50,7 +50,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 export async function generateStaticParams() {
   try {
     const slugs = await getBlogPostSlugs();
-    console.log("Generated slugs for static params:", slugs);
 
     return slugs.map((slug: string) => ({
       slug: slug

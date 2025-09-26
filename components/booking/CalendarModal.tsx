@@ -149,7 +149,6 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
   const { setCalendarOpen } = useCalendarState();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1)
   );

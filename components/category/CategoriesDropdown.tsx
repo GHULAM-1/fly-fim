@@ -216,7 +216,6 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
                   if (hoveredCategory === 1) {
                     // Get top 15 experiences from topExperiences prop
                     const topExperiencesToShow = topExperiences.slice(0, 15);
-                    console.log("topExperiencesToShow", topExperiencesToShow);
                     // Split into 3 columns
                     const col1 = topExperiencesToShow.slice(0, 5);
                     const col2 = topExperiencesToShow.slice(5, 10);
