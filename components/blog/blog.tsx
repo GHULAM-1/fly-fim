@@ -25,7 +25,6 @@ export default function BlogPage() {
     const fetchMainPageData = async () => {
       try {
         const config = await getMainPageConfig();
-        console.log("Main page config:", config);
         setMainPageConfig(config);
       } catch (error) {
         console.error("Error fetching main page data:", error);

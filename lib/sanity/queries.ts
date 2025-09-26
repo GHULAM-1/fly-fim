@@ -447,11 +447,8 @@ export async function searchBlogPosts(searchQuery: string, cityName?: string) {
     params.cityName = cityName
   }
 
-  console.log("🔍 Search Query:", query)
-  console.log("🔍 Search Params:", params)
 
   const posts = await client.fetch(query, params)
-  console.log("🔍 Raw search results:", posts)
   return posts
 }
 

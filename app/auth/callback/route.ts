@@ -94,7 +94,10 @@ export async function GET(request: NextRequest) {
         return redirectResponse;
       } else {
         console.error("Authentication failed:", data.error || data.message);
-        return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+
+        // Pass error message to auth error page via URL params
+        const errorMessage = encodeURIComponent(data.message || data.error || "Authentication failed");
+        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${errorMessage}`);
       }
     } catch (error) {
       console.error("Network error during authentication:", error);

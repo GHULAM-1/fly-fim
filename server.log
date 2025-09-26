@@ -1,0 +1,25 @@
+
+> fly-fim@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Port 3000 is in use, using available port 3001 instead.
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.1.168:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 602ms
+ ✓ Ready in 4s
+ ✓ Compiled middleware in 72ms
+ ○ Compiling /api/test-webhook ...
+ ✓ Compiled /api/test-webhook in 2.3s
+🧪 Test webhook called for booking: k57d5dnqeqrv70j6wcsecwqjan7rb3sj with status: confirmed
+📞 Calling updateBookingStatus for booking: k57d5dnqeqrv70j6wcsecwqjan7rb3sj
+✅ Test webhook: Booking k57d5dnqeqrv70j6wcsecwqjan7rb3sj status updated successfully: { success: true, message: 'Booking status updated successfully' }
+ POST /api/test-webhook 200 in 3683ms
+ ✓ Compiled middleware in 24ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled middleware in 18ms
+   Reload env: .env

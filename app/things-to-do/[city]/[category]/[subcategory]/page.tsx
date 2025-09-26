@@ -186,8 +186,6 @@ export default function SubcategoryPage() {
       .map(exp => exp.flags?.blogSlug)
       .filter(slug => slug && slug.trim() !== '');
 
-    console.log("All blog slugs from subcategory experiences:", allBlogSlugs);
-
     // Shuffle and get 6 random slugs
     const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 6);
@@ -198,7 +196,6 @@ export default function SubcategoryPage() {
     if (!apiExperiences || !Array.isArray(apiExperiences)) {
       return [];
     }
-    console.log("apiExperiences", apiExperiences);
     return apiExperiences.map(exp => ({
       id: exp._id,
       cityId: exp.relationships.cityId,
@@ -282,7 +279,6 @@ export default function SubcategoryPage() {
           // TODO: Call worldwide subcategory API here
           const response = await fetchWorldwideSubcategoryPageById(categoryResponse._id, subcategory);
           setSubcategoryPageData(response.data);
-          console.log('Worldwide subcategory API call needed for category:', categoryResponse._id, 'subcategory:', subcategory);
         } else {
           // For regular routes, get both city and category IDs
           const cityResponse = await fetchCityBycityName(city);
@@ -425,11 +421,9 @@ export default function SubcategoryPage() {
   // Redirect to 404 if no data or no experiences found
   if (subcategoryPageData) {
     if (!subcategoryPageData.experiences || subcategoryPageData.experiences.length === 0 || !subcategoryPageData.allCategories) {
-      console.log("No experiences found for this category or missing data");
       router.push('/not-found');
       return null;
     }
-    console.log("Experiences found for this category");
   }
 
   return (

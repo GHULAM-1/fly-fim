@@ -37,16 +37,21 @@ interface ItineraryItem {
   locationLink?: string;
   attractions?: number;
   ticketsIncluded?: boolean;
-  highlights?: string[];
+  highlights?: Array<{
+    name: string;
+    image?: string;
+    description?: string;
+  }>;
   order?: number;      // Add order from API
   thingsToDo?: Array<{
-    title: string;
-    category: string;
-    icon?: string;
+    name: string;
+    image?: string;
+    description?: string;
   }>;
   nearbyThings?: Array<{
-    title: string;
-    image: string;
+    name: string;
+    image?: string;
+    description?: string;
   }>;
 }
 
@@ -90,12 +95,9 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
       lat: itinerary.startPoint.location.lat,
       lng: itinerary.startPoint.location.lng,
       locationLink: `https://maps.google.com/?q=${itinerary.startPoint.location.lat},${itinerary.startPoint.location.lng}`,
-      highlights: itinerary.startPoint.highlights,
-      thingsToDo: itinerary.startPoint.thingsToDo?.map(item => ({ title: item, category: "Activity" })),
-      nearbyThings: itinerary.startPoint.nearbyThingsToDo?.map(item => ({
-        title: item.name,
-        image: item.image || "/mob-banner.jpg"
-      })),
+      highlights: itinerary.startPoint.highlights || [],
+      thingsToDo: itinerary.startPoint.thingsToDo || [],
+      nearbyThings: itinerary.startPoint.nearbyThingsToDo || [],
     });
 
     // Add intermediate points
@@ -108,20 +110,17 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
         distance: point.distance,
         time: point.travelTime,
         description: point.description || "",
-        image: point.image || "/mob-banner.jpg", // Add image with fallback
+        image: point.image || "", // Add image with fallback
         location: point.location.address,
         lat: point.location.lat,
         lng: point.location.lng,
         locationLink: `https://maps.google.com/?q=${point.location.lat},${point.location.lng}`,
         attractions: point.attractions,
         ticketsIncluded: point.ticketsIncluded,
-        highlights: point.highlights,
+        highlights: point.highlights || [],
         order: point.order, // Add order from API
-        thingsToDo: point.thingsToDo?.map(item => ({ title: item, category: "Activity" })),
-        nearbyThings: point.nearbyThingsToDo?.map(item => ({
-          title: item.name,
-          image: item.image || "/mob-banner.jpg"
-        })),
+        thingsToDo: point.thingsToDo || [],
+        nearbyThings: point.nearbyThingsToDo || [],
       });
     });
 
@@ -306,12 +305,18 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
           const routeCoordinates: [number, number][] = [];
           const markers: L.Marker[] = [];
 
+          // Check if end point is different from start point
+          const startPoint = currentItinerary.items.find(item => item.type === "start");
+          const endPoint = currentItinerary.items.find(item => item.type === "end");
+          const isDifferentEndpoint = startPoint && endPoint &&
+            (startPoint.lat !== endPoint.lat || startPoint.lng !== endPoint.lng);
+
           currentItinerary.items.forEach((item, index) => {
             if (item.lat !== undefined && item.lng !== undefined) {
               const coords: [number, number] = [item.lat, item.lng];
 
-              // Add to route coordinates only if it's not the end point
-              if (item.type !== "end") {
+              // Add to route coordinates - include end point only if it's different from start
+              if (item.type !== "end" || isDifferentEndpoint) {
                 routeCoordinates.push(coords);
               }
 
@@ -1077,8 +1082,8 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                         </div>
                         {/* Plus/Minus Button - Only show if item has expandable content */}
                         {(item.image ||
-                          item.thingsToDo ||
-                          item.nearbyThings) && (
+                          (item.thingsToDo && item.thingsToDo.length > 0) ||
+                          (item.nearbyThings && item.nearbyThings.length > 0)) && (
                           <button
                             onClick={() => toggleExpanded(item.id)}
                             className="p-1 hover:cursor-pointer hover:bg-gray-100 rounded ml-2"
@@ -1095,8 +1100,8 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                       {/* Expanded Content - Only show if item has image or sub-locations */}
                       {expandedItems.has(item.id) &&
                         (item.image ||
-                          item.thingsToDo ||
-                          item.nearbyThings) && (
+                          (item.thingsToDo && item.thingsToDo.length > 0) ||
+                          (item.nearbyThings && item.nearbyThings.length > 0)) && (
                           <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg max-w-[200px]">
                             {item.image && (
                               <div className="w-16 h-10 bg-gray-200 rounded flex-shrink-0">
@@ -1279,7 +1284,7 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                           <div key={idx}>
                             <div className="flex justify-between items-center">
                               <li className="text-[15px] text-[#444444]">
-                                {highlight}
+                                {highlight.name}
                               </li>
                               <button
                                 onClick={() => toggleHighlight(highlightKey)}
@@ -1294,18 +1299,18 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                             </div>
                             {isExpanded && (
                               <div className="mt-4 flex gap-6">
-                                {item.image && (
+                                {highlight.image && (
                                   <div className="mb-4 w-[45%]">
                                     <img
-                                      src={item.image}
-                                      alt={item.title}
+                                      src={highlight.image}
+                                      alt={highlight.name}
                                       className="w-full h-48 object-cover rounded-lg"
                                     />
                                   </div>
                                 )}
                                 <div className="w-[50%]">
                                   <p className="text-sm text-[#666666] leading-relaxed mb-4">
-                                    {item.description}
+                                    {highlight.description || item.description}
                                   </p>
                                 </div>
                               </div>
@@ -1332,10 +1337,10 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                             <div className="flex justify-between items-center">
                               <div className="flex flex-col items-start">
                                 <span className="text-[15px] text-[#444444]">
-                                  {thing.title}
+                                  {thing.name}
                                 </span>
                                 <span className="text-[14px] text-gray-500">
-                                  {thing.category}
+                                  {thing.description}
                                 </span>
                               </div>
                               <button
@@ -1351,18 +1356,18 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                             </div>
                             {isExpanded && (
                               <div className="mt-4 flex gap-6">
-                                {item.image && (
+                                {thing.image && (
                                   <div className="mb-4 w-[45%]">
                                     <img
-                                      src={item.image}
-                                      alt={item.title}
+                                      src={thing.image}
+                                      alt={thing.name}
                                       className="w-full h-48 object-cover rounded-lg"
                                     />
                                   </div>
                                 )}
                                 <div className="w-[50%]">
                                   <p className="text-sm text-[#666666] leading-relaxed mb-4">
-                                    {item.description}
+                                    {thing.description || "No description available"}
                                   </p>
                                 </div>
                               </div>
@@ -1389,12 +1394,12 @@ const ItinerarySection: React.FC<ItinerarySectionProps> = ({ experience }) => {
                           <div className="w-10 h-7 bg-gray-200 rounded flex-shrink-0">
                             <img
                               src={thing.image}
-                              alt={thing.title}
+                              alt={thing.name}
                               className="w-full h-full object-cover rounded"
                             />
                           </div>
                           <span className="text-sm text-[#444444] whitespace-nowrap">
-                            {thing.title}
+                            {thing.name}
                           </span>
                         </div>
                       ))}

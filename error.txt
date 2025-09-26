@@ -1,0 +1,84 @@
+{
+    "success": true,
+    "data": [
+        {
+            "_creationTime": 1758904349601.3528,
+            "_id": "k57d5dnqeqrv70j6wcsecwqjan7rb3sj",
+            "additionalAdults": [],
+            "adultCount": 1,
+            "bookingDate": "2025-09-26T16:32:39.157Z",
+            "childCount": 1,
+            "children": [
+                {
+                    "fullName": "ibrahim imran"
+                }
+            ],
+            "createdAt": "09-26-2025",
+            "experienceDate": "2025-09-30T19:00:00.000Z",
+            "experienceId": "jd7fqjpdq8syqfz8q5h25v90ks7rbbhd",
+            "infantCount": 1,
+            "primaryGuest": {
+                "confirmEmail": "ibrahimchaudhary421@gmail.com",
+                "email": "ibrahimchaudhary421@gmail.com",
+                "fullName": "Muhammad ibrahim",
+                "phoneNumber": "+9203327749486"
+            },
+            "status": "pending",
+            "totalAmount": 204,
+            "userId": "k17eky410068dj5txzptmwh6s17r85fb"
+        },
+        {
+            "_creationTime": 1758904583050.8684,
+            "_id": "k57cj9msm5rdynq0z953cap2ms7raxaz",
+            "additionalAdults": [],
+            "adultCount": 1,
+            "bookingDate": "2025-09-26T16:36:32.823Z",
+            "childCount": 1,
+            "children": [
+                {
+                    "fullName": "ibrahim Imran"
+                }
+            ],
+            "createdAt": "09-26-2025",
+            "experienceDate": "2025-10-12T19:00:00.000Z",
+            "experienceId": "jd7fqjpdq8syqfz8q5h25v90ks7rbbhd",
+            "infantCount": 1,
+            "primaryGuest": {
+                "confirmEmail": "ibrahimchaudhary421@gmail.com",
+                "email": "ibrahimchaudhary421@gmail.com",
+                "fullName": "Muhammad ibrahim",
+                "phoneNumber": "+9203327749486"
+            },
+            "status": "pending",
+            "totalAmount": 204,
+            "userId": "k17eky410068dj5txzptmwh6s17r85fb"
+        },
+        {
+            "_creationTime": 1758904894187.6519,
+            "_id": "k577yahgw2vxhcqb630zrczgqs7ravhm",
+            "additionalAdults": [],
+            "adultCount": 1,
+            "bookingDate": "2025-09-26T16:41:43.681Z",
+            "childCount": 1,
+            "children": [
+                {
+                    "fullName": "ibrahim imran"
+                }
+            ],
+            "createdAt": "09-26-2025",
+            "experienceDate": "2025-10-12T19:00:00.000Z",
+            "experienceId": "jd7fqjpdq8syqfz8q5h25v90ks7rbbhd",
+            "infantCount": 1,
+            "primaryGuest": {
+                "confirmEmail": "ibrahimchaudhary421@gmail.com",
+                "email": "ibrahimchaudhary421@gmail.com",
+                "fullName": "Muhammad ibrahim",
+                "phoneNumber": "+9203327749486"
+            },
+            "status": "pending",
+            "totalAmount": 204,
+            "userId": "k17eky410068dj5txzptmwh6s17r85fb"
+        }
+    ],
+    "message": "Bookings retrieved successfully"
+}

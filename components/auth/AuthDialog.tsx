@@ -103,7 +103,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
             <div className="space-y-4 pt-4">
               <Button
                 variant="outline"
-                className="w-full justify-center gap-3 py-6 shadow-none font-semibold"
+                className="w-full hover:cursor-pointer justify-center gap-3 py-6 shadow-none font-semibold"
                 onClick={handleGoogleSignIn}
                 disabled={isPending}
               >
@@ -132,7 +132,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
               <Button
                 variant="outline"
-                className="w-full justify-center gap-3 py-6 shadow-none font-semibold"
+                className="w-full hover:cursor-pointer disabled justify-center gap-3 py-6 shadow-none font-semibold"
                 onClick={() => {
                   // TODO: Implement Apple OAuth
                   console.log("Apple sign in");
@@ -196,7 +196,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
                   {error && <p className="text-sm text-red-600">{error}</p>}
 
                   <Button
-                    className="w-full bg-[#8000ff] hover:bg-[#8000ff]/80 text-white py-6"
+                    className="w-full hover:cursor-pointer bg-[#8000ff] hover:bg-[#8000ff]/80 text-white py-6"
                     onClick={handleSendMagicLink}
                     disabled={!email || !email.includes("@") || isPending}
                   >
@@ -227,7 +227,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
             <div className="pt-4">
               <Button
                 variant="ghost"
-                className="w-full"
+                className="w-full hover:cursor-pointer"
                 onClick={() => setMode("welcome")}
               >
                 Back to sign in options

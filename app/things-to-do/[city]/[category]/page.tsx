@@ -129,7 +129,6 @@ export default function CategoryPage() {
 
   // Get 6 random blog slugs from API response
   const getRandomBlogSlugs = useMemo(() => {
-    console.log("allUniqueExperiences", allUniqueExperiences);
     const allBlogSlugs = allUniqueExperiences
       .map(exp => exp.flags?.blogSlug)
       .filter(slug => slug && slug.trim() !== '');
@@ -1567,16 +1566,13 @@ export default function CategoryPage() {
   };
 
   const handleNavigation = (item: any) => {
-    console.log("item", item);
     // Special case for "All" button - always scroll to top for both routes
     if (item.id === "all" || item.label === "All") {
-      console.log("true 1", item);
       scrollToSection("all");
       return;
     }
 
     if (isWorldwideRoute) {
-      console.log("true 2", item);
       // For worldwide routes, redirect to new URL
       const subcategorySlug = item.label
         .toLowerCase()
@@ -1585,7 +1581,6 @@ export default function CategoryPage() {
       const categorySlug = formattedCategoryName.toLowerCase();
       router.push(`/things-to-do/worldwide/${categorySlug}/${subcategorySlug}`);
     } else {
-      console.log("true 3", item);
       const subcategorySlug = item.label
         .toLowerCase()
         .replace(/\s+/g, "-")

@@ -7,7 +7,6 @@ interface SimpleBlogCardsProps {
   blogCards:any[];
 }
 export default function SimpleBlogCards({ blogCards, title }: SimpleBlogCardsProps) {
-  console.log("blogCards", blogCards);
   return (
     <div className="mb-10">
       <div className="font-halyard-text font-semibold mt-[20px] mb-[40px] text-center ">

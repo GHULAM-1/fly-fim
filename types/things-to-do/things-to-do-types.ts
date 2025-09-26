@@ -69,7 +69,7 @@ export interface ExperienceBasicInfo {
   export interface ExperienceTicketPrice {
     adultPrice: number;
     childPrice: number;
-    seniorPrice: number;
+    infantPrice: number;
     totalLimit: number;
   }
   

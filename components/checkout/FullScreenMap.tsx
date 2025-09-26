@@ -16,18 +16,26 @@ interface ItineraryItem {
   description: string;
   image?: string;
   location?: string;
+  lat?: number;
+  lng?: number;
   locationLink?: string;
   attractions?: number;
   ticketsIncluded?: boolean;
-  highlights?: string[];
+  highlights?: Array<{
+    name: string;
+    image?: string;
+    description?: string;
+  }>;
+  order?: number;
   thingsToDo?: Array<{
-    title: string;
-    category: string;
-    icon?: string;
+    name: string;
+    image?: string;
+    description?: string;
   }>;
   nearbyThings?: Array<{
-    title: string;
-    image: string;
+    name: string;
+    image?: string;
+    description?: string;
   }>;
 }
 

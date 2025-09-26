@@ -29,7 +29,6 @@ const Recommendations = ({ data }: { data?: WorldwideData }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [recommendations, setRecommendations] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
-  console.log(data);
 
   useEffect(() => {
     if (data?.experiences) {

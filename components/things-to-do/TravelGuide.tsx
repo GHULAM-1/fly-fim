@@ -5,7 +5,6 @@ import { getBlogPostBySlug } from "@/lib/sanity/queries";
 const TravelGuide = ({ blogSlugs, city }: { blogSlugs: string[], city: string }) => {
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-console.log(blogSlugs);
   // Fetch blog posts from Sanity using the provided slugs
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -22,7 +21,6 @@ console.log(blogSlugs);
         // Filter out null results and use all available posts
         const validPosts = posts.filter(post => post !== null);
         setBlogPosts(validPosts);
-        console.log("Blog Posts:", validPosts);
       } catch (error) {
         console.error('Error fetching blog posts:', error);
         setBlogPosts([]);
@@ -34,7 +32,6 @@ console.log(blogSlugs);
     fetchBlogPosts();
   }, [blogSlugs]);
 
-  console.log("Blog Posts:", blogPosts);
 
   return (
     <div className="py-10 max-w-screen-2xl mx-auto 2xl:px-0">
