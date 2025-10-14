@@ -15,6 +15,8 @@ import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { CalendarProvider } from "@/lib/hooks/useCalendarState";
 import SplashScreen from "@/components/ui/SplashScreen";
 import { useSplashScreen } from "@/lib/hooks/useSplashScreen";
+import PayPalProvider from "@/components/PayPalProvider";
+import ActiveUsersTracker from "@/components/ActiveUsersTracker";
 
 // --- FONT DEFINITIONS (No changes here) ---
 const heading = localFont({
@@ -52,7 +54,7 @@ const displayLight = localFont({
   variable: "--font-display-light",
 });
 
-const RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
+const RTL_LANGUAGES: string[] = [];
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   // Initialize splash screen - shows on every route change
@@ -94,9 +96,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* Active Users Tracker - tracks all visitors */}
+      <ActiveUsersTracker />
+
       {/* Splash Screen - shows on every route change */}
       {/* <SplashScreen isVisible={showSplash} /> */}
-      
+
       {/* Main App Content */}
       <div className={`transition-opacity duration-300 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
         {!isDashboard && !isBookingPage && !isBlogPage && <Navbar />}
@@ -133,7 +138,9 @@ export default function RootLayout({
           <CurrencyProvider>
             <ConvexClientProvider>
               <CalendarProvider>
-                <LayoutContent>{children}</LayoutContent>
+                <PayPalProvider>
+                  <LayoutContent>{children}</LayoutContent>
+                </PayPalProvider>
               </CalendarProvider>
             </ConvexClientProvider>
           </CurrencyProvider>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useTransition, useEffect } from "react";
-import { ChevronRight, Mail, X, Send } from "lucide-react";
+import { ChevronRight, Mail, X, Send, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInWithMagicLink } from "@/lib/actions/auth";
@@ -24,14 +24,58 @@ import {
   TbBrandPinterestFilled,
 } from "react-icons/tb";
 import { toast } from "@/components/toast";
+import { useTranslation } from "react-i18next";
 
 const AccountPage = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const { i18n } = useTranslation();
+  const [activeLanguage, setActiveLanguage] = useState(i18n.language);
+  const [isLanguageDrawerOpen, setIsLanguageDrawerOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [mode, setMode] = useState<"welcome" | "email-sent">("welcome");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user, signOut } = useAuth();
+
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "ar", name: "العربية" },
+    { code: "es", name: "Español" },
+    { code: "fr", name: "Français" },
+    { code: "it", name: "Italiano" },
+    { code: "de", name: "Deutsch" },
+    { code: "pt", name: "Português" },
+    { code: "nl", name: "Nederlands" },
+  ];
+
+  const handleLanguageSelect = (language: typeof languages[0]) => {
+    i18n.changeLanguage(language.code);
+    setActiveLanguage(language.code);
+    localStorage.setItem("preferred-language", language.code);
+    setIsLanguageDrawerOpen(false);
+  };
+
+  const getCurrentLanguageName = () => {
+    const currentLang = languages.find((lang) => lang.code === activeLanguage);
+    return currentLang ? currentLang.name : "English";
+  };
+
+  // Sync with localStorage and i18n changes
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("preferred-language");
+    if (savedLanguage) {
+      setActiveLanguage(savedLanguage);
+    }
+
+    const handleLanguageChange = () => {
+      setActiveLanguage(i18n.language);
+    };
+
+    i18n.on("languageChanged", handleLanguageChange);
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, [i18n]);
 
   // Close drawer when user becomes authenticated
   useEffect(() => {
@@ -47,7 +91,7 @@ const AccountPage = () => {
       const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
       const googleAuthUrl =
         `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID}&`+
+        `client_id=${process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=code&` +
         `scope=email%20profile&` +
@@ -56,7 +100,7 @@ const AccountPage = () => {
       window.location.href = googleAuthUrl;
     } catch (error) {
       console.error("Error redirecting to Google:", error);
-      setError('Failed to redirect to Google');
+      setError("Failed to redirect to Google");
     }
   };
 
@@ -125,38 +169,57 @@ const AccountPage = () => {
         <div className="px-6 py-8">
           <h2 className="font-heading text-[#444444] mb-5">My Account</h2>
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Bookings</span>
+            <span className="text-[#444444] font-halyard-text-light">
+              Bookings
+            </span>
             <ChevronRight size={16} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
             <span className="text-[#444444] font-halyard-text-light">City</span>
             <div className="flex items-center gap-2">
-              <span className="text-[#666666] font-halyard-text-light">Select city</span>
+              <a href="/cities">
+                <span className="text-[#666666] font-halyard-text-light">
+                  Select city
+                </span>
+              </a>
               <ChevronRight size={20} className="text-[#666666]" />
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Language</span>
+          <button
+            onClick={() => setIsLanguageDrawerOpen(true)}
+            className="w-full flex items-center justify-between text-sm mb-[22px]"
+          >
+            <span className="text-[#444444] font-halyard-text-light">
+              Language
+            </span>
             <div className="flex items-center gap-2">
-              <span className="text-[#666666] font-halyard-text-light">English</span>
+              <span className="text-[#666666] font-halyard-text-light">
+                {getCurrentLanguageName()}
+              </span>
               <ChevronRight size={20} className="text-[#666666]" />
             </div>
-          </div>
+          </button>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Credits</span>
+            <span className="text-[#444444] font-halyard-text-light">
+              Credits
+            </span>
             <span className="text-[#666666] font-halyard-text-light">$0</span>
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Saved cards</span>
+            <span className="text-[#444444] font-halyard-text-light">
+              Saved cards
+            </span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
 
           <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Settings</span>
+            <span className="text-[#444444] font-halyard-text-light">
+              Settings
+            </span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
           <hr />
@@ -164,37 +227,106 @@ const AccountPage = () => {
         {/* Help Section */}
         <div className="px-6 pb-8">
           <h2 className="font-heading text-[#444444] mb-[22px]">Help</h2>
-
           <div className="flex items-center justify-between text-sm mb-[22px]">
             <span className="text-[#444444] font-halyard-text-light">Chat</span>
             <ChevronRight size={20} className="text-[#666666]" />
           </div>
-
-          <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">FAQs</span>
-            <ChevronRight size={20} className="text-[#666666]" />
-          </div>
+          <a href="/help">
+            <div className="flex items-center justify-between text-sm mb-[22px]">
+              <span className="text-[#444444] font-halyard-text-light">
+                FAQs
+              </span>
+              <ChevronRight size={20} className="text-[#666666]" />
+            </div>
+          </a>
           <hr />
         </div>
         <div className="px-6 pb-8">
           <h2 className="font-heading text-[#444444] mb-[22px]">Legal</h2>
-
-          <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Privacy Policy</span>
-            <ChevronRight size={20} className="text-[#666666]" />
-          </div>
-
-          <div className="flex items-center justify-between text-sm mb-[22px]">
-            <span className="text-[#444444] font-halyard-text-light">Terms of Usage</span>
-            <ChevronRight size={20} className="text-[#666666]" />
-          </div>
+          <a href="/privacy-policy">
+            <div className="flex items-center justify-between text-sm mb-[22px]">
+              <span className="text-[#444444] font-halyard-text-light">
+                Privacy Policy
+              </span>
+              <ChevronRight size={20} className="text-[#666666]" />
+            </div>
+          </a>
+          <a href="/terms-use">
+            <div className="flex items-center justify-between text-sm mb-[22px]">
+              <span className="text-[#444444] font-halyard-text-light">
+                Terms of Usage
+              </span>
+              <ChevronRight size={20} className="text-[#666666]" />
+            </div>
+          </a>
           <hr />
         </div>
         <div className="px-6 pb-18 pt-0 ">
-          <button className="text-sm text-[#444444] font-halyard-text-light" onClick={signOut}>
+          <button
+            className="text-sm text-[#444444] font-halyard-text-light"
+            onClick={signOut}
+          >
             Sign Out
           </button>
         </div>
+
+        {/* Language Drawer for logged-in users */}
+        <Drawer open={isLanguageDrawerOpen} onOpenChange={setIsLanguageDrawerOpen}>
+          <DrawerContent
+            className="h-full"
+            style={{
+              height: "calc(var(--vh, 1vh) * 85)",
+              maxHeight: "calc(var(--vh, 1vh) * 85)",
+            }}
+          >
+            <DrawerHeader className="flex items-center justify-between p-4">
+              <DrawerTitle className="text-lg font-heading text-[#444444] font-medium text-left">
+                Select language
+              </DrawerTitle>
+              <DrawerClose asChild>
+                <button className="p-1">
+                  <X size={20} className="text-gray-500" />
+                </button>
+              </DrawerClose>
+            </DrawerHeader>
+
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-0">
+                {languages.map((language) => (
+                  <div key={language.code}>
+                    <button
+                      onClick={() => handleLanguageSelect(language)}
+                      className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
+                    >
+                      <div className="flex items-center justify-between w-full gap-3">
+                        <span
+                          className={`text-sm ${
+                            language.code === activeLanguage
+                              ? "text-[#8000ff]"
+                              : "text-[#444444]"
+                          }`}
+                        >
+                          {language.name}
+                        </span>
+                        <div
+                          className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${
+                            language.code === activeLanguage
+                              ? "bg-[#8000ff] border-none"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          {language.code === activeLanguage && (
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
     );
   }
@@ -463,15 +595,20 @@ const AccountPage = () => {
           <button className="w-full flex items-center justify-between pb-[22px] hover:bg-gray-50 transition-colors text-sm">
             <span className="font-halyard-text-light ">City</span>
             <div className="flex items-center gap-2">
-              <span className="font-halyard-text-light">Select city</span>
+              <a href="/cities">
+                <span className="font-halyard-text-light">Select city</span>
+              </a>
               <ChevronRight size={16} className="" />
             </div>
           </button>
 
-          <button className="w-full flex items-center justify-between pb-[12px] hover:bg-gray-50 transition-colors text-sm">
+          <button
+            onClick={() => setIsLanguageDrawerOpen(true)}
+            className="w-full flex items-center justify-between pb-[12px] hover:bg-gray-50 transition-colors text-sm"
+          >
             <span className="font-halyard-text-light ">Language</span>
             <div className="flex items-center gap-2">
-              <span className="font-halyard-text-light">English</span>
+              <span className="font-halyard-text-light">{getCurrentLanguageName()}</span>
               <ChevronRight size={16} className="" />
             </div>
           </button>
@@ -489,10 +626,10 @@ const AccountPage = () => {
           <ChevronRight size={16} className="text-[#666666]" />
         </button>
         <a href="/help">
-        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-halyard-text-light">FAQs</span>
-          <ChevronRight size={16} className="text-[#666666]" />
-        </button>
+          <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
+            <span className="font-halyard-text-light">FAQs</span>
+            <ChevronRight size={16} className="text-[#666666]" />
+          </button>
         </a>
       </div>
 
@@ -502,14 +639,18 @@ const AccountPage = () => {
           <h2 className="text-[16px] font-text text-[#444444]">Legal</h2>
         </div>
 
-        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-halyard-text-light">Privacy Policy</span>
-          <ChevronRight size={16} className="text-[#666666]" />
-        </button>
-        <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
-          <span className="font-halyard-text-light">Terms of Usage</span>
-          <ChevronRight size={16} className="text-[#666666]" />
-        </button>
+        <a href="/privacy-policy">
+          <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
+            <span className="font-halyard-text-light">Privacy Policy</span>
+            <ChevronRight size={16} className="text-[#666666]" />
+          </button>
+        </a>
+        <a href="/terms-use">
+          <button className="w-full flex items-center justify-between pb-[18px] hover:bg-gray-50 transition-colors text-sm">
+            <span className="font-halyard-text-light">Terms of Usage</span>
+            <ChevronRight size={16} className="text-[#666666]" />
+          </button>
+        </a>
       </div>
 
       <div className="flex items-center gap-4 justify-start mx-6 text-[#666666]">
@@ -552,6 +693,64 @@ const AccountPage = () => {
 
       {/* Bottom padding for mobile tabs */}
       <div className="h-20 md:h-0"></div>
+
+      {/* Language Drawer */}
+      <Drawer open={isLanguageDrawerOpen} onOpenChange={setIsLanguageDrawerOpen}>
+        <DrawerContent
+          className="h-full"
+          style={{
+            height: "calc(var(--vh, 1vh) * 85)",
+            maxHeight: "calc(var(--vh, 1vh) * 85)",
+          }}
+        >
+          <DrawerHeader className="flex items-center justify-between p-4">
+            <DrawerTitle className="text-lg font-heading text-[#444444] font-medium text-left">
+              Select language
+            </DrawerTitle>
+            <DrawerClose asChild>
+              <button className="p-1">
+                <X size={20} className="text-gray-500" />
+              </button>
+            </DrawerClose>
+          </DrawerHeader>
+
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-0">
+              {languages.map((language) => (
+                <div key={language.code}>
+                  <button
+                    onClick={() => handleLanguageSelect(language)}
+                    className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors border-b"
+                  >
+                    <div className="flex items-center justify-between w-full gap-3">
+                      <span
+                        className={`text-sm ${
+                          language.code === activeLanguage
+                            ? "text-[#8000ff]"
+                            : "text-[#444444]"
+                        }`}
+                      >
+                        {language.name}
+                      </span>
+                      <div
+                        className={`flex items-center justify-center w-5 h-5 border-2 border-gray-300 rounded-full ${
+                          language.code === activeLanguage
+                            ? "bg-[#8000ff] border-none"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {language.code === activeLanguage && (
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };

@@ -44,6 +44,7 @@ import { ExperienceResponse } from "@/types/experience/experience-types";
 import PriceDisplay from "@/components/PriceDisplay";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { UserDropdown } from "@/components/UserDropdown";
+import PayPalCheckout from "@/components/PayPalCheckout";
 
 // Helper functions for booking data
 const generateSessionId = () => {
@@ -1531,7 +1532,7 @@ const ConfirmAndPayPage = () => {
                                 maxLength={19}
                               />
                       </div>
-                            
+
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1560,7 +1561,7 @@ const ConfirmAndPayPage = () => {
                                 />
                               </div>
                             </div>
-                            
+
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Name on card
@@ -1573,7 +1574,7 @@ const ConfirmAndPayPage = () => {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
                               />
                             </div>
-                            
+
                             <div className="text-xs text-gray-500">
                               Your card details are secured using 2048-bit SSL encryption.
                             </div>
@@ -1583,23 +1584,110 @@ const ConfirmAndPayPage = () => {
                     </label>
                   </div>
                   <>
-                    <label className="custom-radio-label cursor-pointer">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="paypal"
-                        checked={paymentMethod === "paypal"}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="custom-radio-input"
-                      />
-                      <span className="ml-3 font-heading text-xl text-[#444444] flex items-center gap-2">
-                        {" "}
-                        PayPal <FaPaypal
-                          size={20}
-                          className="text-[#00457C]"
-                        />{" "}
-                      </span>
-                    </label>
+                    <div className="border rounded-lg transition-all duration-200 border-gray-200">
+                      <label className="flex items-start p-4 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="paypal"
+                          checked={paymentMethod === "paypal"}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          className="custom-radio-input"
+                        />
+                        <div className="ml-3 flex-1">
+                          <span className="font-heading text-xl text-[#444444] flex items-center gap-2">
+                            PayPal <FaPaypal size={20} className="text-[#00457C]" />
+                          </span>
+                          {paymentMethod === "paypal" && (
+                            <div className="mt-4">
+                              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                                <p className="text-sm text-amber-800">
+                                  ℹ️ Please fill in all guest details above before proceeding with PayPal payment.
+                                </p>
+                              </div>
+                              <PayPalCheckout
+                                amount={totalPayable.toString()}
+                                currency="USD"
+                                description={`${experience?.data?.title || itemName} - ${optionTitle}`}
+                                referenceId={`${experience?.data?._id || item}-${Date.now()}`}
+                                onSuccess={async (details) => {
+                                  console.log('PayPal payment successful:', details);
+                                  toast.success("Payment successful! Creating booking...");
+
+                                  try {
+                                    // Get form data
+                                    const formData = form.getValues();
+
+                                    // Validate form data
+                                    if (!formData.fullName || !formData.email || !formData.phone) {
+                                      toast.error("Please fill in all required guest details");
+                                      scrollToFormErrors();
+                                      return;
+                                    }
+
+                                    const additionalAdults = extractAdditionalAdults(formData, adultCount);
+                                    const children = extractChildren(formData, childCount);
+
+                                    // Create booking
+                                    const response = await fetch('/api/create-paypal-booking', {
+                                      method: 'POST',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                      },
+                                      body: JSON.stringify({
+                                        buildID: experience?.data?._id || item,
+                                        buildName: experience?.data?.title || itemName,
+                                        bill: totalPayable,
+                                        guestDetails: {
+                                          fullName: formData.fullName,
+                                          email: formData.email,
+                                          phone: formData.phone,
+                                          adultCount,
+                                          infantCount,
+                                          childCount,
+                                          date,
+                                          time,
+                                          optionTitle,
+                                          paymentTime,
+                                          additionalAdults,
+                                          children,
+                                          userId: user?.id || null,
+                                        },
+                                        paypalOrderId: details.id,
+                                        paypalCaptureId: details.purchase_units?.[0]?.payments?.captures?.[0]?.id,
+                                      }),
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (!response.ok || result.error) {
+                                      console.error('Booking creation failed:', result);
+                                      toast.error("Booking creation failed. Please contact support.");
+                                      return;
+                                    }
+
+                                    toast.success("Booking created successfully!");
+                                    window.location.href = `/booking/success?orderId=${details.id}`;
+                                  } catch (error) {
+                                    console.error('Error creating booking:', error);
+                                    toast.error("Failed to create booking. Please contact support.");
+                                  }
+                                }}
+                                onError={(error) => {
+                                  console.error('PayPal payment error:', error);
+                                  toast.error("Payment failed. Please try again.");
+                                  setPaymentError(true);
+                                }}
+                                onCancel={() => {
+                                  console.log('PayPal payment cancelled');
+                                  toast.info("Payment cancelled");
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                    </div>
                     <label className="custom-radio-label cursor-pointer">
                       <input
                         type="radio"
