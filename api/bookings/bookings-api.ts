@@ -11,7 +11,7 @@ export interface CreateBookingPayload {
   childCount: number;
   infantCount: number;
   totalAmount: number;
-  status: "pending" | "confirmed" | "cancelled";
+  status: "pending" | "confirmed" | "cancelled" | "completed";
   primaryGuest: {
     fullName: string;
     email: string;
@@ -29,6 +29,8 @@ export interface CreateBookingPayload {
     stripeSessionId?: string;
     paymentMethod?: string;
     paymentTime?: "payNow" | "payLater";
+    paypalOrderId?: string;
+    paypalCaptureId?: string;
   };
   experienceDetails: {
     title: string;

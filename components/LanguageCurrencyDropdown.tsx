@@ -53,7 +53,6 @@ const LanguageCurrencyDropdown: React.FC<LanguageCurrencyDropdownProps> = ({
 
   const languages = [
     { code: "en", name: "English" },
-    { code: "ar", name: "العربية" },
     { code: "es", name: "Español" },
     { code: "fr", name: "Français" },
     { code: "it", name: "Italiano" },

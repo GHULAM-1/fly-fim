@@ -11,6 +11,7 @@ import Cities from "./Cities";
 import Subcategories from "./Subcategories";
 import Users from "./Users";
 import Bookings from "./Bookings";
+import ActiveUsers from "./ActiveUsers";
 
 const TabContent = ({ activeTab }: TabContentProps) => {
   const renderContent = () => {
@@ -25,6 +26,8 @@ const TabContent = ({ activeTab }: TabContentProps) => {
         return <Users />;
       case "bookings":
         return <Bookings />;
+      case "active-users":
+        return <ActiveUsers />;
       // Add more cases as you create more tab components
       // case "analytics":
       //   return <Analytics />;

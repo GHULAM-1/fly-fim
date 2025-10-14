@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
+const RTL_LANGUAGES: string[] = [];
 
 export function useRTL() {
   const { i18n } = useTranslation();
