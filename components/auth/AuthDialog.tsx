@@ -57,7 +57,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
     setError(null);
 
     try {
-      const redirectUri = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+      const redirectUri  = `${window.location.origin}/auth/callback⁠`;
       const googleAuthUrl =
         `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID}&`+

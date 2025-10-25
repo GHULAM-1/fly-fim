@@ -1,7 +1,31 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.headout.com)"
+      "WebFetch(domain:www.headout.com)",
+      "Bash(cat:*)",
+      "Bash(npm install:*)",
+      "Bash(amplify:*)",
+      "Bash(aws:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(brew install:*)",
+      "Bash(NEXT_PUBLIC_CONVEX_URL=\"https://sincere-roadrunner-227.convex.cloud\":*)",
+      "Bash(NEXT_PUBLIC_SITE_URL=\"http://localhost:3000\" )",
+      "Bash(NEXT_PUBLIC_GOOGLE_CLIENT_ID=\"868730483165-vtfi0v6vrig8o7r2r6pu7muh50dkk8kg.apps.googleusercontent.com\":*)",
+      "Bash(NEXT_PUBLIC_API_BASE_URL=\"https://fly-fim-server.onrender.com/api/v1\":*)",
+      "Bash(NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\"pk_test_51OpazCHw4aNq4gdLwqocQbL63yx3IiQHUtQAUvR8oKI9zD2wLStLgx64lUOnmZ2y7TCgwayOM2rlr6K1oKman9Ht00Ecl9KJP9\":*)",
+      "Bash(NEXT_PUBLIC_STRIPE_SECRET_KEY=\"sk_test_51OpazCHw4aNq4gdL99oVUwGTkdiLzNhby0MvyxRNsnqQ7dPrnWgaxp7yktrkyU3qs0ccJcQWoAQCHQt03FYDcC2U00Z2UgN1sJ\" )",
+      "Bash(NEXT_PUBLIC_AUTH_GOOGLE_ID=\"704141359776-eqqb175b0k47djqlkfebis89smq0kb29.apps.googleusercontent.com\":*)",
+      "Bash(NEXT_PUBLIC_SANITY_PROJECT_ID=\"4z4f081m\":*)",
+      "Bash(NEXT_PUBLIC_SANITY_DATASET=\"production\":*)",
+      "Bash(SANITY_API_TOKEN=\"skzo3Fu5cf0T0LGHTxXsfYwVhWphAAeey2qd6ZtLm9lvsxcbCjrj6MCzyKmnmWcjtkeIUGFzOwYJRl2wmv0rlGlTRxwnbYMwv79b28HERj5wEH1ZA1A6229evt9LA2PmyC0eFNsxEsoYURtCt8ERVxhZTz0ewpnbBHUHT1rIamfQQ7X0YFBC\" )",
+      "Bash(NEXT_PUBLIC_ADMIN_EMAIL=\"ibrahimchaudhary421@gmail.com\":*)",
+      "Bash(PAYPAL_MODE=\"production\":*)",
+      "Bash(PAYPAL_CLIENT_ID=\"Ae8Z9kc4hDURMprmf5oSSPak1y2HmNDmuPOZYemQ0LsnO2do0SzzNkIPo8VVQRy0avbg43CSDaehw3TB\" )",
+      "Bash(PAYPAL_CLIENT_SECRET=\"EJRefNU5nAuR4W6nnO05eaUjDHhcyGcah2f16qgs879hgmvWo4zy-eDdQH1dJIJnH-il2aAGZi0GOOGR\" )",
+      "Bash(NEXT_PUBLIC_PAYPAL_CLIENT_ID=\"Ae8Z9kc4hDURMprmf5oSSPak1y2HmNDmuPOZYemQ0LsnO2do0SzzNkIPo8VVQRy0avbg43CSDaehw3TB\")",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
