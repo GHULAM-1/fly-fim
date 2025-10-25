@@ -1,0 +1,15 @@
+{
+  "production": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flyfim-production-92c9c-authRole",
+      "UnauthRoleArn": "arn:aws:iam::585768158258:role/amplify-flyfim-production-92c9c-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::585768158258:role/amplify-flyfim-production-92c9c-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-flyfim-production-92c9c-deployment",
+      "UnauthRoleName": "amplify-flyfim-production-92c9c-unauthRole",
+      "StackName": "amplify-flyfim-production-92c9c",
+      "StackId": "arn:aws:cloudformation:us-east-1:585768158258:stack/amplify-flyfim-production-92c9c/522634d0-b1e8-11f0-a6bd-1ae25ec80f29",
+      "AmplifyAppId": "d2e20iihhe1gfj"
+    }
+  }
+}
