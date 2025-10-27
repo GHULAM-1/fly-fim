@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
         body: JSON.stringify({
           provider: "google",
           code,
-          redirectUri: `${process.env.NEXT_PUBLIC_SITE_URL || origin}/auth/callback`,
+          redirectUri: `${origin}/auth/callback`,
         }),
       });
 
