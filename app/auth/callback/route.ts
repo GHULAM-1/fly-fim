@@ -52,6 +52,10 @@ export async function GET(request: NextRequest) {
   // Handle Google OAuth code
   if (code) {
     try {
+      console.log('[OAuth Debug] API_BASE_URL:', API_BASE_URL);
+      console.log('[OAuth Debug] redirectUri:', `${origin}/auth/callback`);
+      console.log('[OAuth Debug] origin:', origin);
+
       // Call your Express server auth endpoint
       const response = await fetch(`${API_BASE_URL}/auth/signin`, {
         method: "POST",
@@ -67,6 +71,7 @@ export async function GET(request: NextRequest) {
       });
 
       const data = await response.json();
+      console.log('[OAuth Debug] Backend response:', data);
 
       if (response.ok && data.success) {
         // Create a response that will redirect to the desired page
