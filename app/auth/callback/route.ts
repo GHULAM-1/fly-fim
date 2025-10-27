@@ -3,16 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: urlOrigin } = new URL(request.url);
   const code = searchParams.get("code");
   const token = searchParams.get("token");
   const error = searchParams.get("error");
   const next = searchParams.get("next") ?? "/";
 
+  // Get the actual origin from environment variable or construct from headers
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ||
+                 (request.headers.get('x-forwarded-proto') && request.headers.get('x-forwarded-host')
+                   ? `${request.headers.get('x-forwarded-proto')}://${request.headers.get('x-forwarded-host')}`
+                   : urlOrigin);
+
   console.log('[Callback Debug] request.url:', request.url);
-  console.log('[Callback Debug] origin:', origin);
+  console.log('[Callback Debug] urlOrigin:', urlOrigin);
+  console.log('[Callback Debug] computed origin:', origin);
   console.log('[Callback Debug] code:', code);
-  console.log('[Callback Debug] headers:', Object.fromEntries(request.headers));
 
   // Handle OAuth error
   if (error) {
