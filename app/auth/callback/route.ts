@@ -9,6 +9,11 @@ export async function GET(request: NextRequest) {
   const error = searchParams.get("error");
   const next = searchParams.get("next") ?? "/";
 
+  console.log('[Callback Debug] request.url:', request.url);
+  console.log('[Callback Debug] origin:', origin);
+  console.log('[Callback Debug] code:', code);
+  console.log('[Callback Debug] headers:', Object.fromEntries(request.headers));
+
   // Handle OAuth error
   if (error) {
     console.error("OAuth error:", error);
