@@ -89,23 +89,21 @@ export async function GET(request: NextRequest) {
         const forwardedHost = request.headers.get("x-forwarded-host");
         const isLocalEnv = process.env.NODE_ENV === "development";
 
-        let redirectUrl: string;
+        let baseRedirectUrl: string;
         if (isLocalEnv) {
-          redirectUrl = `${origin}${next}`;
+          baseRedirectUrl = `${origin}${next}`;
         } else if (forwardedHost) {
-          redirectUrl = `https://${forwardedHost}${next}`;
+          baseRedirectUrl = `https://${forwardedHost}${next}`;
         } else {
-          redirectUrl = `${origin}${next}`;
+          baseRedirectUrl = `${origin}${next}`;
         }
+
+        // Pass token via URL for client-side storage (cross-domain workaround)
+        const separator = baseRedirectUrl.includes('?') ? '&' : '?';
+        const redirectUrl = `${baseRedirectUrl}${separator}token=${data.token}&auth=success`;
 
         // Create response with redirect
         const redirectResponse = NextResponse.redirect(redirectUrl);
-
-        // Copy the authToken cookie from the backend response
-        const setCookieHeader = response.headers.get("set-cookie");
-        if (setCookieHeader) {
-          redirectResponse.headers.set("Set-Cookie", setCookieHeader);
-        }
 
         return redirectResponse;
       } else {

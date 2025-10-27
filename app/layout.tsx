@@ -17,6 +17,7 @@ import SplashScreen from "@/components/ui/SplashScreen";
 import { useSplashScreen } from "@/lib/hooks/useSplashScreen";
 import PayPalProvider from "@/components/PayPalProvider";
 import ActiveUsersTracker from "@/components/ActiveUsersTracker";
+import { AuthTokenHandler } from "@/components/AuthTokenHandler";
 
 // --- FONT DEFINITIONS (No changes here) ---
 const heading = localFont({
@@ -96,6 +97,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* Auth Token Handler - stores JWT from URL params */}
+      <AuthTokenHandler />
+
       {/* Active Users Tracker - tracks all visitors */}
       <ActiveUsersTracker />
 

@@ -23,12 +23,22 @@ export function useAuth() {
   // Check authentication status
   const checkAuth = async () => {
     try {
+      // Get token from localStorage
+      const token = localStorage.getItem("authToken");
+
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      // Add Authorization header if token exists
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: "GET",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
       });
 
       if (response.ok) {
@@ -98,6 +108,9 @@ export function useAuth() {
         }, 2000);
       }
 
+      // Clear token from localStorage
+      localStorage.removeItem("authToken");
+
       // Clear user state regardless of response
       setUser(null);
       setLoading(false);
@@ -106,6 +119,10 @@ export function useAuth() {
       window.location.href = "/";
     } catch (error) {
       console.error("Sign out error:", error);
+
+      // Clear token from localStorage even on error
+      localStorage.removeItem("authToken");
+
       setUser(null);
       setLoading(false);
 
