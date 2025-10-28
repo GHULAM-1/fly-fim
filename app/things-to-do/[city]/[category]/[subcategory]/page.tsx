@@ -184,7 +184,7 @@ export default function SubcategoryPage() {
     // Extract blog slugs from experiences
     const allBlogSlugs = allExperiences
       .map(exp => exp.flags?.blogSlug)
-      .filter(slug => slug && slug.trim() !== '');
+      .filter((slug): slug is string => typeof slug === 'string' && slug.trim() !== '');
 
     // Shuffle and get 6 random slugs
     const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());

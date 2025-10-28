@@ -131,7 +131,7 @@ export default function CategoryPage() {
   const getRandomBlogSlugs = useMemo(() => {
     const allBlogSlugs = allUniqueExperiences
       .map(exp => exp.flags?.blogSlug)
-      .filter(slug => slug && slug.trim() !== '');
+      .filter((slug): slug is string => typeof slug === 'string' && slug.trim() !== '');
 
     const shuffled = [...allBlogSlugs].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 6);
