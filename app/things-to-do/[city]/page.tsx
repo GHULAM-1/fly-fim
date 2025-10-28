@@ -719,7 +719,7 @@ const ThingsToDo = () => {
           {loading ? (
             <ThingsToDoHeroSkeleton />
           ) : (
-            <Hero city={city} images={thingsToDoData?.mainCards.flatMap((card) => card.basicInfo.mainImage)}  experiences={thingsToDoData?.mainCards}/>
+            <Hero city={city} images={thingsToDoData?.mainCards?.flatMap((card) => card.basicInfo.mainImage).filter(Boolean) || []}  experiences={thingsToDoData?.mainCards}/>
           )}
           <div className="md:hidden px-3 mt-[-30px] pb-2  relative z-40">
             <button

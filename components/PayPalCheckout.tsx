@@ -39,6 +39,7 @@ export default function PayPalCheckout({
     actions: CreateOrderActions
   ): Promise<string> => {
     try {
+      console.log('🔄 Creating PayPal order with:', { amount, currency, description, referenceId });
       setErrorMessage('');
       const response = await createPayPalOrder({
         amount,
@@ -47,15 +48,18 @@ export default function PayPalCheckout({
         referenceId,
       });
 
+      console.log('📦 PayPal order response:', response);
+
       if (!response.success || !response.orderId) {
+        console.error('❌ Order creation failed:', response.error);
         throw new Error(response.error || 'Failed to create order');
       }
 
-      console.log('Order created successfully:', response.orderId);
+      console.log('✅ Order created successfully:', response.orderId);
       return response.orderId;
     } catch (error: any) {
       const errorMsg = error.message || 'Failed to create order';
-      console.error('Create order error:', errorMsg);
+      console.error('❌ Create order error:', errorMsg, error);
       setErrorMessage(errorMsg);
       onError?.(errorMsg);
       throw error;

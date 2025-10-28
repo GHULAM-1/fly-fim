@@ -3036,6 +3036,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           placeholder="e.g., 1.5hr"
                         />
+                        {experienceValidationErrors["duration"] && (
+                          <p className="text-xs text-red-600 mt-1">
+                            {experienceValidationErrors["duration"]}
+                          </p>
+                        )}
                       </div>
 
                       {/* Open Today */}
@@ -3050,6 +3055,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           placeholder="e.g., 11:00am - 5:00pm"
                         />
+                        {experienceValidationErrors["openToday"] && (
+                          <p className="text-xs text-red-600 mt-1">
+                            {experienceValidationErrors["openToday"]}
+                          </p>
+                        )}
                       </div>
 
                       {/* Free Cancellation */}
@@ -3064,6 +3074,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           placeholder="e.g., Non-refundable"
                         />
+                        {experienceValidationErrors["freeCancellation"] && (
+                          <p className="text-xs text-red-600 mt-1">
+                            {experienceValidationErrors["freeCancellation"]}
+                          </p>
+                        )}
                       </div>
 
                       {/* Book Now Pay Later */}
@@ -3078,6 +3093,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           placeholder="e.g., Print at home"
                         />
+                        {experienceValidationErrors["bookNowPayLater"] && (
+                          <p className="text-xs text-red-600 mt-1">
+                            {experienceValidationErrors["bookNowPayLater"]}
+                          </p>
+                        )}
                       </div>
 
                       {/* Guided Tour */}
@@ -3092,6 +3112,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           placeholder="e.g., Small Group"
                         />
+                        {experienceValidationErrors["guidedTour"] && (
+                          <p className="text-xs text-red-600 mt-1">
+                            {experienceValidationErrors["guidedTour"]}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -4047,6 +4072,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               placeholder="e.g., 8 hours"
                             />
+                            {experienceValidationErrors["itinerary.totalDuration"] && (
+                              <p className="text-xs text-red-600 mt-1">
+                                {experienceValidationErrors["itinerary.totalDuration"]}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -4064,6 +4094,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               placeholder="e.g., Bus, Walking"
                             />
+                            {experienceValidationErrors["itinerary.modeOfTransport"] && (
+                              <p className="text-xs text-red-600 mt-1">
+                                {experienceValidationErrors["itinerary.modeOfTransport"]}
+                              </p>
+                            )}
                           </div>
                         </div>
 
@@ -5131,76 +5166,132 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                       </h3>
 
                       {/* Highlights */}
-                      <WysiwygEditor
-                        value={highlights}
-                        onChange={setHighlights}
-                        label="Highlights"
-                        placeholder="Enter experience highlights..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={highlights}
+                          onChange={setHighlights}
+                          label="Highlights"
+                          placeholder="Enter experience highlights..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["highlights"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["highlights"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Inclusions */}
-                      <WysiwygEditor
-                        value={inclusions}
-                        onChange={setInclusions}
-                        label="Inclusions"
-                        placeholder="What's included in this experience..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={inclusions}
+                          onChange={setInclusions}
+                          label="Inclusions"
+                          placeholder="What's included in this experience..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["inclusions"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["inclusions"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Exclusions */}
-                      <WysiwygEditor
-                        value={exclusions}
-                        onChange={setExclusions}
-                        label="Exclusions"
-                        placeholder="What's not included..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={exclusions}
+                          onChange={setExclusions}
+                          label="Exclusions"
+                          placeholder="What's not included..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["exclusions"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["exclusions"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Cancellation Policy */}
-                      <WysiwygEditor
-                        value={cancellationPolicy}
-                        onChange={setCancellationPolicy}
-                        label="Cancellation Policy"
-                        placeholder="Enter cancellation policy details..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={cancellationPolicy}
+                          onChange={setCancellationPolicy}
+                          label="Cancellation Policy"
+                          placeholder="Enter cancellation policy details..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["cancellationPolicy"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["cancellationPolicy"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Your Experience */}
-                      <WysiwygEditor
-                        value={youExperience}
-                        onChange={setYouExperience}
-                        label="Your Experience"
-                        placeholder="Describe what visitors will experience..."
-                        height={250}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={youExperience}
+                          onChange={setYouExperience}
+                          label="Your Experience"
+                          placeholder="Describe what visitors will experience..."
+                          height={250}
+                        />
+                        {experienceValidationErrors["youExperience"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["youExperience"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Know Before You Go */}
-                      <WysiwygEditor
-                        value={knowBeforeYouGo}
-                        onChange={setKnowBeforeYouGo}
-                        label="Know Before You Go"
-                        placeholder="Important information for visitors..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={knowBeforeYouGo}
+                          onChange={setKnowBeforeYouGo}
+                          label="Know Before You Go"
+                          placeholder="Important information for visitors..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["knowBeforeYouGo"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["knowBeforeYouGo"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* My Tickets */}
-                      <WysiwygEditor
-                        value={myTickets}
-                        onChange={setMyTickets}
-                        label="My Tickets"
-                        placeholder="Ticket information and details..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={myTickets}
+                          onChange={setMyTickets}
+                          label="My Tickets"
+                          placeholder="Ticket information and details..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["myTickets"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["myTickets"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Explore More */}
-                      <WysiwygEditor
-                        value={exploreMore}
-                        onChange={setExploreMore}
-                        label="Explore More"
-                        placeholder="Additional exploration opportunities..."
-                        height={200}
-                      />
+                      <div>
+                        <WysiwygEditor
+                          value={exploreMore}
+                          onChange={setExploreMore}
+                          label="Explore More"
+                          placeholder="Additional exploration opportunities..."
+                          height={200}
+                        />
+                        {experienceValidationErrors["exploreMore"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["exploreMore"]}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Blog Slugs */}
                       <div className="mb-6">
@@ -5253,6 +5344,11 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                             Press Enter or click Add to add a slug. Click × to remove.
                           </p>
                         </div>
+                        {experienceValidationErrors["blogSlugs"] && (
+                          <p className="text-sm text-red-600 mt-1">
+                            {experienceValidationErrors["blogSlugs"]}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

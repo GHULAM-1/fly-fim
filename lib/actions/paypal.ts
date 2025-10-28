@@ -8,9 +8,19 @@ function environment() {
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
   const mode = process.env.PAYPAL_MODE || 'sandbox';
 
+  console.log('🔧 PayPal Server Config:');
+  console.log('Mode:', mode);
+  console.log('Client ID exists:', !!clientId);
+  console.log('Client ID length:', clientId?.length);
+  console.log('Client ID first 20 chars:', clientId?.substring(0, 20));
+  console.log('Client Secret exists:', !!clientSecret);
+  console.log('Client Secret length:', clientSecret?.length);
+
   if (mode === 'production') {
+    console.log('✅ Using PayPal LIVE environment');
     return new paypal.core.LiveEnvironment(clientId, clientSecret);
   }
+  console.log('✅ Using PayPal SANDBOX environment');
   return new paypal.core.SandboxEnvironment(clientId, clientSecret);
 }
 
@@ -55,16 +65,20 @@ export async function createPayPalOrder(
   data: CreateOrderData
 ): Promise<OrderResponse> {
   try {
+    console.log('💰 Creating PayPal order:', data);
     const { amount, currency = 'USD', description = 'Purchase', referenceId } = data;
 
     // Validate amount
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      console.error('❌ Invalid amount:', amount);
       return {
         success: false,
         error: 'Invalid amount provided',
       };
     }
+
+    console.log('📝 Order details:', { parsedAmount, currency, description, referenceId });
 
     const request = new paypal.orders.OrdersCreateRequest();
     request.prefer('return=representation');
@@ -107,9 +121,10 @@ export async function createPayPalOrder(
       },
     } as any);
 
+    console.log('🚀 Executing PayPal order creation request...');
     const response = await client().execute(request);
 
-    console.log('PayPal Order Created:', {
+    console.log('✅ PayPal Order Created:', {
       orderId: response.result.id,
       status: response.result.status,
     });
@@ -120,7 +135,12 @@ export async function createPayPalOrder(
       details: response.result,
     };
   } catch (error: any) {
-    console.error('Error creating PayPal order:', error);
+    console.error('❌ Error creating PayPal order:', {
+      message: error.message,
+      statusCode: error.statusCode,
+      headers: error.headers,
+      details: error.details || error,
+    });
     return {
       success: false,
       error: error.message || 'Failed to create PayPal order',
