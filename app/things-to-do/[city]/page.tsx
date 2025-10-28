@@ -721,9 +721,13 @@ const ThingsToDo = () => {
           ) : (
             <Hero
               city={city}
-              images={(thingsToDoData?.mainCards
-                ?.map((card) => card.basicInfo?.mainImage)
-                .filter((img): img is string => typeof img === 'string' && img.length > 0)) || []}
+              images={
+                thingsToDoData?.mainCards
+                  ? thingsToDoData.mainCards
+                      .map((card) => card.basicInfo?.mainImage)
+                      .filter((img): img is string => typeof img === 'string' && img.length > 0)
+                  : []
+              }
               experiences={thingsToDoData?.mainCards}
             />
           )}
