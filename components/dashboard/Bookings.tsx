@@ -369,9 +369,12 @@ const Bookings = () => {
                   <td className="px-6 py-4">
                     <div className="text-sm">
                       <div className="font-medium text-gray-900 max-w-xs truncate">
-                        {getExperienceDetails(booking.experienceId)?.title || booking.experienceId || 'Experience'}
+                        {getExperienceDetails(booking.experienceId)?.basicInfo?.title || getExperienceDetails(booking.experienceId)?.title || 'Loading...'}
                       </div>
-                      <div className="text-gray-500">{getExperienceDetails(booking.experienceId)?.description?.substring(0, 50) + '...' || 'Booking'}</div>
+                      <div className="text-gray-500">
+                        {(getExperienceDetails(booking.experienceId)?.basicInfo?.description || getExperienceDetails(booking.experienceId)?.description)?.substring(0, 50) || 'Experience'}
+                        {(getExperienceDetails(booking.experienceId)?.basicInfo?.description || getExperienceDetails(booking.experienceId)?.description) ? '...' : ''}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
