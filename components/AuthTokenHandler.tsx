@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export function AuthTokenHandler() {
+function AuthTokenHandlerInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -26,4 +26,12 @@ export function AuthTokenHandler() {
   }, [searchParams, router]);
 
   return null; // This component doesn't render anything
+}
+
+export function AuthTokenHandler() {
+  return (
+    <Suspense fallback={null}>
+      <AuthTokenHandlerInner />
+    </Suspense>
+  );
 }
