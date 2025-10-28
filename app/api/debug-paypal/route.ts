@@ -19,7 +19,6 @@ export async function GET() {
     ),
   };
 
-  
   console.log('🔍 PayPal Debug API called:', debugInfo);
 
   return NextResponse.json(debugInfo);
