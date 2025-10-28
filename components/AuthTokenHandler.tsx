@@ -21,7 +21,9 @@ function AuthTokenHandlerInner() {
       const url = new URL(window.location.href);
       url.searchParams.delete("token");
       url.searchParams.delete("auth");
-      router.replace(url.pathname + url.search);
+
+      // Reload page to trigger auth refresh
+      window.location.replace(url.pathname + url.search);
     }
   }, [searchParams, router]);
 
