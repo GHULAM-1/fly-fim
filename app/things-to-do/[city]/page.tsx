@@ -178,7 +178,7 @@ const ThingsToDo = () => {
 
     const allBlogSlugs = allUniqueExperiences
       .map(exp => exp.flags?.blogSlug)
-      .filter(slug => slug && slug.trim() !== ''); // Filter out empty/null slugs
+      .filter((slug): slug is string => typeof slug === 'string' && slug.trim() !== ''); // Filter out empty/null slugs
 
     if (allBlogSlugs.length === 0) return [];
 
