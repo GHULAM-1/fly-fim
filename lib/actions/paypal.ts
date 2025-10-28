@@ -4,9 +4,10 @@ import paypal from '@paypal/checkout-server-sdk';
 
 // PayPal environment configuration
 function environment() {
-  const clientId = process.env.PAYPAL_CLIENT_ID!;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
-  const mode = process.env.PAYPAL_MODE || 'sandbox';
+  // Try server-side env vars first, fallback to NEXT_PUBLIC_ (for Amplify compatibility)
+  const clientId = process.env.PAYPAL_CLIENT_ID || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_SECRET!;
+  const mode = process.env.PAYPAL_MODE || process.env.NEXT_PUBLIC_PAYPAL_MODE || 'sandbox';
 
   console.log('🔧 PayPal Server Config:');
   console.log('Mode:', mode);
@@ -15,6 +16,7 @@ function environment() {
   console.log('Client ID first 20 chars:', clientId?.substring(0, 20));
   console.log('Client Secret exists:', !!clientSecret);
   console.log('Client Secret length:', clientSecret?.length);
+  console.log('Using NEXT_PUBLIC fallback:', !process.env.PAYPAL_CLIENT_ID);
 
   if (mode === 'production') {
     console.log('✅ Using PayPal LIVE environment');
