@@ -724,7 +724,10 @@ const ThingsToDo = () => {
               images={
                 thingsToDoData?.mainCards
                   ? thingsToDoData.mainCards
-                      .map((card) => card.basicInfo?.mainImage)
+                      .map((card) => {
+                        const img = card.basicInfo?.mainImage;
+                        return Array.isArray(img) ? img[0] : img;
+                      })
                       .filter((img): img is string => typeof img === 'string' && img.length > 0)
                   : []
               }
