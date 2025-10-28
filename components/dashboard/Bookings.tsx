@@ -89,16 +89,25 @@ const Bookings = () => {
         if (booking.experienceId && !details[booking.experienceId]) {
           try {
             const experienceResponse = await fetchExperienceById(booking.experienceId);
+            console.log(`📦 Fetched experience for ${booking.experienceId}:`, experienceResponse);
+
             if (experienceResponse.success && experienceResponse.data) {
               details[booking.experienceId] = experienceResponse.data;
+            } else if (experienceResponse.data) {
+              // Handle case where success flag might not be present
+              details[booking.experienceId] = experienceResponse.data;
+            } else {
+              // Store the whole response if structure is different
+              details[booking.experienceId] = experienceResponse;
             }
           } catch (error) {
-            console.error(`Failed to fetch experience ${booking.experienceId}:`, error);
+            console.error(`❌ Failed to fetch experience ${booking.experienceId}:`, error);
             details[booking.experienceId] = null; // Mark as failed to avoid retry
           }
         }
       }
 
+      console.log('✅ All experience details:', details);
       setExperienceDetails(prev => ({ ...prev, ...details }));
     };
 
