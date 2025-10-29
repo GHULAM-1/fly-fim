@@ -104,7 +104,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <ActiveUsersTracker />
 
       {/* Splash Screen - shows on every route change */}
-      {/* <SplashScreen isVisible={showSplash} /> */}
+      <SplashScreen isVisible={showSplash} />
 
       {/* Main App Content */}
       <div className={`transition-opacity duration-300 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
