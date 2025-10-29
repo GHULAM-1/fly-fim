@@ -13,6 +13,9 @@ const Dashboard = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
+  // Parse admin emails (supports comma-separated list)
+  const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.split(',').map(e => e.trim()) || [];
+
   // Check authentication and admin access
   useEffect(() => {
     if (!loading) {
@@ -22,7 +25,7 @@ const Dashboard = () => {
         return;
       }
       // If logged in but not admin, redirect to home
-      if (user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      if (!adminEmails.includes(user.email)) {
         toast.error("You are not authorized to access this page");
         router.push("/");
         return;
@@ -43,7 +46,7 @@ const Dashboard = () => {
   }
 
   // Show unauthorized if not admin
-  if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+  if (!user || !adminEmails.includes(user.email)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
