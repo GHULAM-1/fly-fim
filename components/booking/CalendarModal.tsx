@@ -91,17 +91,18 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         };
 
         const price = getPriceForDate(date);
+        const isUnavailable = price === null;
 
         return (
           <button
             key={index}
-            disabled={isPastDate}
+            disabled={isPastDate || isUnavailable}
             onClick={() => onDateSelect(date)}
             className={cn(
-              "h-14 rounded-lg hover:cursor-pointer text-sm font-medium relative transition-colors duration-150 flex flex-col items-center justify-center",
-              isPastDate
-                ? "text-gray-300 cursor-not-allowed"
-                : "hover:bg-purple-50 text-[#444444]",
+              "h-14 rounded-lg text-sm font-medium relative transition-colors duration-150 flex flex-col items-center justify-center",
+              isPastDate || isUnavailable
+                ? "text-gray-300 cursor-not-allowed bg-gray-50"
+                : "hover:bg-purple-50 text-[#444444] hover:cursor-pointer",
               isSelected &&
                 "bg-purple-100 text-purple-700 border border-purple-600"
             )}

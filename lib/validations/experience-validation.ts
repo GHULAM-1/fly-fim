@@ -102,6 +102,7 @@ export const experienceFormSchema = z.object({
         closeTime: z.string().min(1, 'Close time is required'),
         lastEntryTime: z.string().min(1, 'Last entry time is required'),
         title: z.string().min(1, 'Title is required'),
+        excludedDays: z.array(z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])).optional().default([]),
       })
     )
     .min(1, 'At least one operating hours entry is required'),

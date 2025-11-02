@@ -259,6 +259,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
       closeTime: "",
       lastEntryTime: "",
       title: "Regular Hours",
+      excludedDays: [] as string[],
     },
   ]);
 
@@ -456,6 +457,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
           closeTime: hours.closeTime || '',
           lastEntryTime: hours.lastEntryTime || '',
           title: hours.title || 'Regular Hours',
+          excludedDays: hours.excludedDays || [],
         }));
         setOperatingHours(formattedOperatingHours);
       }
@@ -821,6 +823,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
         closeTime: "",
         lastEntryTime: "",
         title: "Regular Hours",
+        excludedDays: [],
       },
     ]);
   };
@@ -3364,6 +3367,37 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                                 }`}
                               />
                             </div>
+                          </div>
+
+                          {/* Excluded Days */}
+                          <div className="mt-4">
+                            <label className="block text-xs font-medium text-gray-600 mb-2">
+                              Exclude Days (Optional)
+                            </label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+                              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                                <label
+                                  key={day}
+                                  className="flex items-center space-x-2 px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={hour.excludedDays?.includes(day) || false}
+                                    onChange={(e) => {
+                                      const newExcludedDays = e.target.checked
+                                        ? [...(hour.excludedDays || []), day]
+                                        : (hour.excludedDays || []).filter(d => d !== day);
+                                      updateOperatingHour(index, 'excludedDays', newExcludedDays);
+                                    }}
+                                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                                  />
+                                  <span className="text-xs capitalize">{day.substring(0, 3)}</span>
+                                </label>
+                              ))}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">
+                              Select days to exclude from this schedule. The experience will not be available on excluded days.
+                            </p>
                           </div>
 
                           {/* Show validation errors for this operating hour */}
