@@ -2420,9 +2420,21 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
                 <div className="flex">
                   <div className="ml-3">
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm font-semibold text-red-600 mb-2">
                       {submitError}
                     </p>
+                    {Object.keys(experienceValidationErrors).length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-medium text-red-700 mb-2">Please fix the following errors:</p>
+                        <ul className="list-disc list-inside space-y-1 text-xs text-red-600">
+                          {Object.entries(experienceValidationErrors).map(([field, error]) => (
+                            <li key={field}>
+                              <span className="font-medium">{field}:</span> {error}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
