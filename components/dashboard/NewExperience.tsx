@@ -251,7 +251,17 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
   const [guidedTour, setGuidedTour] = useState("");
 
   // Operating hours
-  const [operatingHours, setOperatingHours] = useState([
+  type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+  const [operatingHours, setOperatingHours] = useState<Array<{
+    startDate: string;
+    endDate: string;
+    openTime: string;
+    closeTime: string;
+    lastEntryTime: string;
+    title: string;
+    excludedDays: DayOfWeek[];
+  }>>([
     {
       startDate: "",
       endDate: "",
@@ -259,7 +269,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
       closeTime: "",
       lastEntryTime: "",
       title: "Regular Hours",
-      excludedDays: [] as string[],
+      excludedDays: [],
     },
   ]);
 
@@ -834,7 +844,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
     }
   };
 
-  const updateOperatingHour = (index: number, field: string, value: string) => {
+  const updateOperatingHour = (index: number, field: string, value: string | DayOfWeek[]) => {
     setOperatingHours((prev) =>
       prev.map((hour, i) => (i === index ? { ...hour, [field]: value } : hour))
     );
@@ -1942,6 +1952,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
         closeTime: "17:00",
         lastEntryTime: "16:30",
         title: "Winter Schedule",
+        excludedDays: [],
       },
       {
         startDate: "2025-04-01",
@@ -1950,6 +1961,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
         closeTime: "19:00",
         lastEntryTime: "18:30",
         title: "Summer Schedule",
+        excludedDays: [],
       },
     ]);
 
@@ -3375,7 +3387,7 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
                               Exclude Days (Optional)
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-                              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                              {(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const).map((day) => (
                                 <label
                                   key={day}
                                   className="flex items-center space-x-2 px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer"
