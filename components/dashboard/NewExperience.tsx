@@ -2168,7 +2168,8 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
           lng: parseFloat(longitude.toString()),
         },
         packageType,
-        itinerary,
+        // Only include itinerary if the checkbox is checked
+        ...(hasItinerary && { itinerary }),
       };
 
       const validation = experienceFormSchema.safeParse(formDataToValidate);
