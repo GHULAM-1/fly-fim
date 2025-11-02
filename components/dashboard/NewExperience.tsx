@@ -2128,6 +2128,40 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
         ? [new File([], 'existing-image')] // Dummy file for validation
         : images;
 
+      // Helper function to filter out empty items from arrays
+      const filterEmptyItems = (items: any[]) => {
+        return items.filter(item => item.name && item.name.trim() !== '');
+      };
+
+      // Clean itinerary data by removing empty array items
+      const cleanedItinerary = hasItinerary ? {
+        ...itinerary,
+        startPoint: {
+          ...itinerary.startPoint,
+          highlights: itinerary.startPoint.highlights?.length > 0
+            ? filterEmptyItems(itinerary.startPoint.highlights)
+            : undefined,
+          thingsToDo: itinerary.startPoint.thingsToDo?.length > 0
+            ? filterEmptyItems(itinerary.startPoint.thingsToDo)
+            : undefined,
+          nearbyThingsToDo: itinerary.startPoint.nearbyThingsToDo?.length > 0
+            ? filterEmptyItems(itinerary.startPoint.nearbyThingsToDo)
+            : undefined,
+        },
+        points: itinerary.points.map(point => ({
+          ...point,
+          highlights: point.highlights?.length > 0
+            ? filterEmptyItems(point.highlights)
+            : undefined,
+          thingsToDo: point.thingsToDo?.length > 0
+            ? filterEmptyItems(point.thingsToDo)
+            : undefined,
+          nearbyThingsToDo: point.nearbyThingsToDo?.length > 0
+            ? filterEmptyItems(point.nearbyThingsToDo)
+            : undefined,
+        })),
+      } : undefined;
+
       const formDataToValidate: ExperienceFormData = {
         title,
         description,
@@ -2168,8 +2202,8 @@ const NewExperience = ({ onBack, onSuccess, isEditMode = false, experienceId, in
           lng: parseFloat(longitude.toString()),
         },
         packageType,
-        // Only include itinerary if the checkbox is checked
-        ...(hasItinerary && { itinerary }),
+        // Only include itinerary if the checkbox is checked, and clean empty items
+        ...(cleanedItinerary && { itinerary: cleanedItinerary }),
       };
 
       const validation = experienceFormSchema.safeParse(formDataToValidate);
